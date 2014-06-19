@@ -53,10 +53,11 @@
 // $config->custom->session['http_realm'] = sprintf('%s %s',app_name(),'login');
 
 /* The language setting. If you set this to 'auto', phpLDAPadmin will attempt
-   to determine your language automatically. Otherwise, available lanaguages
-   are: 'ct', 'de', 'en', 'es', 'fr', 'it', 'nl', and 'ru'
-   Localization is not complete yet, but most strings have been translated.
-   Please help by writing language files. See lang/en.php for an example. */
+   to determine your language automatically.
+   If PLA doesnt show (all) strings in your language, then you can do some
+   translation at http://translations.launchpad.net/phpldapadmin and download
+   the translation files, replacing those provided with PLA.
+   (We'll pick up the translations before making the next release too!) */
 // $config->custom->appearance['language'] = 'auto';
 
 /* The temporary storage directory where we will put jpegPhoto data
@@ -151,14 +152,16 @@ $config->custom->commands['script'] = array(
 #  $config->custom->appearance['tree'] = 'HTMLTree';
 
 /* Just show your custom templates. */
-// invis-server.org
-$config->custom->appearance['custom_templates_only'] = true;
+$config->custom->appearance['custom_templates_only'] = false;
 
 /* Disable the default template. */
 // $config->custom->appearance['disable_default_template'] = false;
 
 /* Hide the warnings for invalid objectClasses/attributes in templates. */
 // $config->custom->appearance['hide_template_warning'] = false;
+
+/* Set to true if you would like to hide header and footer parts. */
+// $config->custom->appearance['minimalMode'] = false;
 
 /* Configure what objects are shown in left hand tree */
 // $config->custom->appearance['tree_filter'] = '(objectclass=*)';
@@ -280,7 +283,7 @@ $servers->newServer('ldap_pla');
 
 /* A convenient name that will appear in the tree viewer and throughout
    phpLDAPadmin to identify this LDAP server to users. */
-$servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
+$servers->setValue('server','name','AD-LDAP invis-Server');
 
 /* Examples:
    'ldap.example.com',
@@ -296,7 +299,7 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
    auto-detect it for you. */
 // $servers->setValue('server','base',array(''));
 
-/* Four options for auth_type:
+/* Five options for auth_type:
    1. 'cookie': you will login via a web form, and a client-side cookie will
       store your login dn and password.
    2. 'session': same as cookie but your login dn and password are stored on the
@@ -305,6 +308,8 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
       HTTP authentication.
    4. 'config': specify your login dn and password here in this config file. No
       login will be required to use phpLDAPadmin for this server.
+   5. 'sasl': login will be taken from the webserver's kerberos authentication.
+      Currently only GSSAPI has been tested (using mod_auth_kerb).
 
    Choose wisely to protect your authentication information appropriately for
    your situation. If you choose 'cookie', your cookie contents will be
@@ -313,10 +318,11 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
 // $servers->setValue('login','auth_type','session');
 
 /* The DN of the user for phpLDAPadmin to bind with. For anonymous binds or
-   'cookie' or 'session' auth_types, LEAVE THE LOGIN_DN AND LOGIN_PASS BLANK. If
-   you specify a login_attr in conjunction with a cookie or session auth_type,
-   then you can also specify the bind_id/bind_pass here for searching the
-   directory for users (ie, if your LDAP server does not allow anonymous binds. */
+   'cookie','session' or 'sasl' auth_types, LEAVE THE LOGIN_DN AND LOGIN_PASS
+   BLANK. If you specify a login_attr in conjunction with a cookie or session
+   auth_type, then you can also specify the bind_id/bind_pass here for searching
+   the directory for users (ie, if your LDAP server does not allow anonymous
+   binds. */
 // $servers->setValue('login','bind_id','');
 #  $servers->setValue('login','bind_id','cn=Manager,dc=example,dc=com');
 
@@ -335,22 +341,22 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
 /* Enable SASL authentication LDAP SASL authentication requires PHP 5.x
    configured with --with-ldap-sasl=DIR. If this option is disabled (ie, set to
    false), then all other sasl options are ignored. */
-// $servers->setValue('server','sasl_auth',false);
+// $servers->setValue('login','auth_type','sasl');
 
 /* SASL auth mechanism */
-// $servers->setValue('server','sasl_mech','PLAIN');
+// $servers->setValue('sasl','mech','GSSAPI');
 
 /* SASL authentication realm name */
-// $servers->setValue('server','sasl_realm','');
-#  $servers->setValue('server','sasl_realm','example.com');
+// $servers->setValue('sasl','realm','');
+#  $servers->setValue('sasl','realm','EXAMPLE.COM');
 
 /* SASL authorization ID name
    If this option is undefined, authorization id will be computed from bind DN,
-   using sasl_authz_id_regex and sasl_authz_id_replacement. */
-// $servers->setValue('server','sasl_authz_id', null);
+   using authz_id_regex and authz_id_replacement. */
+// $servers->setValue('sasl','authz_id', null);
 
 /* SASL authorization id regex and replacement
-   When sasl_authz_id property is not set (default), phpLDAPAdmin will try to
+   When authz_id property is not set (default), phpLDAPAdmin will try to
    figure out authorization id by itself from bind distinguished name (DN).
 
    This procedure is done by calling preg_replace() php function in the
@@ -362,14 +368,14 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
    For info about pcre regexes, see:
    - pcre(3), perlre(3)
    - http://www.php.net/preg_replace */
-// $servers->setValue('server','sasl_authz_id_regex',null);
-// $servers->setValue('server','sasl_authz_id_replacement',null);
-#  $servers->setValue('server','sasl_authz_id_regex','/^uid=([^,]+)(.+)/i');
-#  $servers->setValue('server','sasl_authz_id_replacement','$1');
+// $servers->setValue('sasl','authz_id_regex',null);
+// $servers->setValue('sasl','authz_id_replacement',null);
+#  $servers->setValue('sasl','authz_id_regex','/^uid=([^,]+)(.+)/i');
+#  $servers->setValue('sasl','authz_id_replacement','$1');
 
 /* SASL auth security props.
    See http://beepcore-tcl.sourceforge.net/tclsasl.html#anchor5 for explanation. */
-// $servers->setValue('server','sasl_props',null);
+// $servers->setValue('sasl','props',null);
 
 /* Default password hashing algorithm. One of md5, ssha, sha, md5crpyt, smd5,
    blowfish, crypt or leave blank for now default algorithm. */
@@ -410,6 +416,9 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
 /* Specify false if you do not want phpLDAPadmin to draw the 'Create new' links
    in the tree viewer. */
 // $servers->setValue('appearance','show_create',true);
+
+/* Set to true if you would like to initially open the first level of each tree. */
+// $servers->setValue('appearance','open_tree',false);
 
 /* This feature allows phpLDAPadmin to automatically determine the next
    available uidNumber for a new entry. */
@@ -459,6 +468,11 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
 /* Set this if you dont want this LDAP server to show in the tree */
 // $servers->setValue('server','visible',true);
 
+/* Set this if you want to hide the base DNs that dont exist instead of
+   displaying the message "The base entry doesnt exist, create it?"
+// $servers->setValue('server','hide_noaccess_base',false);
+#  $servers->setValue('server','hide_noaccess_base',true);
+
 /* This is the time out value in minutes for the server. After as many minutes
    of inactivity you will be automatically logged out. If not set, the default
    value will be ( session_cache_expire()-1 ) */
@@ -484,8 +498,8 @@ $servers->setValue('server','name','invis Server -- LDAP Verzeichnis');
    server may automatically calculate a default value.
    In Fedora Directory Server using the DNA Plugin one could ignore uidNumber,
    gidNumber and sambaSID. */
-// $servers->setValue('force_may','attrs',array(''));
-#  $servers->setValue('force_may','attrs',array('uidNumber','gidNumber','sambaSID'));
+// $servers->setValue('server','force_may',array(''));
+#  $servers->setValue('server','force_may',array('uidNumber','gidNumber','sambaSID'));
 
 /*********************************************
  * Unique attributes                         *
@@ -524,13 +538,13 @@ $servers->setValue('login','bind_pass','');
 $servers->setValue('server','tls',false);
 
 # SASL auth
-$servers->setValue('server','sasl_auth',true);
-$servers->setValue('server','sasl_mech','PLAIN');
-$servers->setValue('server','sasl_realm','EXAMPLE.COM');
-$servers->setValue('server','sasl_authz_id',null);
-$servers->setValue('server','sasl_authz_id_regex','/^uid=([^,]+)(.+)/i');
-$servers->setValue('server','sasl_authz_id_replacement','$1');
-$servers->setValue('server','sasl_props',null);
+$servers->setValue('login','auth_type','sasl');
+$servers->setValue('sasl','mech','GSSAPI');
+$servers->setValue('sasl','realm','EXAMPLE.COM');
+$servers->setValue('sasl','authz_id',null);
+$servers->setValue('sasl','authz_id_regex','/^uid=([^,]+)(.+)/i');
+$servers->setValue('sasl','authz_id_replacement','$1');
+$servers->setValue('sasl','props',null);
 
 $servers->setValue('appearance','password_hash','md5');
 $servers->setValue('login','attr','dn');
@@ -557,6 +571,6 @@ $servers->setValue('login','timeout',30);
 $servers->setValue('server','branch_rename',false);
 $servers->setValue('server','custom_sys_attrs',array('passwordExpirationTime','passwordAllowChangeTime'));
 $servers->setValue('server','custom_attrs',array('nsRoleDN','nsRole','nsAccountLock'));
-$servers->setValue('force_may','attrs',array('uidNumber','gidNumber','sambaSID'));
+$servers->setValue('server','force_may',array('uidNumber','gidNumber','sambaSID'));
 */
 ?>
