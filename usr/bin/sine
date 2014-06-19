@@ -521,15 +521,16 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
 #---# Samba Pakete
     # Es kann entschieden werden, welche Samba-Pakete verwendet werden.
     # Zur Auswahl stehen Pakete des openSUSE-Samba:Stable Repos oder die Pakete von Sernet
-    dialog --backtitle "$dialogtitle" --title "Samba File Server" --radiolist "$dialogshorthelp\n\n
-Wählen Sie die von Ihnen bevorzugten Samba Pakete aus." 14 85 5 \
-	openSUSE "Distributionsversion, kürzere Maintenance." on\
-	Sernet "Samba4 LTS-Pakete für openSUSE 13.1 von Sernet." off\
-	2>$setupdir/sine_temp
-	whichsamba=`cat $setupdir/sine_temp`
-	whichsamba=`tolower $whichsamba`
-	
+#    dialog --backtitle "$dialogtitle" --title "Samba File Server" --radiolist "$dialogshorthelp\n\n
+#Wählen Sie die von Ihnen bevorzugten Samba Pakete aus." 14 85 5 \
+#	openSUSE "Distributionsversion, kürzere Maintenance." on\
+#	Sernet "Samba4 LTS-Pakete für openSUSE 13.1 von Sernet." off\
+#	2>$setupdir/sine_temp
+#	whichsamba=`cat $setupdir/sine_temp`
+#	whichsamba=`tolower $whichsamba`
+#	
 #---# Zugangsdaten fuer Sernet-Repo abfragen
+    whichsamba="sernet"
     ok=0
     if [[ $whichsamba == "sernet" ]]; then
 	while (( $ok != "2" ));do
@@ -896,7 +897,7 @@ sysprep() {
 	strings="none%classic"
 	changevalues $path $file $strings
     else
-	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
+#	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
     
     # NFS-Server
