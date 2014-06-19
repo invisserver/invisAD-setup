@@ -414,38 +414,38 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
     #echo $forwarders
 #---#System Passwörter
     ok=0
-    while (( $ok != "3" ));do
-	dialog --backtitle "$dialogtitle" --title "LDAP Passworte" --insecure --passwordform "$dialogshorthelp\n\n
-Für den Umgang mit dem zentralen LDAP-Verzeichnis werden drei administrative Benutzerkonten mit unterschiedlichen Berechtigungen
-angelgt. Es ist aus Sicherheitsgründen sinnvoll für alle drei Konten unterschiedliche Passwörter zu vergeben.\n\n
-Die vergebenen Passwörter müssen mindestens 6 Zeichen lang sein." 22 80 6 \
-	"LDAP-Manager:" 2 2 "${ldapsecrets[0]}" 2 30 10 0\
-	"Kontrolle:" 2 44 "${ldapsecrets[1]}" 2 56 10 0\
-	"LDAP-Administrator:" 4 2 "${ldapsecrets[2]}" 4 30 10 0\
-	"Kontrolle:" 4 44 "${ldapsecrets[3]}" 4 56 10 0\
-	"LDAP-Sektionsadministrator:" 6 2 "${ldapsecrets[4]}" 6 30 10 0\
-	"Kontrolle:" 6 44 "${ldapsecrets[5]}" 6 56 10 0\
-	2>$setupdir/sine_temp
-	ldapsecrets=(`cat $setupdir/sine_temp`)
-	i=0
-	while (( $i < 6 ));do
-		if [[ $i =~ [0,2,4] ]];then
-		    (( k=$i + 1 ))
-		    if [[ ${ldapsecrets[$i]} == ${ldapsecrets[$k]} ]] && (( ${#ldapsecrets[$i]} >= 6 ));then
-			(( ok=$ok + 1 ))
-		    else
-			ldapsecrets[$i]=""
-			ldapsecrets[$k]=""
-			ok=0
-		    fi
-		fi
-		(( i= $i + 1 ))
-	done
-    done
-    # LDAP Passwoerter zuordnen
-    manpass="${ldapsecrets[0]}"
-    masterpass="${ldapsecrets[2]}"
-    adminpass="${ldapsecrets[4]}"
+#    while (( $ok != "3" ));do
+#	dialog --backtitle "$dialogtitle" --title "LDAP Passworte" --insecure --passwordform "$dialogshorthelp\n\n
+#Für den Umgang mit dem zentralen LDAP-Verzeichnis werden drei administrative Benutzerkonten mit unterschiedlichen Berechtigungen
+#angelgt. Es ist aus Sicherheitsgründen sinnvoll für alle drei Konten unterschiedliche Passwörter zu vergeben.\n\n
+#Die vergebenen Passwörter müssen mindestens 6 Zeichen lang sein." 22 80 6 \
+#	"LDAP-Manager:" 2 2 "${ldapsecrets[0]}" 2 30 10 0\
+#	"Kontrolle:" 2 44 "${ldapsecrets[1]}" 2 56 10 0\
+#	"LDAP-Administrator:" 4 2 "${ldapsecrets[2]}" 4 30 10 0\
+#	"Kontrolle:" 4 44 "${ldapsecrets[3]}" 4 56 10 0\
+#	"LDAP-Sektionsadministrator:" 6 2 "${ldapsecrets[4]}" 6 30 10 0\
+#	"Kontrolle:" 6 44 "${ldapsecrets[5]}" 6 56 10 0\
+#	2>$setupdir/sine_temp
+#	ldapsecrets=(`cat $setupdir/sine_temp`)
+#	i=0
+#	while (( $i < 6 ));do
+#		if [[ $i =~ [0,2,4] ]];then
+#		    (( k=$i + 1 ))
+#		    if [[ ${ldapsecrets[$i]} == ${ldapsecrets[$k]} ]] && (( ${#ldapsecrets[$i]} >= 6 ));then
+#			(( ok=$ok + 1 ))
+#		    else
+#			ldapsecrets[$i]=""
+#			ldapsecrets[$k]=""
+#			ok=0
+#		    fi
+#		fi
+#		(( i= $i + 1 ))
+#	done
+#    done
+#    # LDAP Passwoerter zuordnen
+#    manpass="${ldapsecrets[0]}"
+#    masterpass="${ldapsecrets[2]}"
+#    adminpass="${ldapsecrets[4]}"
 
     # MySQL root-Passwort 
     ok=0
@@ -490,10 +490,10 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
     # - Zarafa schließt Cyrus und Group-e aus
     dialog --backtitle "$dialogtitle" --title "MAIL & Groupware Server" --radiolist "$dialogshorthelp\n\n
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
-	groupe "Group-e in Kombination mit Cyrus IMAP" on\
-	sogo "SOGo in Kombination mit Dovecot" off\
-	zarafa "Mailserver/Groupware Kombination für Outlook-Freunde" off\
-	roundcube "Schlanker Webmailer Roundcube in Kombination mit Dovecot" off\
+	groupe "Group-e in Kombination mit Cyrus IMAP (not yet with AD)" off\
+	sogo "SOGo in Kombination mit Dovecot (not yet with AD)" off\
+	zarafa "Mailserver/Groupware Kombination für Outlook-Freunde" on\
+	roundcube "Schlanker Webmailer Roundcube in Kombination mit Dovecot (not yet with AD)" off\
 	2>$setupdir/sine_temp
 	whichimap=`cat $setupdir/sine_temp`
     
@@ -785,12 +785,12 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "ReverseDom:$revnet" >> $setupdir/invis_confdata
     echo "Forwarders:$forwarders"  >> $setupdir/invis_confdata
 
-    manpasshash=`slappasswd -s $manpass`
-    echo "ManagerPW:$manpass:$manpasshash" >> $setupdir/invis_confdata
-    masterpasshash=`slappasswd -s $masterpass`
-    echo "MasterPW:$masterpass:$masterpasshash" >> $setupdir/invis_confdata
-    adminpasshash=`slappasswd -s $adminpass`
-    echo "AdminPW:$adminpass:$adminpasshash" >> $setupdir/invis_confdata
+#    manpasshash=`slappasswd -s $manpass`
+#    echo "ManagerPW:$manpass:$manpasshash" >> $setupdir/invis_confdata
+#    masterpasshash=`slappasswd -s $masterpass`
+#    echo "MasterPW:$masterpass:$masterpasshash" >> $setupdir/invis_confdata
+#    adminpasshash=`slappasswd -s $adminpass`
+#    echo "AdminPW:$adminpass:$adminpasshash" >> $setupdir/invis_confdata
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
     echo "IMAPserver:$whichimap"  >> $setupdir/invis_confdata
