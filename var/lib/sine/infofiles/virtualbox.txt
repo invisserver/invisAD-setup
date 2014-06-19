@@ -1,0 +1,22 @@
+Virtualbox
+
+Oracle VM VirtualBox ist eine Virtualisierungssoftware des US-amerikanischen Unternehmens Oracle.
+Sie kann auf den Betriebssystemen FreeBSD[3], Linux, OS/2, Mac OS X, Solaris und Windows als
+Wirtssystem auf 32-Bit- oder 64-Bit-x86-Systemen eingesetzt werden. Als Gastsysteme werden eine
+Vielzahl an x86-Betriebssystemen unterstützt. 
+
+Sinnvoll ist die Installation einer Virtualbox Umgebung nur, wenn Ihr Server über ausreichende
+Ressourcen und dessen Prozessor über AMD-V oder Intel-VT Befehlssatzerweiterungen verfügt.
+
+Der Oracle VM VirtualBox Extension Pack wird aus lizenzrechtlichen Gründen nicht automatisch
+installiert. Sie müssen dessen Installation bei Bedarf von Hand durchführen.
+
+Teil der Installation ist auch das Webfrontend "phpvirtualbox". Es ermöglicht die Verwaltung
+virtueller Maschinen im Browser.
+
+Weiterhin wird ein einfaches init-System zum automatischen Start virtueller Maschinen in vor-
+gegebener Reihenfolge installiert. Virtuelle Maschinen müssen dazu lediglich in:
+
+/etc/vbinit/vboxinit.conf
+
+eingetragen werden.

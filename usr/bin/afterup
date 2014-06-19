@@ -1,0 +1,59 @@
+#!/bin/bash
+# Kleines Script welches potentielle Probleme nach einem Update behebt.
+# (C) 2009,2011,2012,2014 Stefan Schaefer -- invis-server.org
+# Questions: stefan@invis-server.org
+# License: GPLv3
+# V 1.2
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+# Samba Updates verändern die Rechte an Verzeichnissen unter /var/lib/samba
+chown -R ."Domain Admins" /var/lib/samba/drivers
+chown -R ."Domain Users" /var/lib/samba/profiles
+chmod 1777 /var/lib/samba/profiles
+
+if [[ -f /sbin/mount.cifs ]]; then
+    chmod u+s /sbin/mount.cifs
+    #chmod u+s /sbin/umount.cifs
+fi
+
+#Anpassen der Besitzrechte der Freigaben
+chown -R root:"Domain Users" /srv/shares/aktuell
+chown -R root:"Domain Users" /srv/shares/archiv
+chown -R root:"Domain Users" /srv/shares/gruppen
+chown -R root:"Domain Users" /srv/shares/projekte
+chown -R root:"Domain Users" /srv/shares/media
+chown -R root:"Domain Admins" /srv/shares/service
+chown -R root:"Domain Guests" /srv/shares/transfer
+chown -R root:"Verwaltung" /srv/shares/verwaltung
+chown root:"Domain Users" /srv/shares/portal/uploads
+chown domadmin:"Domain Users" /srv/shares/portal/downloads
+
+# Zugriffsrechte auf Private-Key Verzeichnis bereinigen
+chown .pkeys /etc/ssl/private
+chmod g+rx /etc/ssl/private
+
+# Wenn vorhanden Rechte auf nagios check_icmp bereinigen
+if [[ -f /usr/lib/nagios/plugins/check-icmp ]]; then
+    chmod u+s /usr/lib/nagios/plugins/check-icmp
+fi
+
+# Link zur Zarafa-Client-Library erneuern
+#if [[ -d /etc/zarafa ]]; then
+#    fixzarafaclientlib
+#fi
+
