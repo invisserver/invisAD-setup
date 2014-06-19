@@ -897,7 +897,7 @@ sysprep() {
 	strings="none%classic"
 	changevalues $path $file $strings
     else
-#	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
+	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
     
     # NFS-Server
