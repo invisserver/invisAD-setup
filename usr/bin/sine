@@ -1391,12 +1391,12 @@ samba_ad() {
     logfile=$setupdir/sine.log
     #logfile=$0.log
 
-    samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 2>&1 | tee -a $logfile
+    samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-bachend="BIND9_DLZ" 2>&1 | tee -a $logfile
     provresult=${PIPESTATUS[0]}
 
     if [[ $provresult != 0 ]]; then
       echo "Provisioning meldet Fehler $provresult! Script wird beendet!"
-      exit $provresult
+      #exit $provresult
     fi
 
     # Neue config kopieren
@@ -1408,6 +1408,174 @@ samba_ad() {
     strings="none%ad"
     changevalues $path $file "$strings"
     chkservice "sernet-samba-ad"
+
+    # Sernet-Samba AD stoppen
+    systemctl stop sernet-samba-ad.service
+    
+    # Schemaerweiterung Attributtypen einpflegen
+    for attrfile in `ls $cfilesdir/LDAP/Schemas/*-ad-attributes-schema.ldif`; do
+	ldbadd -v -H /var/lib/samba/private/sam.ldb $attrfile --option="dsdb:schema update allowed"=true
+    done
+
+    # Schemaerweiterungen Objektklassen einpflegen
+    for objcfile in `ls $cfilesdir/LDAP/Schemas/*-ad-objectclasses-schema.ldif`; do
+	ldbadd -v -H /var/lib/samba/private/sam.ldb $objcfile --option="dsdb:schema update allowed"=true
+    done
+
+    # Sernet-Samba AD starten (?)
+    # Sernet-Samba AD stoppen (?)
+
+    ## LDIF-Dateien vorbereiten
+    pgsubtitle="LDAP System wird konfiguriert"
+    mkdir $setupdir/ldif 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    { for x in `find $cfilesdir/LDAP/LDIF-DATEIEN -name *.ldif`; do
+	cp $x $setupdir/ldif| tee -a $setupdir/sine.log
+    done } 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    path="$setupdir/ldif"
+    { for x in $path/*; do
+	file=`basename $x`
+	echo "Bereite Datei $file vor."
+	basedn=`getconfdata "baseDN" "2"`
+	strings="dc=invis-net,dc=loc%$basedn"
+	changevalues $path $file "$strings"
+        
+	organization=`getconfdata "Organisation" "2"`
+	strings="targetOrganization%$organization"
+	changevalues $path $file "$strings"
+
+	strings="descriptionText%Basisknoten des LDAP-Verzeichnisses von $organization"
+        changevalues $path $file "$strings"
+	
+	hname=`getconfdata "Hostname" "2"`
+	strings="invis5%$hname"
+	changevalues $path $file "$strings"
+	
+	fqdn=`getconfdata "FQDN" "2"`
+	strings="invisfqdn%$fqdn"
+	changevalues $path $file "$strings"
+	
+	domain=`getconfdata "Domain" "2"`
+        strings="invis-net.loc%$domain"
+	changevalues $path $file "$strings"
+	
+	dompart1=`echo $domain|cut -d "." -f 1`
+	strings="invis-net%$dompart1"
+	changevalues $path $file "$strings"
+	
+	ipaddr=`getconfdata "IP" "2"`
+	strings="192.168.220.10%$ipaddr"
+	changevalues $path $file "$strings"
+	
+	netpart1=`echo "$ipaddr" | cut -d "." -f 1`
+	netpart2=`echo "$ipaddr" | cut -d "." -f 2`
+	netpart3=`echo "$ipaddr" | cut -d "." -f 3`
+	netpart="$netpart1.$netpart2.$netpart3."
+	strings="192.168.220.%$netpart"
+	changevalues $path $file "$strings"
+	
+	rd=`getconfdata "ReverseDom" "2"`
+	strings="220.168.192%$rd"
+	changevalues $path $file "$strings"
+	
+	hostpart=`echo "$ipaddr" | cut -d "." -f 4`
+	strings="relativeDomainName:10%relativeDomainName:$hostpart"
+	changevalues $path $file "$strings"
+	
+	strings="relativeDomainName=10,%relativeDomainName=$hostpart,"
+	changevalues $path $file "$strings"
+	
+	strings="dhcpNetMask:24%dhcpNetMask:$shortnmask"
+	changevalues $path $file "$strings"
+	
+    done } 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    ## Aktive LDAP-Eintrage fuer Groupware und ERP aktivieren/deaktivieren
+    whichgroupware=`getconfdata "IMAPserver" "2"`
+    whicherp=`getconfdata "ERPSoftware" "2"`
+    
+    file="04_iportal-initial.ldif"
+    case $whichgroupware in
+	"zarafa" )
+	    strings="GROUPETRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="SOGOTRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="ZARAFATRUE%TRUE"
+	    changevalues $path $file "$strings"
+	    strings="ROUNDCUBETRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    ;;
+	"groupe" )
+	    strings="GROUPETRUE%TRUE"
+	    changevalues $path $file "$strings"
+	    strings="SOGOTRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="ZARAFATRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="ROUNDCUBETRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    ;;
+	"sogo" )
+	    strings="SOGOTRUE%TRUE"
+	    changevalues $path $file "$strings"
+	    strings="GROUPETRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="ZARAFATRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="ROUNDCUBETRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    ;;
+	"roundcube" )
+	    strings="ROUNDCUBETRUE%TRUE"
+	    changevalues $path $file "$strings"
+	    strings="ZARAFATRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="GROUPETRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    strings="SOGOTRUE%FALSE"
+	    changevalues $path $file "$strings"
+	    ;;
+    esac
+
+    if [[ $whicherp == "openerp" ]]; then
+	strings="LXTRUE%FALSE"
+	changevalues $path $file "$strings"
+	strings="OPENERPTRUE%TRUE"
+	changevalues $path $file "$strings"
+	strings="WAWISIONTRUE%FALSE"
+	changevalues $path $file "$strings"
+    elif [[ $whicherp == "wawision" ]]; then
+	strings="LXTRUE%FALSE"
+	changevalues $path $file "$strings"
+	strings="OPENERPTRUE%FALSE"
+	changevalues $path $file "$strings"
+	strings="WAWISIONTRUE%TRUE"
+	changevalues $path $file "$strings"
+    else
+	strings="LXTRUE%TRUE"
+	changevalues $path $file "$strings"
+	strings="OPENERPTRUE%FALSE"
+	changevalues $path $file "$strings"
+	strings="WAWISIONTRUE%FALSE"
+	changevalues $path $file "$strings"
+    fi
+
+    # LDAP fuellen
+    pgsubtitle="Das LDAP Verzeichnis wird aufgebaut"
+    { for x in $path/*; do
+	#echo $x
+	 ldbadd -v -H /var/lib/samba/private/sam.ldb $x
+    done } 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    systemctl start sernet-samba-ad.service
+    
+    # phpldapadmin konfigurieren
+    # Installation entfaellt, da es per rpm installiert wird.
+    cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
+
+# Sernet-Samba AD starten
 
     writeprepstat "dns"
     waitbox "samba_ad" "dns"
