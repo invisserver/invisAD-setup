@@ -8,7 +8,7 @@ ou: Mailproviders
 description: Liste deutscher Mailprovider
 
 # FSP Computer & Netzwerke 
-dn: fspMailProviderVendor=fsp,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=fsp,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: fsp
@@ -21,7 +21,7 @@ fspMailProviderUsername: webXpY
 fspMailProviderDescription: SMTP-Auth, Versand und Empfang nur verschlüsselt
 
 #  blueVARIA.de
-dn: fspMailProviderVendor=bluevaria.de,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=bluevaria.de,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: bluevaria.de
@@ -36,7 +36,7 @@ fspMailProviderUsername: blueVARIA-email-Adresse
 fspMailProviderDescription: SMTP-Auth oder POP vor SMTP
 
 # GMX 
-dn: fspMailProviderVendor=gmx,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=gmx,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: gmx
@@ -51,7 +51,7 @@ fspMailProviderUsername: GMX-Kundennummer oder GMX-email-Adresse
 fspMailProviderDescription: IMAP ist nur in den Tarifen ProMail und TopMail verfügbar. SMTP-Auth oder Pop vor SMTP
 
 # Google Mail
-dn: fspMailProviderVendor=google-mail,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=google-mail,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: google-mail
@@ -66,7 +66,7 @@ fspMailProviderUsername: benutzername@googlemail.com
 fspMailProviderDescription: SMTP-Auth, SMTP und POP müssen erst vom Kunden aktiviert werden. Alle Protokolle verschlüsselt.
 
 # Hotmail Plus
-dn: fspMailProviderVendor=hotmail-plus,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=hotmail-plus,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: hotmail-plus
@@ -81,7 +81,7 @@ fspMailProviderUsername: Hotmail-email-Adresse
 fspMailProviderDescription: SMTP-Auth. Funktioniert nur mit kostenpflichtigem Windows Live Hotmail Plus Zugang
 
 # Lycos
-dn: fspMailProviderVendor=lycos,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=lycos,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: lycos
@@ -96,7 +96,7 @@ fspMailProviderUsername: Lycos-email-Adresse
 fspMailProviderDescription: SMTP-Auth. SMTP und POP nur gegen Aufpreis verfügbar. Alternative Webmail-Erweiterung für Thunderbird (WebDAV)
 
 # MyMail.ch
-dn: fspMailProviderVendor=mymail.ch,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=mymail.ch,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: mymail.ch
@@ -111,7 +111,7 @@ fspMailProviderUsername: Benutzername
 fspMailProviderDescription: SMTP-Auth
 
 # Web.de
-dn: fspMailProviderVendor=web.de,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=web.de,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: web.de
@@ -126,7 +126,7 @@ fspMailProviderUsername: Benutzername
 fspMailProviderDescription: SMTP-Auth
 
 # Yahoo
-dn: fspMailProviderVendor=yahoo,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=yahoo,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: yahoo
@@ -141,7 +141,7 @@ fspMailProviderUsername: Benutzername
 fspMailProviderDescription: SMTP-Auth. SMTP und POP müssen erst vom Kunden aktiviert werden.
 
 # Alice DSL
-dn: fspMailProviderVendor=alice-dsl,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=alice-dsl,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: alice-dsl
@@ -156,7 +156,7 @@ fspMailProviderUsername: Aice-email-Adresse
 fspMailProviderDescription: SMTP-Auth
 
 # AOL.com
-dn: fspMailProviderVendor=aol.com,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=aol.com,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: aol.com
@@ -171,7 +171,7 @@ fspMailProviderUsername: AOL-Name
 fspMailProviderDescription: SMTP-Auth
 
 # AIM / AOL.de
-dn: fspMailProviderVendor=aim,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=aim,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: aim
@@ -186,7 +186,7 @@ fspMailProviderUsername: AOL-Name
 fspMailProviderDescription: SMTP-Auth. AOL.de
 
 # Arcor
-dn: fspMailProviderVendor=arcor,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=arcor,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: arcor
@@ -201,7 +201,7 @@ fspMailProviderUsername: Benutzername
 fspMailProviderDescription: SMTP-Auth muss vom Kunden aktiviert werden, wenn dieser nicht per Arcor ins Internet eingewählt ist.
 
 # Chello Wien
-dn: fspMailProviderVendor=chello.at,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=chello.at,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: chello.at
@@ -216,7 +216,7 @@ fspMailProviderUsername: Benutzername
 fspMailProviderDescription: Mailversand funktioniert nur, wenn der Kunde über Chello ins Internet eingewählt ist.
 
 # Compuserve DE
-dn: fspMailProviderVendor=compuserve.de,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=compuserve.de,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: compuserve.de
@@ -232,7 +232,7 @@ fspMailProviderDescription: SMTP-Auth muss vom Kunden aktiviert werden, wenn die
 
 
 # Freenet
-dn: fspMailProviderVendor=freenet,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=freenet,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: freenet
@@ -247,7 +247,7 @@ fspMailProviderUsername: Benutzername@freenet.de
 fspMailProviderDescription: SMTP-Auth
 
 # NetCologne
-dn: fspMailProviderVendor=netcologne,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=netcologne,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: netcologne
@@ -262,7 +262,7 @@ fspMailProviderUsername: nc-Benutzername
 fspMailProviderDescription: Mailversand funktioniert nur, wenn der Kunde über NetCologne ins Internet eingewählt ist.
 
 # O2 Online
-dn: fspMailProviderVendor=o2,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=o2,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: o2
@@ -277,7 +277,7 @@ fspMailProviderUsername: Benutzername@o2online.de (Bei IMAP nur Beutzername)
 fspMailProviderDescription: SMTP-Auth, Als IMAP-Standard-Ordener muss "." oder nichts angegeben werden.
 
 # T-Online 
-dn: fspMailProviderVendor=t-online,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=t-online,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: t-online
@@ -292,7 +292,7 @@ fspMailProviderUsername: Egal
 fspMailProviderDescription: Benutzername und Kennwort können Dummies sein, da diese Mailserver nur verwendet werden können, wenn der Kunde über T-Online ins Internet eingewählt ist.
 
 # T-Online 2
-dn: fspMailProviderVendor=t-online2,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=t-online2,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: t-online2
@@ -307,7 +307,7 @@ fspMailProviderUsername: T-Online-email-Adresse
 fspMailProviderDescription: Zugang bei Einwahl über anderen Provider oder für Mail-Paket Kunden.
 
 # Tiscali
-dn: fspMailProviderVendor=tiscali,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=tiscali,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: tiscali
@@ -322,7 +322,7 @@ fspMailProviderUsername: Benutzername
 fspMailProviderDescription: Mailversand funktioniert nur, wenn der Kunde über Tiscali ins Internet eingewählt ist.
 
 # Versatel
-dn: fspMailProviderVendor=versatel,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=versatel,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: versatel
@@ -337,7 +337,7 @@ fspMailProviderUsername: Benutzername@versanet.de
 fspMailProviderDescription: SMTP-Auth
 
 # 1&1 Hosting
-dn: fspMailProviderVendor=1und1,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=1und1,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: 1und1
@@ -352,7 +352,7 @@ fspMailProviderUsername: Mailaccount@ihredomain.xyz
 fspMailProviderDescription: SMTP-Auth
 
 # Kontent
-dn: fspMailProviderVendor=kontent,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=kontent,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: kontent
@@ -367,7 +367,7 @@ fspMailProviderUsername: Fest vorgegebener Benutzername
 fspMailProviderDescription: SMTP-Auth
 
 # Strato
-dn: fspMailProviderVendor=strato,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=strato,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: strato
@@ -382,7 +382,7 @@ fspMailProviderUsername: Mailaccount@ihredomain.xyz
 fspMailProviderDescription: SMTP-Auth, POP vor SMTP
 
 # T-Online Webhosting
-dn: fspMailProviderVendor=t-online-webhosting,ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: fspMailProviderVendor=t-online-webhosting,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 fspMailProviderVendor: t-online-webhosting

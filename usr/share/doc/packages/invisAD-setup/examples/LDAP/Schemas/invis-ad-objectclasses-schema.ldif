@@ -1,0 +1,155 @@
+dn: CN=fspLocalMailRecipient,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.1.1.2.1
+schemaIdGuid:: IpDum1y8gPBIaWdnkIiE9Q==
+cn: fspLocalMailRecipient
+name: fspLocalMailRecipient
+possSuperiors: container
+possSuperiors: organizationalUnit
+lDAPDisplayName: fspLocalMailRecipient
+description: Internet local mail recipient
+subClassOf: top
+objectClassCategory: 1
+mustContain: fspLocalMailAddress
+mustContain: fspMainMailAddress
+mayContain: fspLocalMailHost
+defaultObjectCategory: CN=fspLocalMailRecipient,CN=Schema,CN=Configuration,dc=
+ invis-net,dc=loc
+
+dn: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.1.1.2.2
+schemaIdGuid:: GkBXe9lNj3WfZTwlUVeAhw==
+cn: fspFetchMailAccount
+name: fspFetchMailAccount
+possSuperiors: container
+possSuperiors: organizationalUnit
+lDAPDisplayName: fspFetchMailAccount
+description: Internet local mail recipient
+subClassOf: top
+objectClassCategory: 1
+mustContain: fspExtMailAddress
+mustContain: fspExtMailServer
+mustContain: fspExtMailProto
+mustContain: fspExtMailUserName
+mustContain: fspExtMailUserPW
+mustContain: fspLocalMailAddress
+mayContain: FSPMailfetchOpts
+defaultObjectCategory: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=dh
+ cptest,dc=loc
+
+dn: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.1.2.2.1
+schemaIdGuid:: LhBa41rmo2d9PH6ouBKTTQ==
+cn: fspMailFilter
+name: fspMailFilter
+possSuperiors: container
+possSuperiors: organizationalUnit
+lDAPDisplayName: fspMailFilter
+description: Sieve based Mailfilter
+subClassOf: top
+objectClassCategory: 1
+mustContain: fspMailFilterName
+mustContain: fspMailFilterAction
+mustContain: fspMailFilterTestCommand
+mustContain: fspMailFilterTestAttribute
+mustContain: fspMailFilterComparativeOperator
+mustContain: fspMailFilterComparativeValue
+mayContain: fspMailFilterInfo
+mayContain: fspMailFilterTransType
+mayContain: fspMailFilterDescription
+defaultObjectCategory: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=invis-net
+ ,dc=loc
+
+dn: CN=fspMailProvider,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.2.1.2.1
+schemaIdGuid:: bJ7K2N7wPOaVZfdj4XN5Qw==
+cn: fspMailProvider
+name: fspMailProvider
+lDAPDisplayName: fspMailProvider
+description: Informations about Mail-Servers
+subClassOf: top
+objectClassCategory: 1
+mustContain: fspMailProviderVendor
+mayContain: fspMailProviderPOP
+mayContain: fspMailProviderIMAP
+mayContain: fspMailProviderSMTP
+mayContain: fspMailProviderPOPSSL
+mayContain: fspMailProviderIMAPSSL
+mayContain: fspMailProviderSMTPPort
+mayContain: fspMailProviderSMTPTLS
+mayContain: fspMailProviderUsername
+mayContain: fspMailProviderDescription
+defaultObjectCategory: CN=fspMailProvider,CN=Schema,CN=Configuration,dc=dhcpte
+ st,dc=loc
+
+dn: CN=iPortEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.3.1.2.1
+schemaIdGuid:: yXKDo6S9+uVEWXMaYfMB5g==
+cn: iPortEntry
+name: iPortEntry
+possSuperiors: container
+possSuperiors: organizationalUnit
+lDAPDisplayName: iPortEntry
+description: Informations about invis Portal Entries
+subClassOf: top
+objectClassCategory: 1
+mustContain: iPortEntryName
+mustContain: iPortEntryUrl
+mustContain: iPortEntrySSL
+mustContain: iPortEntryDescription
+mustContain: iPortEntryActive
+mustContain: iPortEntryPosition
+mustContain: iPortEntryPriv
+mustContain: iPortEntryButton
+mayContain: iPortEntryLinkRubrik
+defaultObjectCategory: CN=iPortEntry,CN=Schema,CN=Configuration,dc=invis-net,dc
+ =loc
+
+dn: CN=MMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.1.3.2.1
+schemaIdGuid:: LAEf/JzWO2qSMPP0/fN5aw==
+cn: MMailAccount
+name: MMailAccount
+possSuperiors: container
+possSuperiors: organizationalUnit
+lDAPDisplayName: MMailAccount
+description: MMail Configuration Data
+subClassOf: top
+objectClassCategory: 1
+mustContain: MMailUser
+mustContain: MMailPassword
+mayContain: MMailCustomName
+mayContain: MMailCustomSignature
+defaultObjectCategory: CN=MMailAccount,CN=Schema,CN=Configuration,dc=invis-net,
+ dc=loc
+
+dn: CN=infoEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.25601.1.4.1.2.1
+schemaIdGuid:: ln75vnJZERv0+Hxe5921Mw==
+cn: infoEntry
+name: infoEntry
+possSuperiors: container
+possSuperiors: organizationalUnit
+lDAPDisplayName: infoEntry
+description: Unstructured Information Data
+subClassOf: top
+objectClassCategory: 1
+mustContain: infoIdentifier
+mustContain: infoText
+mayContain: description
+defaultObjectCategory: CN=infoEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=
+ loc
+

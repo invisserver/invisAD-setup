@@ -1,121 +1,116 @@
 # Liste aller invis-Portal Einträge
 
 # Basisknoten invis Portal Eintraege
-dn: ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=iPortal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: organizationalUnit
-ou: iPortal
+cn: iPortal
 description: Liste aller invis-Portal Einträge
 
 # Groupware Group-e
-dn: iPortEntryName=Group-e,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Group-e,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
+cn: Group-e
 iPortEntryName: Group-e
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/group-e
 iPortEntryDescription: Die Groupware "Group-e" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails und Zeiterfassung. 
-iPortEntryActive: GROUPETRUE
+iPortEntryActive: TRUE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # Groupware SOGo
-dn: iPortEntryName=SOGo,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=SOGo,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
+cn: SOGo
 iPortEntryName: SOGo
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/sogo
 iPortEntryDescription: Die Groupware "SOGo" bietet unter anderem Zugriff auf E-Mails,Terminkalender und Kontakterwaltung. 
-iPortEntryActive: SOGOTRUE
-iPortEntryPosition: Lokal
-iPortEntryButton: Groupware
-iPortEntryPriv:	user
-
-# Webmailer Roundcube
-dn: iPortEntryName=Roundcube,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: Roundcube
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/roundcube
-iPortEntryDescription: Roundcubemail ist ein moderner und schlanker Webmailer.
-iPortEntryActive: ROUNDCUBETRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # Groupware ZarafaAcc
-dn: iPortEntryName=ZarafaAcc,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=ZarafaAcc,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ZarafaAcc
+cn: ZarafaAcc
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webaccess
 iPortEntryDescription: Der klassische Webaccess der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen im Oulook "Look & Feel". 
-iPortEntryActive: ZARAFATRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # Groupware ZarafaApp
-dn: iPortEntryName=ZarafaApp,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=ZarafaApp,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ZarafaApp
+cn: ZarafaApp
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webapp
 iPortEntryDescription: Die moderne Webapp der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen in frischem "Look & Feel". 
-iPortEntryActive: ZARAFATRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # ERP Kivitendo
-dn: iPortEntryName=Kivitendo,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Kivitendo,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Kivitendo
+cn: Kivitendo
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/kivitendo-erp
 iPortEntryDescription: Das ERP Progamm Kivitendo umfasst Warenwirtschaft, Rechnungswesen, Umsatzsteuervoranmeldung, Einnahme-Überschuss-Berechnung und Bilanzen inklusive DATEV-Export.
-iPortEntryActive: LXTRUE
+iPortEntryActive: TRUE
 iPortEntryPosition: Lokal
 iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
 # waWision
-dn: iPortEntryName=waWision,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=waWision,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: waWision
+cn: waWision
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/wawision
 iPortEntryDescription: Das Warenwirtschaftssystem für Ingenieurbüros, Agenturen, kleine Produktionen und Produktschmieden. Es umfasst Fakturierung, Lagerverwaltung, Versandabwicklung, Shop-Schnittstelle, Buchhaltung uvm.
-iPortEntryActive: WAWISIONTRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
 # OpenERP
-dn: iPortEntryName=OpenERP,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=OpenERP,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: OpenERP
+cn: OpenERP
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]:9090
 iPortEntryDescription: Das ERP Progamm OpenERP umfasst Warenwirtschaft, Rechnungswesen, Arbeitszeitverwaltung, Produktion, Lagerverwaltung, Projektverwaltung und CRM.
-iPortEntryActive: OPENERPTRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
 # Dokuwiki
-dn: iPortEntryName=Dokuwiki,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Dokuwiki,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Dokuwiki
+cn: Dokuwiki
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/dokuwiki
 iPortEntryDescription: Ein Wiki-System ermöglicht Ihnen auf einfache Weise die Einrichtung einer eignen Wissensdatenbank für Ihr Unternehmen. Auf Ihrem invis Server ist Dokuwiki vorinstalliert. Bevor Sie eigene Einträge schreiben, müssen Sie sich einmalig registrieren.
@@ -125,10 +120,11 @@ iPortEntryButton: Wissensdatenbank
 iPortEntryPriv:	user
 
 # Etherpad Lite
-dn: iPortEntryName=Etherpad,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Etherpad,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Etherpad
+cn: Etherpad
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/etherpad/
 iPortEntryDescription: Das Etherpad Lite ist eine Form der Textverarbeitung, die es mehreren Benutzern erlaubt, gleichzeitig, an verschiedenen Rechnern an einem Text zu arbeiten.
@@ -138,10 +134,11 @@ iPortEntryButton: Etherpad Lite
 iPortEntryPriv:	user
 
 # CorNAz
-dn: iPortEntryName=CorNAz,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=CorNAz,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: CorNAz
+cn: CorNAz
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/cornaz
 iPortEntryDescription: Mit CorNAz können Sie Ihre eMail-Konten selbst verwalten. Sie können Ihrem invis-Server externe Mailkonten bekannt machen, Abwesenheitsbenachrichtigungen erstellen usw.
@@ -151,10 +148,11 @@ iPortEntryButton: Mailkonten
 iPortEntryPriv:	user
 
 # WebCDwriter
-dn: iPortEntryName=WebCDwriter,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=WebCDwriter,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: WebCDwriter
+cn: WebCDwriter
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/cdwriter
 iPortEntryDescription: WebCDwriter ermöglicht Ihnen das Brennen von CDs über den CD/DVD-Brenner Ihres invis-Servers.
@@ -164,10 +162,11 @@ iPortEntryButton: CDs brennen
 iPortEntryPriv:	guest
 
 # Faxgate Client
-dn: iPortEntryName=FaxClient,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=FaxClient,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: FaxClient
+cn: FaxClient
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/java/FaxgateClient.jar
 iPortEntryDescription: Mit dem FaxgateClient erhalten Sie Zugriff auf die Fax-Funktionen Ihres invis-Servers. Den Client benötigen Sie etwa zur Eingabe der Empfänger-Fax-Nummer. Das Handbuch zum FaxgateClient finden Sie auf der Dokumentationsseite des Portals.
@@ -177,10 +176,11 @@ iPortEntryButton: Faxserver Client
 iPortEntryPriv:	guest
 
 # Mailman
-dn: iPortEntryName=Mailman,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Mailman,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Mailman
+cn: Mailman
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/mailman/listinfo
 iPortEntryDescription: Mailing-Listen sind das eMail Pendant zum klassischen Serienbrief. Über diese Schaltfläche können Sie vorhandene Mailinglisten abonnieren.
@@ -190,10 +190,11 @@ iPortEntryButton: Mailing-Listen
 iPortEntryPriv:	guest
 
 # Mailman Administration
-dn: iPortEntryName=Mailmanadmin,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Mailmanadmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Mailmanadmin
+cn: Mailmanadmin
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/mailman/admin
 iPortEntryDescription: Mailinglisten sind das eMail Pendant zum klassischen Serienbrief. Über diese Schaltfläche können Sie neue Mailinglisten einrichten.
@@ -203,10 +204,11 @@ iPortEntryButton: Mailinglisten
 iPortEntryPriv:	admin
 
 # phpLDAPAdmin
-dn: iPortEntryName=phpLDAPadmin,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=phpLDAPadmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: phpLDAPadmin
+cn: phpLDAPadmin
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/phpldapadmin
 iPortEntryDescription: Das LDAP-Verzeichnis Ihres invis-Server ist der zentrale Speicherort einer vielzahl von Konfigurationsdaten des Servers. Sie finden hier Daten zu DHCP, DNS, Benutzerverwaltung usw. Achtung der Umgang mit einem LDAP-Verzeichnis setzt entsprechende Grundkentnisse voraus.
@@ -216,10 +218,11 @@ iPortEntryButton: Verzeichnisdienst
 iPortEntryPriv:	admin
 
 # phpMyAdmin
-dn: iPortEntryName=phpMyAdmin,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=phpMyAdmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: phpMyAdmin
+cn: phpMyAdmin
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/phpMyAdmin
 iPortEntryDescription: Administration der Datenbank-Engine MySQL. MySQL wird beispielsweise vom Groupware-System Ihres invis-Server genutzt. Sie können hiermit neue Datenbanken anlegen, sollten aber keine vorhandenen Löschen. Sie können phpMyAdmin auch zur Erstellung von Datensicherungen der Datenbanken nutzen.
@@ -229,10 +232,11 @@ iPortEntryButton: MySQL Administration
 iPortEntryPriv:	admin
 
 # phpPgAdmin
-dn: iPortEntryName=phpPgAdmin,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=phpPgAdmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: phpPgAdmin
+cn: phpPgAdmin
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/phpPgAdmin
 iPortEntryDescription: Administration der Datenbank-Engine PostgreSQL. PostgreSQL wird beispielsweise vom Warenwirtschaftssystem Ihres invis-Server genutzt. Sie können hiermit neue Datenbanken anlegen, sollten aber keine vorhandenen Löschen. Sie können phpPGAdmin auch zur Erstellung von Datensicherungen der Datenbanken nutzen.
@@ -242,12 +246,13 @@ iPortEntryButton: PostgreSQL Administration
 iPortEntryPriv:	admin
 
 # phpvirtualbox
-# Eintrag 1: iPortEntryName=phpvirtualbox,ou=iPortal,ou=Informationen,dc=...
-dn: iPortEntryName=phpvirtualbox,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+# Eintrag 1: cn=phpvirtualbox,ou=Informationen,dc=...
+dn: cn=phpvirtualbox,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 iportentryactive: FALSE
 iportentrybutton: Virtualbox
 iportentrydescription: Serverseitige Verwaltung virtueller Maschinen
 iportentryname: phpvirtualbox
+cn: phpvirtualbox
 iportentryposition: Administration
 iportentrypriv: admin
 iportentryssl: FALSE
@@ -255,37 +260,12 @@ iportentryurl: [servername]/vbphp
 objectclass: top
 objectclass: iPortEntry
 
-# Swat
-dn: iPortEntryName=Swat,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: Swat
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]:901
-iPortEntryDescription: Samba ist für die zentrale Benutzerverwaltung, die Datei- und Druck-Server-Freigaben für Windows-Clients verantwortlich. Swat ist das zugehörige Administrationstool. Nutzen Sie Swat bitte nur nach Rücksprache mit dem Lieferanten Ihres invis-Servers.
-iPortEntryActive: FALSE
-iPortEntryPosition: Administration
-iPortEntryButton: Samba Administration
-iPortEntryPriv:	admin
-
-# Webmin
-dn: iPortEntryName=Webmin,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: Webmin
-iPortEntrySSL: TRUE
-iPortEntryURL: [servername]:10000
-iPortEntryDescription: Webmin ist der Tausendsassa unter den Administrationswerkzeugen für Linux-Server. Sie können damit nahezu jede Kleinigkeit Ihres invis-Servers von Ferne administrieren. Die Verwendung von Webmin setzt grundlegende Fachkenntnisse im Umgang mit Linux-Servern voraus.
-iPortEntryActive: FALSE
-iPortEntryPosition: Administration
-iPortEntryButton: Server Administration
-iPortEntryPriv:	admin
-
 # Shell-in-a-Box
-dn: iPortEntryName=Shell-in-a-Box,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Shell-in-a-Box,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Shell-in-a-Box
+cn: Shell-in-a-Box
 iPortEntrySSL: TRUE
 iPortEntryURL: [servername]/shell
 iPortEntryDescription: Shell-in-a-Box kann zur direkten Administration der invis-Server genutzt werden.
@@ -294,12 +274,12 @@ iPortEntryPosition: Administration
 iPortEntryButton: Server Administration
 iPortEntryPriv:	admin
 
-
 # CUPS
-dn: iPortEntryName=CUPS,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=CUPS,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: CUPS
+cn: CUPS
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/cups
 iPortEntryDescription: Ihr invis-Server ist in der Lage im Netzwerk vorhandene Drucker zentral zu verwalten und freizugeben. Hierüber erhalten Sie Zugriff auf die Administrationsseiten des zugehörigen Dienstes CUPS.
@@ -309,10 +289,11 @@ iPortEntryButton: Druckerverwaltung
 iPortEntryPriv:	admin
 
 # ntop
-dn: iPortEntryName=ntop,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=ntop,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ntop
+cn: ntop
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/ntop
 iPortEntryDescription: Das Programm ntop dient der Analyse des Datenverkehrs in Ihrem Netzwerk, nützlich etwa bei der Suche nach Fehlern. ntop ist im Normalbetrieb Ihres invis-Servers deaktiviert, da es diesen ansonsten unnötig belastet.
@@ -322,10 +303,11 @@ iPortEntryButton: Netzwerkanalyse
 iPortEntryPriv:	admin
 
 # Firewall Test
-dn: iPortEntryName=FWTest,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=FWTest,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: FWTest
+cn: FWTest
 iPortEntrySSL: FALSE
 iPortEntryURL: www.hackerwatch.org/probe
 iPortEntryDescription: Dieser Link führt Sie auf die Internetseite von hackerswatch.org. Sie haben von dort umfangreiche Möglichkeiten die Firewall Ihres invis-Servers von außen zu testen.
@@ -335,10 +317,11 @@ iPortEntryButton: Firewall-Test
 iPortEntryPriv:	admin
 
 # invis Server Benutzerhandbuch
-dn: iPortEntryName=invisUserManual,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=invisUserManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invisUserManual
+cn: invisUserManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/manuals/iusermanual.pdf
 iPortEntryDescription: Zugriff auf das Anwenderhandbuch für invis-Server.
@@ -348,10 +331,11 @@ iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
 
 # invis Server Adminisrationshandbuch
-dn: iPortEntryName=invisAdminManual,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=invisAdminManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invisAdminManual
+cn: invisAdminManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/manuals/iadminmanual.pdf
 iPortEntryDescription: Zugriff auf das Administrationshandbuch für invis-Server.
@@ -361,10 +345,11 @@ iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	admin
 
 # Faxgate Client Handbuch
-dn: iPortEntryName=FGCManual,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=FGCManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: FGCManual
+cn: FGCManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/manuals/fgc/Help.html
 iPortEntryDescription: Zugriff auf das Faxgate Client Anwenderhandbuch für invis-Server.
@@ -374,10 +359,11 @@ iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
 
 # openSuSE Handbuch
-dn: iPortEntryName=openSUSEManual,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=openSUSEManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: openSUSEManual
+cn: openSUSEManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/handbuch
 iPortEntryDescription: Zugriff auf das openSUSE Linux Handbuch.
@@ -387,10 +373,11 @@ iPortEntryButton: openSUSE Handbuch
 iPortEntryPriv:	user
 
 # Apache Webserver Handbuch
-dn: iPortEntryName=apacheManual,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=apacheManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: apacheManual
+cn: apacheManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/manual
 iPortEntryDescription: Zugriff auf das Apache Webserver Handbuch.
@@ -402,10 +389,11 @@ iPortEntryPriv:	admin
 ## Links
 
 # Heise Online
-dn: iPortEntryName=Heise,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Heise,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Heise
+cn: Heise
 iPortEntrySSL: FALSE
 iPortEntryURL: www.heise.de
 iPortEntryDescription: <b><i>Der</i></b> IT-Newsticker im Internet
@@ -416,10 +404,11 @@ iPortEntryButton: Heise Online
 iPortEntryPriv:	guest
 
 # Spiegel Online
-dn: iPortEntryName=Spiegel,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Spiegel,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Spiegel
+cn: Spiegel
 iPortEntrySSL: FALSE
 iPortEntryURL: www.spiegel.de
 iPortEntryDescription: Nachrichten aus aller Welt
@@ -430,10 +419,11 @@ iPortEntryButton: Spiegel Online
 iPortEntryPriv:	guest
 
 # ixquick
-dn: iPortEntryName=ixquick,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=ixquick,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ixquick
+cn: ixquick
 iPortEntrySSL: TRUE
 iPortEntryURL: www.ixquick.com/deu/
 iPortEntryDescription: diskrete Meta-Suchmaschine
@@ -444,10 +434,11 @@ iPortEntryButton: ixquick
 iPortEntryPriv:	guest
 
 # Metager
-dn: iPortEntryName=MetaGer,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=MetaGer,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: MetaGer
+cn: MetaGer
 iPortEntrySSL: FALSE
 iPortEntryURL: meta.rrzn.uni-hannover.de
 iPortEntryDescription: Deutsche Meta-Suchmaschine
@@ -458,10 +449,11 @@ iPortEntryButton: MetaGer
 iPortEntryPriv:	guest
 
 # Google
-dn: iPortEntryName=Google,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Google,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Google
+cn: Google
 iPortEntrySSL: FALSE
 iPortEntryURL: www.google.de
 iPortEntryDescription: Die Suchmaschine
@@ -472,10 +464,11 @@ iPortEntryButton: Google
 iPortEntryPriv:	guest
 
 # Wikipedia
-dn: iPortEntryName=Wikipedia,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Wikipedia,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Wikipedia
+cn: Wikipedia
 iPortEntrySSL: FALSE
 iPortEntryURL: de.wikipedia.org
 iPortEntryDescription: Frei zugängliches Wissen
@@ -486,10 +479,11 @@ iPortEntryButton: Wikipedia
 iPortEntryPriv:	guest
 
 # Telefonbuch
-dn: iPortEntryName=Telefonbuch,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Telefonbuch,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Telefonbuch
+cn: Telefonbuch
 iPortEntrySSL: FALSE
 iPortEntryURL: www.telefonbuch.de
 iPortEntryDescription: Das Telefonbuch online
@@ -500,10 +494,11 @@ iPortEntryButton: Telefonbuch
 iPortEntryPriv:	guest
 
 # Gelbe Seiten
-dn: iPortEntryName=GelbeSeiten,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=GelbeSeiten,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: GelbeSeiten
+cn: GelbeSeiten
 iPortEntrySSL: FALSE
 iPortEntryURL: www.gelbeseiten.de
 iPortEntryDescription: Die Gelben Seiten online
@@ -514,10 +509,11 @@ iPortEntryButton: Gelbe Seiten
 iPortEntryPriv:	guest
 
 # Wetterauskunft
-dn: iPortEntryName=Kachelmann,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Kachelmann,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Kachelmann
+cn: Kachelmann
 iPortEntrySSL: FALSE
 iPortEntryURL: www.kachelmannwetter.de
 iPortEntryDescription: Die Wetterauskunft des "Wettermanns"
@@ -528,10 +524,11 @@ iPortEntryButton: Wetterauskunft
 iPortEntryPriv:	guest
 
 # Reiseauskunft Bahn
-dn: iPortEntryName=Bahn,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Bahn,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Bahn
+cn: Bahn
 iPortEntrySSL: FALSE
 iPortEntryURL: reiseauskunft.bahn.de/bin/query.exe/dn
 iPortEntryDescription: Die Reiseauskunft der Bahn
@@ -542,10 +539,11 @@ iPortEntryButton: Bahn Auskunft
 iPortEntryPriv:	guest
 
 # Verkehrsinfos
-dn: iPortEntryName=Verkehr,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Verkehr,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Verkehr
+cn: Verkehr
 iPortEntrySSL: FALSE
 iPortEntryURL: www.verkehrsinfo.de
 iPortEntryDescription: Aktuelle Verkehrsinformationen
@@ -556,10 +554,11 @@ iPortEntryButton: Verkehrsinfos
 iPortEntryPriv:	guest
 
 # Routenplaner
-dn: iPortEntryName=Routenplaner,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Routenplaner,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Routenplaner
+cn: Routenplaner
 iPortEntrySSL: FALSE
 iPortEntryURL: route.web.de
 iPortEntryDescription: Verschiedene Routenplaner
@@ -570,10 +569,11 @@ iPortEntryButton: Routenplaner
 iPortEntryPriv:	guest
 
 # Google Maps
-dn: iPortEntryName=Google Maps,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Google Maps,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Google Maps
+cn: Google Maps
 iPortEntrySSL: FALSE
 iPortEntryURL: maps.google.de
 iPortEntryDescription: Google Maps
@@ -584,10 +584,11 @@ iPortEntryButton: Google Maps
 iPortEntryPriv:	guest
 
 # Tagesschau
-dn: iPortEntryName=Tagesschau,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Tagesschau,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Tagesschau
+cn: Tagesschau
 iPortEntrySSL: FALSE
 iPortEntryURL: www.tagesschau.de
 iPortEntryDescription: Infos aller Welt
@@ -598,10 +599,11 @@ iPortEntryButton: Tagesschau
 iPortEntryPriv:	guest
 
 # Telepolis
-dn: iPortEntryName=Telepolis,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Telepolis,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Telepolis
+cn: Telepolis
 iPortEntrySSL: FALSE
 iPortEntryURL: www.telepolis.de
 iPortEntryDescription: Grimme prämiertes Online Magazin
@@ -612,10 +614,11 @@ iPortEntryButton: Telepolis
 iPortEntryPriv:	guest
 
 # invis Projekt
-dn: iPortEntryName=invis Server,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=invis Server,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Server
+cn: invis Server
 iPortEntrySSL: FALSE
 iPortEntryURL: www.invis-server.org
 iPortEntryDescription: invis Server im Internet
@@ -626,10 +629,11 @@ iPortEntryButton: invis Server
 iPortEntryPriv:	guest
 
 # invis Forum
-dn: iPortEntryName=invis Forum,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=invis Forum,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Forum
+cn: invis Forum
 iPortEntrySSL: FALSE
 iPortEntryURL: forum.invis-server.org
 iPortEntryDescription: invis Server Support Forum
@@ -640,10 +644,11 @@ iPortEntryButton: invis Forum
 iPortEntryPriv:	guest
 
 # invis Wiki
-dn: iPortEntryName=invis Wiki,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=invis Wiki,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Wiki
+cn: invis Wiki
 iPortEntrySSL: FALSE
 iPortEntryURL: wiki.invis-server.org
 iPortEntryDescription: invis Server Dokumentations-Wiki
@@ -654,10 +659,11 @@ iPortEntryButton: invis Wiki
 iPortEntryPriv:	guest
 
 # Leo DE-EN
-dn: iPortEntryName=DictEN,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=DictEN,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictEN
+cn: DictEN
 iPortEntrySSL: FALSE
 iPortEntryURL: dict.leo.org/ende?lang=de&lp=ende&search=
 iPortEntryDescription: Deutsch - Englisch Wörterbuch
@@ -668,10 +674,11 @@ iPortEntryButton: DE-EN Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-FR
-dn: iPortEntryName=DictFR,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=DictFR,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictFR
+cn: DictFR
 iPortEntrySSL: FALSE
 iPortEntryURL: dict.leo.org/frde?lang=de&lp=frde&search=
 iPortEntryDescription: Deutsch - Französisch Wörterbuch
@@ -682,10 +689,11 @@ iPortEntryButton: DE-FR Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-ES
-dn: iPortEntryName=DictES,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=DictES,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictES
+cn: DictES
 iPortEntrySSL: FALSE
 iPortEntryURL: dict.leo.org/esde?lang=de&lp=esde&search=
 iPortEntryDescription: Deutsch - Spanisch Wörterbuch
@@ -696,10 +704,11 @@ iPortEntryButton: DE-ES Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-IT
-dn: iPortEntryName=DictIT,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=DictIT,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictIT
+cn: DictIT
 iPortEntrySSL: FALSE
 iPortEntryURL: dict.leo.org/itde?lang=de&lp=itde&search=
 iPortEntryDescription: Deutsch - Italienisch Wörterbuch
@@ -710,10 +719,11 @@ iPortEntryButton: DE-IT Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-Chin
-dn: iPortEntryName=DictCHi,ou=iPortal,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=DictCHi,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictCHi
+cn: DictCHi
 iPortEntrySSL: FALSE
 iPortEntryURL: dict.leo.org/chde?lang=de&lp=chde&search=
 iPortEntryDescription: Deutsch - Chinesisch Wörterbuch

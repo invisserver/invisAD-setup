@@ -1,32 +1,31 @@
 # DHCP Server Objekt
-# DDNS Update gegen einen Bind Server mit LDAP-Backend funktioniert nicht!
-# Daher wurde das Einbinden der Datei named.keys auskommentiert.
+# LDIF Vorlage fuer Samba4 AD LDAP Backend
+# (c) 2014 Stefan Schaefer -- invis-server.org
 
-dn: cn=invisfqdn,ou=DHCP-Server,dc=invis-net,dc=loc
+dn: cn=invisfqdn,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
 cn: invisfqdn
 objectClass: top
-objectClass: dhcpServer
-dhcpServiceDN: cn=DHCP Config,ou=DHCP-SERVER,dc=invis-net,dc=loc
+objectClass: iscDhcpServer
+iscDhcpServiceDN: cn=DHCP Config,CN=DHCP-SERVER,cn=invis-server,dc=invis-net,dc=loc
 
 # Basis Konfiguration
-dn: cn=DHCP Config,ou=DHCP-Server,dc=invis-net,dc=loc
+dn: cn=DHCP Config,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
 cn: DHCP Config
 objectClass: top
-objectClass: dhcpService
-objectClass: dhcpOptions
-dhcpPrimaryDN: cn=invisfqdn,ou=DHCP-Server,dc=invis-net,dc=loc
-dhcpStatements: ddns-update-style interim
-dhcpStatements: ignore client-updates
-#dhcpStatements: include "/etc/named.keys"
-dhcpStatements: default-lease-time 86400
-dhcpStatements: max-lease-time 604800
-dhcpStatements: authoritative
-dhcpOption: domain-name "invis-net.loc"
-dhcpOption: domain-name-servers 192.168.220.10
-dhcpOption: broadcast-address 192.168.220.255
-dhcpOption: routers 192.168.220.10
-dhcpOption: netbios-name-servers 192.168.220.10
-dhcpOption: netbios-node-type 8
-dhcpOption: subnet-mask 255.255.255.0
-dhcpOption: smtp-server 192.168.220.10
-dhcpOption: ntp-servers 192.168.220.10
+objectClass: iscDhcpService
+objectClass: iscDhcpOptions
+iscDhcpPrimaryDN: cn=invisfqdn,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
+iscDhcpStatements: ddns-update-style interim
+iscDhcpStatements: ignore client-updates
+iscDhcpStatements: default-lease-time 86400
+iscDhcpStatements: max-lease-time 604800
+iscDhcpStatements: authoritative
+iscDhcpOption: domain-name "invis-net.loc"
+iscDhcpOption: domain-name-servers 192.168.220.10
+iscDhcpOption: broadcast-address 192.168.220.255
+iscDhcpOption: routers 192.168.220.10
+iscDhcpOption: netbios-name-servers 192.168.220.10
+iscDhcpOption: netbios-node-type 8
+iscDhcpOption: subnet-mask 255.255.255.0
+iscDhcpOption: smtp-server 192.168.220.10
+iscDhcpOption: ntp-servers 192.168.220.10
