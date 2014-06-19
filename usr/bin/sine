@@ -17,7 +17,7 @@
 
 # Setup-Verzeichnis einlesen
 setupdir="/var/lib/sine"
-cfilesdir="/usr/share/doc/packages/invis-setup/examples"
+cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
 # Setup-Dialog Titel
 dialogtitle="invis Server 9.2 Setup"
