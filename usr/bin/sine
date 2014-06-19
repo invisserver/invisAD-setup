@@ -1,26 +1,23 @@
 #!/bin/bash
-# invis 9.2 Server Setup Script
-# Version R3
+# invis AD 10.0 Server Setup Script
+# Version 0000
 # (c) August 2008 by Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009, 2010, 2011, 2012, 2013 by Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009, 2010, 2011, 2012, 2013, 2014 by Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013,2014 Ingo Göppert / invis-server.org / ingo@invis-server.org
 # License: GPLv3
-# Questions: http://forum.invis-server.org
-# Dieses Script führt alle zur Installation eines invis Servers notwendigen 
+# Dieses Script führt alle zur Installation eines invis Servers AD notwendigen 
 # Konfigurationsschritte aus.
 
-# Wenn nicht bereits geschehen wird ein Setup-Verzeichnis angelegt. Darein
-# wird das Archiv mit den Konfigurationsdateien entpackt und dessen Unterverzeichnis 
-# in /cfiles umbenannt.
-# Wenn alles funktioniert hat, wird im Setup-Verzeichnis eine Kontrolldatei mit dem 
-# Inhalt "check" angelegt. Die Kontrolldatei enthält immer den nächsten auszuführenden
-# Setup-Schritt.
+# Das Script sine nutzt /var/lib/sine als Arbeitsverzeichnis, hier sind von sine
+# verwendete Kontroll-, Variablen- und Protokolldateien zu finden.
 
 # Setup-Verzeichnis einlesen
 setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
 # Setup-Dialog Titel
-dialogtitle="invis Server 9.2 Setup"
+dialogtitle="invis AD Server 10.0 Setup"
 dialogshorthelp="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
 
 # zentrales invis Konfigurationsverzeichnis anlegen & Konfig-Datei kopieren
