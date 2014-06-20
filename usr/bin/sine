@@ -1415,8 +1415,7 @@ samba_ad() {
     ## LDIF-Dateien vorbereiten
     pgsubtitle="LDAP Schema-Erweiterungen werdne vorbereitet"
     mkdir $setupdir/schema 2>&1| tee -a $setupdir/sine.log | pgbox
-    
-    { for x in `find $cfilesdir/LDAP/Schemas/ -name *.ldif`; do
+    { for x in `find $cfilesdir/LDAP/Schemas/ -name "*.ldif"`; do
 	cp $x $setupdir/schema| tee -a $setupdir/sine.log
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
@@ -1446,7 +1445,7 @@ samba_ad() {
     pgsubtitle="LDAP System wird konfiguriert"
     mkdir $setupdir/ldif 2>&1| tee -a $setupdir/sine.log | pgbox
     
-    { for x in `find $cfilesdir/LDAP/LDIF-DATEIEN -name *.ldif`; do
+    { for x in `find $cfilesdir/LDAP/LDIF-DATEIEN -name "*.ldif"`; do
 	cp $x $setupdir/ldif| tee -a $setupdir/sine.log
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
     
