@@ -447,6 +447,23 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
 #    masterpass="${ldapsecrets[2]}"
 #    adminpass="${ldapsecrets[4]}"
 
+    # LDAP Admin-Passwort 
+    ok=0
+    while (( $ok != "1" ));do
+	dialog --backtitle "$dialogtitle" --title "LDAP-Admin Passwort" --insecure --passwordform "$dialogshorthelp\n\n
+Für die LDAP-basierte Dienste muss ein Passwort für den LDAP-Lesezugang gesetzt werden.\n\n
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
+	"LDAP-Admin-Passwort:" 2 2 "" 2 23 10 0\
+	"Kontrolle:" 2 36 "" 2 47 10 0\
+	2>$setupdir/sine_temp
+	ldapsecrets=(`cat $setupdir/sine_temp`)
+
+	    if [[ ${ldapsecrets[0]} == ${ldapsecrets[1]} ]] && (( ${#ldapsecrets[0]} >= 6 ));then
+		ok=1
+	    fi
+    done
+    ldappw="${ldapsecrets[0]}"
+
     # MySQL root-Passwort 
     ok=0
     while (( $ok != "1" ));do
@@ -791,6 +808,7 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 #    echo "MasterPW:$masterpass:$masterpasshash" >> $setupdir/invis_confdata
 #    adminpasshash=`slappasswd -s $adminpass`
 #    echo "AdminPW:$adminpass:$adminpasshash" >> $setupdir/invis_confdata
+    echo "AdminPW:$ldappw" >> $setupdir/invis_confdata
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
     echo "IMAPserver:$whichimap"  >> $setupdir/invis_confdata
@@ -1099,16 +1117,20 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 
     # invis Passwort-Datei anpassen
     file="invis-pws.conf"
-    managerpw=`getconfdata "ManagerPW" "2"`
-    strings="manager-secret%$managerpw"
-    changevalues $confdir $file "$strings"
+#    managerpw=`getconfdata "ManagerPW" "2"`
+#    strings="manager-secret%$managerpw"
+#    changevalues $confdir $file "$strings"
     
-    masterpw=`getconfdata "MasterPW" "2"`
-    strings="master-secret%$masterpw"
-    changevalues $confdir $file "$strings"
+#    masterpw=`getconfdata "MasterPW" "2"`
+#    strings="master-secret%$masterpw"
+#    changevalues $confdir $file "$strings"
     
-    adminpw=`getconfdata "AdminPW" "2"`
-    strings="admin-secret%$adminpw"
+#    adminpw=`getconfdata "AdminPW" "2"`
+#    strings="admin-secret%$adminpw"
+#    changevalues $confdir $file "$strings"
+
+    ldappw=`getconfdata "AdminPW" "2"`
+    strings="ldap-secret%$ldappw"
     changevalues $confdir $file "$strings"
 
     mysqlpw=`getconfdata "MySQLpw" "2"`
@@ -1664,8 +1686,8 @@ dhcp() {
     # Konfiguration des DHCP Servers wird angepasst
     path="/etc"
     file="dhcpd.conf"
-    adminpw=`getconfdata "AdminPW" "2"`
-    strings="admin-secret%$adminpw"
+    ldappw=`getconfdata "AdminPW" "2"`
+    strings="ldap-secret%$ldappw"
     changevalues $path $file "$strings"
     basedn=`getconfdata "baseDN" "2"`
     strings="dc=invis-net,dc=loc%$basedn"
