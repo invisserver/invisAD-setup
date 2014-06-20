@@ -1413,7 +1413,7 @@ samba_ad() {
     systemctl stop sernet-samba-ad.service
 
     ## LDIF-Dateien vorbereiten
-    pgsubtitle="LDAP Schema-Erweiterungen werdne vorbereitet"
+    pgsubtitle="LDAP Schema-Erweiterungen werden vorbereitet"
     mkdir $setupdir/schema 2>&1| tee -a $setupdir/sine.log | pgbox
     { for x in `find $cfilesdir/LDAP/Schemas/ -name "*.ldif"`; do
 	cp $x $setupdir/schema| tee -a $setupdir/sine.log
@@ -1437,9 +1437,6 @@ samba_ad() {
     { for objcfile in `ls $setupdir/schema/*-ad-objectclasses-schema.ldif`; do
 	ldbadd -v -H /var/lib/samba/private/sam.ldb $objcfile --option="dsdb:schema update allowed"=true
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
-
-    # Sernet-Samba AD starten (?)
-    # Sernet-Samba AD stoppen (?)
 
     ## LDIF-Dateien vorbereiten
     pgsubtitle="LDAP System wird konfiguriert"
