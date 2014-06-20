@@ -1,0 +1,57 @@
+dn: CN=iscDhcpOptions,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.9
+schemaIdGuid:: JCeKAAISy6fvTQDTqsgrxw==
+cn: iscDhcpOptions
+name: iscDhcpOptions
+possSuperiors: iscDhcpService
+possSuperiors: iscDhcpSharedNetwork
+possSuperiors: iscDhcpSubnet
+possSuperiors: iscDhcpPool
+possSuperiors: iscDhcpGroup
+possSuperiors: iscDhcpHost
+possSuperiors: iscDhcpClass
+lDAPDisplayName: iscDhcpOptions
+description: Represents information about a collection of options defined.
+subClassOf: top
+objectClassCategory: 3
+mustContain: cn
+mayContain: iscDhcpOption
+mayContain: iscDhcpComments
+defaultObjectCategory: CN=iscDhcpOptions,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+
+dn: CN=iscDhcpLog,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.11
+schemaIdGuid:: K2Hkcp1OFHU9LxQZ+IkaGw==
+cn: iscDhcpLog
+name: iscDhcpLog
+possSuperiors: iscDhcpLeases
+possSuperiors: iscDhcpPool
+possSuperiors: iscDhcpSubnet
+possSuperiors: iscDhcpSharedNetwork
+possSuperiors: iscDhcpService
+lDAPDisplayName: iscDhcpLog
+description: This is the object that holds past information about the IP addre
+ ss. The cn is the time/date stamp when the address was assigned or released, 
+ the address state at the time, if the address was assigned or released.
+subClassOf: top
+mustContain: cn
+mayContain: iscDhcpAddressState
+mayContain: iscDhcpExpirationTime
+mayContain: iscDhcpStartTimeOfState
+mayContain: iscDhcpLastTransactionTime
+mayContain: iscDhcpBootpFlag
+mayContain: iscDhcpDomainName
+mayContain: iscDhcpDnsStatus
+mayContain: iscDhcpRequestedHostName
+mayContain: iscDhcpAssignedHostName
+mayContain: iscDhcpReservedForClient
+mayContain: iscDhcpAssignedToClient
+mayContain: iscDhcpRelayAgentInfo
+mayContain: iscDhcpHWAddress
+mayContain: iscDhcpErrorLog
+defaultObjectCategory: CN=iscDhcpLog,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+ 
