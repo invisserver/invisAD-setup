@@ -892,12 +892,6 @@ sysprep() {
         pgsubtitle="Repository-Cache wird aktualisiert"
         zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
 	zypper -n install -n `cat $setupdir/zypper-package-lists/sernet_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
-	
-	# Sernet Samba Startoption anpassen
-	path="/etc/default"
-	file="sernet-samba"
-	strings="none%classic"
-	changevalues $path $file $strings
     else
 	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
