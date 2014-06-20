@@ -1411,14 +1411,31 @@ samba_ad() {
 
     # Sernet-Samba AD stoppen
     systemctl stop sernet-samba-ad.service
+
+    ## LDIF-Dateien vorbereiten
+    pgsubtitle="LDAP Schema-Erweiterungen werdne vorbereitet"
+    mkdir $setupdir/schema 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    { for x in `find $cfilesdir/LDAP/Schemas/ -name *.ldif`; do
+	cp $x $setupdir/schema| tee -a $setupdir/sine.log
+    done } 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    path="$setupdir/schema"
+    { for x in $path/*; do
+	file=`basename $x`
+	echo "Bereite Datei $file vor."
+	basedn=`getconfdata "baseDN" "2"`
+	strings="dc=invis-net,dc=loc%$basedn"
+	changevalues $path $file "$strings"
+    done } 2>&1| tee -a $setupdir/sine.log | pgbox
     
     # Schemaerweiterung Attributtypen einpflegen
-    { for attrfile in `ls $cfilesdir/LDAP/Schemas/*-ad-attributes-schema.ldif`; do
+    { for attrfile in `ls $setupdir/schema/*-ad-attributes-schema.ldif`; do
 	ldbadd -v -H /var/lib/samba/private/sam.ldb $attrfile --option="dsdb:schema update allowed"=true
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # Schemaerweiterungen Objektklassen einpflegen
-    { for objcfile in `ls $cfilesdir/LDAP/Schemas/*-ad-objectclasses-schema.ldif`; do
+    { for objcfile in `ls $setupdir/schema/*-ad-objectclasses-schema.ldif`; do
 	ldbadd -v -H /var/lib/samba/private/sam.ldb $objcfile --option="dsdb:schema update allowed"=true
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
