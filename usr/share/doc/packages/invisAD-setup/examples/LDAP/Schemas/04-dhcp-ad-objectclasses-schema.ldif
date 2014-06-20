@@ -110,7 +110,6 @@ mayContain: iscDhcpFailOverLoadBalanceTime
 mayContain: iscDhcpComments
 defaultObjectCategory: CN=iscDhcpFailOverPeer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
-
 dn: CN=iscDhcpDnsZone,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
 objectClass: classSchema

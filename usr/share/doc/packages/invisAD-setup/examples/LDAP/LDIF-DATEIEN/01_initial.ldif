@@ -41,28 +41,28 @@ description: Basis fuer abrufbare Informationen
 dn: CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: container
-CN: Information
+CN: Kontakt
 description: Basis fuer LDAP-Adressbuch
 
 # Basisknoten interne Kontakte
 dn: CN=internes_Adressbuch,CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: container
-CN: Information
+CN: internes_Adressbuch
 description: Basis fuer internes LDAP-Adressbuch
 
 # Basisknoten externe Kontakte
-dn: CN=internes_Adressbuch,CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
+dn: CN=externes_Adressbuch,CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: container
-CN: Information
+CN: externes_Adressbuch
 description: Basis fuer internes LDAP-Adressbuch
 
 # Basisknoten Information
 dn: CN=AdditionalUserInformation,CN=invis-Server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: container
-CN: Information
+CN: AdditionalUserInformation
 description: Basis fuer ergaenzende Benutzerinrfomationen - cornaz
 
 

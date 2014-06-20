@@ -39,7 +39,7 @@ mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
 defaultObjectCategory: CN=iscDhcpSubClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
- 
+
 dn: CN=iscDhcpLeases,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
 objectClass: classSchema
