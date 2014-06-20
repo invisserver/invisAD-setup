@@ -1600,8 +1600,6 @@ samba_ad() {
     # Installation entfaellt, da es per rpm installiert wird.
     cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
 
-# Sernet-Samba AD starten
-
     writeprepstat "dns"
     waitbox "samba_ad" "dns"
 }
@@ -1610,9 +1608,14 @@ samba_ad() {
 dns() {
     cd $setupdir
     clear
+    s4workingdir="/var/lib/samba/private"
     windowtitle="DNS Server"
     #echo -e "\033[1;33mIhr Nameserver wird eingerichtet\033[0m"
-    cp $cfilesdir/dhcp-dns/bind-ldap/named.conf /etc 2>&1| tee -a $setupdir/sine.log
+    cp $cfilesdir/dhcp-dns/named.conf /etc 2>&1| tee -a $setupdir/sine.log
+    cp $cfilesdir/dhcp-dns/s4.named.conf $s4workingdir 2>&1| tee -a $setupdir/sine.log
+
+    # Zugriffsrechte auf /var/lib/samba/private setzen
+    chmod go+rx $s4workingdir
 
     # Konfiguration von bind wird angepasst
     path="/etc"
@@ -1620,43 +1623,6 @@ dns() {
     forwarders=`getconfdata "Forwarders" "2"`
     strings="FORWARD-DNS-SERVERS%$forwarders"
     changevalues $path $file "$strings"
-    
-    shortnmask=`getconfdata "NMask-short" "2"`
-    ipaddr=`getconfdata "IP" "2"`
-    netpart1=`echo "$ipaddr" | cut -d "." -f 1`
-    netpart2=`echo "$ipaddr" | cut -d "." -f 2`
-    netpart3=`echo "$ipaddr" | cut -d "." -f 3`
-    netpart="$netpart1.$netpart2.$netpart3"
-    strings="192.168.220/24%$netpart/$shortnmask"
-    changevalues $path $file "$strings"
-    basedn=`getconfdata "baseDN" "2"`
-    bdnpart1=`echo "$basedn" | cut -d "," -f 1`
-    bdnpart2=`echo "$basedn" | cut -d "," -f 2`
-    strings="dc=invis-net%$bdnpart1"
-    changevalues $path $file "$strings"
-    strings="dc=loc%$bdnpart2"
-    changevalues $path $file "$strings"
-    
-    rd=`getconfdata "ReverseDom" "2"`
-    strings="220.168.192%$rd"
-    changevalues $path $file "$strings"
-    
-    domain=`getconfdata "Domain" "2"`
-    strings="invis-net.loc%$domain"
-    changevalues $path $file "$strings"
-
-    adminpw=`getconfdata "AdminPW" "2"`
-    strings="admin-secret%$adminpw"
-    changevalues $path $file "$strings"
-    
-    # Anpassen der Datei /etc/resolv.conf
-    cp $cfilesdir/dhcp-dns/resolv.conf /etc 2>&1| tee -a $setupdir/sine.log
-    file="resolv.conf"
-    strings="192.168.220.10%$ipaddr"
-    changevalues $path $file "$strings"
-    
-    strings="invis-net.loc%$domain"
-    changevalues $path $file "$strings"    
 
     # DNS Dienst starten und ins Runlevel-Konzept einbinden.
     chkservice "named"
