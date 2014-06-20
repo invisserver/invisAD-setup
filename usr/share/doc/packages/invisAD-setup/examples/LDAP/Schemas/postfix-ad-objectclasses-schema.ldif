@@ -11,5 +11,4 @@ subClassOf: top
 objectClassCategory: 3
 mayContain: mailacceptinggeneralid
 mayContain: maildrop
-defaultObjectCategory: CN=postfixUser,CN=Schema,CN=Configuration,dc=invis-net,
- dc=loc
+defaultObjectCategory: CN=postfixUser,CN=Schema,CN=Configuration,dc=invis-net,dc=loc

@@ -12,8 +12,7 @@ objectClassCategory: 3
 mustContain: uidGroup-e
 mustContain: permsGroup-e
 mustContain: activGroup-e
-defaultObjectCategory: CN=groupeUser,CN=Schema,CN=Configuration,dc=invis-net,d
- c=loc
+defaultObjectCategory: CN=groupeUser,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=groupeGroup,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -28,8 +27,7 @@ subClassOf: top
 objectClassCategory: 3
 mustContain: gidGroup-e
 mustContain: activGroup-e
-defaultObjectCategory: CN=groupeGroup,CN=Schema,CN=Configuration,dc=invis-net,
- dc=loc
+defaultObjectCategory: CN=groupeGroup,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=groupeSquid,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -43,6 +41,5 @@ description: group-e Squid
 subClassOf: top
 objectClassCategory: 3
 mustContain: accessSquid
-defaultObjectCategory: CN=groupeSquid,CN=Schema,CN=Configuration,dc=invis-net,
- dc=loc
+defaultObjectCategory: CN=groupeSquid,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 

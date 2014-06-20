@@ -14,8 +14,7 @@ objectClassCategory: 1
 mustContain: fspLocalMailAddress
 mustContain: fspMainMailAddress
 mayContain: fspLocalMailHost
-defaultObjectCategory: CN=fspLocalMailRecipient,CN=Schema,CN=Configuration,dc=
- invis-net,dc=loc
+defaultObjectCategory: CN=fspLocalMailRecipient,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -37,8 +36,7 @@ mustContain: fspExtMailUserName
 mustContain: fspExtMailUserPW
 mustContain: fspLocalMailAddress
 mayContain: FSPMailfetchOpts
-defaultObjectCategory: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=dh
- cptest,dc=loc
+defaultObjectCategory: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -62,8 +60,7 @@ mustContain: fspMailFilterComparativeValue
 mayContain: fspMailFilterInfo
 mayContain: fspMailFilterTransType
 mayContain: fspMailFilterDescription
-defaultObjectCategory: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=invis-net
- ,dc=loc
+defaultObjectCategory: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=fspMailProvider,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -86,8 +83,7 @@ mayContain: fspMailProviderSMTPPort
 mayContain: fspMailProviderSMTPTLS
 mayContain: fspMailProviderUsername
 mayContain: fspMailProviderDescription
-defaultObjectCategory: CN=fspMailProvider,CN=Schema,CN=Configuration,dc=dhcpte
- st,dc=loc
+defaultObjectCategory: CN=fspMailProvider,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iPortEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -111,8 +107,7 @@ mustContain: iPortEntryPosition
 mustContain: iPortEntryPriv
 mustContain: iPortEntryButton
 mayContain: iPortEntryLinkRubrik
-defaultObjectCategory: CN=iPortEntry,CN=Schema,CN=Configuration,dc=invis-net,dc
- =loc
+defaultObjectCategory: CN=iPortEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=MMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -131,8 +126,7 @@ mustContain: MMailUser
 mustContain: MMailPassword
 mayContain: MMailCustomName
 mayContain: MMailCustomSignature
-defaultObjectCategory: CN=MMailAccount,CN=Schema,CN=Configuration,dc=invis-net,
- dc=loc
+defaultObjectCategory: CN=MMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=infoEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -150,6 +144,5 @@ objectClassCategory: 1
 mustContain: infoIdentifier
 mustContain: infoText
 mayContain: description
-defaultObjectCategory: CN=infoEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=
- loc
+defaultObjectCategory: CN=infoEntry,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 

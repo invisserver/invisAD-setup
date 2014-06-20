@@ -29,8 +29,7 @@ mayContain: iscDhcpFailOverPeerDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpService,CN=Schema,CN=Configuration,dc=dhcptes
- t,dc=loc
+defaultObjectCategory: CN=iscDhcpService,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpSharedNetwork,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -51,8 +50,7 @@ mayContain: iscDhcpZoneDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpSharedNetwork,CN=Schema,CN=Configuration,dc=d
- hcptest,dc=loc
+defaultObjectCategory: CN=iscDhcpSharedNetwork,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpSubnet,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -81,8 +79,7 @@ mayContain: iscDhcpFailOverPeerDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpSubnet,CN=Schema,CN=Configuration,dc=invis-net
- ,dc=loc
+defaultObjectCategory: CN=iscDhcpSubnet,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpPool,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -107,8 +104,7 @@ mayContain: iscDhcpKeyDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpPool,CN=Schema,CN=Configuration,dc=invis-net,d
- c=loc
+defaultObjectCategory: CN=iscDhcpPool,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpGroup,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -129,8 +125,7 @@ mayContain: iscDhcpOptionsDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpGroup,CN=Schema,CN=Configuration,dc=invis-net,
- dc=loc
+defaultObjectCategory: CN=iscDhcpGroup,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpHost,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -152,8 +147,7 @@ mayContain: iscDhcpOptionsDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpHost,CN=Schema,CN=Configuration,dc=invis-net,d
- c=loc
+defaultObjectCategory: CN=iscDhcpHost,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -173,8 +167,7 @@ mayContain: iscDhcpOptionsDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpClass,CN=Schema,CN=Configuration,dc=invis-net,
- dc=loc
+defaultObjectCategory: CN=iscDhcpClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpSubClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -194,8 +187,7 @@ mayContain: iscDhcpOptionsDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpSubClass,CN=Schema,CN=Configuration,dc=dhcpte
- st,dc=loc
+defaultObjectCategory: CN=iscDhcpSubClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpOptions,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -218,8 +210,7 @@ objectClassCategory: 3
 mustContain: cn
 mayContain: iscDhcpOption
 mayContain: iscDhcpComments
-defaultObjectCategory: CN=iscDhcpOptions,CN=Schema,CN=Configuration,dc=dhcptes
- t,dc=loc
+defaultObjectCategory: CN=iscDhcpOptions,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpLeases,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -249,8 +240,7 @@ mayContain: iscDhcpReservedForClient
 mayContain: iscDhcpAssignedToClient
 mayContain: iscDhcpRelayAgentInfo
 mayContain: iscDhcpHWAddress
-defaultObjectCategory: CN=iscDhcpLeases,CN=Schema,CN=Configuration,dc=invis-net
- ,dc=loc
+defaultObjectCategory: CN=iscDhcpLeases,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpLog,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -284,8 +274,7 @@ mayContain: iscDhcpAssignedToClient
 mayContain: iscDhcpRelayAgentInfo
 mayContain: iscDhcpHWAddress
 mayContain: iscDhcpErrorLog
-defaultObjectCategory: CN=iscDhcpLog,CN=Schema,CN=Configuration,dc=invis-net,dc
- =loc
+defaultObjectCategory: CN=iscDhcpLog,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpServer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -313,8 +302,7 @@ mayContain: iscDhcpFailOverEndpointState
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
 mayContain: iscDhcpOption
-defaultObjectCategory: CN=iscDhcpServer,CN=Schema,CN=Configuration,dc=invis-net
- ,dc=loc
+defaultObjectCategory: CN=iscDhcpServer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpTSigKey,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -333,8 +321,7 @@ mustContain: cn
 mustContain: iscDhcpKeyAlgorithm
 mustContain: iscDhcpKeySecret
 mayContain: iscDhcpComments
-defaultObjectCategory: CN=iscDhcpTSigKey,CN=Schema,CN=Configuration,dc=dhcptes
- t,dc=loc
+defaultObjectCategory: CN=iscDhcpTSigKey,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpDnsZone,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -353,8 +340,7 @@ mustContain: cn
 mustContain: iscDhcpDnsZoneServer
 mayContain: iscDhcpKeyDN
 mayContain: iscDhcpComments
-defaultObjectCategory: CN=iscDhcpDnsZone,CN=Schema,CN=Configuration,dc=dhcptes
- t,dc=loc
+defaultObjectCategory: CN=iscDhcpDnsZone,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpFailOverPeer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -381,8 +367,7 @@ mayContain: iscDhcpFailOverSplit
 mayContain: iscDhcpHashBucketAssignment
 mayContain: iscDhcpFailOverLoadBalanceTime
 mayContain: iscDhcpComments
-defaultObjectCategory: CN=iscDhcpFailOverPeer,CN=Schema,CN=Configuration,dc=dh
- cptest,dc=loc
+defaultObjectCategory: CN=iscDhcpFailOverPeer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=iscDhcpLocator,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
@@ -414,6 +399,5 @@ mayContain: iscDhcpZoneDN
 mayContain: iscDhcpFailOverPeerDN
 mayContain: iscDhcpOption
 mayContain: iscDhcpComments
-defaultObjectCategory: CN=iscDhcpLocator,CN=Schema,CN=Configuration,dc=dhcptes
- t,dc=loc
+defaultObjectCategory: CN=iscDhcpLocator,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
