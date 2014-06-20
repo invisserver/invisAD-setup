@@ -1391,7 +1391,7 @@ samba_ad() {
     logfile=$setupdir/sine.log
     #logfile=$0.log
 
-    samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-bachend="BIND9_DLZ" 2>&1 | tee -a $logfile
+    samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-backend="BIND9_DLZ" 2>&1 | tee -a $logfile
     provresult=${PIPESTATUS[0]}
 
     if [[ $provresult != 0 ]]; then
