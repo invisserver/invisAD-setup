@@ -389,13 +389,13 @@ FW_CONFIGURATIONS_DMZ=""
 #
 ## invis-server.org
 # see comments for FW_SERVICES_EXT_TCP
-FW_SERVICES_INT_TCP="22 sshport smtp domain http httpsport imap imaps 111 135 139 237 445 ldap ldaps 631 swat 3000 8080 9090 10000 12411"
+FW_SERVICES_INT_TCP="22 sshport smtp domain http httpsport imap imaps 111 237 631 3000 8080 9090 10000 12411"
 
 ## Type:	string
 #
 ## invis-server.org Port 427 = Service Location Protocol / slp
 # see comments for FW_SERVICES_EXT_UDP
-FW_SERVICES_INT_UDP="domain syslog 123 137 138 427"
+FW_SERVICES_INT_UDP="domain syslog 123 427"
 
 ## Type:	string
 #
@@ -411,7 +411,7 @@ FW_SERVICES_INT_RPC="mountd nfs idmapd nlogmgr status rpc3portmap"
 ## Type:        string
 #
 # see comments for FW_CONFIGURATIONS_EXT
-FW_CONFIGURATIONS_INT=""
+FW_CONFIGURATIONS_INT="samba-4-ad"
 
 ## Type: string
 #
