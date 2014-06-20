@@ -1372,6 +1372,11 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 
 # Domain aufbauen
 samba_ad() {
+    cd $setupdir
+    clear
+    windowtitle="Samba AD DC"
+    pgsubtitle="Samba AD DC wird eingerichtet"
+
     # "realm" bei AD DC = "Domain" im sine
     ad_realm=`getconfdata "Domain" "2"`
     #ad_realm="invis-net.loc"
