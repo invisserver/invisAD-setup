@@ -1120,7 +1120,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     changevalues $confdir $file "$strings"
     
     dummypw=`getconfdata "DummyPW" "2"`
-    strings="dummypw%$dummypw"
+    strings="dummy-secret%$dummypw"
     changevalues $confdir $file "$strings"
 
     writeprepstat "samba_ad"
