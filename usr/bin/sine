@@ -447,23 +447,6 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
 #    masterpass="${ldapsecrets[2]}"
 #    adminpass="${ldapsecrets[4]}"
 
-    # LDAP Admin-Passwort 
-    ok=0
-    while (( $ok != "1" ));do
-	dialog --backtitle "$dialogtitle" --title "LDAP-Admin Passwort" --insecure --passwordform "$dialogshorthelp\n\n
-Für die LDAP-basierte Dienste muss ein Passwort für den LDAP-Lesezugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
-	"LDAP-Admin-Passwort:" 2 2 "" 2 23 10 0\
-	"Kontrolle:" 2 36 "" 2 47 10 0\
-	2>$setupdir/sine_temp
-	ldapsecrets=(`cat $setupdir/sine_temp`)
-
-	    if [[ ${ldapsecrets[0]} == ${ldapsecrets[1]} ]] && (( ${#ldapsecrets[0]} >= 6 ));then
-		ok=1
-	    fi
-    done
-    ldappw="${ldapsecrets[0]}"
-
     # MySQL root-Passwort 
     ok=0
     while (( $ok != "1" ));do
@@ -781,6 +764,9 @@ SSH Port: $sshport\n\n
 HTTPS Port: $httpsport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
+    # Passwort fuer LDAP-Lesezugang erzeugen
+    ldappw=`pwgen -s 8 1`
+
     # Alle Daten in Kontrolldatei Schreiben
     echo "Country:$country" > $setupdir/invis_confdata
     echo "Region:$region" >> $setupdir/invis_confdata
@@ -808,7 +794,8 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 #    echo "MasterPW:$masterpass:$masterpasshash" >> $setupdir/invis_confdata
 #    adminpasshash=`slappasswd -s $adminpass`
 #    echo "AdminPW:$adminpass:$adminpasshash" >> $setupdir/invis_confdata
-    echo "AdminPW:$ldappw" >> $setupdir/invis_confdata
+
+    echo "LDAPreadonlyPW:$ldappw" >> $setupdir/invis_confdata
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
     echo "IMAPserver:$whichimap"  >> $setupdir/invis_confdata
@@ -1129,7 +1116,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 #    strings="admin-secret%$adminpw"
 #    changevalues $confdir $file "$strings"
 
-    ldappw=`getconfdata "AdminPW" "2"`
+    ldappw=`getconfdata "LDAPreadonlyPW" "2"`
     strings="ldap-secret%$ldappw"
     changevalues $confdir $file "$strings"
 
@@ -1410,9 +1397,6 @@ samba_ad() {
     # Fuer UNIX UID/GID RFC2307 aktiv
     # --use-rfc2307
 
-    #logfile=$setupdir/sine.log
-    #logfile=$0.log
-
     samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-backend="BIND9_DLZ" 2>&1 | tee -a $setupdir/sine.log | pgbox
     provresult=${PIPESTATUS[0]}
 
@@ -1430,6 +1414,13 @@ samba_ad() {
     strings="none%ad"
     changevalues $path $file "$strings"
     chkservice "sernet-samba-ad"
+
+    # User fuer LDAP-Lese-Zugang anlegen
+    ldappw=`getconfdata "LDAPreadonlyPW" "2"`
+    samba-tool user add ldap.readonly "$ldappw" --surname="LDAP" --given-name="ReadOnly" --description="Lesebenutzer fuer LDAP-Login"
+    samba-tool group addmembers "Domain Guests" ldap.readonly
+    samba-tool group removemembers "Domain Users" ldap.readonly
+    # Primary Group?
 
     # Sernet-Samba AD stoppen
     systemctl stop sernet-samba-ad.service
@@ -1686,7 +1677,7 @@ dhcp() {
     # Konfiguration des DHCP Servers wird angepasst
     path="/etc"
     file="dhcpd.conf"
-    ldappw=`getconfdata "AdminPW" "2"`
+    ldappw=`getconfdata "LDAPreadonlyPW" "2"`
     strings="ldap-secret%$ldappw"
     changevalues $path $file "$strings"
     basedn=`getconfdata "baseDN" "2"`
