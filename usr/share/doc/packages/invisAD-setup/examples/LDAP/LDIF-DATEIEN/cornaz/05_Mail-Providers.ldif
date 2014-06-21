@@ -3,8 +3,8 @@
 # Basisknoten Mailprovider-Liste
 dn: cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
-objectClass: organizationalUnit
-ou: Mailproviders
+objectClass: container
+cn: Mailproviders
 description: Liste deutscher Mailprovider
 
 # FSP Computer & Netzwerke 

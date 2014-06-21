@@ -3,8 +3,8 @@
 # Basisknoten invis Portal Eintraege
 dn: cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
-objectClass: organizationalUnit
-cn: iPortal
+objectClass: container
+cn: invis-Portal
 description: Liste aller invis-Portal Einträge
 
 # Groupware Group-e
