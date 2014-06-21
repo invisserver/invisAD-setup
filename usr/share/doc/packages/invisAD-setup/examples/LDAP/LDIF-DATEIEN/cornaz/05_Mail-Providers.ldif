@@ -8,16 +8,17 @@ cn: Mailproviders
 description: Liste deutscher Mailprovider
 
 # FSP Computer & Netzwerke 
-dn: fspMailProviderVendor=fsp,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: fspMailProvider=fsp,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
-fspMailProviderVendor: fsp
-fspMailProviderPOP: mail.bedifferent.de
-fspMailProviderSMTP: mail.bedifferent.de
+fspMailProvider: fsp
+fspMailProviderVendor: FSP Computer und Netzwerke
+fspMailProviderPOP: mail2.fspisp.de
+fspMailProviderSMTP: mail2.fspisp.de
 fspMailProviderPOPSSL: TRUE
 fspMailProviderSMTPPort: 25
 fspMailProviderSMTPTLS: TRUE
-fspMailProviderUsername: webXpY
+fspMailProviderUsername: Email-Adresse
 fspMailProviderDescription: SMTP-Auth, Versand und Empfang nur verschlüsselt
 
 #  blueVARIA.de
