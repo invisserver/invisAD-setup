@@ -1122,232 +1122,6 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     waitbox "sysprep" "samba_ad"
 }
 
-# LDAP einrichten (wird aktuell uebersprungen)
-ldap() {
-    cd $setupdir
-    clear
-    windowtitle="LDAP Server"
-    ## Konfigurationsdateien kopieren
-    cp $cfilesdir/fileserver/smbldap-tools/* /etc/smbldap-tools/ 2>&1| tee -a $setupdir/sine.log
-    # Anpassen der Datei /etc/smbldap-tools/smbldap.conf
-    smbdom=`getconfdata "Workgroup" "2"`
-    path="/etc/smbldap-tools"
-    file="smbldap.conf"
-    strings="I5-NET%$smbdom"
-    changevalues $path $file "$strings"
-    basedn=`getconfdata "baseDN" "2"`
-    strings="dc=i5-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    smbhostname=`getconfdata "Hostname" "2"`
-    smbhostname=`echo $smbhostname | tr [a-z] [A-Z]`
-    strings="INVIS5%$smbhostname"
-    changevalues $path $file "$strings"
-    domain=`getconfdata "Domain" "2"`
-    strings="i5-net.loc%$domain"
-    changevalues $path $file "$strings"
-    
-    # Anpassen der Datei /etc/smbldap-tools/smbldap_bind.conf
-    path="/etc/smbldap-tools"
-    file="smbldap_bind.conf"
-    basedn=`getconfdata "baseDN" "2"`
-    strings="dc=i5-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    masterpw=`getconfdata "MasterPW" "2"`
-    strings="master-secret%$masterpw"
-    changevalues $path $file "$strings"
-    
-    # Kopieren der notwendigen LDAP Schemadateien
-    cp $cfilesdir/LDAP/Schemas/*.schema /etc/openldap/schema/ 2>&1| tee -a $setupdir/sine.log
-    chown -R root:root /etc/openldap/schema 2>&1| tee -a $setupdir/sine.log
-    chmod -R a+r /etc/openldap/schema 2>&1| tee -a $setupdir/sine.log
-    # Erzeugen und Anpassen der Dateien /etc/openldap/slapd.conf & slapd.acl
-    cp $cfilesdir/LDAP/Conf/slapd.* /etc/openldap/ 2>&1| tee -a $setupdir/sine.log
-    # slapd.acl
-    path="/etc/openldap"
-    file="slapd.acl"
-    basedn=`getconfdata "baseDN" "2"`
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    # slapd.conf
-    file="slapd.conf"
-    changevalues $path $file "$strings"
-
-    managerhash=`getconfdata "ManagerPW" "3"`
-    zeichen="\/"
-    managerhash=`echo $managerhash| sed "s/$zeichen/\\\\\\\\$zeichen/g"`
-    strings="manager-secret-hash%$managerhash"
-    changevalues $path $file "$strings"
-
-    # Bauen des Server-Schlüsselsatzes
-    cd /etc/ssl
-    msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
-Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
-
-    serverkeys ldap 2>&1| tee -a $setupdir/sine.log
-    chown -R :pkeys /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
-    chmod g+rx /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
-    usermod -a -G pkeys ldap 2>&1| tee -a $setupdir/sine.log
-    usermod -a -G mail ldap 2>&1| tee -a $setupdir/sine.log
-
-    cd $OLDPWD
-
-    # Vorbereiten der LDIF Dateien
-    pgsubtitle="LDAP System wird konfiguriert"
-    mkdir $setupdir/ldif 2>&1| tee -a $setupdir/sine.log | pgbox
-    
-    { for x in `find $cfilesdir/LDAP -name *.ldif`; do
-	cp $x $setupdir/ldif| tee -a $setupdir/sine.log
-    done } 2>&1| tee -a $setupdir/sine.log | pgbox
-    
-    path="$setupdir/ldif"
-    { for x in $path/*; do
-	file=`basename $x`
-	echo "Bereite Datei $file vor."
-	basedn=`getconfdata "baseDN" "2"`
-	strings="dc=invis-net,dc=loc%$basedn"
-	changevalues $path $file "$strings"
-        
-	organization=`getconfdata "Organisation" "2"`
-	strings="targetOrganization%$organization"
-	changevalues $path $file "$strings"
-
-	strings="descriptionText%Basisknoten des LDAP-Verzeichnisses von $organization"
-        changevalues $path $file "$strings"
-	
-	hname=`getconfdata "Hostname" "2"`
-	strings="invis5%$hname"
-	changevalues $path $file "$strings"
-	
-	fqdn=`getconfdata "FQDN" "2"`
-	strings="invisfqdn%$fqdn"
-	changevalues $path $file "$strings"
-	
-	domain=`getconfdata "Domain" "2"`
-        strings="invis-net.loc%$domain"
-	changevalues $path $file "$strings"
-	
-	dompart1=`echo $domain|cut -d "." -f 1`
-	strings="invis-net%$dompart1"
-	changevalues $path $file "$strings"
-	
-	ipaddr=`getconfdata "IP" "2"`
-	strings="192.168.220.10%$ipaddr"
-	changevalues $path $file "$strings"
-	
-	netpart1=`echo "$ipaddr" | cut -d "." -f 1`
-	netpart2=`echo "$ipaddr" | cut -d "." -f 2`
-	netpart3=`echo "$ipaddr" | cut -d "." -f 3`
-	netpart="$netpart1.$netpart2.$netpart3."
-	strings="192.168.220.%$netpart"
-	changevalues $path $file "$strings"
-	
-	rd=`getconfdata "ReverseDom" "2"`
-	strings="220.168.192%$rd"
-	changevalues $path $file "$strings"
-	
-	hostpart=`echo "$ipaddr" | cut -d "." -f 4`
-	strings="relativeDomainName:10%relativeDomainName:$hostpart"
-	changevalues $path $file "$strings"
-	
-	strings="relativeDomainName=10,%relativeDomainName=$hostpart,"
-	changevalues $path $file "$strings"
-	
-	strings="dhcpNetMask:24%dhcpNetMask:$shortnmask"
-	changevalues $path $file "$strings"
-	
-    done } 2>&1| tee -a $setupdir/sine.log | pgbox
-
-    ## Aktive LDAP-Eintrage fuer Groupware und ERP aktivieren/deaktivieren
-    whichgroupware=`getconfdata "IMAPserver" "2"`
-    whicherp=`getconfdata "ERPSoftware" "2"`
-    
-    file="iportal-initial.ldif"
-    case $whichgroupware in
-	"zarafa" )
-	    strings="GROUPETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="SOGOTRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="ROUNDCUBETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-	"groupe" )
-	    strings="GROUPETRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="SOGOTRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ROUNDCUBETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-	"sogo" )
-	    strings="SOGOTRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="GROUPETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ROUNDCUBETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-	"roundcube" )
-	    strings="ROUNDCUBETRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="GROUPETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="SOGOTRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-    esac
-
-    if [[ $whicherp == "openerp" ]]; then
-	strings="LXTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="OPENERPTRUE%TRUE"
-	changevalues $path $file "$strings"
-	strings="WAWISIONTRUE%FALSE"
-	changevalues $path $file "$strings"
-    elif [[ $whicherp == "wawision" ]]; then
-	strings="LXTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="OPENERPTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="WAWISIONTRUE%TRUE"
-	changevalues $path $file "$strings"
-    else
-	strings="LXTRUE%TRUE"
-	changevalues $path $file "$strings"
-	strings="OPENERPTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="WAWISIONTRUE%FALSE"
-	changevalues $path $file "$strings"
-    fi
-
-    # LDAP fuellen
-    pgsubtitle="Das LDAP Verzeichnis wird aufgebaut"
-    { for x in $path/*; do
-	#echo $x
-	slapadd -l $x
-    done } 2>&1| tee -a $setupdir/sine.log | pgbox
-    
-    #Der openLDAP-Server wird ins Runlevel-Konzept übernommen und gestartet
-    pgsubtitle="Der LDAP Dienst wird initialisiert"
-    slapindex -f /etc/openldap/slapd.conf 2>&1| tee -a $setupdir/sine.log | pgbox
-    chkservice "ldap"
-    
-    # phpldapadmin konfigurieren
-    # Installation entfaellt, da es per rpm installiert wird.
-    cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
-
-    writeprepstat "dns"
-    waitbox "ldap" "dns"
-}
-
 # Domain aufbauen
 samba_ad() {
     cd $setupdir
@@ -1400,13 +1174,13 @@ samba_ad() {
 
     # User fuer LDAP-Lese-Zugang anlegen
     ldappw=`getconfdata "LDAPreadonlyPW" "2"`
-    samba-tool user add ldap.readonly "$ldappw" --surname="LDAP" --given-name="ReadOnly" --description="Lesebenutzer fuer LDAP-Login"
-    samba-tool group addmembers "Domain Guests" ldap.readonly
-    samba-tool group removemembers "Domain Users" ldap.readonly
+    samba-tool user add ldap.readonly "$ldappw" --surname="LDAP" --given-name="ReadOnly" --description="Lesebenutzer fuer LDAP-Login" 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
     # Primary Group?
 
     # Sernet-Samba AD stoppen
-    systemctl stop sernet-samba-ad.service
+    systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
 
     ## LDIF-Dateien vorbereiten
     pgsubtitle="LDAP Schema-Erweiterungen werden vorbereitet"
@@ -1578,7 +1352,7 @@ samba_ad() {
 	 ldbadd -v -H /var/lib/samba/private/sam.ldb $x
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
     
-    systemctl start sernet-samba-ad.service
+    systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
     
     # phpldapadmin konfigurieren
     # Installation entfaellt, da es per rpm installiert wird.
