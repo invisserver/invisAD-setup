@@ -1207,22 +1207,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	strings="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $file "$strings"
         
-	zeichen="\/"
-	managerhash=`getconfdata "ManagerPW" "3"`
-	managerhash=`echo $managerhash| sed "s/$zeichen/\\\\\\\\$zeichen/g"`
-        strings="manager-secret-hash%$managerhash"
-        changevalues $path $file "$strings"
-	
-	masterhash=`getconfdata "MasterPW" "3"`
-	masterhash=`echo $masterhash| sed "s/$zeichen/\\\\\\\\$zeichen/g"`
-        strings="master-secret-hash%$masterhash"
-        changevalues $path $file "$strings"
-
-	adminhash=`getconfdata "AdminPW" "3"`
-	adminhash=`echo $adminhash| sed "s/$zeichen/\\\\\\\\$zeichen/g"`
-        strings="admin-secret-hash%$adminhash"
-        changevalues $path $file "$strings"
-
 	organization=`getconfdata "Organisation" "2"`
 	strings="targetOrganization%$organization"
 	changevalues $path $file "$strings"

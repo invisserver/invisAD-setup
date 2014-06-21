@@ -8,7 +8,7 @@ cn: iPortal
 description: Liste aller invis-Portal Einträge
 
 # Groupware Group-e
-dn: cn=Group-e,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Group-e,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 cn: Group-e
@@ -22,7 +22,7 @@ iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # Groupware SOGo
-dn: cn=SOGo,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=SOGo,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 cn: SOGo
@@ -36,7 +36,7 @@ iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # Groupware ZarafaAcc
-dn: cn=ZarafaAcc,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=ZarafaAcc,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ZarafaAcc
@@ -50,7 +50,7 @@ iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # Groupware ZarafaApp
-dn: cn=ZarafaApp,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=ZarafaApp,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ZarafaApp
@@ -64,7 +64,7 @@ iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
 # ERP Kivitendo
-dn: cn=Kivitendo,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Kivitendo,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Kivitendo
@@ -78,7 +78,7 @@ iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
 # waWision
-dn: cn=waWision,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=waWision,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: waWision
@@ -92,7 +92,7 @@ iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
 # OpenERP
-dn: cn=OpenERP,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=OpenERP,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: OpenERP
@@ -106,7 +106,7 @@ iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
 # Dokuwiki
-dn: cn=Dokuwiki,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Dokuwiki,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Dokuwiki
@@ -120,7 +120,7 @@ iPortEntryButton: Wissensdatenbank
 iPortEntryPriv:	user
 
 # Etherpad Lite
-dn: cn=Etherpad,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Etherpad,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Etherpad
@@ -134,7 +134,7 @@ iPortEntryButton: Etherpad Lite
 iPortEntryPriv:	user
 
 # CorNAz
-dn: cn=CorNAz,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=CorNAz,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: CorNAz
@@ -148,7 +148,7 @@ iPortEntryButton: Mailkonten
 iPortEntryPriv:	user
 
 # WebCDwriter
-dn: cn=WebCDwriter,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=WebCDwriter,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: WebCDwriter
@@ -162,7 +162,7 @@ iPortEntryButton: CDs brennen
 iPortEntryPriv:	guest
 
 # Faxgate Client
-dn: cn=FaxClient,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=FaxClient,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: FaxClient
@@ -176,7 +176,7 @@ iPortEntryButton: Faxserver Client
 iPortEntryPriv:	guest
 
 # Mailman
-dn: cn=Mailman,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Mailman,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Mailman
@@ -190,7 +190,7 @@ iPortEntryButton: Mailing-Listen
 iPortEntryPriv:	guest
 
 # Mailman Administration
-dn: cn=Mailmanadmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Mailmanadmin,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Mailmanadmin
@@ -204,7 +204,7 @@ iPortEntryButton: Mailinglisten
 iPortEntryPriv:	admin
 
 # phpLDAPAdmin
-dn: cn=phpLDAPadmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=phpLDAPadmin,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: phpLDAPadmin
@@ -218,7 +218,7 @@ iPortEntryButton: Verzeichnisdienst
 iPortEntryPriv:	admin
 
 # phpMyAdmin
-dn: cn=phpMyAdmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=phpMyAdmin,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: phpMyAdmin
@@ -232,7 +232,7 @@ iPortEntryButton: MySQL Administration
 iPortEntryPriv:	admin
 
 # phpPgAdmin
-dn: cn=phpPgAdmin,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=phpPgAdmin,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: phpPgAdmin
@@ -247,7 +247,7 @@ iPortEntryPriv:	admin
 
 # phpvirtualbox
 # Eintrag 1: cn=phpvirtualbox,ou=Informationen,dc=...
-dn: cn=phpvirtualbox,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=phpvirtualbox,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 iportentryactive: FALSE
 iportentrybutton: Virtualbox
 iportentrydescription: Serverseitige Verwaltung virtueller Maschinen
@@ -261,7 +261,7 @@ objectclass: top
 objectclass: iPortEntry
 
 # Shell-in-a-Box
-dn: cn=Shell-in-a-Box,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Shell-in-a-Box,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Shell-in-a-Box
@@ -275,7 +275,7 @@ iPortEntryButton: Server Administration
 iPortEntryPriv:	admin
 
 # CUPS
-dn: cn=CUPS,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=CUPS,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: CUPS
@@ -289,7 +289,7 @@ iPortEntryButton: Druckerverwaltung
 iPortEntryPriv:	admin
 
 # ntop
-dn: cn=ntop,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=ntop,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ntop
@@ -303,7 +303,7 @@ iPortEntryButton: Netzwerkanalyse
 iPortEntryPriv:	admin
 
 # Firewall Test
-dn: cn=FWTest,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=FWTest,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: FWTest
@@ -317,7 +317,7 @@ iPortEntryButton: Firewall-Test
 iPortEntryPriv:	admin
 
 # invis Server Benutzerhandbuch
-dn: cn=invisUserManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=invisUserManual,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invisUserManual
@@ -331,7 +331,7 @@ iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
 
 # invis Server Adminisrationshandbuch
-dn: cn=invisAdminManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=invisAdminManual,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invisAdminManual
@@ -345,7 +345,7 @@ iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	admin
 
 # Faxgate Client Handbuch
-dn: cn=FGCManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=FGCManual,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: FGCManual
@@ -359,7 +359,7 @@ iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
 
 # openSuSE Handbuch
-dn: cn=openSUSEManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=openSUSEManual,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: openSUSEManual
@@ -373,7 +373,7 @@ iPortEntryButton: openSUSE Handbuch
 iPortEntryPriv:	user
 
 # Apache Webserver Handbuch
-dn: cn=apacheManual,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=apacheManual,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: apacheManual
@@ -389,7 +389,7 @@ iPortEntryPriv:	admin
 ## Links
 
 # Heise Online
-dn: cn=Heise,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Heise,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Heise
@@ -404,7 +404,7 @@ iPortEntryButton: Heise Online
 iPortEntryPriv:	guest
 
 # Spiegel Online
-dn: cn=Spiegel,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Spiegel,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Spiegel
@@ -419,7 +419,7 @@ iPortEntryButton: Spiegel Online
 iPortEntryPriv:	guest
 
 # ixquick
-dn: cn=ixquick,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=ixquick,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ixquick
@@ -434,7 +434,7 @@ iPortEntryButton: ixquick
 iPortEntryPriv:	guest
 
 # Metager
-dn: cn=MetaGer,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=MetaGer,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: MetaGer
@@ -449,7 +449,7 @@ iPortEntryButton: MetaGer
 iPortEntryPriv:	guest
 
 # Google
-dn: cn=Google,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Google,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Google
@@ -464,7 +464,7 @@ iPortEntryButton: Google
 iPortEntryPriv:	guest
 
 # Wikipedia
-dn: cn=Wikipedia,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Wikipedia,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Wikipedia
@@ -479,7 +479,7 @@ iPortEntryButton: Wikipedia
 iPortEntryPriv:	guest
 
 # Telefonbuch
-dn: cn=Telefonbuch,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Telefonbuch,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Telefonbuch
@@ -494,7 +494,7 @@ iPortEntryButton: Telefonbuch
 iPortEntryPriv:	guest
 
 # Gelbe Seiten
-dn: cn=GelbeSeiten,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=GelbeSeiten,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: GelbeSeiten
@@ -509,7 +509,7 @@ iPortEntryButton: Gelbe Seiten
 iPortEntryPriv:	guest
 
 # Wetterauskunft
-dn: cn=Kachelmann,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Kachelmann,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Kachelmann
@@ -524,7 +524,7 @@ iPortEntryButton: Wetterauskunft
 iPortEntryPriv:	guest
 
 # Reiseauskunft Bahn
-dn: cn=Bahn,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Bahn,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Bahn
@@ -539,7 +539,7 @@ iPortEntryButton: Bahn Auskunft
 iPortEntryPriv:	guest
 
 # Verkehrsinfos
-dn: cn=Verkehr,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Verkehr,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Verkehr
@@ -554,7 +554,7 @@ iPortEntryButton: Verkehrsinfos
 iPortEntryPriv:	guest
 
 # Routenplaner
-dn: cn=Routenplaner,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Routenplaner,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Routenplaner
@@ -569,7 +569,7 @@ iPortEntryButton: Routenplaner
 iPortEntryPriv:	guest
 
 # Google Maps
-dn: cn=Google Maps,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Google Maps,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Google Maps
@@ -584,7 +584,7 @@ iPortEntryButton: Google Maps
 iPortEntryPriv:	guest
 
 # Tagesschau
-dn: cn=Tagesschau,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Tagesschau,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Tagesschau
@@ -599,7 +599,7 @@ iPortEntryButton: Tagesschau
 iPortEntryPriv:	guest
 
 # Telepolis
-dn: cn=Telepolis,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=Telepolis,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Telepolis
@@ -614,7 +614,7 @@ iPortEntryButton: Telepolis
 iPortEntryPriv:	guest
 
 # invis Projekt
-dn: cn=invis Server,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=invis Server,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Server
@@ -629,7 +629,7 @@ iPortEntryButton: invis Server
 iPortEntryPriv:	guest
 
 # invis Forum
-dn: cn=invis Forum,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=invis Forum,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Forum
@@ -644,7 +644,7 @@ iPortEntryButton: invis Forum
 iPortEntryPriv:	guest
 
 # invis Wiki
-dn: cn=invis Wiki,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=invis Wiki,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Wiki
@@ -659,7 +659,7 @@ iPortEntryButton: invis Wiki
 iPortEntryPriv:	guest
 
 # Leo DE-EN
-dn: cn=DictEN,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=DictEN,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictEN
@@ -674,7 +674,7 @@ iPortEntryButton: DE-EN Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-FR
-dn: cn=DictFR,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=DictFR,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictFR
@@ -689,7 +689,7 @@ iPortEntryButton: DE-FR Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-ES
-dn: cn=DictES,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=DictES,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictES
@@ -704,7 +704,7 @@ iPortEntryButton: DE-ES Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-IT
-dn: cn=DictIT,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=DictIT,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictIT
@@ -719,7 +719,7 @@ iPortEntryButton: DE-IT Wörterbuch
 iPortEntryPriv:	guest
 
 # Leo DE-Chin
-dn: cn=DictCHi,cn=invis-Portal,cn=invis-server,dc=dhcptest,dc=loc
+dn: cn=DictCHi,cn=invis-Portal,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: DictCHi
