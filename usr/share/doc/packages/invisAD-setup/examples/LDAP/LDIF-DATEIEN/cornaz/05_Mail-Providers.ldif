@@ -1,7 +1,7 @@
 # Liste deutscher Mailprovider
 
 # Basisknoten Mailprovider-Liste
-dn: ou=Mailproviders,ou=Informationen,dc=invis-net,dc=loc
+dn: cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: organizationalUnit
 ou: Mailproviders
