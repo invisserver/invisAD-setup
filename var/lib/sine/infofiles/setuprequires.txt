@@ -2,17 +2,19 @@ Für die Installation eines invis Servers 10.0 AD müssen folgende Voraussetzung
 
     - Als Basis muss openSUSE Linux 13.1, möglichst ohne grafische Oberfläche installiert sein.
     
-    - Der Server muss über zwei Netzwerkkarten (extern & intern) verfügen. Beide Karten müssen vor
-      der Ausführung dieses Scripts konfiguriert sein. Schnittstelle 1 muss als externe
-      Schnittstelle zur Verbindung mit DSL-Modem oder Router eingerichtet sein. Bei Verbindung
-      mit einem Router empfielt es sich auf diesem einen DHCP-Server zu starten und "extern" als
-      DHCP-Client einzurichten. Wird ein DSL-Modem verwendet, muss eth0 als DSL-Schnittstelle
-      eingerichtet und die Internetverbindung funktionstüchtig sein.
-      Schnittstelle 2 (intern) muss mit einer festen IP-Adresse versehen werden.
-      Die Einrichtung der Netzwerkkarten kann per YaST vorgenommen werden.
-      
+    - Der Server muss über zwei Netzwerkkarten (extern & intern) verfügen, die Netzwerk-
+      schnittstellen müssen mit Hilfe von Udev-Regeln "extern" und "intern" benannt werden.
       Zur Erzeugung von Udev-Regeln zur korrekten Bennenung der Netzwerkschnittstellen ist das
-      Script "netsetup" anzuwenden.
+      Script "netsetup" anzuwenden. Nach Anwendung des Scripts muss der Server neu gestartet
+      werden. Die anschließende Einrichtung der Netzwerkkarten kann per YaST vorgenommen werden.
+      Schnittstelle 1 muss als externe Schnittstelle zur Verbindung mit DSL-Modem oder Router
+      eingerichtet sein. Bei Verbindung mit einem Router empfielt es sich auf diesem einen 
+      DHCP-Server zu starten und "extern" als DHCP-Client einzurichten. Wird ein DSL-Modem 
+      verwendet, muss "extern" als DSL-Schnittstelle eingerichtet und die Internetverbindung
+      funktionstüchtig sein.
+      Schnittstelle 2 (intern) muss mit einer festen IP-Adresse versehen werden.
+      Die Einrichtung der Netzwerkkarten muss vor der Ausführung des invis-Setup-Scripts "sine"
+      erfolgt sein.
       
     - Der Server muss vor Ausführung des Setup-Scripts über einen vollständigen Hostnamen verfügen.
       Der Hostname kann ebenfalls per YaST gesetzt werden und sollte dem Muster "Hostname.Domain.tld"
@@ -31,4 +33,3 @@ Für die Installation eines invis Servers 10.0 AD müssen folgende Voraussetzung
             https://portal.enterprisesamba.com/users/sign_in 
       Registrieren. Das invis-Setup-Script "sine" wird Sie nach "Username" und "Accesskey" fragen. 
       Die Registrierung ist kostenlos.
-      
