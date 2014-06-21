@@ -24,6 +24,8 @@ changevalues() {
 # Samba Updates verändern die Rechte an Verzeichnissen unter /var/lib/samba
 chown -R ."Domain Admins" /var/lib/samba/drivers
 chown -R ."Domain Users" /var/lib/samba/profiles
+chmod go+rx /var/lib/samba/private
+
 chmod 1777 /var/lib/samba/profiles
 
 if [[ -f /sbin/mount.cifs ]]; then
