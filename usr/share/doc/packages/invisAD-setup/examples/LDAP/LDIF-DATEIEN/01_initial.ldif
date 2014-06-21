@@ -31,7 +31,7 @@ CN: invis-Portal
 description: Basis fuer die Eintraege des invis-Portals
 
 # Basisknoten Information
-dn: CN=Information,CN=invis-Server,dc=invis-net,dc=loc
+dn: CN=Informationen,CN=invis-Server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: container
 CN: Information
