@@ -34,7 +34,7 @@ description: Basis fuer die Eintraege des invis-Portals
 dn: CN=Informationen,CN=invis-Server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: container
-CN: Information
+CN: Informationen
 description: Basis fuer abrufbare Informationen
 
 # Basisknoten Kontakt
