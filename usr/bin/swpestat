@@ -33,7 +33,9 @@ fi
 # echo $uid $zsso
 
 # Basis-Variablen
-basedn=`getconfdata $conffile "baseDN" "2"`
+# Im AD befinden sich die invis-Server LDAP-Eintraege
+# an einer anderen Stelle im LDAP als in OpenLDAP
+basedn=`getconfdata $conffile "invisADNode" "2"`
 binddn="uid=admin,$basedn"
 
 bindpw=`getconfdata $passfile "MasterPW" "2"`
