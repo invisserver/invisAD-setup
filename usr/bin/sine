@@ -1197,8 +1197,9 @@ samba_ad() {
 	strings="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $file "$strings"
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
-    
+
     # Schemaerweiterung Attributtypen einpflegen
+    pgsubtitle="LDAP Schema-Erweiterungen werden eingepflegt"
     { for attrfile in `ls $setupdir/schema/*-ad-attributes-schema.ldif`; do
 	ldbadd -v -H /var/lib/samba/private/sam.ldb $attrfile --option="dsdb:schema update allowed"=true
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1209,7 +1210,7 @@ samba_ad() {
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
     ## LDIF-Dateien vorbereiten
-    pgsubtitle="LDAP System wird konfiguriert"
+    pgsubtitle="Ergänzende LDAP Daten werden vorbereitet"
     mkdir $setupdir/ldif 2>&1| tee -a $setupdir/sine.log | pgbox
     
     { for x in `find $cfilesdir/LDAP/LDIF-DATEIEN -name "*.ldif"`; do
@@ -1346,7 +1347,7 @@ samba_ad() {
     fi
 
     # LDAP fuellen
-    pgsubtitle="Das LDAP Verzeichnis wird aufgebaut"
+    pgsubtitle="Ergänzende LDAP Daten werden eingepflegt"
     { for x in $path/*; do
 	#echo $x
 	 ldbadd -v -H /var/lib/samba/private/sam.ldb $x
