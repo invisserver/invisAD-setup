@@ -35,7 +35,7 @@ mustContain: fspExtMailProto
 mustContain: fspExtMailUserName
 mustContain: fspExtMailUserPW
 mustContain: fspLocalMailAddress
-mayContain: FSPMailfetchOpts
+mayContain: FSPMailFetchOpts
 defaultObjectCategory: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=s4ad-net,dc=loc
 
 dn: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=s4ad-net,dc=loc
@@ -84,7 +84,7 @@ mayContain: fspMailProviderPOPSSL
 mayContain: fspMailProviderIMAPSSL
 mayContain: fspMailProviderSMTPPort
 mayContain: fspMailProviderSMTPTLS
-mayContain: fspMailProviderUsername
+mayContain: fspMailProviderUserName
 mayContain: fspMailProviderDescription
 defaultObjectCategory: CN=fspMailProvider,CN=Schema,CN=Configuration,dc=s4ad-net,dc=loc
 
