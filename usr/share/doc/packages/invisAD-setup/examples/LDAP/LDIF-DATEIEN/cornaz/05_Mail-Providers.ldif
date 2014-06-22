@@ -249,13 +249,13 @@ fspMailProviderDescription: SMTP-Auth
 dn: cn=strato,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
-cn: strator
+cn: strato
 fspMailProviderVendor: Strato AG
 fspMailProviderPOP: pop3.strato.de
 fspMailProviderIMAP: imap.strato.de
 fspMailProviderSMTP: smtp.strato.de
 fspMailProviderPOPSSL: TRUE
-fspMailProviderIMAPSSL: TRUEE
+fspMailProviderIMAPSSL: TRUE
 fspMailProviderSMTPPort: 25
 fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: Mailaccount@ihredomain.xyz
