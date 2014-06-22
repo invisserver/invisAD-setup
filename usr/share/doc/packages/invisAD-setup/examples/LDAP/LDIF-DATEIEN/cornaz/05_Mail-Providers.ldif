@@ -8,10 +8,10 @@ cn: Mailproviders
 description: Liste deutscher Mailprovider
 
 # FSP Computer & Netzwerke 
-dn: fspMailProvider=fsp,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=fsp,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
-fspMailProvider: fsp
+cn: fsp
 fspMailProviderVendor: FSP Computer und Netzwerke
 fspMailProviderPOP: mail2.fspisp.de
 fspMailProviderSMTP: mail2.fspisp.de

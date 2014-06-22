@@ -73,6 +73,7 @@ lDAPDisplayName: fspMailProvider
 description: Informations about Mail-Servers
 subClassOf: top
 objectClassCategory: 1
+mustContain: cn
 mustContain: fspMailProviderVendor
 mayContain: fspMailProviderPOP
 mayContain: fspMailProviderIMAP
