@@ -38,10 +38,11 @@ fspMailProviderUsername: Email-Adresse
 fspMailProviderDescription: SMTP-Auth, Versand und Empfang nur verschlüsselt
 
 # GMX 
-dn: fspMailProviderVendor=gmx,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=gmx,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
-fspMailProviderVendor: gmx
+cn: gmx
+fspMailProviderVendor: GMX
 fspMailProviderPOP: pop.gmx.net
 fspMailProviderIMAP: imap.gmx.net
 fspMailProviderSMTP: mail.gmx.net
@@ -53,7 +54,7 @@ fspMailProviderUsername: GMX-Kundennummer oder GMX-email-Adresse
 fspMailProviderDescription: IMAP ist nur in den Tarifen ProMail und TopMail verfügbar. SMTP-Auth oder Pop vor SMTP
 
 # Google Mail
-dn: fspMailProviderVendor=gmail,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=gmail,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 cn: gmail
