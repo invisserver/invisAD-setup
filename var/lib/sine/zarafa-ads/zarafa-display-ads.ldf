@@ -1,0 +1,21 @@
+dn: CN=zarafaDynamicGroup-Display,<ConfigurationContainerDN>
+changetype: ntdsSchemaAdd
+instanceType: 4
+classDisplayName: Zarafa Dynamic Group
+objectCategory: CN=Display-Specifier,<SchemaContainerDN>
+objectClass: displaySpecifier
+treatAsLeaf: FALSE
+
+dn: CN=zarafaAddresslist-Display,<ConfigurationContainerDN>
+changetype: ntdsSchemaAdd
+instanceType: 4
+classDisplayName: Zarafa Addresslist
+objectCategory: CN=Display-Specifier,<SchemaContainerDN>
+objectClass: displaySpecifier
+treatAsLeaf: FALSE
+
+dn:
+changetype: modify
+replace: schemaUpdateNow
+schemaUpdateNow: 1
+-

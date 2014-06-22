@@ -1,0 +1,33 @@
+Zarafa AD Schema Installer 1.5 for Samba 4 AD
+=============================================
+
+Changes since version 1.4
+-------------------------
+
+ * Fix check for dos2unix
+ * Fix bug, that was triggered by the verbose mode
+
+Changes since version 1.3
+-------------------------
+
+ * Add check for dos2unix
+ * Fix debug messages
+
+Changes since version 1.2
+-------------------------
+
+ * Improve check for correct ldb-tools version
+
+Changes since version 1.1
+-------------------------
+
+ * Check for correct version of ldb-tools
+ * Check for sane bash version
+ * Start to go for compatibility with other shells
+ * Add missing adminMultiselectPropertyPages to DisplaySpecifiers
+
+
+Changes since version 1.0
+-------------------------
+
+ * Import new Zarafa AD schema extension from zcp-7.1.1-37812

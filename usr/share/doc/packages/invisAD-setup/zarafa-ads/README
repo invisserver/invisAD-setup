@@ -1,0 +1,68 @@
+Zarafa AD Schema Installer for Samba 4 AD
+=========================================
+
+Using Zarafa with a Samba4 Active Directory domain controller.
+
+At first a word of warning! Since Samba4 is still in alpha status, it is not
+recommended to put it in to production use.
+
+This software is freely distributable under the GNU public license.
+For more information read "License" at the end of this README file.
+
+
+Description
+-----------
+
+The script zarafa_schema_add.sh prepares and adds the Zarafa Active Directory
+schema extensions to a Samba 4 Active Directory domain controller.
+
+The two files zarafa-ads.ldf and zarafa-display-ads.ldf contain the Zarafa
+schema extensions for Active Directory and are those that Zarafa ships with its
+7.1.1-37812 release in zarafaads.exe. 
+
+First of all, you will of course need Samba4. For general instructions on how
+to build an configure Samba4, please refer to the excellent Samba4-HOWTO at
+http://wiki.samba.org/index.php/Samba4/HOWTO
+
+Or you could just use the SerNet samba4app
+(www.enterprisesamba.com/samba4ad/samba-4-appliance).
+
+Make sure that you got the Samba4 part right by joining a Windows workstation
+to the domain and install the Windows Remote ServerAdministration Tool (RSAT)
+on that workstation. You will find detailed instructions about that in the
+Samba4-HOWTO, too. Make sure that you can use the Microsoft Management Console
+(MMC) to administer your AD. If everything works out well here run the script
+zarafa_schema_add.sh on your Samba4 server.
+
+For the script to work, you'll need the following programms on your system: cut,
+sort, tail, dos2unix, sed, head, readlink. 
+
+Just run zarafa_schema_add.sh -h to get instructions about the correct
+parameters for the installation.  The installation of the schema extension might
+take several minutes. The next step is to run the zarafaads.exe on your Windows
+workstation. This will install and register a dll that provides the
+Zarafa-specific gui-elements in the MMC. You need to do that on every
+workstation that you want to use for administration of your AD. After that you
+can configure your Zarafa-server for AD-Mode.
+
+Have fun and report your success or mishaps in the Forums.
+
+
+License information
+-------------------
+
+Copyright (C) 2012  Björn Baumbach <bb@sernet.de>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+

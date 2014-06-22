@@ -6,7 +6,7 @@ dn: cn=invisfqdn,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
 cn: invisfqdn
 objectClass: top
 objectClass: iscDhcpServer
-iscDhcpServiceDN: cn=DHCP Config,CN=DHCP-SERVER,cn=invis-server,dc=invis-net,dc=loc
+iscDhcpServiceDN: cn=DHCP Config,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
 
 # Basis Konfiguration
 dn: cn=DHCP Config,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc

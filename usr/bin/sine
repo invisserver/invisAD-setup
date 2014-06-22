@@ -1414,9 +1414,14 @@ dhcp() {
     # Konfiguration des DHCP Servers wird angepasst
     path="/etc"
     file="dhcpd.conf"
+    domain=`getconfdata "Domain" "2"`
+    strings="invis-net.loc%$domain"
+    changevalues $path $file "$strings"
+
     ldappw=`getconfdata "LDAPreadonlyPW" "2"`
     strings="ldap-secret%$ldappw"
     changevalues $path $file "$strings"
+
     basedn=`getconfdata "baseDN" "2"`
     strings="dc=invis-net,dc=loc%$basedn"
     changevalues $path $file "$strings"
