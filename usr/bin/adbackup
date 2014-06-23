@@ -1,0 +1,12 @@
+#!/bin/bash
+# (c) 2014 Ingo Goeppert - invis-server.org
+# (c) 2014 Stefan Schaefer - invis-server.org
+
+BACKUPDIR="/srv/shares/archiv/dbsicherungen/ad"
+DATUM=$(date +%Y%m%d)
+
+if [[ ! -d $BACKUPDIR ]]; then
+    mkdir -p $BACKUPDIR
+fi
+
+tar -czf $BACKUPDIR/Samba_$DATUM.tar.gz --exclude=profiles --exclude=msg.* --exclude=ldapi --exclude=pipe --exclude=socket --exclude=ldapi -C / var/cache/samba var/lib/samba
