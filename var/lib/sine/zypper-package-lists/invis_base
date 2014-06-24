@@ -8,7 +8,6 @@ perl-Jcode
 perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-MapUTF8
-smbldap-tools
 apache2-worker
 apache2-mod_fcgid
 apache2-mod_proxy_html

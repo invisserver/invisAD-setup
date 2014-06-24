@@ -157,13 +157,24 @@ chkservice() {
 }
 
 # Passwoerter sicher aendern
-smbldappw() {
-    exitcode=1
-    clear
-    while [[ $exitcode != 0 ]]; do
-	smbldap-passwd $1
-	exitcode=${?}
+smbadpw() {
+    ok=0
+    while (( $ok != "1" ));do
+	dialog --backtitle "$dialogtitle" --title "Benutzer Passwort ändern" --insecure --passwordform "$dialogshorthelp\n\n
+Geben Sie das Passwort für Benutzer $1 ein.\n\n
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
+	"Benutzer Passwort:" 2 2 "" 2 23 10 0\
+	"Kontrolle:" 2 36 "" 2 47 10 0\
+	2>$setupdir/sine_temp
+	usersecrets=(`cat $setupdir/sine_temp`)
+
+	    if [[ ${usersecrets[0]} == ${usersecrets[1]} ]] && (( ${#usersecrets[0]} >= 6 ));then
+		ok=1
+	    fi
     done
+    newpw="${usersecrets[0]}"
+
+    samba-tool user setpassword $1 --newpassword="$newpw"
 }
 
 # Installationsvoraussetzungen prüfen
@@ -515,17 +526,7 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
 	cyruspw="${cyrussecrets[0]}"
     fi
 
-#---# Samba Pakete
-    # Es kann entschieden werden, welche Samba-Pakete verwendet werden.
-    # Zur Auswahl stehen Pakete des openSUSE-Samba:Stable Repos oder die Pakete von Sernet
-#    dialog --backtitle "$dialogtitle" --title "Samba File Server" --radiolist "$dialogshorthelp\n\n
-#Wählen Sie die von Ihnen bevorzugten Samba Pakete aus." 14 85 5 \
-#	openSUSE "Distributionsversion, kürzere Maintenance." on\
-#	Sernet "Samba4 LTS-Pakete für openSUSE 13.1 von Sernet." off\
-#	2>$setupdir/sine_temp
-#	whichsamba=`cat $setupdir/sine_temp`
-#	whichsamba=`tolower $whichsamba`
-#	
+#---# Samba Pakete - Es muessen zwingend die Sernet-Pakete verwendet werden
 #---# Zugangsdaten fuer Sernet-Repo abfragen
     whichsamba="sernet"
     ok=0
@@ -1177,6 +1178,13 @@ samba_ad() {
     samba-tool user add ldap.readonly "$ldappw" --surname="LDAP" --given-name="ReadOnly" --description="Lesebenutzer fuer LDAP-Login" 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    # User fuer Junk-Postfach anlegen
+    samba-tool user add junk "$ldappw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group addmembers "Domain Guests" junk 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $setupdir/sine.log | pgbox
+    smbadpw junk
+    
     # Primary Group?
 
     # Sernet-Samba AD stoppen
@@ -1358,6 +1366,37 @@ samba_ad() {
     # phpldapadmin konfigurieren
     # Installation entfaellt, da es per rpm installiert wird.
     cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
+
+    # Anbinden des Servers an die LDAP-Benutzerdatenbank (LDAP-Client via sssd und PAM, Client verwendet STARTTLS)
+    #cp $cfilesdir/LDAP/conf-client/openldap/ldap.conf /etc/openldap/ldap.conf 2>&1| tee -a $setupdir/sine.log
+    #path="/etc/openldap"
+    #file="ldap.conf"
+    #strings="dc=invis-net,dc=loc%$basedn"
+    #changevalues $path $file "$strings"
+
+    #cp $cfilesdir/LDAP/conf-client/ldap.conf /etc/ldap.conf 2>&1| tee -a $setupdir/sine.log
+    #path="/etc"
+    #strings="dc=invis-net,dc=loc%$basedn"
+    #changevalues $path $file "$strings"
+
+    #cp $cfilesdir/LDAP/conf-client/ldap /etc/sysconfig/ldap 2>&1| tee -a $setupdir/sine.log
+    #path="/etc/sysconfig"
+    #file="ldap"
+    #strings="dc=invis-net,dc=loc%$basedn"
+    #changevalues $path $file "$strings"
+    
+    #cp $cfilesdir/LDAP/conf-client/sssd/sssd.conf /etc/sssd/ 2>&1| tee -a $setupdir/sine.log
+    #path="/etc/sssd"
+    #file="sssd.conf"
+    #strings="dc=invis-net,dc=loc%$basedn"
+    #changevalues $path $file "$strings"
+    #chmod 600 /etc/sssd/sssd.conf
+    
+    #cp $cfilesdir/LDAP/conf-client/nsswitch.conf /etc/nsswitch.conf 2>&1| tee -a $setupdir/sine.log
+    #cp $cfilesdir/LDAP/conf-client/pam.d/*-pc /etc/pam.d/ 2>&1| tee -a $setupdir/sine.log
+
+    # sssd neu starten
+    #chkservice "sssd"
 
     writeprepstat "dns"
     waitbox "samba_ad" "dns"
@@ -1641,7 +1680,7 @@ esac
     # Mailman einrichten ????
     clear
     windowtitle="Mailman Installation"
-    dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/mailman.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Mailman installieren?" 0 0
+    dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/mailman.txt" 28 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Mailman installieren?" 0 0
     cont=${?}
 
     if [[ $cont == "0" ]]; then
@@ -1687,11 +1726,11 @@ cups() {
     chkservice "cups"
 
     writeprepstat "webserver"
-    waitbox "cups" "webserver"
+    waitbox "cups" "fileserver"
 }
 
 # Samba-Server einrichten (wird uebersprungen)
-samba() {
+fileserver() {
     cd $setupdir
     clear
     windowtitle="Samba Server"
@@ -1702,13 +1741,13 @@ samba() {
     smbhostname=`echo $hn | tr [a-z] [A-Z]`
     masterpw=`getconfdata "MasterPW" "2"`
     av=`getconfdata "AV" "2"`
-    whichsamba=`getconfdata "SambaPakete" "2"`
+#    whichsamba=`getconfdata "SambaPakete" "2"`
     domain=`getconfdata "Domain" "2"`
     netbase=`getconfdata "Networkbase" "2"`
     nmaskshort=`getconfdata "NMask-short" "2"`
     smbdom=`getconfdata "Workgroup" "2"`
     ddns=`getconfdata "DDNS" "2"`
-    cp $cfilesdir/fileserver/samba/smb.conf /etc/samba 2>&1| tee -a $setupdir/sine.log
+#    cp $cfilesdir/fileserver/samba/smb.conf /etc/samba 2>&1| tee -a $setupdir/sine.log
     # Scriptvorlage fuer das Verschieben der Windows-Bibliotheken kopieren
     cp $cfilesdir/fileserver/service/Win_Scripts/movelibdirs.cmd /etc/invis/templates/ 2>&1| tee -a $setupdir/sine.log
     unix2dos /etc/invis/templates/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1742,21 +1781,10 @@ samba() {
     changevalues $path $file "$strings"
 
     # Anpassen der Datei smb.conf
-
     path="/etc/samba"
     file="smb.conf"
-    strings="192.168.220.10%$ipaddr"
-    changevalues $path $file "$strings"
+    echo "include /etc/samba/smb.shares.conf" >> $path/$file
     
-    strings="I5-NET%$smbdom"
-    changevalues $path $file "$strings"
-    
-    strings="dc=i5-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    
-    strings="INVIS5%$smbhostname"
-    changevalues $path $file "$strings"
-
     if [[ $av == "beide" ]]; then
 	av="antivir"
     fi
@@ -1783,12 +1811,13 @@ samba() {
     smbpasswd -w $masterpw 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # Logon-Scripts werden kopiert und ins DOS-Format ueberfuehrt
-    cp $cfilesdir/fileserver/samba/logon-scripts/*.cmd /var/lib/samba/netlogon
-    unix2dos /var/lib/samba/netlogon/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
+    netlogonpath="/var/lib/samba/private/sysvol/$domain/scripts"
+    cp $cfilesdir/fileserver/samba/logon-scripts/*.cmd $netlogonpath
+    unix2dos $netlogonpath/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     # Samba4 wertet X-Bit aus
-    chmod +x /var/lib/samba/netlogon/*  2>&1| tee -a $setupdir/sine.log
+    chmod +x $netlogonpath/*  2>&1| tee -a $setupdir/sine.log
     
-    path="/var/lib/samba/netlogon"
+    path="$netlogonpath"
     file="user.cmd"
     strings="invis5%$hn"
     changevalues $path $file "$strings"
@@ -1804,86 +1833,9 @@ samba() {
     file="verwaltung.cmd"
     strings="invis5%$hn"
     changevalues $path $file "$strings"
-
-    # Ermitteln der Domänen-SID und eintragen derselben in die smbldap-tools Konfiguration
-    sid=`net getlocalsid|cut -d ":" -f 2`
-    sid=`echo $sid|tr -d " "`
-    path="/etc/smbldap-tools"
-    file="smbldap.conf"
-    strings="domSID%$sid"
-    changevalues $path $file "$strings"
-        
-    # Anbinden des Servers an die LDAP-Benutzerdatenbank (LDAP-Client via sssd und PAM, Client verwendet STARTTLS)
-    cp $cfilesdir/LDAP/conf-client/openldap/ldap.conf /etc/openldap/ldap.conf 2>&1| tee -a $setupdir/sine.log
-    path="/etc/openldap"
-    file="ldap.conf"
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-
-    cp $cfilesdir/LDAP/conf-client/ldap.conf /etc/ldap.conf 2>&1| tee -a $setupdir/sine.log
-    path="/etc"
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-
-    cp $cfilesdir/LDAP/conf-client/ldap /etc/sysconfig/ldap 2>&1| tee -a $setupdir/sine.log
-    path="/etc/sysconfig"
-    file="ldap"
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    
-    cp $cfilesdir/LDAP/conf-client/sssd/sssd.conf /etc/sssd/ 2>&1| tee -a $setupdir/sine.log
-    path="/etc/sssd"
-    file="sssd.conf"
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    chmod 600 /etc/sssd/sssd.conf
-    
-    cp $cfilesdir/LDAP/conf-client/nsswitch.conf /etc/nsswitch.conf 2>&1| tee -a $setupdir/sine.log
-    cp $cfilesdir/LDAP/conf-client/pam.d/*-pc /etc/pam.d/ 2>&1| tee -a $setupdir/sine.log
-
-    # sssd neu starten
-    chkservice "sssd"
-
-    # Bevölkern der Domäne mit den smbldap-tools. Minimale UID,GID & RID auf 3000 gesetzt, damit group-e die User gleich sieht.
-    pgsubtitle="Die Samba Domäne wird aufgebaut."
-    smbldap-populate -u 3000 -g 3000 -r 3000 2>&1| tee -a $setupdir/sine.log |pgbox
-
-    # Um über Samba neue Benutzer beispielsweise Maschinen-Konten beim Domaenenbeitritt on the fly erzeugen zu können
-    # benötigt Samba root-Rechte. Dafür wird im LDAP ein zweites root-Benutzerkonto angelegt.
-    msgbox "Geben Sie ein Passwort für \"root\" ein."
-
-    ### root PW im LDAP setzen
-    smbldappw root #| tee -a $setupdir/sine.log
-
-    # Grouppe fuer Maildummies anlegen
-    smbldap-groupadd -a -g 600 maildummies
-
-    # Mailkonto für SPAM-Mails einrichten
-    smbldap-useradd -g 600 -m -s /bin/false -c "Spam-Mail Konto" junk 2>&1| tee -a $setupdir/sine.log
-    msgbox "Geben Sie ein Passwort für das Spam-Benutzer-Konto \"junk\" ein."
-
-    ### junk PW im LDAP setzen
-    smbldappw junk #| tee -a $setupdir/sine.log
-
-    pgsubtitle="Es werden die Gruppen All und Verwaltung angelegt"
-    # Gruppe All fuer Group-e anlegen
-    smbldap-groupadd -a All -g 3000 2>&1| tee -a $setupdir/sine.log |pgbox
-    # Anlegen der Gruppe Verwaltung
-    smbldap-groupadd -a Verwaltung 2>&1| tee -a $setupdir/sine.log |pgbox
-
-    # Anlegen der Gruppe Verwaltung
-    smbldap-groupadd -a mobilusers 2>&1| tee -a $setupdir/sine.log |pgbox
-
-    pgsubtitle="Es wird ein Benutzkonto für den Domänen Administrator \"domadmin\" angelegt."
-    # Anlegen des Domaenenadministrators
-    smbldap-useradd -m -a -G "Domain Admins" -E admin.cmd -c "Windows Domaenen Administrator" domadmin 2>&1| tee -a $setupdir/sine.log |pgbox
-    msgbox "Geben Sie ein Passwort für \"domadmin\" ein."
-
-    # Passwort fuer domadmin setzen
-    smbldappw domadmin #| tee -a $setupdir/sine.log
     
     # SSSD Cache fuer ungueltig erklaeren
-    sss_cache -UG
+    #sss_cache -UG
 
     #Anpassen der Besitzrechte der Freigaben
     chown -R root:"Domain Users" /srv/shares/archiv 2>&1| tee -a $setupdir/sine.log
@@ -1895,18 +1847,9 @@ samba() {
     chown -R root:"Verwaltung" /srv/shares/verwaltung 2>&1| tee -a $setupdir/sine.log
 
     # Zielverzeichnis fuer aschenputtel anlegen
-    ## to be removed
-    #mkdir -p -m 2770 /srv/shares/portal/uploads 2>&1| tee -a $setupdir/sine.log
     chown root:"Domain Users" /srv/shares/portal/uploads 2>&1| tee -a $setupdir/sine.log
     # Download-Verzeichnis anlegen
-    ## to be removed
-    #mkdir -p -m 2775 /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
     chown domadmin:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
-
-    #Printer-Scripts kopieren
-    find /usr/share/doc/packages/ -type f -name smb*.pl -exec cp '{}' /usr/bin/ \; 2>&1| tee -a $setupdir/sine.log
-    chown root:"Domain Admins" /usr/bin/*printer.pl 2>&1| tee -a $setupdir/sine.log
-    chmod ug+x /usr/bin/*printer.pl 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Profilverzeichnisse
     chown root:"Domain Users" /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
@@ -1924,23 +1867,9 @@ Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt
     - Service: Dateien für den Domänen-Administrator, wie Software, Treiber und Patches.\n
     - Transfer: Freigabe für Dateiaustausch.\n
     - & Media: Freigabe für Multimedia-Dateien.\n\n
-Es wurde die Gruppe Verwaltung angelegt, sowie ein Benutzer domadmin, Mitglied der Gruppe Domain Admins.\n
-Ihr Server wurde darüber hinaus an die LDAP-Benutzerdatenbank angebunden.\n\n
-Benutzer lassen sich bequem über das invis Portal anlegen." "Samba Installation abgeschlossen."
+Es wurde die Gruppen Verwaltung, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
 
-    # Samba-Server starten und in Runlevel eintragen
-    # Sambaversion pruefen
-    if [[ $whichsamba == "sernet" ]]; then
-	path="etc/default"
-	file="sernet-samba"
-	strings="none%classic"
-	changevalues $path $file "$strings"
-	chkservice "sernet-samba-nmbd"
-	chkservice "sernet-samba-smbd"
-    else
-	chkservice "nmb"
-	chkservice "smb"
-    fi
+    systemctl restart sernet-samba-ad.service
 
     # NFSv4 Server vorbereiten -- aber nicht starten
     cp $cfilesdir/fileserver/nfs/exports_nfs4 /etc/exports  2>&1| tee -a $setupdir/sine.log
@@ -1956,7 +1885,7 @@ Benutzer lassen sich bequem über das invis Portal anlegen." "Samba Installation
     changevalues $path $file "$strings"
     
     writeprepstat "webserver"
-    waitbox "samba" "webserver"
+    waitbox "fileserver" "webserver"
 
 }
 
@@ -1965,6 +1894,7 @@ webserver() {
     cd $setupdir
     clear
     windowtitle="Web Server"
+    pgsubtitle="Webserver wird vorbereitet"
     waitinfobox "Ihr Webserver sowie das invis-Portal werden eingerichtet.
 Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
     fqdn=`getconfdata "FQDN" "2"`
@@ -2127,6 +2057,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     a2enflag SSL
     
     # Webserver, shellinabox, fetchmail und Mailman neustarten und in Runlevel integrieren
+    pgsubtitle "Mehrere Dienste werden neu gestartet"
     chkservice "fetchmail"
     chkservice "shellinaboxd-invis"
     chkservice "apache2"
