@@ -38,9 +38,12 @@ $USER_PW_MIN_STRENGTH = '80'; // 0 = Check disabled, 100 = Max
 // LDAP
 $LDAP_TLS = "no"; //wird bisher nur von cornaz verwendet
 $LDAP_SERVER = 'ldap://localhost';
-$LDAP_SUFFIX = "cn=invis-server".",dc=".$DOMAIN_PARTS[1] .",dc=". $DOMAIN_PARTS[2];
+$LDAP_SUFFIX = "dc=".$DOMAIN_PARTS[1] .",dc=". $DOMAIN_PARTS[2];
+$LDAP_SUFFIX_PORTAL = "cn=invis-Portal,cn=Informationen,cn=invis-server,$LDAP_SUFFIX";
+$LDAP_SUFFIX_MAILPROVIDES = "cn=mailproviders,cn=Informationen,cn=invis-server,$LDAP_SUFFIX";
 
-$LDAP_BIND_DN = "uid=admin,$LDAP_SUFFIX";
+$LDAP_ADMIN = "administrator";
+$LDAP_BIND_DN = "$LDAP_ADMIN@$DOMAIN";
 $LDAP_BIND_PW = 'master-secret';
 
 $BASE_DN_ACCOUNT = "ou=Benutzerverwaltung,$LDAP_SUFFIX";

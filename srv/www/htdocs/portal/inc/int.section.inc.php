@@ -138,7 +138,7 @@ function linksModResponse(request) {
 	// global links
 	echo '<h3>Global</h3><span>Die hier aufgeführten Links können an Ihre Anforderungen angepasst werden.</span>';
 	echo '<ul id="global-links">';
-	$result1 = search($conn, "ou=iPortal,ou=Informationen,$LDAP_SUFFIX", 'iPortEntryPosition=Internet');
+	$result1 = search($conn, "$LDAP_SUFFIX_PORTAL", 'iPortEntryPosition=Internet');
 	if ($result1) {
 		$groups = array();
 		unset($result1['count']);

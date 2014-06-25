@@ -32,7 +32,7 @@ $bind = bind($conn);
 
 $server = isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'];
 
-$result = search($conn, "ou=iPortal,ou=Informationen,$LDAP_SUFFIX", 'iportentryposition=lokal');
+$result = search($conn, "$LDAP_SUFFIX_PORTAL", 'iportentryposition=lokal');
 if ($result) {
 	echo '<table>';
 	for($i = 0; $i < $result['count']; $i++) {

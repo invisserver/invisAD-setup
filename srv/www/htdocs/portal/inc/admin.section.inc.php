@@ -38,7 +38,7 @@ $server = isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://
 // ab hier von "wurzel" -- Links im Adminbereich mit abweichenden Ports funktionieren jetzt.
 $serverNoPort = isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['SERVER_ADDR'] : 'http://'.$_SERVER['SERVER_ADDR'];
 
-    $result = search($conn, "ou=iPortal,ou=Informationen,$LDAP_SUFFIX", 'iportentryposition=administration');
+    $result = search($conn, "$LDAP_SUFFIX_PORTAL", 'iportentryposition=administration');
     if ($result) {
             for($i = 0; $i < $result['count']; $i++) {
                     $entry = cleanup($result[$i]);
