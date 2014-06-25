@@ -5,6 +5,7 @@ Examples file
 To test any of the functions, just change the 0 to a 1.
 */
 require_once('../config.php');
+require_once('../ldap.php');
 
 // Array mit Globalvariablen bilden
 $options = array(
@@ -30,8 +31,10 @@ echo ("<pre>\n");
 
 // authenticate a username/password
 if (1) {
-	$result = $adldap->authenticate("administrator", 'P@$$w0rd');
-	var_dump($result);
+	$result = $adldap->authenticate("stefan", 'P@$$w0rd');
+	if ($result == true) {
+	    var_dump($result);
+	}
 }
 
 // add a group to a group
@@ -58,7 +61,7 @@ if (0) {
 }
 
 // retrieve information about a group
-if (1) {
+if (0) {
     // Raw data array returned
 	$result = $adldap->group()->info("Guests");
 	var_dump($result);
@@ -96,15 +99,22 @@ if (0) {
 }
 
 // retrieve information about a user
-if (0) {
+if (1) {
     // Raw data array returned
-	$result = $adldap->user()->info("username");
-	print_r($result);
+	$result = $adldap->user()->infoCollection("stefan", array("*"));
+	//print_r($result);
+	echo $result->givenname."<br>";
+	echo $result->sn."<br>";
+	echo $result->displayname."<br>";
+	echo $result->samaccountname."<br>";
+	echo adtstamp2date($result->accountExpires)."<br>";
+	echo ridfromsid(bin_to_str_sid($result->objectsid))."<br>";
+
 }
 
 // check if a user is a member of a group
-if (0) {
-	$result = $adldap->user()->inGroup("username","Group Name");
+if (1) {
+	$result = $adldap->user()->inGroup("stefan","mobilusers");
 	var_dump($result);
 }
 
