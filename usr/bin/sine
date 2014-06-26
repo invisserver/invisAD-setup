@@ -1361,6 +1361,24 @@ samba_ad() {
 	 ldbadd -v -H /var/lib/samba/private/sam.ldb $x
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
     
+    
+    # Bauen des Server-Schlüsselsatzes
+    cd /etc/ssl
+    msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
+Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
+
+    serverkeys ldap 2>&1| tee -a $setupdir/sine.log
+    chown -R :pkeys /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
+    chmod g+rx /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
+
+    ### TLS-Konfiguration muss noch in Samba integriert werden
+    file=/etc/samba/smb.conf
+    #sed 9i "tls enabled  = yes" $file
+#	tls keyfile  = /etc/ssl/private/ldap-key.pem
+#	tls certfile = /etc/ssl/certs/ldap-cert.pem
+#	tls cafile   = /etc/ssl/CA/cacert.pem
+
+    
     systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
     
     # phpldapadmin konfigurieren
