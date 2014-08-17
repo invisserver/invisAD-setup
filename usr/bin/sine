@@ -1811,6 +1811,10 @@ fileserver() {
     unix2dos /srv/shares/service/Win_Timeserver/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     unix2dos /srv/shares/service/VPN-Clients/Windows/vpn-client.ovpn
 
+    # Gruppen anlegen
+    samba-tool group add mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group add Verwaltung 2>&1| tee -a $setupdir/sine.log | pgbox
+
     # invisconnect-Script anpassen
     path="/srv/shares/service/VPN-Clients/Linux"
     file="invisconnect"
@@ -2947,7 +2951,7 @@ dokuwiki() {
     wget https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
     getpath=`find $setupdir -name "master.zip"`
     unzip $getpath -d /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 |pgbox
-
+    mv /srv/www/htdocs/dokuwiki/lib/plugins/dw-plugin-encryptedpasswords-master /srv/www/htdocs/dokuwiki/lib/plugins/encryptedpasswords
     chown -R wwwrun:www /srv/www/htdocs/dokuwiki
     
     # Konfigurieren
