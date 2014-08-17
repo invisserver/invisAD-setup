@@ -40,7 +40,8 @@ function bin_to_str_sid($binsid) {
 }
 
 function adtstamp2date($adtstamp) {
-    $unixtstamp = ($adtstamp / 10000000) - 116445600000;
+    $korrektur = ((1970-1601) * 365.242190) * 86400;
+    $unixtstamp = ($adtstamp / 10000000) - $korrektur;   //11644473600;
     $date = date("d.m.Y H:i", $unixtstamp);
     return $date;
 }

@@ -11,6 +11,8 @@
  * 
  * Copyright (c) 2006-2012 Scott Barnett, Richard Hyland
  * 
+ * Modified 2014 by Stefan Schaefer stefan@invis-server.org
+ *
  * We'd appreciate any improvements or additions to be submitted back
  * to benefit the entire community :)
  * 
@@ -376,7 +378,8 @@ class adLDAPUsers {
     
         // Convert MS's time to Unix time
         $status['expiryts'] = bcsub(bcdiv($pwdExpire, '10000000'), '11644473600');
-        $status['expiryformat'] = date('Y-m-d H:i:s', bcsub(bcdiv($pwdExpire, '10000000'), '11644473600'));
+        // modified to german date format.
+        $status['expiryformat'] = date('d.m.Y H:i:s', bcsub(bcdiv($pwdExpire, '10000000'), '11644473600'));
         
         return $status;
     }

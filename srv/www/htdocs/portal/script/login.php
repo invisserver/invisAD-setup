@@ -56,7 +56,8 @@
 		if ($EXTERNAL_ACCESS == true) {
 			//$USER_IS_ALLOWED = array_search($data['uid'], mobilUsers($conn)); //Anpassen auf adLDAP
 			$USER_IS_ALLOWED = $adldap->user()->inGroup($data['uid'],"mobilusers");
-			
+			$pwdexpiry = $adldap->user()->passwordExpiry($data['uid']);
+
 			if ($USER_IS_ALLOWED === false)
 			{
 			    error_log("Unauthorized access: User \"" . $data['uid'] . "\" is not a mobiluser (2, login.php).");
@@ -68,9 +69,8 @@
 					'displayname' => "$response->displayname", 
 					'sn' => "$response->sn", 
 					'cn' => "$response->givenname", 
-					'PWD_EXPIRE' => adtstamp2date("$response->accountExpires"),
+					'PWD_EXPIRE' => $pwdexpiry['expiryformat'],
 					'uidnumber' => ridfromsid(bin_to_str_sid("$response->objectsid")));
-			
 			$challenge = $adldap->authenticate($data['uid'], $data['pwd']);
 			error_log($challenge);
 			// test given password against

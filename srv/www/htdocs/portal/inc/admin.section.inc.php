@@ -3,6 +3,7 @@
  * inc/admin.section.php v1.0
  * portal drop-in, administration site, user/group/host and links for external tools
  * (C) 2009 Daniel T. Bender, invis-server.org
+ * (C) 2014 Stefan Schäfer, invis-server.org
  * (C) 2009 "wurzel" -- anonyme Spende aus unserem Forum -- Danke dafuer
  * License GPLv3
  * Questions: daniel@invis-server.org
@@ -69,7 +70,7 @@ $serverNoPort = isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['SERVER_ADDR'] : 
 				<h2>Kurzinfos</h2>
 <?php
 	
-$result = search($conn, "ou=iPortal,ou=Informationen,$LDAP_SUFFIX", 'iportentryposition=administration');
+$result = search($conn, "$LDAP_SUFFIX_PORTAL", 'iportentryposition=administration');
 if ($result) {
 	for($i = 0; $i < $result['count']; $i++) {
 		$entry = cleanup($result[$i]);

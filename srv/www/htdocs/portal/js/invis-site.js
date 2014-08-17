@@ -30,8 +30,8 @@ function initUserblock() {
 	var cookie = invis.getCookie('invis');
 	if (cookie != null) {
 		cookie = cookie.evalJSON();
-		var user_string = cookie.displayname;
-		if (user_string == null) user_string = cookie.uid;
+		var user_string = cookie.uid + " (" + cookie.displayname + ")";
+		//if (user_string == null) user_string = cookie.uid;
 		
 		var a_profil = new Element("a").update("Einstellungen");
 		a_profil.setStyle({'cursor': 'pointer'});
