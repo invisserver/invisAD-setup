@@ -2943,8 +2943,9 @@ dokuwiki() {
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 |pgbox
 
     # Encrypt Password Plugin
-    wget http://www.werbeagentur-willers.de/download/dokuwiki-plugins/encryptedpasswords.zip
-    getpath=`find $setupdir -name "encrypted*.zip"`
+    #wget http://www.werbeagentur-willers.de/download/dokuwiki-plugins/encryptedpasswords.zip
+    wget https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
+    getpath=`find $setupdir -name "master.zip"`
     unzip $getpath -d /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 |pgbox
 
     chown -R wwwrun:www /srv/www/htdocs/dokuwiki
@@ -2967,9 +2968,9 @@ dokuwiki() {
     changevalues $path $file "$strings"
     
     # Gruppen fuer Dokuwiki anlegen
-    smbldap-groupadd -a wiki-nutzer 2>&1 |pgbox
-    smbldap-groupadd -a wiki-redakteure 2>&1 |pgbox
-    smbldap-groupadd -a wiki-chefredakteure 2>&1 |pgbox
+    samba-tool group add wiki-nutzer 2>&1 |pgbox
+    samba-tool group add wiki-redakteure 2>&1 |pgbox
+    samba-tool group add wiki-chefredakteure 2>&1 |pgbox
     
     # ACL-Datei kopieren
     cp $cfilesdir/dokuwiki/acl.auth.php /srv/www/htdocs/dokuwiki/conf/
