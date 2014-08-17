@@ -1,12 +1,12 @@
 <?php
 
-/* index.php v1.1
+/* index.php v1.2
  * portal building script
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010 Stefan Schäfer, invis-server.org
+ * (C) 2010,2014 Stefan Schäfer, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
  * License GPLv3
- * Questions: http://forum.invis-server.org
+ * Questions: stefan@.invis-server.org
  */
 
 //
@@ -15,11 +15,29 @@
 
 require_once('inc/invis.inc.php');
 require_once('config.php');
+require_once('inc/adLDAP.php');
 require_once('ldap.php');
 
 //
 // PREPARATION
 //
+
+// Array mit Globalvariablen bilden
+$options = array(
+        'domain_controllers' => array("$FQDN"),
+        'account_suffix' => "@$DOMAIN",
+        'base_dn' => "$LDAP_SUFFIX",
+        'admin_username' => "$LDAP_ADMIN",
+        'admin_password' => "$LDAP_BIND_PW");
+	
+//adLDAP Klassenobjekt initialisieren
+try {
+	$adldap = new adLDAP($options);
+}
+catch (adLDAPException $e) {
+	echo $e;
+	exit();   
+}
 
 // check if request comes from internal address
 $EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
@@ -35,13 +53,10 @@ if (!$CONF -> load("portal.xml")) {
 $USER_DATA = null;
 $USER_IS_ADMIN = false;
 // load cookie for user-details
+// Pruefen, ob angemeldeter User Admin ist.
 if (isset($_COOKIE['invis'])) {
 	$USER_DATA = json_decode($_COOKIE['invis']);
-	// is admin?
-	$conn = connect();
-	$bind = bind($conn);
-	$USER_IS_ADMIN = (array_search($USER_DATA -> uid, ldapAdmins($conn)) !== false);
-	unbind($conn);
+	$USER_IS_ADMIN = $adldap->user()->inGroup($USER_DATA -> uid,"Domain Admins");
 }
 
 // set PARAMETERS
