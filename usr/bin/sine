@@ -2032,6 +2032,9 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 
     # php5-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
     echo "apc.rfc1867 = On" >> /etc/php5/conf.d/apc.ini
+    # die folgende Einstellung verhindert den Versuch die Klasse adLDAP mehrfach zu laden.
+    # gefunden bei Stack Overflow
+    echo "apc.include_once_override = 0" >> /etc/php5/conf.d/apc.ini
 
     # HTTPS-Port ändern
     cp $cfilesdir/webserver/listen.conf /etc/apache2/
