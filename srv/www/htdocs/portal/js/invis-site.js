@@ -51,7 +51,7 @@ function initUserblock() {
 		else if (cookie.PWD_RLZ <= 5)
 			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort läuft in <b style='color: #ff0000;'>" + cookie.PWD_RLZ + "</u> Tagen ab</span>");
 		else
-			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort ist gültig bis: <b>" + cookie.PWD_EXPIRE + "</b></span>");
+			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort ist gültig bis: <b style='color: #04B404;'>" + cookie.PWD_EXPIRE + "</b></span>");
 	}
 	else {
 		var a = new Element("a").update("Anmelden");
