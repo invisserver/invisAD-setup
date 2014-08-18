@@ -4,7 +4,7 @@
  * AJAX login-script, checking given password against ldap-stored ssha hash
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
- * (C) 2013 Stefan Schäfer, invis-server.org
+ * (C) 2013,2014 Stefan Schäfer, invis-server.org
  * License GPLv3
  * Questions: invis-user@ml.invis-server.org
  */
@@ -48,6 +48,11 @@
 		// get user information
 		$response = $adldap->user()->infoCollection($data['uid'], array("*"));
 		
+		// Passwortdaten ermitteln
+		$pwdexpiry = $adldap->user()->passwordExpiry($data['uid']);
+		// Restlaufzeit in Tagen des Passwortes ermitteln
+		$pwdrlz = intval(($pwdexpiry['expiryts'] - time()) / ( 60 * 60 * 24 ));
+		
 		// check if request comes from internal address
 		$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
 		$USER_IS_ALLOWED = true;
@@ -56,7 +61,6 @@
 		if ($EXTERNAL_ACCESS == true) {
 			//$USER_IS_ALLOWED = array_search($data['uid'], mobilUsers($conn)); //Anpassen auf adLDAP
 			$USER_IS_ALLOWED = $adldap->user()->inGroup($data['uid'],"mobilusers");
-			$pwdexpiry = $adldap->user()->passwordExpiry($data['uid']);
 
 			if ($USER_IS_ALLOWED === false)
 			{
@@ -70,6 +74,7 @@
 					'sn' => "$response->sn", 
 					'cn' => "$response->givenname", 
 					'PWD_EXPIRE' => $pwdexpiry['expiryformat'],
+					'PWD_RLZ' => $pwdrlz,
 					'uidnumber' => ridfromsid(bin_to_str_sid("$response->objectsid")));
 			$challenge = $adldap->authenticate($data['uid'], $data['pwd']);
 			error_log($challenge);

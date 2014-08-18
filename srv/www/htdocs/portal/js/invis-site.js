@@ -46,10 +46,10 @@ function initUserblock() {
 		$('userblock').insert(a_logout);
 		
 		$('userblock').insert("<br /><b>Benutzer:</b> <i>" + user_string + "</i>");
-		if (cookie.PWD_EXPIRE < 1)
+		if (cookie.PWD_RLZ < 1)
 			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort <b style='color: #ff0000;'>ist abgelaufen!</b></span>");
-		else if (cookie.PWD_EXPIRE <= 3)
-			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort läuft in <b style='color: #ff0000;'>" + cookie.PWD_EXPIRE + "</u> Tagen ab</span>");
+		else if (cookie.PWD_RLZ <= 5)
+			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort läuft in <b style='color: #ff0000;'>" + cookie.PWD_RLZ + "</u> Tagen ab</span>");
 		else
 			$('userblock').insert("<br /><span style='font-size: 0.95em;'>Ihr Passwort ist gültig bis: <b>" + cookie.PWD_EXPIRE + "</b></span>");
 	}
