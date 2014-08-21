@@ -1706,17 +1706,17 @@ esac
     # canonical-files anpassen
     file="canonical"
     fqdn=`getconfdata "FQDN" "2"`
-    strings="invis5.i5-net.loc%$fqdn"
+    strings="invis.invis-net.loc%$fqdn"
     changevalues $path $file "$strings"
     
     domain=`getconfdata "Domain" "2"`
-    strings="i5-net.loc%$domain"
+    strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
     postmap $path/$file
     
     file="s-canonical.cf"
     basedn=`getconfdata "baseDN" "2"`
-    strings="dc=i5-net,dc=loc%$basedn"
+    strings="dc=invis-net,dc=loc%$basedn"
     changevalues $path $file "$strings"
     
     adminpw=`getconfdata "AdminPW" "2"`
@@ -1725,7 +1725,7 @@ esac
 
     file="r-canonical.cf"
     basedn=`getconfdata "baseDN" "2"`
-    strings="dc=i5-net,dc=loc%$basedn"
+    strings="dc=invis-net,dc=loc%$basedn"
     changevalues $path $file "$strings"
 
     adminpw=`getconfdata "AdminPW" "2"`

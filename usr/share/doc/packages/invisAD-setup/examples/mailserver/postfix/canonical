@@ -279,8 +279,8 @@
 ## FSP Alle Emails von root werden an domadmin umgeleitet
 
 root domadmin@localhost
-root@localhost domadmin@localhost
-root@i5-net.loc domadmin@localhost
-root@localhost.i5-net.loc domadmin@localhost
-root@invis5.i5-net.loc domadmin@localhost
+root@localhost administrator@invis-net.loc
+root@invis-net.loc administrator@invis-net.loc
+root@localhost.invis-net.loc administrator@invis-net.loc
+root@invis.invis-net.loc administrator@invis-net.loc
 
