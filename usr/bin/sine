@@ -834,7 +834,7 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 #    adminpasshash=`slappasswd -s $adminpass`
 #    echo "AdminPW:$adminpass:$adminpasshash" >> $setupdir/invis_confdata
 
-    echo "LDAPreadonlyPW:$ldappw" >> $setupdir/invis_confdata
+    echo "LDAPAdminPW:$ldappw" >> $setupdir/invis_confdata
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
     echo "IMAPserver:$whichimap"  >> $setupdir/invis_confdata
@@ -1149,7 +1149,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 #    strings="admin-secret%$adminpw"
 #    changevalues $confdir $file "$strings"
 
-    ldappw=`getconfdata "LDAPreadonlyPW" "2"`
+    ldappw=`getconfdata "LDAPAdminPW" "2"`
     strings="ldap-secret%$ldappw"
     changevalues $confdir $file "$strings"
 
@@ -1212,10 +1212,11 @@ samba_ad() {
     chkservice "sernet-samba-ad"
 
     # User fuer LDAP-Lese-Zugang anlegen
-    ldappw=`getconfdata "LDAPreadonlyPW" "2"`
-    samba-tool user add ldap.readonly "$ldappw" --surname="LDAP" --given-name="ReadOnly" --description="Lesebenutzer fuer LDAP-Login" 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
+    ldappw=`getconfdata "LDAPAdminPW" "2"`
+    samba-tool user add ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
+    #samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
+    #samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group removemembers "Administrators" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # User fuer Junk-Postfach anlegen
     samba-tool user add junk "$ldappw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1513,7 +1514,7 @@ dhcp() {
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
 
-    ldappw=`getconfdata "LDAPreadonlyPW" "2"`
+    ldappw=`getconfdata "LDAPAdminPW" "2"`
     strings="ldap-secret%$ldappw"
     changevalues $path $file "$strings"
 
