@@ -36,20 +36,20 @@ fi
 # Im AD befinden sich die invis-Server LDAP-Eintraege
 # an einer anderen Stelle im LDAP als in OpenLDAP
 basedn=`getconfdata $conffile "invisADNode" "2"`
-binddn="uid=admin,$basedn"
+binddn=`getconfdata $conffile "LDAPAdmin" "2"`
 
-bindpw=`getconfdata $passfile "MasterPW" "2"`
+bindpw=`getconfdata $passfile "LDAPAdminPW" "2"`
 ldaphost=`getconfdata $conffile "ldapHost" "2"`
 
 function lds { 
     ldapsearch -LLL -x -h $ldaphost -D $binddn -w $bindpw -b $1 $2
 }
 # IFS so aendern, dass die nachfolgende for-Schleife nur noch "newlines" als Listentrenner akzeptiert.
-searchbase="ou=iPortal,ou=Informationen,$basedn"
-filter="(&(iPortEntryName=$search)(objectclass=iPortEntry))"
+searchbase="cn=invis-Portal,cn=Informationen,$basedn"
+filter="(&(cn=$search)(objectclass=iPortEntry))"
 
 # DN des zu aendernden iPortEntry Knotens 
-ipedn="iPortEntryName=$search,$searchbase"
+ipedn="cn=$search,$searchbase"
 
 # Status aendern
 line1="dn: $ipedn\n"
