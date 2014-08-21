@@ -2404,7 +2404,7 @@ case "$whichimap" in
 	# Konfigurationsdaten einlesen
 	domain=`getconfdata "Domain" "2"`
 	basedn=`getconfdata "baseDN" "2"`
-	ldapmasterpw=`getconfdata "MasterPW" "2"`
+	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
 
 	# Datenbank Zugang in Zarafa Konfiguration einfuegen usw.
 	path="/etc/zarafa"
@@ -2423,7 +2423,7 @@ case "$whichimap" in
 
 	# LDAP Konfiguration anpassen
 	file="ldap.cfg"
-	strings="master-secret%$ldapmasterpw"
+	strings="admin-secret%$ldapmasterpw"
 	changevalues $path $file "$strings"
 
 	strings="dc=zarafa,dc=com%$basedn"
