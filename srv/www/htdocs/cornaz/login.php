@@ -26,7 +26,13 @@ $_SESSION["corpassword"] = $corpassword;
 
 
 # Login am IMAP-Server
-$login = @imap_open("{localhost:143/tls/novalidate-cert}INBOX", $corusername, $corpassword);
+if ($GROUPWARE == "zarafa") {
+    $login = imap_open("{localhost:993/imap/ssl/novalidate-cert}INBOX", $corusername, $corpassword);
+} else {
+    $login = imap_open("{localhost:143/novalidate-cert}INBOX", $corusername, $corpassword);
+}
+//$login = imap_open("{localhost:143/notls}INBOX", $corusername, $corpassword);
+
 if ($login == false) {
 	echo "<p><center><b>$corprogram</b></center><p>";
 	echo "<hr size=\"1\" noshade width=\"300\" center><p>";
