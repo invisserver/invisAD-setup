@@ -39,21 +39,21 @@ $USER_PW_MIN_STRENGTH = '80'; // 0 = Check disabled, 100 = Max
 $LDAP_TLS = "no"; //wird bisher nur von cornaz verwendet
 $LDAP_SERVER = 'ldap://localhost';
 $LDAP_SUFFIX = "dc=".$DOMAIN_PARTS[1] .",dc=". $DOMAIN_PARTS[2];
-$LDAP_SUFFIX_PORTAL = "cn=invis-Portal,cn=Informationen,cn=invis-server,$LDAP_SUFFIX";
-$LDAP_SUFFIX_MAILPROVIDES = "cn=mailproviders,cn=Informationen,cn=invis-server,$LDAP_SUFFIX";
+$LDAP_INVIS_SUFFIX = "cn=invis-server,$LDAP_SUFFIX";
+$LDAP_SUFFIX_PORTAL = "cn=invis-Portal,cn=Informationen,$LDAP_INVIS_SUFFIX";
+$LDAP_SUFFIX_MAILPROVIDES = "cn=mailproviders,cn=Informationen,$LDAP_INVIS_SUFFIX";
 
-$LDAP_ADMIN = "administrator";
+$LDAP_ADMIN = "ldap.admin";
 $LDAP_BIND_DN = "$LDAP_ADMIN@$DOMAIN";
-$LDAP_BIND_PW = 'master-secret';
+$LDAP_BIND_PW = 'admin-secret';
 
-$BASE_DN_ACCOUNT = "ou=Benutzerverwaltung,$LDAP_SUFFIX";
-$BASE_DN_USER = "ou=Users,$BASE_DN_ACCOUNT";
-$BASE_DN_GROUP = "ou=Groups,$BASE_DN_ACCOUNT";
-$BASE_DN_DHCP = "cn=DHCP Config,ou=DHCP-Server,$LDAP_SUFFIX";
+$BASE_DN_USER = "cn=Users,$LDAP_SUFFIX";
+$BASE_DN_GROUP = "cn=Groups,$LDAP_SUFFIX";
+$BASE_DN_DHCP = "cn=DHCP Config,cn=DHCP-Server,$LDAP_INVIS_SUFFIX";
 
-$BASE_DN_DNS = "ou=DNS-Server,$LDAP_SUFFIX";
-$BASE_DN_DNS_FOR = "dlzZoneName=$DOMAIN,ou=zone.master,$BASE_DN_DNS";
-$BASE_DN_DNS_REV = "dlzZoneName=$DHCP_IP_REV.in-addr.arpa,ou=zone.master,$BASE_DN_DNS";
+//$BASE_DN_DNS = "ou=DNS-Server,$LDAP_SUFFIX";
+//$BASE_DN_DNS_FOR = "dlzZoneName=$DOMAIN,ou=zone.master,$BASE_DN_DNS";
+//$BASE_DN_DNS_REV = "dlzZoneName=$DHCP_IP_REV.in-addr.arpa,ou=zone.master,$BASE_DN_DNS";
 
 // SAMBA
 $SMB_DOMAIN = strtoupper($DOMAIN_PARTS[1]);
@@ -78,5 +78,5 @@ $COR_WEBSERVER = '/';
 $COR_PATH = '/var/lib/cornaz';
 $COR_LOCAL_IMAP_SERVER = "localhost";
 $COR_FETCHMAILRC_BUILD = "$COR_PATH/build/.fetchmailrc";
-
+$COR_LDAP_SUFFIX = "cn=AdditionalUserInformation,$LDAP_INVIS_SUFFIX";
 ?>

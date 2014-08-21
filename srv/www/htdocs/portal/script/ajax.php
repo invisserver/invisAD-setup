@@ -670,9 +670,9 @@ function hostModify($conn, $cn) {
 
 // user create
 function userCreate($conn, $uid) {
-	global $BASE_DN_ACCOUNT, $BASE_DN_USER, $SMB_DOMAIN, $DOMAIN, $cookie_data, $USER_ADD_MAIL_SUB, $USER_ADD_MAIL_TXT;
+	global $LDAP_SUFFIX, $BASE_DN_USER, $SMB_DOMAIN, $DOMAIN, $cookie_data, $USER_ADD_MAIL_SUB, $USER_ADD_MAIL_TXT;
 	// get availavle uidNumber, SID, ridBase
-	$result = search($conn, $BASE_DN_ACCOUNT, "sambaDomainName=$SMB_DOMAIN", array('uidNumber', 'sambaAlgorithmicRidBase', 'sambaSID'));
+	$result = search($conn, $LDAP_SUFFIX, "sambaDomainName=$SMB_DOMAIN", array('uidNumber', 'sambaAlgorithmicRidBase', 'sambaSID'));
 	$data = cleanup($result[0]);
 	//echo $data['sambasid'];
 	$next = intval($data['uidnumber']);
@@ -712,7 +712,7 @@ function userCreate($conn, $uid) {
 	
 	// increase available uidNumber if successfull
 	if ($ok) {
-		modify($conn, "sambaDomainName=$SMB_DOMAIN,$BASE_DN_ACCOUNT", array('uidNumber' => ($next + 1)));
+		modify($conn, "sambaDomainName=$SMB_DOMAIN,$LDAP_SUFFIX", array('uidNumber' => ($next + 1)));
 		$val = shell_exec("sudo /usr/bin/createhome $uid;");
 		mail("$uid@$DOMAIN", $USER_ADD_MAIL_SUB, $USER_ADD_MAIL_TXT);
 	}
@@ -747,9 +747,9 @@ function removeAdmin($conn, $u) {
 
 // group create
 function groupCreate($conn, $cn) {
-	global $BASE_DN_ACCOUNT, $BASE_DN_GROUP, $SMB_DOMAIN, $cookie_data;
+	global $LDAP_SUFFIX, $BASE_DN_GROUP, $SMB_DOMAIN, $cookie_data;
 	// get available gidNumber, SID, ridBase
-	$result = search($conn, $BASE_DN_ACCOUNT, "sambaDomainName=$SMB_DOMAIN", array('gidNumber', 'sambaAlgorithmicRidBase', 'sambaSID'));
+	$result = search($conn, $LDAP_SUFFIX, "sambaDomainName=$SMB_DOMAIN", array('gidNumber', 'sambaAlgorithmicRidBase', 'sambaSID'));
 	$data = cleanup($result[0]);
 	$next = intval($data['gidnumber']);
 	$SID = $data['sambasid'];
@@ -769,7 +769,7 @@ function groupCreate($conn, $cn) {
 	
 	// increase available gidNumber if successfull
 	if ($ok) {
-		modify($conn, "sambaDomainName=$SMB_DOMAIN,$BASE_DN_ACCOUNT", array('gidNumber' => ($next + 1)));
+		modify($conn, "sambaDomainName=$SMB_DOMAIN,$LDAP_SUFFIX", array('gidNumber' => ($next + 1)));
 		shell_exec("sudo /usr/bin/creategroupshare $cn;");
 	}
 	
