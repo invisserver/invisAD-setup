@@ -1216,7 +1216,7 @@ samba_ad() {
     samba-tool user add ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
     #samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
     #samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group removemembers "Administrators" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # User fuer Junk-Postfach anlegen
     samba-tool user add junk "$ldappw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
