@@ -17,7 +17,7 @@ $FQDN = 'invis.invis-net.loc';
 $DOMAIN_PARTS = explode('.', $FQDN);
 $DOMAIN = $DOMAIN_PARTS[1].".".$DOMAIN_PARTS[2];
 $HOSTNAME = $DOMAIN_PARTS[0];
-$GROUPWARE = usedgroupware;
+$GROUPWARE = 'usedgroupware';
 
 // DHCP
 $DHCP_IP_BASE = '192.168.220';
