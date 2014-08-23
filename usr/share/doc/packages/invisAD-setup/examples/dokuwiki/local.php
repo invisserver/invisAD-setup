@@ -30,6 +30,8 @@ $conf['openregister'] = 0;
 #$conf['auth']['ldap']['userfilter'] = '(&(uid=%{user})(objectClass=posixAccount))';
 #$conf['auth']['ldap']['groupfilter'] = '(&(objectClass=posixGroup)(|(gidNumber=%{gid})(memberUID=%{user})))';
 
+$conf['disableactions'] = 'register,resendpwd,profile';
+
 $conf['authtype'] = 'authad';
 $conf['plugin']['authad']['account_suffix'] = '@invis-net.loc';
 $conf['plugin']['authad']['base_dn'] = 'dc=invis-net,dc=loc';
