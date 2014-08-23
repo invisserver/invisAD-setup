@@ -2967,12 +2967,16 @@ dokuwiki() {
     strings="organization%$organisation"
     changevalues $path $file "$strings"
     
-    adminpw=`getconfdata "AdminPW" "2"`
+    adminpw=`getconfdata "LDAPAdminPW" "2"`
     strings="admin-secret%$adminpw"
     changevalues $path $file "$strings"
     
     basedn=`getconfdata "baseDN" "2"`
     strings="basedn%$basedn"
+    changevalues $path $file "$strings"
+
+    domain=`getconfdata "domain" "2"`
+    strings="invis-net.loc%$basedn"
     changevalues $path $file "$strings"
     
     # Gruppen fuer Dokuwiki anlegen
