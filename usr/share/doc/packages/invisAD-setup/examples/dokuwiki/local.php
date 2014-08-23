@@ -6,28 +6,37 @@
  * Date: Sat, 13 Mar 2010 09:10:34 +0100
  */
 
-$conf['title'] = 'organization';
+$conf['title'] = 'invis-Server.org';
 $conf['lang'] = 'de';
 $conf['template'] = 'monobook';
 $conf['useacl'] = 1;
 #$conf['superuser'] = '@admin';
-$conf['superuser'] = 'domadmin';
+$conf['superuser'] = 'administrator';
 // end auto-generated content
 
 // keine offene Benutzerregistrierung
 $conf['openregister'] = 0;
 
 // LDAP Connect
-$conf['authtype'] = 'authldap';
-$conf['auth']['ldap']['server'] = 'localhost';
-$conf['auth']['ldap']['port'] = '389';
-$conf['auth']['ldap']['starttls'] = 0;
-$conf['auth']['ldap']['version'] = '3';
-$conf['auth']['ldap']['binddn'] = 'uid=admin,ou=Benutzerverwaltung,basedn';
-$conf['auth']['ldap']['bindpw'] = 'admin-secret';
-$conf['auth']['ldap']['usertree'] = 'ou=users,ou=Benutzerverwaltung,basedn';
-$conf['auth']['ldap']['grouptree'] = 'ou=groups,ou=Benutzerverwaltung,basedn';
-$conf['auth']['ldap']['userfilter'] = '(&(uid=%{user})(objectClass=posixAccount))';
-$conf['auth']['ldap']['groupfilter'] = '(&(objectClass=posixGroup)(|(gidNumber=%{gid})(memberUID=%{user})))';
+#$conf['authtype'] = 'authldap';
+#$conf['auth']['ldap']['server'] = 'localhost';
+#$conf['auth']['ldap']['port'] = '389';
+#$conf['auth']['ldap']['starttls'] = 0;
+#$conf['auth']['ldap']['version'] = '3';
+#$conf['auth']['ldap']['binddn'] = 'uid=admin,ou=Benutzerverwaltung,dc=invis-net,dc=loc';
+#$conf['auth']['ldap']['bindpw'] = '';
+#$conf['auth']['ldap']['usertree'] = 'ou=users,ou=Benutzerverwaltung,dc=invis-net,dc=loc';
+#$conf['auth']['ldap']['grouptree'] = 'ou=groups,ou=Benutzerverwaltung,dc=invis-net,dc=loc';
+#$conf['auth']['ldap']['userfilter'] = '(&(uid=%{user})(objectClass=posixAccount))';
+#$conf['auth']['ldap']['groupfilter'] = '(&(objectClass=posixGroup)(|(gidNumber=%{gid})(memberUID=%{user})))';
+
+$conf['authtype'] = 'authad';
+$conf['plugin']['authad']['account_suffix'] = '@invis-net.loc';
+$conf['plugin']['authad']['base_dn'] = 'dc=invis-net,dc=loc';
+$conf['plugin']['authad']['domain_controllers'] = 'localhost';
+$conf['plugin']['authad']['admin_username'] = 'ldap.admin';
+$conf['plugin']['authad']['admin_password'] = 'admin-secret';
+$conf['plugin']['authad']['use_ssl'] = 0;
+$conf['plugin']['authad']['mapping']['name'] = 'dislayname';
 
 ?>
