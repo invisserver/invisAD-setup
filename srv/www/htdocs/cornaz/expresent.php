@@ -9,14 +9,14 @@ if ($status == "Anwesend") {
 	// LDAP Protokoll auf Version 3 setzen
 	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
 		echo "Kann das Protokoll nicht auf Version 3 setzen";
-		# Am LDAP per SimpleBind anmelden
+		// Am LDAP per SimpleBind anmelden
 		if ($ditcon) {
-    			// bind mit passendem dn für aktulisierenden Zugriff
-			$dn=("uid=$corusername,$BASE_DN_USER");
-  			$r=ldap_bind($ditcon,$dn, "$corpassword");
+			// bind mit passendem dn für aktulisierenden Zugriff
+			$dn=("$LDAP_BIND_DN");
+ 			$r=ldap_bind($ditcon, $dn, "$LDAP_BIND_PW");
 			$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 			$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-			$sr=ldap_search($ditcon, $dn, $filter, $justthese);
+			$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 			$entries = ldap_get_entries($ditcon, $sr);
 			//	print $entries["count"]." Einträge gefunden<p>";
 			ldap_close($ditcon);

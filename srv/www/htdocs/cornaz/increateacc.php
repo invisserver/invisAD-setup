@@ -10,8 +10,7 @@ site_info($margin, $info);
 // Alle Mailprovider aus LDAP holen
 $mp = new mailprovider();
 $mpvendor = "*";
-$ldapbinddn = "uid=$corusername,$BASE_DN_USER";
-$result = $mp->readmailprovider($mpvendor,$ldapbinddn,$corpassword,$LDAP_SUFFIX,$LDAP_SERVER);
+$result = $mp->readmailprovider($mpvendor,$LDAP_BIND_DN,$LDAP_BIND_PW,$LDAP_SUFFIX_MAILPROVIDERS,$LDAP_SERVER);
 
 foreach ( $result as $mp ) {
     $mailproviders[] = $mp['fspmailprovidervendor'][0];

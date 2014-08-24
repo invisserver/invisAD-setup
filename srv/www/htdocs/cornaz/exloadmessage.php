@@ -10,8 +10,8 @@ $myfile = $_FILES['myfile']['tmp_name'];
 session_start();
 session_name("cornaz");
 #echo session_id();
-session_register("mailsubject");
-session_register("mailbody");
+//session_register("mailsubject");
+//session_register("mailbody");
 
 $filehandle = fopen($myfile, "r");
 $mailsubject = fgets($filehandle,10000);

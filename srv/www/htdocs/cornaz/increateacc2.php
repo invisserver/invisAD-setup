@@ -14,8 +14,7 @@ if ( $mpvendor == "sonstiger" ) {
 	// Alle Mailprovider aus LDAP holen
 	$mp = new mailprovider();
 	$mpproto = $_REQUEST['proto'];
-	$ldapbinddn = "uid=$corusername,$BASE_DN_USER";
-	$result = $mp->readmailprovider($mpvendor,$ldapbinddn,$corpassword,$LDAP_SUFFIX,$LDAP_SERVER);
+	$result = $mp->readmailprovider($mpvendor,$LDAP_BIND_DN,$LDAP_BIND_PW,$LDAP_SUFFIX_MAILPROVIDERS,$LDAP_SERVER);
 	$text1 = "Gewählter Mailprovider: <font color=\"#EE4000\"><b>$mpvendor</b></font>";
 	$text3 = "Schema der Benutzerkennung für den gewählten Mailprovider: <font color=\"#EE4000\"><b>$mp->mpusername</b></font>";
 	if ( $mpproto == "imap" ) {

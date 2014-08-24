@@ -14,9 +14,9 @@ $luser="$corusername@$DOMAIN";
 # SSL oder nicht
 if ($protokoll == "pop3s" or $protokoll == "imaps") {
 	$protokoll = substr($protokoll,0 ,4);
-	$fspMailfetchOpts = "here ssl fetchall";
+	$fspMailFetchOpts = "here ssl fetchall";
 } else {
-	$fspMailfetchOpts = "here fetchall";
+	$fspMailFetchOpts = "here fetchall";
 }
 
 # Verbindung zum LDAP Server aufbauen
@@ -28,24 +28,34 @@ if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
 # Am LDAP per SimpleBind anmelden
 if ($ditcon) {
     // bind mit passendem dn für aktulisierenden Zugriff
-    $dn=("uid=$corusername,$BASE_DN_USER");
-    $r=ldap_bind($ditcon,$dn,"$corpassword");
-	// Daten vorbereiten
+    //$dn=("uid=$corusername,$BASE_DN_USER");
+    $r=ldap_bind($ditcon,$LDAP_BIND_DN,"$LDAP_BIND_PW");
+    
+    // hier userknoten erstellen
+    //if userknoten nicht da, dann
+    $userinfo["cn"]="$corusername";
+    $userinfo["name"]="$corusername";
+    $userinfo["description"]="Email-Konten von $corusername";
+    $userinfo["objectclass"]="top";
+    $userinfo["objectclass"]="container";
+    $r=ldap_add($ditcon,"cn=$corusername,$COR_LDAP_SUFFIX",$userinfo);
+
+    // Daten vorbereiten
     $account["fspExtMailAddress"]="$extaddress";
     $account["fspExtMailServer"]="$mailserver";
     $account["fspExtMailProto"]="$protokoll";
     $account["fspExtMailUserName"]="$kennung";
     $account["fspExtMailUserPW"]="$extpasswd";
-    $account["fspMailfetchOpts"]="$fspMailfetchOpts";
+    $account["fspMailFetchOpts"]="$fspMailFetchOpts";
     $account["fspLocalMailAddress"]="$luser";
     $account["objectclass"]="top";
     $account["objectclass"]="fspFetchMailAccount";
-    $dn2 = ("fspExtMailAddress=$extaddress,$dn");
+    $dn2 = ("cn=$extaddress,cn=$corusername,$COR_LDAP_SUFFIX");
     // hinzufügen der Daten zum Verzeichnis
     $r=ldap_add($ditcon, $dn2, $account);
 
 	$filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-	$sr=ldap_search($ditcon, $dn, $filter);
+	$sr=ldap_search($ditcon, "cn=$corusername,$COR_LDAP_SUFFIX", $filter);
 	$entries = ldap_get_entries($ditcon, $sr);
 	if ($entries["count"] == 0) { 
 		// Daten vorbereiten
@@ -54,7 +64,7 @@ if ($ditcon) {
     		$account2["fspMainMailAddress"]="$extaddress";
     		$account2["objectclass"]="top";
     		$account2["objectclass"]="fspLocalMailRecipient";
-    		$dn2 = ("fspLocalMailAddress=$luser,$dn");
+    		$dn2 = ("cn=$luser,cn=$corusername,$COR_LDAP_SUFFIX");
     		// hinzufügen der neuen primär Adresse
     		$r=ldap_add($ditcon, $dn2, $account2);
 	}
@@ -90,8 +100,8 @@ if ( $status == "Anwesend" ) {
 		# Am LDAP per SimpleBind anmelden
 		if ($ditcon) {
     			// bind mit passendem dn für aktulisierenden Zugriff
-			$dn=("uid=$corusername,$BASE_DN_USER");
-  			$r=ldap_bind($ditcon,$dn, "$corpassword");
+			//$dn=("uid=$corusername,$BASE_DN_USER");
+  			$r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
 			$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 			$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 			$sr=ldap_search($ditcon, $dn, $filter, $justthese);

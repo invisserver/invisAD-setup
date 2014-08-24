@@ -3,35 +3,35 @@
 # Dieses Script liest alle fetchmail-Accounts des Users $Username
 # aus dem LDAP Verzeichnis und listet sie auf. Sie koennen
 # dann die gewünschte Adresse auswählen.
-	# Verbindung zum LDAP Server aufbauen
+	// Verbindung zum LDAP Server aufbauen
 	$ditcon=ldap_connect("$LDAP_SERVER");
-	# LDAP Protokoll auf Version 3 setzen
+	// LDAP Protokoll auf Version 3 setzen
 	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
     		echo "Kann das Protokoll nicht auf Version 3 setzen";
-	# Am LDAP per SimpleBind anmelden
+	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
     	// bind mit passendem dn für aktulisierenden Zugriff
-		$dn=("uid=$corusername,$BASE_DN_USER");
-    		$r=ldap_bind($ditcon,$dn,"$corpassword");
+		$dn=("$LDAP_BIND_DN");
+    		$r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		//$filter="(fspLocalMailAddress=$username*)";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $dn, $filter, $justthese);
+		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 		//print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);
 	} else {
     		echo "Verbindung zum LDAP Server nicht möglich!";
 	}
-	# Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
+	// Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
 	array_shift($entries);
-	#Info Zeile
+	//Info Zeile
 	$margin = "Ihre Mailkonten";
 	$info = "<font size=\"-1\">Die folgende Liste zeigt alle für Sie eingerichteten Mailkonten.<br>Über die Schaltfläche \"Löschen\" können Sie einzelne Konten wieder aus der Serverkonfiguration entfernen.<br>Es gehen dabei keine bereits empfangenen Mails verloren.<br><font color=\"red\"><b>Achtung: Es erfolgt keine weitere Nachfrage!</b></font></font>";
 	site_info($margin, $info);
 	$i=0;
 	foreach ($entries as $val) {
-		#Formular oeffnen
+		//Formular oeffnen
 		$script = "./base.php";
 		open_form($script);
 		echo "<input type=\"hidden\" name=\"file\" value=\"exdeleteacc.php\" />\n";
@@ -45,7 +45,7 @@
 		$val_n = array($inhalt_s1, $inhalt_s2, $inhalt_s3);
 		table_row_n($val_n, $margin);
 		$i++;
-		#Formular schliessen
+		//Formular schliessen
 		close_form();
 	}
 

@@ -13,15 +13,16 @@
 	# Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
     		// bind mit passendem dn für aktulisierenden Zugriff
-		$dn=("uid=$corusername,$BASE_DN_USER");
-		$r=ldap_bind($ditcon,$dn, "$corpassword");
+		$dn=("$LDAP_BIND_DN");
+		$r=ldap_bind($ditcon,$dn, "$LDAP_BIND_PW");
 		$filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array("fspMainMailAddress");
-		$sr=ldap_search($ditcon, $dn, $filter, $justthese);
+		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 		//print $entries["count"]." Einträge gefunden<p>";
 	}
 	$mainsendaddress = $entries[0]["fspmainmailaddress"][0];
+	//$mainsendaddress = $entries[0]["count"];
 	$margin = "Status";
 	$info = "<font size=\"-1\"><b>Sie sind angemeldet als Benutzer: <font color=\"#EE4000\">$corusername</font><br>Ihre lokale Mail-Adresse lautet: <font color=\"#EE4000\">$corusername@$DOMAIN</font><br>Ihre derzeitige Absendeadresse lautet: <font color=\"#EE4000\">$mainsendaddress</font><br>Ihr aktueller Status ist: <font color=\"#EE4000\">$status</font></b></font><hr>";
 
@@ -56,12 +57,12 @@
 	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
     	// bind mit passendem dn für aktulisierenden Zugriff
-		$dn=("uid=$corusername,$BASE_DN_USER");
-    		$r=ldap_bind($ditcon,$dn,"$corpassword");
+		$dn=("$LDAP_BIND_DN");
+    		$r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		//$filter="(fspLocalMailAddress=$username*)";
 		$justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $dn, $filter, $justthese);
+		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 		//print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);

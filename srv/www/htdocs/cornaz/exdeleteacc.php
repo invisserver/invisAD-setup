@@ -10,10 +10,10 @@ if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
 // Am LDAP per SimpleBind anmelden
 if ($ditcon) {
     // bind mit passendem dn für aktulisierenden Zugriff
-    $dn=("uid=$corusername,$BASE_DN_USER");
-    $r=ldap_bind($ditcon,$dn,"$corpassword");
+    $dn=("$LDAP_BIND_DN");
+    $r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
 	// Loeschen eines Mail-Accounts
-	$dn2 = ("fspExtMailAddress=$account,uid=$corusername,$BASE_DN_USER");
+	$dn2 = ("cn=$account,cn=$corusername,$COR_LDAP_SUFFIX");
 	ldap_delete($ditcon, $dn2);
     ldap_close($ditcon);
 } else {
