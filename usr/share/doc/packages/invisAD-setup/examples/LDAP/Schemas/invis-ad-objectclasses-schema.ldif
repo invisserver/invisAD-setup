@@ -35,7 +35,7 @@ mustContain: fspExtMailProto
 mustContain: fspExtMailUserName
 mustContain: fspExtMailUserPW
 mustContain: fspLocalMailAddress
-mayContain: FSPMailFetchOpts
+mustContain: fspMailFetchOpts
 defaultObjectCategory: CN=fspFetchMailAccount,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 
 dn: CN=fspMailFilter,CN=Schema,CN=Configuration,dc=invis-net,dc=loc

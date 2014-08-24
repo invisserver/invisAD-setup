@@ -102,13 +102,13 @@ attributeSyntax: 2.5.5.5
 oMSyntax: 22
 isSingleValued: TRUE
 
-dn: CN=fspMailfetchOpts,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+dn: CN=fspMailFetchOpts,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
 objectClass: top
 objectClass: attributeSchema
 attributeID: 1.3.6.1.4.1.25601.1.1.1.1.9
 schemaIdGuid:: Dwqe55miM49qGgfSphgVMQ==
-cn: fspMailfetchOpts
-name: fspMailfetchOpts
+cn: fspMailFetchOpts
+name: fspMailFetchOpts
 lDAPDisplayName: fspMailFetchOpts
 description: Options like fetchall or ssl - multiple values possible
 attributeSyntax: 2.5.5.5
