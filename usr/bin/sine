@@ -2121,7 +2121,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     a2enflag SSL
     
     # Webserver, shellinabox, fetchmail und Mailman neustarten und in Runlevel integrieren
-    pgsubtitle "Mehrere Dienste werden neu gestartet"
+    pgsubtitle="Mehrere Dienste werden neu gestartet"
     chkservice "fetchmail"
     chkservice "shellinaboxd-invis"
     chkservice "apache2"
@@ -2412,7 +2412,7 @@ case "$whichimap" in
 	strings="dbuserpass%$zarafadbuserpw"
 	changevalues $path $file "$strings"
 
-	strings="postmaster@localhost%domadmin@$domain"
+	strings="postmaster@localhost%administrator@$domain"
 	changevalues $path $file "$strings"
 
 	## Plugin-Path bei Bedarf anpassen
@@ -2430,6 +2430,9 @@ case "$whichimap" in
 	changevalues $path $file "$strings"
     
 	strings="dc=invis-net,dc=loc%$basedn"
+	changevalues $path $file "$strings"
+	
+	strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
     
 	path="/etc/postfix"
