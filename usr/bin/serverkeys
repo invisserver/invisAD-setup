@@ -2,8 +2,8 @@
 # Script zur Erzeugung von Schlüsseln für den Web- und Mailserver
 # Dieses Script ersetzt die Scripts "mailserverkeys" und
 # "webserverkeys"
-# Version 0.8
-# (C) 2011,2013 by Stefan Schäfer / invis-server.org
+# Version 0.9
+# (C) 2011,2013,2014 by Stefan Schäfer / invis-server.org
 # License: GPLv3
 # Questions: http://forum.invis-server.org
 
@@ -85,6 +85,8 @@ elif [[ $stype == "ldap" ]]; then
     /usr/bin/openssl rsa -in CA/server-key.pem -out invis-server.key
     mv ./invis-server.crt /etc/ssl/certs/ldap-cert.pem
     mv ./invis-server.key /etc/ssl/private/ldap-key.pem
+    chown root.root /etc/ssl/private/ldap-key.pem
+    chmod 0600 /etc/ssl/private/ldap-key.pem
 else
     # Dadurch steht kein Klartext mehr im Zertifikat
     /usr/bin/openssl x509 -in server-cert.pem -out invis-server.crt
