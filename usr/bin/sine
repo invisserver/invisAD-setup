@@ -1223,11 +1223,20 @@ samba_ad() {
     samba-tool group addmembers "Domain Guests" junk 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $setupdir/sine.log | pgbox
     smbadpw junk
-    
+
     # Primary Group?
 
     # Sernet-Samba AD stoppen
     systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    # Samba Konfiguration anpassen
+    smbworkingfile="$setupdir/smb.conf"
+    head -n 8 /etc/samba/smb.conf > $smbworkingfile
+    echo -e "\n\tinclude /etc/samba/smb.invis.conf" >> $smbworkingfile
+    tail -n 8 /etc/samba/smb.conf >> $smbworkingfile
+    mv /etc/samba/smb.conf /etc/samba/smb.conf.ori
+    cp $smbworkingfile /etc/samba
+    cp $cfilesdir/fileserver/samba/smb.invis.conf /etc/samba
 
     ## LDIF-Dateien vorbereiten
     pgsubtitle="LDAP Schema-Erweiterungen werden vorbereitet"
@@ -1782,7 +1791,7 @@ cups() {
 
     chkservice "cups"
 
-    writeprepstat "webserver"
+    writeprepstat "fileserver"
     waitbox "cups" "fileserver"
 }
 
@@ -1796,7 +1805,7 @@ fileserver() {
     basedn=`getconfdata "baseDN" "2"`
     hn=`getconfdata "Hostname" "2"`
     smbhostname=`echo $hn | tr [a-z] [A-Z]`
-    masterpw=`getconfdata "MasterPW" "2"`
+    masterpw=`getconfdata "LDAPAdminPW" "2"`
     av=`getconfdata "AV" "2"`
 #    whichsamba=`getconfdata "SambaPakete" "2"`
     domain=`getconfdata "Domain" "2"`
@@ -1867,9 +1876,10 @@ fileserver() {
     cp -r $cfilesdir/fileserver/service/* /srv/shares/service 2>&1| tee -a $setupdir/sine.log
     chmod -R g+w /srv/shares/service 2>&1| tee -a $setupdir/sine.log
     
+    ## to be removed
     # Setzen des LDAP Zugangspasswort
-    pgsubtitle="Samba erhält das LDAP-Administrationspasswort"
-    smbpasswd -w $masterpw 2>&1| tee -a $setupdir/sine.log | pgbox
+    #pgsubtitle="Samba erhält das LDAP-Administrationspasswort"
+    #smbpasswd -w $masterpw 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # Logon-Scripts werden kopiert und ins DOS-Format ueberfuehrt
     netlogonpath="/var/lib/samba/private/sysvol/$domain/scripts"
@@ -1910,7 +1920,7 @@ fileserver() {
     # Zielverzeichnis fuer aschenputtel anlegen
     chown root:"Domain Users" /srv/shares/portal/uploads 2>&1| tee -a $setupdir/sine.log
     # Download-Verzeichnis anlegen
-    chown domadmin:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
+    chown administrator:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Profilverzeichnisse
     chown root:"Domain Users" /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
@@ -1959,11 +1969,11 @@ webserver() {
     waitinfobox "Ihr Webserver sowie das invis-Portal werden eingerichtet.
 Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
     fqdn=`getconfdata "FQDN" "2"`
-    masterpw=`getconfdata "MasterPW" "2"`
+    ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
     path="/etc/invis/portal"
     cp $path/config.php.dist $path/config.php
     file="config.php"
-    strings="master-secret%$masterpw"
+    strings="admin-secret%$ldapadminpw"
     changevalues $path $file "$strings"
 
     strings="invis.invis-net.loc%$fqdn"
