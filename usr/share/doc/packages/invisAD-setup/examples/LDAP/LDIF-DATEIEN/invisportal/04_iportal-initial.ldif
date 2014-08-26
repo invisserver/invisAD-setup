@@ -16,7 +16,7 @@ iPortEntryName: Group-e
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/group-e
 iPortEntryDescription: Die Groupware "Group-e" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails und Zeiterfassung. 
-iPortEntryActive: TRUE
+iPortEntryActive: GROUPETRUE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -30,7 +30,7 @@ iPortEntryName: SOGo
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/sogo
 iPortEntryDescription: Die Groupware "SOGo" bietet unter anderem Zugriff auf E-Mails,Terminkalender und Kontakterwaltung. 
-iPortEntryActive: FALSE
+iPortEntryActive: SOGOTRUE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -44,7 +44,7 @@ cn: ZarafaAcc
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webaccess
 iPortEntryDescription: Der klassische Webaccess der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen im Oulook "Look & Feel". 
-iPortEntryActive: FALSE
+iPortEntryActive: ZARAFATRUE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -58,7 +58,21 @@ cn: ZarafaApp
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webapp
 iPortEntryDescription: Die moderne Webapp der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen in frischem "Look & Feel". 
-iPortEntryActive: FALSE
+iPortEntryActive: ZARAFATRUE
+iPortEntryPosition: Lokal
+iPortEntryButton: Groupware
+iPortEntryPriv:	user
+
+# Roundcube Webmailer
+dn: cn=Roundcube,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Roundcube
+cn: Roundcube
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/roundcube
+iPortEntryDescription: Der moderne Webmailer Roundcubemail ist ein potenter Mail-Client mit angenehmem "Look & Feel". 
+iPortEntryActive: ROUNDCUBETRUE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user

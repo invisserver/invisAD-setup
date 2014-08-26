@@ -827,13 +827,6 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "ReverseDom:$revnet" >> $setupdir/invis_confdata
     echo "Forwarders:$forwarders"  >> $setupdir/invis_confdata
 
-#    manpasshash=`slappasswd -s $manpass`
-#    echo "ManagerPW:$manpass:$manpasshash" >> $setupdir/invis_confdata
-#    masterpasshash=`slappasswd -s $masterpass`
-#    echo "MasterPW:$masterpass:$masterpasshash" >> $setupdir/invis_confdata
-#    adminpasshash=`slappasswd -s $adminpass`
-#    echo "AdminPW:$adminpass:$adminpasshash" >> $setupdir/invis_confdata
-
     echo "LDAPAdminPW:$ldappw" >> $setupdir/invis_confdata
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
@@ -930,6 +923,11 @@ sysprep() {
 	rpmkeyimporter
         pgsubtitle="Repository-Cache wird aktualisiert"
         zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
+	# Suse Samba libraries entfernen wegen sssd
+        pgsubtitle="openSUSE Samba Pakete werden restlos entfernt"
+	zypper -n remove -n `cat $setupdir/zypper-package-lists/smbpacktoremove` 2>&1| tee -a $setupdir/sine.log | pgbox
+
+        pgsubtitle="Sernet Samba Pakete werden installiert"
 	zypper -n install -n `cat $setupdir/zypper-package-lists/sernet_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     else
 	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1137,17 +1135,6 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 
     # invis Passwort-Datei anpassen
     file="invis-pws.conf"
-#    managerpw=`getconfdata "ManagerPW" "2"`
-#    strings="manager-secret%$managerpw"
-#    changevalues $confdir $file "$strings"
-    
-#    masterpw=`getconfdata "MasterPW" "2"`
-#    strings="master-secret%$masterpw"
-#    changevalues $confdir $file "$strings"
-    
-#    adminpw=`getconfdata "AdminPW" "2"`
-#    strings="admin-secret%$adminpw"
-#    changevalues $confdir $file "$strings"
 
     ldappw=`getconfdata "LDAPAdminPW" "2"`
     strings="ldap-secret%$ldappw"
@@ -1170,18 +1157,16 @@ samba_ad() {
 
     # "realm" bei AD DC = "Domain" im sine
     ad_realm=`getconfdata "Domain" "2"`
-    #ad_realm="invis-net.loc"
 
     # "domain" bei AD DC = "Workgroup" im sine
     ad_domain=`getconfdata "Workgroup" "2"`
-    #ad_domain="INVIS-NET"
 
     # Interne IP fuer DNS
     ad_ip=`getconfdata "IP" "2"`
-    #ad_ip="192.168.240.218" 
 
     # Passwort vorher abfragen!
-    ad_adminpass="P4ssw0rd*"
+    ad_adminpass="p@ssw0rd"
+    msgbox "Das Passwort des Domänenadministrators lautet: $ad_adminpass\nBitte ändern Sie es später." "AD Administrator Passwort"
 
     # Bisher nur dc unterstuezt
     ad_server_role="dc"
@@ -1419,50 +1404,39 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     chown -R :pkeys /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
     chmod g+rx /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
 
-    ### TLS-Konfiguration muss noch in Samba integriert werden
-    file=/etc/samba/smb.conf
-    #sed 9i "tls enabled  = yes" $file
-#	tls keyfile  = /etc/ssl/private/ldap-key.pem
-#	tls certfile = /etc/ssl/certs/ldap-cert.pem
-#	tls cafile   = /etc/ssl/CA/cacert.pem
-
-    
     systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
     
+    ## sssd einrichten
+    # hostname ermitteln
+    hn=`hostname`
+    # keytab erzeugen
+    samba-tool domain exportkeytab /etc/krb5.keytab --principal="$hn\$"
+    chmod 0600 /etc/krb5.keytab
+    cp $cfilesdir/System/sssd/sssd.conf /etc/sssd/
+    cp $cfilesdir/System/nsswitch.conf /etc/
+    
+    # Links auf Sambalibs erzeugen
+    ln -s /usr/lib64/samba/libndr-nbt.so.0.0.1 /usr/lib64/libndr-nbt.so.0 
+    ln -s /usr/lib64/samba/libndr.so.0.0.2 /usr/lib64/libndr.so.0 
+    ln -s /usr/lib64/samba/libtevent.so.0.9.18 /usr/lib64/libtevent.so.0
+
+    ## sssd konfiguration erzeugen
+    path="/etc/sssd"
+    file="sssd.conf"
+	
+    strings="invis.invis-net.loc%$fqdn"
+    changevalues $path $file "$strings"
+    strings="invis-net.loc%$domain"
+    changevalues $path $file "$strings"
+    
+    chmod 600 /etc/sssd/sssd.conf
+    
+    # sssd neu starten
+    chkservice "sssd"
+
     # phpldapadmin konfigurieren
     # Installation entfaellt, da es per rpm installiert wird.
     cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
-
-    # Anbinden des Servers an die LDAP-Benutzerdatenbank (LDAP-Client via sssd und PAM, Client verwendet STARTTLS)
-    #cp $cfilesdir/LDAP/conf-client/openldap/ldap.conf /etc/openldap/ldap.conf 2>&1| tee -a $setupdir/sine.log
-    #path="/etc/openldap"
-    #file="ldap.conf"
-    #strings="dc=invis-net,dc=loc%$basedn"
-    #changevalues $path $file "$strings"
-
-    #cp $cfilesdir/LDAP/conf-client/ldap.conf /etc/ldap.conf 2>&1| tee -a $setupdir/sine.log
-    #path="/etc"
-    #strings="dc=invis-net,dc=loc%$basedn"
-    #changevalues $path $file "$strings"
-
-    #cp $cfilesdir/LDAP/conf-client/ldap /etc/sysconfig/ldap 2>&1| tee -a $setupdir/sine.log
-    #path="/etc/sysconfig"
-    #file="ldap"
-    #strings="dc=invis-net,dc=loc%$basedn"
-    #changevalues $path $file "$strings"
-    
-    #cp $cfilesdir/LDAP/conf-client/sssd/sssd.conf /etc/sssd/ 2>&1| tee -a $setupdir/sine.log
-    #path="/etc/sssd"
-    #file="sssd.conf"
-    #strings="dc=invis-net,dc=loc%$basedn"
-    #changevalues $path $file "$strings"
-    #chmod 600 /etc/sssd/sssd.conf
-    
-    #cp $cfilesdir/LDAP/conf-client/nsswitch.conf /etc/nsswitch.conf 2>&1| tee -a $setupdir/sine.log
-    #cp $cfilesdir/LDAP/conf-client/pam.d/*-pc /etc/pam.d/ 2>&1| tee -a $setupdir/sine.log
-
-    # sssd neu starten
-    #chkservice "sssd"
 
     writeprepstat "dns"
     waitbox "samba_ad" "dns"
