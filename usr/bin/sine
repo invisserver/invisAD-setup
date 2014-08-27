@@ -1217,7 +1217,7 @@ samba_ad() {
     # Samba Konfiguration anpassen
     smbworkingfile="$setupdir/smb.conf"
     head -n 8 /etc/samba/smb.conf > $smbworkingfile
-    echo -e "\n\tinclude /etc/samba/smb.invis.conf" >> $smbworkingfile
+    echo -e "\n\tinclude = /etc/samba/smb.invis.conf" >> $smbworkingfile
     tail -n 8 /etc/samba/smb.conf >> $smbworkingfile
     mv /etc/samba/smb.conf /etc/samba/smb.conf.ori
     cp $smbworkingfile /etc/samba
