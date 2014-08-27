@@ -29,13 +29,14 @@ if [ $# -eq 1 ]; then
 	DIR=/home/$USR;
 	mkdir $DIR;
 	cp -r /etc/skel/* $DIR;
-	cp $confdir/templates/movelibdirs.cmd /srv/shares/service/winscripts/mvlib$USR.cmd
+	cp $confdir/templates/movelibdirs.cmd /srv/shares/service/Win_Scripts/mvlib$USR.cmd
 	chown -R $USR:'Domain Users' $DIR;
 	chmod u+rwx,g-rwx,o-rwx $DIR;
 	cfile="mvlib$USR.cmd"
-	path="/srv/shares/service/winscripts/"
+	path="/srv/shares/service/Win_Scripts/"
 	string="USER%$USR"
 	changevalues $path $cfile $string
+	unix2dos $path$cfile
 
 	DIR=/srv/shares/portal/downloads/$USR;
 	mkdir $DIR;
