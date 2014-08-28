@@ -1434,6 +1434,9 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     # sssd neu starten
     chkservice "sssd"
 
+    # PAM Dateien kopieren
+    cp $cfilesdir/System/pam.d/* /etc/pam.d/
+
     # phpldapadmin konfigurieren
     # Installation entfaellt, da es per rpm installiert wird.
     cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
