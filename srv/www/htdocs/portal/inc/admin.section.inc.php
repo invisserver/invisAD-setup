@@ -18,9 +18,9 @@
 		<td class='admin-menu'>
 			<b style="color: #b0b0b0;">lokale Tools</b><br />
 			<ul>
-				<li onclick="invis.request('script/ajax.php', userListResponse, {c: 'user_list'});" title="Benutzer, juhu!!">Benutzer</li>
-				<li onclick="invis.request('script/ajax.php', groupListResponse, {c: 'group_list'});" title="Gruppen ... naja">Gruppen</li>
-				<li onclick="invis.request('script/ajax.php', hostListResponse, {c: 'host_list'});" title="PCs ... ach hör doch auf ...!!">PCs</li>
+				<li onclick="invis.request('script/adajax.php', userListResponse, {c: 'user_list'});" title="Benutzer, juhu!!">Benutzer</li>
+				<li onclick="invis.request('script/adajax.php', groupListResponse, {c: 'group_list'});" title="Gruppen ... naja">Gruppen</li>
+				<li onclick="invis.request('script/adajax.php', hostListResponse, {c: 'host_list'});" title="PCs ... ach hör doch auf ...!!">PCs</li>
 			</ul>
 			<br /><b style="color: #b0b0b0;">externe Tools</b><br />
 			<ul>
@@ -76,12 +76,6 @@ if ($result) {
 		$entry = cleanup($result[$i]);
 		if ($entry['iportentryactive'] == 'FALSE') continue;
 		$type = $entry['iportentrypriv'];
-		/*
-		if (strstr($entry['iportentryurl'], '[servername]') === false)
-			$url = 'http://'.$entry['iportentryurl'];
-		else
-			$url = str_replace('[servername]', $server, $entry['iportentryurl']);
-		*/
 		echo '<p style="text-align: justify;"><b>' . $entry['iportentrybutton'] . ':</b> <span style="font-size: 0.9em;">' . $entry['iportentrydescription'] . '</span></p>';
 	}
 } else {

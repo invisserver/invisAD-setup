@@ -43,14 +43,15 @@ function mysort(a, b) {
 } 
 
 // sorting function for an array of JSON group objects, sorted by cn (alphabetical, ignored case)
+/*
 function groupsort(a, b) {
 	return (a['cn'].toUpperCase() < b['cn'].toUpperCase()) ? -1 : (a['cn'].toUpperCase() > b['cn'].toUpperCase())? 1 : 0;
 } 
-
+*/
 // sorting function for an array of JSON host objects, sorted by IP
 function hostsort(a, b) {
-	var stA = a['dhcpstatements'].split(" ");
-	var stB = b['dhcpstatements'].split(" ");
+	var stA = a['iscdhcpstatements'].split(" ");
+	var stB = b['iscdhcpstatements'].split(" ");
 	if ((stA.length == 2) && (stB.length == 2))
 	{
 	    var ipA = stA[1].split(".");
@@ -64,10 +65,10 @@ function hostsort(a, b) {
 		return (ipANum < ipBNum) ? -1 : (ipANum > ipBNum) ? 1 : 0;
 	    }
 	    else
-		return (a['dhcpstatements'] < b['dhcpstatements']) ? -1 : (a['dhcpstatements'] > b['dhcpstatements'])? 1 : 0;
+		return (a['iscdhcpstatements'] < b['iscdhcpstatements']) ? -1 : (a['iscdhcpstatements'] > b['iscdhcpstatements'])? 1 : 0;
 	}
 	else
-	    return (a['dhcpstatements'] < b['dhcpstatements']) ? -1 : (a['dhcpstatements'] > b['dhcpstatements'])? 1 : 0;
+	    return (a['iscdhcpstatements'] < b['iscdhcpstatements']) ? -1 : (a['iscdhcpstatements'] > b['iscdhcpstatements'])? 1 : 0;
 } 
 
 // filter paged data
@@ -91,6 +92,7 @@ function filterData(data) {
 //**********************************************************************
 
 // build userlist
+/*
 function userListResponse(request) {
 	var title = $('admin-content-title');
 	var content = $('admin-content-content');
@@ -141,7 +143,7 @@ function populateUserList(event, page) {
 		td_type.insert(ACCOUNT_TYPE[user.TYPE]);
 		
 		var td_delete = new Element('td', {'class': 'delete'});
-		td_delete.insert(new Element('a', {'onclick': 'lightbox.show(500, true); lightbox.setWaitStatus(true); invis.request("script/ajax.php", userDetailsResponse, {c: "user_detail", u: "' + user['uid'] + '"});'}).update('<img src="images/edit_img.png" />'));
+		td_delete.insert(new Element('a', {'onclick': 'lightbox.show(500, true); lightbox.setWaitStatus(true); invis.request("script/adajax.php", userDetailsResponse, {c: "user_detail", u: "' + user['uid'] + '"});'}).update('<img src="images/edit_img.png" />'));
 		td_delete.insert(new Element('br'));
 		td_delete.insert(new Element('a', {'onclick': 'userDelete("' + user['uid'] + '");'}).update('<img src="images/delete_img.png" />'));
 		
@@ -211,7 +213,7 @@ function groupListResponse(request) {
 	// add group button
 	var node = new Element('table', {'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/group.png" /></td><td style="vertical-align: middle;">Gruppe anlegen</td></tr>');
 	node.observe('click', function(){
-			invis.request('script/ajax.php', groupAdd, {c: 'user_list_short'});
+			invis.request('script/adajax.php', groupAdd, {c: 'user_list_short'});
 		}
 	);
 	content.insert(node);
@@ -254,7 +256,7 @@ function populateGroupList(event, page) {
 		
 		// delete
 		var td_delete = new Element('td', {'class': 'delete'});
-		td_delete.insert(new Element('a', {'onclick': 'lightbox.show(500, true); lightbox.setWaitStatus(true); invis.request("script/ajax.php", groupDetailsResponse, {c: "group_detail", u: "' + item['cn'] + '"});'}).update('<img src="images/edit_img.png" />'));
+		td_delete.insert(new Element('a', {'onclick': 'lightbox.show(500, true); lightbox.setWaitStatus(true); invis.request("script/adajax.php", groupDetailsResponse, {c: "group_detail", u: "' + item['cn'] + '"});'}).update('<img src="images/edit_img.png" />'));
 		td_delete.insert(new Element('br'));
 		td_delete.insert(new Element('a', {'onclick': 'groupDelete("' + item['cn'] + '");'}).update('<img src="images/delete_img.png" />'));
 		tr.insert(td_delete);
@@ -265,12 +267,13 @@ function populateGroupList(event, page) {
 		$('result-body').insert(tr);
 	}
 }
-
+*/
 //**********************************************************************
 // show details
 //**********************************************************************
 
 // userdetails
+/*
 function userDetailsResponse(request) {
 	lightbox.setWaitStatus(false);
 	var data = request.responseText.evalJSON();
@@ -481,7 +484,7 @@ function listSort(list) {
 	});
 	arr.each(function (item) { list.insert(item); });
 }
-
+*/
 //
 function hostDetailsResponse(request) {
 	lightbox.setWaitStatus(false);
@@ -500,17 +503,17 @@ function hostDetailsResponse(request) {
 	// editable attributes
 	var rows = $H({
 					'cn': true,
-					'dhcpcomments': true,
-					'dhcphwaddress': false,
-					'dhcpstatements': false
+					'iscdhcpcomments': true,
+					'iscdhcphwaddress': false,
+					'iscdhcpstatements': false
 				});
 	
 	// attribute description
 	var row_names = $H({
 					'cn': 'Name',
-					'dhcpcomments': 'Standort',
-					'dhcphwaddress': 'MAC',
-					'dhcpstatements': 'IP'
+					'iscdhcpcomments': 'Standort',
+					'iscdhcphwaddress': 'MAC',
+					'iscdhcpstatements': 'IP'
 				});
 	
 	$('userbox_content').insert(new Element('div', {'style': 'display: none;'}).update(data['dn']));
@@ -524,9 +527,9 @@ function hostDetailsResponse(request) {
 			
 			// attribute value
 			var value_div = new Element('div');
-			if (item.key == 'dhcpstatements') {
+			if (item.key == 'iscdhcpstatements') {
 				value_div.update(data[item.key].split(' ')[1]);
-			} else if (item.key == 'dhcphwaddress') {
+			} else if (item.key == 'iscdhcphwaddress') {
 				var value = data[item.key].split(' ')[1].split(':');
 				for (var i = 0; i < 6; i++) {
 					var input = new Element('input', {'size': 2, 'maxlength': 2, 'style': 'width: 2em; text-align: center;'});
@@ -559,6 +562,7 @@ function hostDetailsResponse(request) {
 }
 
 // update memberuid data
+/*
 function updateMemberUID(list) {
 	var data = $A(list.childNodes);
 	var arr = new Array();
@@ -595,7 +599,7 @@ function build_user_mod_request() {
 
 	request_user_mod(dn, hash.toJSON());
 }
-
+*/
 //
 // DHCP/DNS STUFF
 // 
@@ -646,8 +650,8 @@ function populateHostList(event, page) {
 		if (PAGED_DATA[i] == null) break;
 		var id = "host_list_entry" + i;
 		var host = PAGED_DATA[i];
-		var ip = host['dhcpstatements'].split(' ');
-		var mac = host['dhcphwaddress'].split(' ');
+		var ip = host['iscdhcpstatements'].split(' ');
+		var mac = host['iscdhcphwaddress'].split(' ');
 		// Location hinzugefuegt
 		var location = host['location'];
 		var tr = new Element('tr');
@@ -688,10 +692,10 @@ function populateHostList(event, page) {
 		// Versuch eine neue Spalte in die Tabelle einfuegen fuer den Wert: Standort
 		// Array-Index "LOCATION" exitstiert noch nicht in der Array-Variable "host"
 		var td_location = new Element('td');
-		td_location.insert(host['dhcpcomments']);
+		td_location.insert(host['iscdhcpcomments']);
 
 		var td_delete = new Element('td', {'class': 'delete'});
-		var node_edit = new Element('a', {'onclick': 'lightbox.show(500, true); lightbox.setWaitStatus(true); invis.request("script/ajax.php", hostDetailsResponse, {c: "host_detail", u: "' + host['cn'] + '"});'}).update('<img src="images/edit_img.png" />');
+		var node_edit = new Element('a', {'onclick': 'lightbox.show(500, true); lightbox.setWaitStatus(true); invis.request("script/adajax.php", hostDetailsResponse, {c: "host_detail", u: "' + host['cn'] + '"});'}).update('<img src="images/edit_img.png" />');
 		td_delete.insert(node_edit);
 		td_delete.insert(new Element('br'));
 		td_delete.insert(new Element('span', {'onclick': 'hostDelete(\'' + host['cn'] + '\');'}).update('<img src="images/delete_img.png" />'));
@@ -751,39 +755,39 @@ function stopAllPingers() {
 //
 // DELETE USER / GROUP / HOST
 //
-
+/*
 function userDelete(uid) {
 	if (confirm('Möchten Sie den Benutzer "' + uid + '" wirklich löschen?')) {
 		var flag = (confirm('Verzeichnis /home/'+ uid + " löschen?"))?1:0;
-		invis.request("script/ajax.php", userDeleteResponse, {c: 'user_delete', u: uid, t: flag});
+		invis.request("script/adajax.php", userDeleteResponse, {c: 'user_delete', u: uid, t: flag});
 	}
 	
 }
 function userDeleteResponse(request) {
 	if (request.responseText == '0')
-		invis.request('script/ajax.php', userListResponse, {c: 'user_list'}); // reload user list
+		invis.request('script/adajax.php', userListResponse, {c: 'user_list'}); // reload user list
 	else
 		alert('Benutzer konnte nicht gelöscht werden!' + request.responseText);
 }
 
 function groupDelete(cn) {
 	if (confirm('Möchten Sie die Gruppe "' + cn + '" wirklich löschen?'))
-		invis.request("script/ajax.php", groupDeleteResponse, {c: "group_delete", u: cn});
+		invis.request("script/adajax.php", groupDeleteResponse, {c: "group_delete", u: cn});
 }
 function groupDeleteResponse(request) {
 	if (request.responseText == '0')
-		invis.request('script/ajax.php', groupListResponse, {c: 'group_list'}); // reload group list
+		invis.request('script/adajax.php', groupListResponse, {c: 'group_list'}); // reload group list
 	else
 		alert('Gruppe konnte nicht gelöscht werden!' + request.responseText);
 }
-
+*/
 function hostDelete(cn) {
 	if (confirm('Möchten Sie den PC "' + cn + '" wirklich löschen?'))
-		invis.request("script/ajax.php", hostDeleteResponse, {c: 'host_delete', u: cn});
+		invis.request("script/adajax.php", hostDeleteResponse, {c: 'host_delete', u: cn});
 }
 function hostDeleteResponse(request) {
 	if (request.responseText == '0')
-		invis.request('script/ajax.php', hostListResponse, {c: 'host_list'}); // reload host list
+		invis.request('script/adajax.php', hostListResponse, {c: 'host_list'}); // reload host list
 	else
 		alert('PC konnte nicht gelöscht werden!' + request.responseText);
 }
@@ -791,11 +795,11 @@ function hostDeleteResponse(request) {
 //
 // MODIFY USER / GROUP / HOST
 //
-
+/*
 function userMod(uid) {
 	var data = lightbox.data.getHash().toJSON();
 	invis.setCookie('invis-request', data);
-	invis.request('script/ajax.php', userModResponse, {c: 'user_mod', u: uid});
+	invis.request('script/adajax.php', userModResponse, {c: 'user_mod', u: uid});
 }
 function userModResponse(request) {
 	invis.deleteCookie('invis-request');
@@ -817,17 +821,17 @@ function groupModResponse(request) {
 		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
 	}
 }
-
+*/
 function hostMod(cn) {
 	var data = lightbox.data.getHash().toJSON();
 	invis.setCookie('invis-request', data);
-	invis.request('script/ajax.php', hostModResponse, {c: 'host_mod', u: cn});
+	invis.request('script/adajax.php', hostModResponse, {c: 'host_mod', u: cn});
 }
 function hostModResponse(request) {
 	invis.deleteCookie('invis-request');
 	if (request.responseText == '0') {
 		lightbox.setStatus('Änderungen wurden gespeichert!');
-		window.setTimeout("invis.request('script/ajax.php', hostListResponse, {c: 'host_list'}); lightbox.hide();", 1000);
+		window.setTimeout("invis.request('script/adajax.php', hostListResponse, {c: 'host_list'}); lightbox.hide();", 1000);
 	}
 	else {
 		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
@@ -838,6 +842,7 @@ function hostModResponse(request) {
 //
 
 // show user add box
+/*
 function userAdd() {
 	var account_type = 0; // 0: user, 1: admin, 2: gast, 3: mail, 4: groupware
 	lightbox.show(500, true);
@@ -855,7 +860,7 @@ function userAdd() {
 	tmp_btn.observe('click', function () {
 		var uid = lightbox.data.get('uid');
 		invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-		invis.request('script/ajax.php', userAddResponse, {c: 'user_create', u: uid, t: account_type});
+		invis.request('script/adajax.php', userAddResponse, {c: 'user_create', u: uid, t: account_type});
 	});
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
@@ -933,11 +938,11 @@ function userAdd() {
 function userAddRequest(type) {
 	var uid = lightbox.data.get('uid');
 	invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-	invis.request('script/ajax.php', userAddResponse, {c: 'user_create', u: uid, t: type});
+	invis.request('script/adajax.php', userAddResponse, {c: 'user_create', u: uid, t: type});
 }
 function userAddResponse(request) {
 	if (request.responseText == '0') {
-		invis.request('script/ajax.php', userListResponse, {c: 'user_list'});
+		invis.request('script/adajax.php', userListResponse, {c: 'user_list'});
 		lightbox.hide();
 	} else {
 		lightbox.setStatus('Benutzer konnte nicht erstellt werden!<br />' + request.responseText);
@@ -1050,17 +1055,17 @@ function groupAdd(request) {
 function groupAddRequest() {
 	var cn = lightbox.data.get('cn');
 	invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-	invis.request('script/ajax.php', groupAddResponse, {c: 'group_create', u: cn});
+	invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn});
 }
 function groupAddResponse(request) {
 	if (request.responseText == '0') {
-		invis.request('script/ajax.php', groupListResponse, {c: 'group_list'});
+		invis.request('script/adajax.php', groupListResponse, {c: 'group_list'});
 		lightbox.hide();
 	} else {
 		lightbox.setStatus('Benutzer konnte nicht erstellt werden!<br />' + request.responseText);
 	}
 }
-
+*/
 // show host add box
 function hostAdd() {
 	var host_type = 0;
@@ -1080,7 +1085,7 @@ function hostAdd() {
 	tmp_btn.observe('click', function () {
 		var data = lightbox.data.getHash();
 		invis.setCookie('invis-request', data.toJSON());
-		invis.request('script/ajax.php', hostAddResponse, {c: 'host_create', u: data.get('cn'), t: host_type})
+		invis.request('script/adajax.php', hostAddResponse, {c: 'host_create', u: data.get('cn'), t: host_type})
 	});
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
@@ -1169,19 +1174,19 @@ function hostAddMAC(e) {
 		str += mac[i];
 		if (i < mac.length - 1) str += ':';
 	}
-	lightbox.data.set('dhcphwaddress', 'ethernet ' + str);
+	lightbox.data.set('iscdhcphwaddress', 'ethernet ' + str);
 }
 
 function hostAddRequest() {
 	lightbox.setWaitStatus(true);
 	var data = lightbox.data.getHash();
 	invis.setCookie('invis-request', data.toJSON());
-	invis.request('script/ajax.php', hostAddResponse, {c: 'host_create', u: data.get('cn')})
+	invis.request('script/adajax.php', hostAddResponse, {c: 'host_create', u: data.get('cn')})
 }
 function hostAddResponse(request) {
 	lightbox.setWaitStatus(false);
 	if (request.responseText == '0') {
-		invis.request('script/ajax.php', hostListResponse, {c: 'host_list'});
+		invis.request('script/adajax.php', hostListResponse, {c: 'host_list'});
 		lightbox.hide();
 	} else {
 		lightbox.setStatus('PC konnte nicht erstellt werden!<br />' + request.responseText);
@@ -1193,6 +1198,7 @@ function hostDiscover() {
 	lightbox.setWaitStatus(true);
 	invis.request('script/dhcpleases.php', hostDiscoverResponse, {});
 }
+
 function hostDiscoverResponse(request) {
 	lightbox.setWaitStatus(false);
 	var data = request.responseText.evalJSON(true);
@@ -1229,7 +1235,7 @@ function hostDiscoverResponse(request) {
 		lightbox.setWaitStatus(true);
 		var data = lightbox.data.getHash();
 		invis.setCookie('invis-request', data.toJSON());
-		invis.request('script/ajax.php', hostDiscover, {c: 'host_create', u: data.get('cn'), t: host_type})
+		invis.request('script/adajax.php', hostDiscover, {c: 'host_create', u: data.get('cn'), t: host_type})
 	});
 	
 	lightbox.addButton(tmp_btn);
