@@ -43,11 +43,11 @@ function mysort(a, b) {
 } 
 
 // sorting function for an array of JSON group objects, sorted by cn (alphabetical, ignored case)
-/*
+
 function groupsort(a, b) {
 	return (a['cn'].toUpperCase() < b['cn'].toUpperCase()) ? -1 : (a['cn'].toUpperCase() > b['cn'].toUpperCase())? 1 : 0;
 } 
-*/
+
 // sorting function for an array of JSON host objects, sorted by IP
 function hostsort(a, b) {
 	var stA = a['iscdhcpstatements'].split(" ");
@@ -466,7 +466,7 @@ function groupDetailsResponse(request) {
 	listSort($('grouplist_out'));
 	lightbox.update();
 }
-
+*/
 // sort a nodeList of <option> tags
 function listSort(list) {
 	var data = list.childNodes;
@@ -484,10 +484,11 @@ function listSort(list) {
 	});
 	arr.each(function (item) { list.insert(item); });
 }
-*/
+
 //
 function hostDetailsResponse(request) {
 	lightbox.setWaitStatus(false);
+	//Ab hier gehts schief
 	var data = request.responseText.evalJSON();
 	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('PC-Details'));
 	
@@ -630,8 +631,8 @@ function hostListResponse(request) {
 	content.insert(node);
 	
 	// discover hosts button
-	//var node2 = new Element('table', {'onclick': 'hostDiscover();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/host.png" /></td><td style="vertical-align: middle;">PCs suchen</td></tr>');
-	//content.insert(node2);
+	var node2 = new Element('table', {'onclick': 'hostDiscover();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/host.png" /></td><td style="vertical-align: middle;">PCs suchen</td></tr>');
+	content.insert(node2);
 }
 
 function populateHostList(event, page) {
@@ -812,7 +813,7 @@ function userModResponse(request) {
 function groupMod(cn) {
 	var data = lightbox.data.getHash().toJSON();
 	invis.setCookie('invis-request', data);
-	invis.request('script/ajax.php', groupModResponse, {c: 'group_mod', u: cn});
+	invis.request('script/adajax.php', groupModResponse, {c: 'group_mod', u: cn});
 }
 function groupModResponse(request) {
 	invis.deleteCookie('invis-request');
@@ -827,6 +828,7 @@ function hostMod(cn) {
 	invis.setCookie('invis-request', data);
 	invis.request('script/adajax.php', hostModResponse, {c: 'host_mod', u: cn});
 }
+
 function hostModResponse(request) {
 	invis.deleteCookie('invis-request');
 	if (request.responseText == '0') {
@@ -1183,9 +1185,10 @@ function hostAddRequest() {
 	invis.setCookie('invis-request', data.toJSON());
 	invis.request('script/adajax.php', hostAddResponse, {c: 'host_create', u: data.get('cn')})
 }
+
 function hostAddResponse(request) {
 	lightbox.setWaitStatus(false);
-	if (request.responseText == '0') {
+	if (request.responseText == 'null') {
 		invis.request('script/adajax.php', hostListResponse, {c: 'host_list'});
 		lightbox.hide();
 	} else {

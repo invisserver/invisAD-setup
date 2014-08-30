@@ -139,7 +139,7 @@ var InvisBase = Class.create({
 	// requests user list
 	requestUserList : function(handler) {
 		var myAjax = new Ajax.Request(
-			"script/ajax.php",
+			"script/adajax.php",
 			{
 				method: 'post',
 				parameters: {action: 'user_list'},
@@ -151,7 +151,7 @@ var InvisBase = Class.create({
 	// request details for specific user
 	requestUserDetails : function(uid, handler) {
 		var myAjax = new Ajax.Request(
-			"script/ajax.php",
+			"script/adajax.php",
 			{
 				method: 'post',
 				parameters: {c: 'user_detail', u: uid},
@@ -163,7 +163,7 @@ var InvisBase = Class.create({
 	// requests group list
 	requestGroupList : function(handler) {
 		var myAjax = new Ajax.Request(
-			"script/ajax.php",
+			"script/adajax.php",
 			{
 				method: 'post',
 				parameters: {action: 'group_list'},
@@ -175,7 +175,7 @@ var InvisBase = Class.create({
 	// request details for specific group
 	requestGroupDetails : function(gidnumber, handler) {
 		var myAjax = new Ajax.Request(
-			"script/ajax.php",
+			"script/adajax.php",
 			{
 				method: 'post',
 				parameters: {action: 'group_detail', details: gidnumber},
@@ -187,7 +187,7 @@ var InvisBase = Class.create({
 	// modify an LDAP entry
 	modifyEntry : function(dn, attributes, handler) {
 		var myAjax = new Ajax.Request(
-			"script/ajax.php",
+			"script/adajax.php",
 			{
 				method: 'post',
 				parameters: {action: 'user_mod', basedn: dn, details: attributes.toJSON()},
