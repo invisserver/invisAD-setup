@@ -141,7 +141,7 @@ function showProfile(event) {
 	lightbox.show(400, 400, true);
 	lightbox.setWaitStatus(true);
 	var data = invis.getCookie('invis').evalJSON();
-	invis.request('script/ajax.php', showProfileResponse, {c: 'user_detail', u: data.uid});
+	invis.request('script/adajax.php', showProfileResponse, {c: 'user_detail', u: data.uid});
 }
 
 function showProfileResponse(request) {
@@ -153,7 +153,7 @@ function showProfileResponse(request) {
 	// editable attributes
 	var rows = $H({
 					'uid': false,
-					'uidnumber': false,
+					'rid': false,
 					'displayname': true,
 					'givenname': true,
 					'sn': true,
@@ -163,7 +163,7 @@ function showProfileResponse(request) {
 	// attribute description
 	var row_names = $H({
 					'uid': 'Login',
-					'uidnumber': 'UID',
+					'rid': 'RID',
 					'displayname': 'Anzeigename',
 					'userpassword': 'Passwort',
 					'sn': 'Nachname',
@@ -216,7 +216,7 @@ function showProfileResponse(request) {
 	btn_save.observe('click', function(e) {
 		lightbox.setWaitStatus(true);
 		invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-		invis.request('script/ajax.php', profileModResponse, {c: 'user_mod', u: data['uid']});
+		invis.request('script/adajax.php', profileModResponse, {c: 'user_mod', u: data['uid']});
 	});
 	lightbox.addButton(btn_save);
 	
