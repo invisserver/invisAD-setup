@@ -19,25 +19,21 @@ require_once('../inc/adLDAP.php');
 require_once('../inc/adfunctions.inc.php');
 
 // Array mit Globalvariablen bilden
-function createadobject() {
-    global $FQDN, $DOMAIN, $LDAP_SUFFIX, $LDAP_ADMIN, $LDAP_BIND_PW;
-    $options = array(
-	    'domain_controllers' => array("$FQDN"),
-	    'account_suffix' => "@$DOMAIN",
-	    'base_dn' => "$LDAP_SUFFIX",
-	    'admin_username' => "$LDAP_ADMIN",
-	    'admin_password' => "$LDAP_BIND_PW");
+$options = array(
+	'domain_controllers' => array("$FQDN"),
+	'account_suffix' => "@$DOMAIN",
+	'base_dn' => "$LDAP_SUFFIX",
+	'admin_username' => "$LDAP_ADMIN",
+	'admin_password' => "$LDAP_BIND_PW");
 
-    //adLDAP Klassenobjekt initialisieren
-    try {
-	    $adldap = new adLDAP($options);
-    }
+//adLDAP Klassenobjekt initialisieren
+try {
+	$adldap = new adLDAP($options);
+}
 
-    catch (adLDAPException $e) {
-	    echo $e;
-	    exit();   
-    }
-    return $adldap;
+catch (adLDAPException $e) {
+	echo $e;
+	exit();   
 }
 
 //--------------------
@@ -77,37 +73,50 @@ setcookie('invis-request', '', time() - 3600, '/');
 // USER STUFF
 //--------------------
 function userDetail($uid) {
-    // Raw data array returned
-	//createadobject();
-    
-	global $FQDN, $DOMAIN, $LDAP_SUFFIX, $LDAP_ADMIN, $LDAP_BIND_PW;
-	$options = array(
-	    'domain_controllers' => array("$FQDN"),
-	    'account_suffix' => "@$DOMAIN",
-	    'base_dn' => "$LDAP_SUFFIX",
-	    'admin_username' => "$LDAP_ADMIN",
-	    'admin_password' => "$LDAP_BIND_PW");
-
-	//adLDAP Klassenobjekt initialisieren
-	try {
-	    $adldap = new adLDAP($options);
-	}
-
-	catch (adLDAPException $e) {
-	    echo $e;
-	    exit();   
-	}
-    
+	// adldap-Objekt muss in Funktionen als global-Variable genannt werden
+	global $adldap;
+	// Benutzerinformationen abfragen
 	$result = $adldap->user()->infoCollection("$uid", array("*"));
 	$userdetails = array(
-	    'givenname' => $result->givenname,
-	    'sn' => $result->sn,
-	    'displayname' => $result->displayname,
+	    'firstname' => $result->givenname,
+	    'surname' => $result->sn,
+	    'display_name' => $result->displayname,
 	    'uid' => $result->samaccountname,
+	    'description' => $result->description,
+	    'mail' => $result->mail,
+	    'office' => $result->physicaldeliveryofficename,
+	    'telephone' => $result->telephonenumber,
 	// adtstamp2date($result->accountExpires)."<br>";
 	    'rid' => ridfromsid(bin_to_str_sid($result->objectsid)));
 	
 	return $userdetails;
+}
+
+function userModify($uid) {
+	global $cookie_data, $adldap;
+	// read user data from cookie
+	//$attributes = json_decode($_COOKIE['invis-request'], true);
+	$attributes = $cookie_data;
+	
+	// wenn das Passwort Attribut zurueck geliefert wird
+	// passwort aendern und attribut aus array löschen
+	
+	if ( ! empty($attributes->userpassword)) {
+	    try {
+		$result = $adldap->user()->password("$uid","$attributes->userpassword");
+		//var_dump($result);
+	    }
+	    catch (adLDAPException $e) {
+		return $e; 
+		//exit();   
+	    }
+	unset($attributes->userpassword);
+	}
+	
+	//echo $attributes['office'];
+	$result = $adldap->user()->modify("$uid",$attributes);
+	return $adldap->getLastError();
+	//return $e;
 }
 
 //--------------------
@@ -391,7 +400,7 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 		echo json_encode(hostCreate($conn, $USR));
 	}
 	elseif ($CMD == 'user_mod') {
-		echo json_encode(userModify($conn, $USR));
+		echo json_encode(userModify($USR));
 	}
 	elseif ($CMD == 'group_mod') {
 		echo json_encode(groupModify($conn, $USR));

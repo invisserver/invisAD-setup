@@ -3,8 +3,9 @@
  * site building an general portal wide functions
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
+ * (C) 2014 Stefan Schaefer, invis-server.org
  * License GPLv3
- * Questions: daniel@invis-server.org
+ * Questions: stefan@invis-server.org
  */
 
 // Global
@@ -154,9 +155,13 @@ function showProfileResponse(request) {
 	var rows = $H({
 					'uid': false,
 					'rid': false,
-					'displayname': true,
-					'givenname': true,
-					'sn': true,
+					'mail': false,
+					'display_name': true,
+					'firstname': true,
+					'surname': true,
+					'description': true,
+					'office': true,
+					'telephone': true,
 					'userpassword': true
 				});
 	
@@ -164,10 +169,14 @@ function showProfileResponse(request) {
 	var row_names = $H({
 					'uid': 'Login',
 					'rid': 'RID',
-					'displayname': 'Anzeigename',
+					'mail': 'Email intern',
+					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
-					'sn': 'Nachname',
-					'givenname': 'Vorname'
+					'surname': 'Nachname',
+					'description': 'Beschreibung',
+					'office': 'Büro',
+					'telephone': 'Telefon',
+					'firstname': 'Vorname'
 				});
 	lightbox.setData(new DetailStorage(request.responseText.evalJSON(), rows));
 	
@@ -228,7 +237,7 @@ function showProfileResponse(request) {
 
 function profileModResponse(request) {
 	lightbox.setWaitStatus(false);
-	if (request.responseText == '0') {
+	if (request.responseText == '"Success"') {
 		lightbox.hide();
 	} else {
 		lightbox.setStatus('Profil konnte nicht geändert werden!<br />' + request.responseText);
@@ -271,15 +280,17 @@ function profileRequestPasswordChange(event) {
 				return;
 			}
 			
-			var ssha = invis.ssha(secret);
-			var md4 = invis.md4(secret);
+			// Verschluesselung wird von adLDAP erledigt
+			//var ssha = invis.ssha(secret);
+			//var md4 = invis.md4(secret);
 			
 			lightbox.setWaitStatus(true);
-			invis.setCookie('invis-request', $H({'userpassword': ssha, 'sambantpassword': md4}).toJSON());
-			invis.request('script/ajax.php', 
+//			invis.setCookie('invis-request', $H({'userpassword': ssha, 'sambantpassword': md4}).toJSON());
+			invis.setCookie('invis-request', $H({'userpassword': secret}).toJSON());
+			invis.request('script/adajax.php', 
 				function(request) {
 					lightbox.setWaitStatus(false);
-					if (request.responseText == "0") {
+					if (request.responseText == '"Success"') {
 						table.remove();
 						$('btn_change_pw').show();
 						lightbox.setStatus("Passwort wurde geändert!");
