@@ -92,7 +92,7 @@ class adLDAP {
     * 
     * @var string
     */
-    protected $baseDn = "DC=mydomain,DC=local"; 
+    protected $baseDn = "DC=invis-net,DC=loc"; 
     
     /** 
     * Port used to talk to the domain controllers. 
@@ -107,7 +107,7 @@ class adLDAP {
     * 
     * @var array
     */
-    protected $domainControllers = array("dc01.mydomain.local");
+    protected $domainControllers = array("ldapserver");
 	
     /**
     * Optional account with higher privileges for searching
@@ -143,7 +143,7 @@ class adLDAP {
     * 
     * @var bool
     */
-    protected $useTLS = false;
+    protected $useTLS = true;
     
     /**
     * Use SSO  

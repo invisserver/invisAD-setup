@@ -2060,19 +2060,28 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 
     fi
 
+    # LDAP Client- und adLDAP-Konfiguration anpassen
     # Konfigurationsdaten ermitteln.
+    cp $cfilesdir/LDAP/conf-client/etc/openldap/ldap.conf /etc/openldap
     #domain=`getconfdata "Domain" "2"`
-    #ldaphost="localhost"
-    #basedn=`getconfdata "baseDN" "2"`
-    #path="/srv/www/htdocs/cornaz/inc"
-    #file="config.inc.php"
-    #strings="i6-maildomain%$domain"
-    #changevalues $path $file "$strings"
-    #strings="i6-ldaphost%$ldaphost"
-    #changevalues $path $file "$strings"
-    #strings="i6-basedn%$basedn"
-    #changevalues $path $file "$strings"
+    ldaphost=`getconfdata "FQDN" "2"`
+    basedn=`getconfdata "baseDN" "2"`
+    path="/etc/openldap/"
+    file="ldap.conf"
+    strings="dc=invis-net,dc=loc%$basedn"
+    changevalues $path $file "$strings"
+    strings="ldapserver%$ldaphost"
+    changevalues $path $file "$strings"
 
+    path="/srv/www/htdocs/portal/inc"
+    file="adLDAP.php"
+    strings="dc=invis-net,dc=loc%$basedn"
+    changevalues $path $file "$strings"
+    strings="ldapserver%$ldaphost"
+    changevalues $path $file "$strings"
+
+    ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
+    
     # Sysconfig Datei bearbeiten
     cp $cfilesdir/mailserver/fetchmail/fetchmail /etc/sysconfig/
     path="/etc/sysconfig/fetchmail"
