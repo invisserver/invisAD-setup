@@ -43,11 +43,12 @@ chown -R root:"Domain Admins" /srv/shares/service
 chown -R root:"Domain Guests" /srv/shares/transfer
 chown -R root:"Verwaltung" /srv/shares/verwaltung
 chown root:"Domain Users" /srv/shares/portal/uploads
-chown domadmin:"Domain Users" /srv/shares/portal/downloads
+chown administrator:"Domain Users" /srv/shares/portal/downloads
 
 # Zugriffsrechte auf Private-Key Verzeichnis bereinigen
 chown .pkeys /etc/ssl/private
 chmod g+rx /etc/ssl/private
+systemctl restart named.service
 
 # Wenn vorhanden Rechte auf nagios check_icmp bereinigen
 if [[ -f /usr/lib/nagios/plugins/check-icmp ]]; then
