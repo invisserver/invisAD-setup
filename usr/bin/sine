@@ -1808,6 +1808,7 @@ fileserver() {
 
     # Gruppen anlegen
     samba-tool group add mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group add maildummies 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group add Verwaltung 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # invisconnect-Script anpassen
