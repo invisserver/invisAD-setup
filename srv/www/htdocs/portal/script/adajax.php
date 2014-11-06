@@ -73,6 +73,22 @@ setcookie('invis-request', '', time() - 3600, '/');
 // USER STUFF
 //--------------------
 function userList() {
+	global $cookie_data, $adldap;
+	// Raw data array returned
+	$result = $adldap->user()->all();
+	//var_dump($result);
+	$json = array();
+	foreach ($result as $i => $value) {
+	    $collection = $adldap->user()->infoCollection("$result[$i]", array("*") );
+	    //print_r($collection->member);
+	    //print_r($collection->description);
+	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
+	    //echo "$result[$i] - $rid <br>";
+	    $entry = array("uidnumber" => "$rid","uid" => "$result[$i]");
+	    // create JSON response
+	    array_push($json, $entry);
+	}
+	return $json;
 
 }
 

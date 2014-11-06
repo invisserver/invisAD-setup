@@ -68,7 +68,7 @@ if (0) {
 	var_dump($result);
 }
 
-if (1) {
+if (0) {
 	// Raw data array returned
 	$result = $adldap->group()->all();
 	//var_dump($result);
@@ -86,6 +86,23 @@ if (1) {
 	return $json;
 }
 
+if (1) {
+	// Raw data array returned
+	$result = $adldap->user()->all();
+	//var_dump($result);
+	$json = array();
+	foreach ($result as $i => $value) {
+	    $collection = $adldap->user()->infoCollection("$result[$i]", array("*") );
+	    //print_r($collection->member);
+	    //print_r($collection->description);
+	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
+	    echo "$result[$i] - $rid <br>";
+	    $entry = array("$result[$i]",$rid);
+	    // create JSON response
+	    array_push($json, $entry);
+	}
+	return $json;
+}
 
 // create a user account
 if (0) {
