@@ -92,7 +92,7 @@ function filterData(data) {
 //**********************************************************************
 
 // build userlist
-/*
+
 function userListResponse(request) {
 	var title = $('admin-content-title');
 	var content = $('admin-content-content');
@@ -120,6 +120,8 @@ function userListResponse(request) {
 	var node = new Element('table', {'onclick': 'userAdd();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/user.png" /></td><td style="vertical-align: middle;">Benutzer anlegen</td></tr>');
 	content.insert(node);
 }
+
+
 
 // populate userlist
 function populateUserList(event, page) {
@@ -182,7 +184,9 @@ function populateUserList(event, page) {
 	}
 }
 
+
 // build grouplist
+
 function groupListResponse(request) {
 	var title = $('admin-content-title');
 	var content = $('admin-content-content');
@@ -218,6 +222,48 @@ function groupListResponse(request) {
 	);
 	content.insert(node);
 }
+
+/*
+function groupListResponse(request) {
+	var title = $('admin-content-title');
+	var content = $('admin-content-content');
+	content.innerHTML = "";
+	
+	stopAllPingers();
+	
+	// Daten aus adajax.php groupList werden uebernommen und sortiert
+	// Wenn keine passenden Daten zurueck kommen bleibt das gesamte Ausgabe-
+	// Feld leer. Nicht einmal der Tabellenkopf erscheint.
+	PAGED_DATA = request.responseText.evalJSON();
+//	PAGED_DATA.sort(groupsort);
+//	PAGE_CURRENT = 0;
+	
+	// header
+	
+	title.update('Gruppenliste:');
+	
+//	var n_entries = PAGED_DATA.length;
+//	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
+//	var p = new Element('div', {'id': 'result-paging'});
+//	content.insert(p);
+	
+	// 3 colums (name, type, delete)
+	//content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="type">Typ</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
+	
+	// 2 colums (name, delete)
+	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
+//	populateGroupList(null, 0);
+	
+	// add group button
+//	var node = new Element('table', {'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/group.png" /></td><td style="vertical-align: middle;">Gruppe anlegen</td></tr>');
+//	node.observe('click', function(){
+//			invis.request('script/adajax.php', groupAdd, {c: 'user_list_short'});
+//		}
+//	);
+	content.insert(node);
+}
+*/
+
 
 // populate grouplist
 function populateGroupList(event, page) {
@@ -267,13 +313,14 @@ function populateGroupList(event, page) {
 		$('result-body').insert(tr);
 	}
 }
-*/
+
+
 //**********************************************************************
 // show details
 //**********************************************************************
 
 // userdetails
-/*
+
 function userDetailsResponse(request) {
 	lightbox.setWaitStatus(false);
 	var data = request.responseText.evalJSON();
@@ -339,6 +386,8 @@ function userDetailsResponse(request) {
 	
 	lightbox.update();
 }
+
+
 
 // groupdetails
 function groupDetailsResponse(request) {
@@ -466,7 +515,7 @@ function groupDetailsResponse(request) {
 	listSort($('grouplist_out'));
 	lightbox.update();
 }
-*/
+
 // sort a nodeList of <option> tags
 function listSort(list) {
 	var data = list.childNodes;
@@ -576,7 +625,9 @@ function updateMemberUID(list) {
 	
 	lightbox.data.set('memberuid', arr);
 }
+*/
 
+/*
 // entry modification request?
 function doodat(request) {
 	if (request == null) build_user_mod_request();
@@ -584,7 +635,9 @@ function doodat(request) {
 		lightbox.hide();
 	} 
 }
+*/
 
+/*
 // create entry mod request
 function build_user_mod_request() {
 	var node = $('userbox_content');
@@ -601,6 +654,7 @@ function build_user_mod_request() {
 	request_user_mod(dn, hash.toJSON());
 }
 */
+
 //
 // DHCP/DNS STUFF
 // 
@@ -756,7 +810,8 @@ function stopAllPingers() {
 //
 // DELETE USER / GROUP / HOST
 //
-/*
+
+
 function userDelete(uid) {
 	if (confirm('Möchten Sie den Benutzer "' + uid + '" wirklich löschen?')) {
 		var flag = (confirm('Verzeichnis /home/'+ uid + " löschen?"))?1:0;
@@ -764,6 +819,7 @@ function userDelete(uid) {
 	}
 	
 }
+
 function userDeleteResponse(request) {
 	if (request.responseText == '0')
 		invis.request('script/adajax.php', userListResponse, {c: 'user_list'}); // reload user list
@@ -771,17 +827,23 @@ function userDeleteResponse(request) {
 		alert('Benutzer konnte nicht gelöscht werden!' + request.responseText);
 }
 
+
+
 function groupDelete(cn) {
 	if (confirm('Möchten Sie die Gruppe "' + cn + '" wirklich löschen?'))
 		invis.request("script/adajax.php", groupDeleteResponse, {c: "group_delete", u: cn});
 }
+
+
+
 function groupDeleteResponse(request) {
 	if (request.responseText == '0')
 		invis.request('script/adajax.php', groupListResponse, {c: 'group_list'}); // reload group list
 	else
 		alert('Gruppe konnte nicht gelöscht werden!' + request.responseText);
 }
-*/
+
+
 function hostDelete(cn) {
 	if (confirm('Möchten Sie den PC "' + cn + '" wirklich löschen?'))
 		invis.request("script/adajax.php", hostDeleteResponse, {c: 'host_delete', u: cn});
@@ -796,12 +858,15 @@ function hostDeleteResponse(request) {
 //
 // MODIFY USER / GROUP / HOST
 //
-/*
+
 function userMod(uid) {
 	var data = lightbox.data.getHash().toJSON();
 	invis.setCookie('invis-request', data);
 	invis.request('script/adajax.php', userModResponse, {c: 'user_mod', u: uid});
 }
+
+
+
 function userModResponse(request) {
 	invis.deleteCookie('invis-request');
 	if (request.responseText == '0') lightbox.setStatus('Änderungen wurden gespeichert!');
@@ -810,11 +875,16 @@ function userModResponse(request) {
 	}
 }
 
+
+
 function groupMod(cn) {
 	var data = lightbox.data.getHash().toJSON();
 	invis.setCookie('invis-request', data);
 	invis.request('script/adajax.php', groupModResponse, {c: 'group_mod', u: cn});
 }
+
+
+
 function groupModResponse(request) {
 	invis.deleteCookie('invis-request');
 	if (request.responseText == '0') lightbox.setStatus('Änderungen wurden gespeichert!');
@@ -822,7 +892,8 @@ function groupModResponse(request) {
 		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
 	}
 }
-*/
+
+
 function hostMod(cn) {
 	var data = lightbox.data.getHash().toJSON();
 	invis.setCookie('invis-request', data);
@@ -844,7 +915,7 @@ function hostModResponse(request) {
 //
 
 // show user add box
-/*
+
 function userAdd() {
 	var account_type = 0; // 0: user, 1: admin, 2: gast, 3: mail, 4: groupware
 	lightbox.show(500, true);
@@ -937,11 +1008,15 @@ function userAdd() {
 	lightbox.update();
 }
 
+
 function userAddRequest(type) {
 	var uid = lightbox.data.get('uid');
 	invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
 	invis.request('script/adajax.php', userAddResponse, {c: 'user_create', u: uid, t: type});
 }
+
+
+
 function userAddResponse(request) {
 	if (request.responseText == '0') {
 		invis.request('script/adajax.php', userListResponse, {c: 'user_list'});
@@ -950,6 +1025,8 @@ function userAddResponse(request) {
 		lightbox.setStatus('Benutzer konnte nicht erstellt werden!<br />' + request.responseText);
 	}
 }
+
+
 
 // show user add box
 function groupAdd(request) {
@@ -1054,11 +1131,16 @@ function groupAdd(request) {
 	lightbox.update();
 }
 
+
+
 function groupAddRequest() {
 	var cn = lightbox.data.get('cn');
 	invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
 	invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn});
 }
+
+
+
 function groupAddResponse(request) {
 	if (request.responseText == '0') {
 		invis.request('script/adajax.php', groupListResponse, {c: 'group_list'});
@@ -1067,7 +1149,8 @@ function groupAddResponse(request) {
 		lightbox.setStatus('Benutzer konnte nicht erstellt werden!<br />' + request.responseText);
 	}
 }
-*/
+
+
 // show host add box
 function hostAdd() {
 	var host_type = 0;

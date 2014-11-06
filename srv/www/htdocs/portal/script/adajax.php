@@ -72,6 +72,10 @@ setcookie('invis-request', '', time() - 3600, '/');
 //--------------------
 // USER STUFF
 //--------------------
+function userList() {
+
+}
+
 function userDetail($uid) {
 	// adldap-Objekt muss in Funktionen als global-Variable genannt werden
 	global $adldap;
@@ -122,7 +126,24 @@ function userModify($uid) {
 //--------------------
 // GROUP STUFF
 //--------------------
-
+function groupList() {
+	global $cookie_data, $adldap;
+	// Raw data array returned
+	$result = $adldap->group()->all();
+	//var_dump($result);
+	$json = array();
+	foreach ($result as $i => $value) {
+	    $collection = $adldap->group()->infoCollection("$result[$i]", array("*") );
+	    //print_r($collection->member);
+	    //print_r($collection->description);
+	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
+	    //echo "$result[$i] - $rid <br>";
+	    $entry = array("gidnumber" => "$rid","cn" => "$result[$i]");
+	    // create JSON response
+	    array_push($json, $entry);
+	}
+	return $json;
+}
 
 
 //--------------------

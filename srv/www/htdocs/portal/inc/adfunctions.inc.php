@@ -39,7 +39,12 @@ function adtstamp2date($adtstamp) {
 
 function ridfromsid($sid) {
     $sidparts = explode("-", $sid);
-    $rid = $sidparts['7'];
+    $anzelemente = count($sidparts);
+    if ($anzelemente > 5) {
+	$rid = $sidparts['7'];
+    } else {
+	$rid = "BI".$sidparts['4'];
+    }
     return $rid;
 }
 

@@ -6,6 +6,7 @@ To test any of the functions, just change the 0 to a 1.
 */
 require_once('../config.php');
 require_once('../ldap.php');
+require_once('../inc/adfunctions.inc.php');
 
 // Array mit Globalvariablen bilden
 $options = array(
@@ -67,6 +68,25 @@ if (0) {
 	var_dump($result);
 }
 
+if (1) {
+	// Raw data array returned
+	$result = $adldap->group()->all();
+	//var_dump($result);
+	$json = array();
+	foreach ($result as $i => $value) {
+	    $collection = $adldap->group()->infoCollection("$result[$i]", array("*") );
+	    //print_r($collection->member);
+	    //print_r($collection->description);
+	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
+	    echo "$result[$i] - $rid <br>";
+	    $entry = array("$result[$i]",$rid);
+	    // create JSON response
+	    array_push($json, $entry);
+	}
+	return $json;
+}
+
+
 // create a user account
 if (0) {
 	$attributes=array(
@@ -101,7 +121,7 @@ if (0) {
 // retrieve information about a user
 if (1) {
     // Raw data array returned
-	$result = $adldap->user()->infoCollection("stefan", array("*"));
+	$result = $adldap->user()->infoCollection("administrator", array("*"));
 	//print_r($result);
 	echo $result->givenname."<br>";
 	echo $result->sn."<br>";
