@@ -96,13 +96,60 @@ if (1) {
 	    //print_r($collection->member);
 	    //print_r($collection->description);
 	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
-	    echo "$result[$i] - $rid <br>";
+	    $pgid = $collection->primarygroupid;
+	    $shell = $collection->loginshell;
+	    $gwaccount = $collection->zarafaaccount;
+	    $admin = $adldap->user()->inGroup("$result[$i]","Domain Admins");
+	    $maildummy = $adldap->user()->inGroup("$result[$i]","maildummies");
+	    
+	    // Benutzerty ermitteln
+	    $utval = array();
+	    $typevalue = 0;
+	    
+	    if ( $pgid == "514" ) {
+		$utval[0] = 1; 
+	    }
+
+	    if ( $pgid == "513" ) {
+		$utval[1] = 2; 
+	    }
+	    
+	    if ( $shell == "/bin/false" ) {
+		$utval[2] = 4; 
+	    }
+
+	    if ( $shell == "/bin/bash" ) {
+		$utval[3] = 8; 
+	    }
+
+	    if ( $maildummy == "1" ) {
+		$utval[4] = 16; 
+	    }
+
+	    if ( $admin == true ) {
+		$utval[5] = 32; 
+	    }
+
+	    if ( $gwaccount == true ) {
+		$utval[6] = 64; 
+	    }
+
+	    foreach ($utval as $val => $value) {
+		//echo "$value <br>";
+		$typevalue = $typevalue + $value;
+	    }
+
+	    echo "$result[$i] - $rid - $typevalue <br>";
+
 	    $entry = array("$result[$i]",$rid);
 	    // create JSON response
 	    array_push($json, $entry);
 	}
 	return $json;
 }
+
+
+
 
 // create a user account
 if (0) {

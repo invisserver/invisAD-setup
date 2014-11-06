@@ -80,11 +80,69 @@ function userList() {
 	$json = array();
 	foreach ($result as $i => $value) {
 	    $collection = $adldap->user()->infoCollection("$result[$i]", array("*") );
-	    //print_r($collection->member);
-	    //print_r($collection->description);
 	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
-	    //echo "$result[$i] - $rid <br>";
-	    $entry = array("uidnumber" => "$rid","uid" => "$result[$i]");
+	    $pgid = $collection->primarygroupid;
+	    $shell = $collection->loginshell;
+	    $gwaccount = $collection->zarafaaccount;
+	    $admin = $adldap->user()->inGroup("$result[$i]","Domain Admins");
+	    $maildummy = $adldap->user()->inGroup("$result[$i]","maildummies");
+	    
+	    // Benutzerty ermitteln
+	    $utval = array();
+	    $typevalue = 0;
+	    
+	    if ( $pgid == "514" ) {
+		$utval[0] = 1; 
+	    }
+	    if ( $pgid == "513" ) {
+		$utval[1] = 2; 
+	    }
+	    if ( $shell == "/bin/false" ) {
+		$utval[2] = 4; 
+	    }
+	    if ( $shell == "/bin/bash" ) {
+		$utval[3] = 8; 
+	    }
+	    if ( $maildummy == "1" ) {
+		$utval[4] = 16; 
+	    }
+	    if ( $admin == true ) {
+		$utval[5] = 32; 
+	    }
+	    if ( $gwaccount == true ) {
+		$utval[6] = 64; 
+	    }
+	    foreach ($utval as $val => $value) {
+		$typevalue = $typevalue + $value;
+	    }
+	    
+	    switch ($typevalue) {
+		case 1:
+		    $type = 0;
+		    break;
+		case 2:
+		    $type = 2;
+		    break;
+		case 10:
+		    $type = 3;
+		    break;
+		case 34:
+		    $type = 5;
+		    break;
+		case 42:
+		    $type = 6;
+		    break;
+		case 74:
+		    $type = 4;
+		    break;
+		case 84:
+		    $type = 1;
+		    break;
+		case 170:
+		    $type = 7;
+		    break;
+		}
+	    $entry = array("uidnumber" => "$rid","uid" => "$result[$i]", "TYPE" => "$type" );
 	    // create JSON response
 	    array_push($json, $entry);
 	}
