@@ -150,6 +150,20 @@ function userList() {
 
 }
 
+function userListShort() {
+	global $cookie_data, $adldap;
+	// Raw data array returned
+	$result = $adldap->user()->all();
+	//var_dump($result);
+	$json = array();
+	foreach ($result as $i => $value) {
+	    // create JSON response
+	    array_push($json, $result[$i]);
+	}
+	return $json;
+
+}
+
 function userDetail($uid) {
 	// adldap-Objekt muss in Funktionen als global-Variable genannt werden
 	global $adldap;
@@ -219,6 +233,10 @@ function groupList() {
 	return $json;
 }
 
+function groupCreate() {
+	global $cookie_data, $adldap;
+
+}
 
 //--------------------
 // HOST STUFF

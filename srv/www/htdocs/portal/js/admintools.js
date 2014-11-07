@@ -423,12 +423,12 @@ function groupDetailsResponse(request) {
 	var rows = $H({
 					'cn': false,
 					'gidnumber': false,
-					'displayname': true
+					'description': true
 				});
 	
 	var row_names = $H({"cn": "Name",
-					"gidnumber": "GID",
-					"displayname": "Anzeigename"
+					"gidnumber": "RID",
+					"description": "Beschreibung"
 				});
 	
 	lightbox.setData(new DetailStorage(data, rows));
@@ -612,7 +612,7 @@ function hostDetailsResponse(request) {
 }
 
 // update memberuid data
-/*
+
 function updateMemberUID(list) {
 	var data = $A(list.childNodes);
 	var arr = new Array();
@@ -625,7 +625,7 @@ function updateMemberUID(list) {
 	
 	lightbox.data.set('memberuid', arr);
 }
-*/
+
 
 /*
 // entry modification request?
@@ -1046,11 +1046,12 @@ function groupAdd(request) {
 	
 	var rows = $H({
 					'cn': true,
-					'displayname': true
+					'description': true
 				});
 	
-	var row_names = $H({"cn": "Name",
-					"displayname": "Anzeigename"
+	var row_names = $H({
+					"cn": "Name",
+					"description": "Beschreibung"
 				});
 	
 	lightbox.setData(new DetailStorage('{}', rows));
