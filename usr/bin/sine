@@ -2530,7 +2530,7 @@ case $whicherp in
 	cd $setupdir
 	clear
 	windowtitle="Kivitendo Installation"
-	dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/kivitendo.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie LX-ERP installieren?" 0 0
+	dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/kivitendo.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kivitendo installieren?" 0 0
 	cont=${?}
 
 	if [[ $cont == "0" ]]; then
@@ -2561,7 +2561,7 @@ Vergessen Sie bitte nicht das hierbei von Ihnen zu vergebende Passwort. ;-)" "$w
 	    ok=0
 	    while (( $ok != "1" ));do
 		dialog --backtitle "$dialogtitle" --title "Kivitendo-DB Passwort" --insecure --passwordform "$dialogshorthelp\n\n
-Bitte geben Sie dass soeben vergebene Passwort für den LX-Office Datenbankbenutzer zur weiteren Verwendung erneut ein.\n\n" 17 64 2 \
+Bitte geben Sie dass soeben vergebene Passwort für den Kivitendo Datenbankbenutzer zur weiteren Verwendung erneut ein.\n\n" 17 64 2 \
 		"Kivitendo-DB-Passwort:" 2 2 "" 2 23 10 0\
 		"Kontrolle:" 2 36 "" 2 47 10 0\
 		2>$setupdir/sine_temp
