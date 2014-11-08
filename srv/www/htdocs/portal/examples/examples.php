@@ -31,7 +31,7 @@ catch (adLDAPException $e) {
 echo ("<pre>\n");
 
 // authenticate a username/password
-if (1) {
+if (0) {
 	$result = $adldap->authenticate("stefan", 'P@$$w0rd');
 	if ($result == true) {
 	    var_dump($result);
@@ -55,7 +55,7 @@ if (0) {
 	$attributes=array(
 		"group_name"=>"Test Group",
 		"description"=>"Just Testing",
-		"container"=>array("Groups","A Container"),
+		"container"=>array("Users"),
 	);
 	$result = $adldap->group()->create($attributes);
 	var_dump($result);
@@ -86,7 +86,7 @@ if (0) {
 	return $json;
 }
 
-if (1) {
+if (0) {
 	// Raw data array returned
 	$result = $adldap->user()->all();
 	//var_dump($result);
@@ -148,22 +148,21 @@ if (1) {
 	return $json;
 }
 
-
-
-
 // create a user account
 if (0) {
 	$attributes=array(
-		"username"=>"freds",
-		"logon_name"=>"freds@mydomain.local",
-		"firstname"=>"Fred",
-		"surname"=>"Smith",
-		"company"=>"My Company",
-		"department"=>"My Department",
-		"email"=>"freds@mydomain.local",
-		"container"=>array("Container Parent","Container Child"),
+		"username"=>"bpink",
+		"logon_name"=>"bpink@orr2014-net.loc",
+		"firstname"=>"Babsi",
+		"surname"=>"Pink",
+		"company"=>"ORR Inc",
+		"department"=>"Smokers Lounge",
+		"email"=>"bpink@orr2014-net.loc",
+		"container"=>array("Users"),
 		"enabled"=>1,
-		"password"=>"Password123",
+		"password"=>"Passw#rd123",
+//		"mssfu30nisdomain"=>"orr2014-net",
+//		"mssfu30name"=>"bpink"
 	);
 	
     try {
@@ -183,7 +182,7 @@ if (0) {
 }
 
 // retrieve information about a user
-if (1) {
+if (0) {
     // Raw data array returned
 	$result = $adldap->user()->infoCollection("administrator", array("*"));
 	//print_r($result);
@@ -197,7 +196,7 @@ if (1) {
 }
 
 // check if a user is a member of a group
-if (1) {
+if (0) {
 	$result = $adldap->user()->inGroup("stefan","mobilusers");
 	var_dump($result);
 }

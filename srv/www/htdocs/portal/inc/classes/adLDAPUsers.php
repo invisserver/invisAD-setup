@@ -83,7 +83,8 @@ class adLDAPUsers {
         if (!array_key_exists("email", $attributes)){ return "Missing compulsory field [email]"; }
         if (!array_key_exists("container", $attributes)){ return "Missing compulsory field [container]"; }
         if (!is_array($attributes["container"])){ return "Container attribute must be an array."; }
-
+	// 08112014 Stefan Schaefer - stefan@invis-server.org SFU Attributes added
+	
         if (array_key_exists("password",$attributes) && (!$this->adldap->getUseSSL() && !$this->adldap->getUseTLS())){ 
             throw new adLDAPException('SSL must be configured on your webserver and enabled in the class to set passwords.');
         }
@@ -94,7 +95,7 @@ class adLDAPUsers {
 
         // Translate the schema
         $add = $this->adldap->adldap_schema($attributes);
-        
+
         // Additional stuff only used for adding accounts
         $add["cn"][0] = $attributes["display_name"];
         $add["samaccountname"][0] = $attributes["username"];
@@ -113,10 +114,15 @@ class adLDAPUsers {
         
         // Determine the container
         $attributes["container"] = array_reverse($attributes["container"]);
-        $container = "OU=" . implode(", OU=",$attributes["container"]);
+        //$container = "OU=" . implode(", OU=",$attributes["container"]);
+        // invis-server.org - im AD sind Benutzer und Gruppen nich in einer OU
+        // sondern in einem Container CN angelegt.
+        $container = "CN=" . implode(", CN=",$attributes["container"]);
+
 
         // Add the entry
         $result = @ldap_add($this->adldap->getLdapConnection(), "CN=" . $add["cn"][0] . ", " . $container . "," . $this->adldap->getBaseDn(), $add);
+        //echo "CN=" . $add["cn"][0] . ", " . $container . "," . $this->adldap->getBaseDn();
         if ($result != true) { 
             return false; 
         }

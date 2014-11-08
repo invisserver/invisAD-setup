@@ -107,7 +107,7 @@ class adLDAP {
     * 
     * @var array
     */
-    protected $domainControllers = array("ldapserver");
+    protected $domainControllers = array("invisad.orr2014-net.loc");
 	
     /**
     * Optional account with higher privileges for searching
@@ -857,7 +857,16 @@ class adLDAP {
         // This schema is designed for contacts
         if ($attributes["exchange_hidefromlists"]){ $mod["msExchHideFromAddressLists"][0]=$attributes["exchange_hidefromlists"]; }
         if ($attributes["contact_email"]){ $mod["targetAddress"][0]=$attributes["contact_email"]; }
-        
+
+        // invis-server.org - msSFU30/POSIX Attribute
+        if ($attributes["mssfu30nisdomain"]){ $mod["msSFU30NisDomain"][0]=$attributes["mssfu30nisdomain"]; }    
+        if ($attributes["mssfu30name"]){ $mod["msSFU30Name"][0]=$attributes["mssfu30name"]; }    
+        if ($attributes["primarygroupid"]){ $mod["primaryGroupID"][0]=$attributes["primarygroupid"]; }    
+        if ($attributes["loginshell"]){ $mod["loginShell"][0]=$attributes["loginshell"]; }    
+        if ($attributes["uidnumber"]){ $mod["uidNumber"][0]=$attributes["uidnumber"]; }    
+        if ($attributes["homedirectory"]){ $mod["homeDirectory"][0]=$attributes["homedirectory"]; }    
+        if ($attributes["gidnumber"]){ $mod["gidNumber"][0]=$attributes["gidnumber"]; }    
+
         //echo ("<pre>"); print_r($mod);
         /*
         // modifying a name is a bit fiddly

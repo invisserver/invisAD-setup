@@ -176,7 +176,10 @@ class adLDAPGroups {
         $add["description"] = $attributes["description"];
         //$add["member"] = $member_array; UNTESTED
 
-        $container = "OU=" . implode(",OU=", $attributes["container"]);
+        //$container = "OU=" . implode(",OU=", $attributes["container"]);
+        // invis-server.org - im AD sind Benutzer und Gruppen nich in einer OU
+        // sondern in einem Container CN angelegt.
+        $container = "CN=" . implode(",CN=", $attributes["container"]);
         $result = ldap_add($this->adldap->getLdapConnection(), "CN=" . $add["cn"] . ", " . $container . "," . $this->adldap->getBaseDn(), $add);
         if ($result != true) { 
             return false; 
