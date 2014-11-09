@@ -62,10 +62,11 @@ if (0) {
 }
 
 // retrieve information about a group
-if (0) {
+if (1) {
     // Raw data array returned
-	$result = $adldap->group()->info("Guests");
-	var_dump($result);
+	$result = $adldap->group()->infoCollection("ffff",array('*'));
+	$rid = ridfromsid(bin_to_str_sid($result->objectsid));
+	echo $rid;
 }
 
 if (0) {

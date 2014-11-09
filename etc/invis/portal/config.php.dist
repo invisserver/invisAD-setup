@@ -16,6 +16,7 @@
 $FQDN = 'invis.invis-net.loc';
 $DOMAIN_PARTS = explode('.', $FQDN);
 $DOMAIN = $DOMAIN_PARTS[1].".".$DOMAIN_PARTS[2];
+$NISDOMAIN = $DOMAIN_PARTS[1];
 $HOSTNAME = $DOMAIN_PARTS[0];
 $GROUPWARE = 'usedgroupware';
 
@@ -34,6 +35,7 @@ $USER_UMASK = 'umask=002';
 $USER_PW_EXPIRE = '365';
 $USER_PW_MIN_LENGTH = '8'; // 0 = Check disabled
 $USER_PW_MIN_STRENGTH = '80'; // 0 = Check disabled, 100 = Max
+$SFU_GUID_BASE = '20000';
 
 // LDAP
 $LDAP_TLS = "no"; //wird bisher nur von cornaz verwendet

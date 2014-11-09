@@ -115,7 +115,7 @@ class adLDAPUsers {
         // Determine the container
         $attributes["container"] = array_reverse($attributes["container"]);
         //$container = "OU=" . implode(", OU=",$attributes["container"]);
-        // invis-server.org - im AD sind Benutzer und Gruppen nich in einer OU
+        // invis-server.org - im AD sind Benutzer und Gruppen nicht in einer OU
         // sondern in einem Container CN angelegt.
         $container = "CN=" . implode(", CN=",$attributes["container"]);
 

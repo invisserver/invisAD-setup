@@ -52,6 +52,25 @@ class adLDAPGroups {
         $this->adldap = $adldap;
     }
     
+    
+    /**
+    * Obtain the groups's distinguished name based on their groupid 
+    * Adapted from adLDAPUsers.php by Stefan Schaefer -- invis-server.org
+    * 
+    * @param string $groupname The Groupname (cn)
+    * @param bool $isGUID Is the Groupname passed a GUID or a samAccountName
+    * @return string
+    */
+    public function dn($groupname, $isGUID=false)
+    {
+        $group = $this->info($groupname, array("cn"), $isGUID);
+        if ($group[0]["dn"] === NULL) { 
+            return false; 
+        }
+        $groupDn = $group[0]["dn"];
+        return $groupDn;
+    }
+
     /**
     * Add a group to a group
     * 
@@ -84,6 +103,35 @@ class adLDAPGroups {
         }
         return true;
     }
+
+    /**
+    * Modify a group
+    * Adapted from adLDAPUsers.php by Stefan Schaefer -- invis-server.org 
+    * @param string $groupname The username to query
+    * @param array $attributes The attributes to modify.  Note if you set the enabled attribute you must not specify any other attributes
+    * @param bool $isGUID Is the groupname passed a GUID or a samAccountName
+    * @return bool
+    */
+
+    public function modify($groupname, $attributes, $isGUID = false)
+    {
+        if ($groupname === NULL) { return "Missing compulsory field [groupname]"; }
+
+        // Find the dn of the user
+        $groupDn = $this->dn($groupname, $isGUID);
+        if ($groupDn === false) { 
+            return false; 
+        }
+        
+        // Do the update
+        $result = @ldap_modify($this->adldap->getLdapConnection(), $groupDn, $attributes);
+        if ($result == false) { 
+            return false; 
+        }
+        
+        return true;
+    }
+
     
     /**
     * Add a user to a group
@@ -162,6 +210,9 @@ class adLDAPGroups {
         if (!array_key_exists("group_name", $attributes)){ return "Missing compulsory field [group_name]"; }
         if (!array_key_exists("container", $attributes)){ return "Missing compulsory field [container]"; }
         if (!array_key_exists("description", $attributes)){ return "Missing compulsory field [description]"; }
+	// invis-server -- POSIX / MS SFU 3.0 Attribute
+	if (!array_key_exists("mssfu30name", $attributes)){ return "Missing compulsory field [mssfu30name]"; }
+        if (!array_key_exists("mssfu30nisdomain", $attributes)){ return "Missing compulsory field [mssfunisdomain]"; }
         if (!is_array($attributes["container"])){ return "Container attribute must be an array."; }
         $attributes["container"] = array_reverse($attributes["container"]);
 
@@ -174,6 +225,8 @@ class adLDAPGroups {
         $add["samaccountname"] = $attributes["group_name"];
         $add["objectClass"] = "Group";
         $add["description"] = $attributes["description"];
+        $add["msSFU30NisDomain"] = $attributes["mssfu30nisdomain"];
+        $add["msSFU30Name"] = $attributes["mssfu30name"];
         //$add["member"] = $member_array; UNTESTED
 
         //$container = "OU=" . implode(",OU=", $attributes["container"]);

@@ -184,10 +184,16 @@ function userDetail($uid) {
 	return $userdetails;
 }
 
+function userCreate() {
+	global $cookie_data, $adldap;
+	// read user data from cookie
+	$attributes = $cookie_data;
+
+}
+
 function userModify($uid) {
 	global $cookie_data, $adldap;
 	// read user data from cookie
-	//$attributes = json_decode($_COOKIE['invis-request'], true);
 	$attributes = $cookie_data;
 	
 	// wenn das Passwort Attribut zurueck geliefert wird
@@ -234,8 +240,41 @@ function groupList() {
 }
 
 function groupCreate() {
-	global $cookie_data, $adldap;
-
+	global $cookie_data, $adldap, $NISDOMAIN, $SFU_GUID_BASE;
+	$attributes=array(
+		"group_name"=>$cookie_data['cn'],
+		"description"=>$cookie_data['description'],
+		"mssfu30nisdomain"=>$NISDOMAIN,
+		"mssfu30name"=>$cookie_data['cn'],
+		// Container Auswahl evtl spaeter.
+		"container"=>array("Users")
+	);
+	
+	$ok = $adldap->group()->create($attributes);
+	
+	// jetzt wirds lustig -> GID muss erzeugt werden.
+	// rid ermitteln
+	$result = $adldap->group()->infoCollection($cookie_data['cn'],array('*'));
+	$rid = ridfromsid(bin_to_str_sid($result->objectsid));
+	$gidnumber = $SFU_GUID_BASE + $rid;
+	$attributes = array(
+		"gidNumber"=>$gidnumber
+	);
+	$resultmod = $adldap->group()->modify($cookie_data['cn'],$attributes);
+	
+	// Gruppenverzeichnis anlegen
+	if ($ok) {
+		shell_exec("sudo /usr/bin/creategroupshare $cn;");
+	}
+	
+	$members = $cookie_data['memberuid'];
+	// Mitglieder hinzufuegen
+	foreach ($members as $i => $member) {
+		$result = $adldap->group()->addUser($cookie_data['cn'], "$member");
+	}
+	if ($ok) {
+	    return 0;
+	}
 }
 
 //--------------------

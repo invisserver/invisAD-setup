@@ -223,47 +223,6 @@ function groupListResponse(request) {
 	content.insert(node);
 }
 
-/*
-function groupListResponse(request) {
-	var title = $('admin-content-title');
-	var content = $('admin-content-content');
-	content.innerHTML = "";
-	
-	stopAllPingers();
-	
-	// Daten aus adajax.php groupList werden uebernommen und sortiert
-	// Wenn keine passenden Daten zurueck kommen bleibt das gesamte Ausgabe-
-	// Feld leer. Nicht einmal der Tabellenkopf erscheint.
-	PAGED_DATA = request.responseText.evalJSON();
-//	PAGED_DATA.sort(groupsort);
-//	PAGE_CURRENT = 0;
-	
-	// header
-	
-	title.update('Gruppenliste:');
-	
-//	var n_entries = PAGED_DATA.length;
-//	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
-//	var p = new Element('div', {'id': 'result-paging'});
-//	content.insert(p);
-	
-	// 3 colums (name, type, delete)
-	//content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="type">Typ</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
-	
-	// 2 colums (name, delete)
-	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
-//	populateGroupList(null, 0);
-	
-	// add group button
-//	var node = new Element('table', {'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/group.png" /></td><td style="vertical-align: middle;">Gruppe anlegen</td></tr>');
-//	node.observe('click', function(){
-//			invis.request('script/adajax.php', groupAdd, {c: 'user_list_short'});
-//		}
-//	);
-	content.insert(node);
-}
-*/
-
 
 // populate grouplist
 function populateGroupList(event, page) {
@@ -627,7 +586,7 @@ function updateMemberUID(list) {
 }
 
 
-/*
+
 // entry modification request?
 function doodat(request) {
 	if (request == null) build_user_mod_request();
@@ -635,9 +594,9 @@ function doodat(request) {
 		lightbox.hide();
 	} 
 }
-*/
 
-/*
+
+
 // create entry mod request
 function build_user_mod_request() {
 	var node = $('userbox_content');
@@ -653,7 +612,7 @@ function build_user_mod_request() {
 
 	request_user_mod(dn, hash.toJSON());
 }
-*/
+
 
 //
 // DHCP/DNS STUFF
@@ -1147,7 +1106,7 @@ function groupAddResponse(request) {
 		invis.request('script/adajax.php', groupListResponse, {c: 'group_list'});
 		lightbox.hide();
 	} else {
-		lightbox.setStatus('Benutzer konnte nicht erstellt werden!<br />' + request.responseText);
+		lightbox.setStatus('Gruppe konnte nicht erstellt werden!<br />' + request.responseText);
 	}
 }
 
