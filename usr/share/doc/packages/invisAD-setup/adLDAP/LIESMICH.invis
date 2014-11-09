@@ -1,0 +1,8 @@
+Achtung!
+
+Für die Benutzung der Klasse adLDAP in Verbindung mit invis-Servern
+haben wir - invis Team - einige Anpassungen durchgeführt.
+
+So ist es möglich POSIX Attribute für Benutzer und Gruppen anzulegen.
+
+Stefan Schäfer -- invis-server.org
