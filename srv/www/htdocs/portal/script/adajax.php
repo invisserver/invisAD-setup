@@ -239,6 +239,18 @@ function groupList() {
 	return $json;
 }
 
+function groupDetail($cn) {
+	global $cookie_data, $adldap;
+	$collection = $adldap->group()->infoCollection("$cn", array("*"));
+	$groupdetails = array(
+	    'cn' => $collection->cn,
+	    'rid' => ridfromsid(bin_to_str_sid($collection->objectsid)),
+	    'description' => $collection->description);
+	
+	return $groupdetails;
+}
+
+
 function groupCreate() {
 	global $cookie_data, $adldap, $NISDOMAIN, $SFU_GUID_BASE;
 	$attributes=array(
