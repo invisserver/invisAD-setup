@@ -232,7 +232,7 @@ function groupList() {
 	    //print_r($collection->description);
 	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
 	    //echo "$result[$i] - $rid <br>";
-	    $entry = array("gidnumber" => "$rid","cn" => "$result[$i]");
+	    $entry = array("rid" => "$rid","cn" => "$result[$i]","gidnumber" => $collection->gidNumber );
 	    // create JSON response
 	    array_push($json, $entry);
 	}

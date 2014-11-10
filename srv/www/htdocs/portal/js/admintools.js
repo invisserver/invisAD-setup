@@ -211,7 +211,7 @@ function groupListResponse(request) {
 	//content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="type">Typ</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
 	
 	// 2 colums (name, delete)
-	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
+	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / RID / POSIX-GID</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
 	populateGroupList(null, 0);
 	
 	// add group button
@@ -252,6 +252,7 @@ function populateGroupList(event, page) {
 		// name
 		var td_name = new Element('td');
 		td_name.insert(new Element('span', {'class': 'name'}).update(item.cn));
+		td_name.insert(new Element('span', {'class': 'number'}).update(item.rid));
 		td_name.insert(new Element('span', {'class': 'number'}).update(item.gidnumber));
 		tr.insert(td_name);
 		
