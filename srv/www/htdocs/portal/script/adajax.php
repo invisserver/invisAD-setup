@@ -239,7 +239,7 @@ function groupList() {
 	return $json;
 }
 
-function groupDetail($cn) {
+function groupDetail($conn, $cn) {
 	global $cookie_data, $adldap;
 	$collection = $adldap->group()->infoCollection("$cn", array("*"));
 	$groupdetails = array(
@@ -247,7 +247,24 @@ function groupDetail($cn) {
 	    'rid' => ridfromsid(bin_to_str_sid($collection->objectsid)),
 	    'description' => $collection->description);
 	
-	return $groupdetails;
+	//Gruppenmitglieder ermitteln
+	$member = $collection->member;
+	//hier muss noch gearbeitet werden. $collection->member liefert 
+	// vollstaendige DNs zurueck, fuer die Anzeige sollte es aber das
+	// Attribut sAMAccountName sein. adLDAP verfuegt so wie es aus-
+	// sieht bietet adLDAP dafuer keine Funktion, unser eigenes ldap.php
+	// aber vermutlich schon.
+	
+	// build list of non-group users
+	$tmp = userListShort($conn);
+	$nonmember = array();
+	foreach($tmp as $user) {
+	    $ix = array_search($user, $member);
+		if ($ix === false)
+		    array_push($nonmember, $user);
+	}
+	// Drei arrays zurueck
+	return array($groupdetails, $member, $nonmember);
 }
 
 
