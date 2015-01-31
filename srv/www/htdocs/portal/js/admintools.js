@@ -1,11 +1,11 @@
 /*
- * js/admintools.js v1.1
+ * js/admintools.js v1.2
  * functions for user/group/host administration
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010,2011,2012 Stefan Schäfer, invis-server.org
+ * (C) 2010,2011,2012,2014,2015 Stefan Schäfer, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
  * License GPLv3
- * Questions: http://forum.invis-server.org
+ * Questions: http://wiki.invis-server.org
  */
 
 //**********************************************************************
@@ -296,26 +296,33 @@ function userDetailsResponse(request) {
 	lightbox.addButton('<button onclick="userMod(\'' + data['uid'] + '\');">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
 	//lightbox.addButton('<button onclick="tmpFunction(\'' + data['uid'] + '\', \'userbox_content\');">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
 	
-	// editable attributes
 	var rows = $H({
 					'uid': false,
-					'uidnumber': false,
-					'displayname': true,
-					'givenname': true,
-					'sn': true,
+					'rid': false,
+					'mail': false,
+					'display_name': true,
+					'firstname': true,
+					'surname': true,
+					'description': true,
+					'office': true,
+					'telephone': true,
 					'userpassword': true
 				});
 	
 	// attribute description
 	var row_names = $H({
 					'uid': 'Login',
-					'uidnumber': 'UID',
-					'displayname': 'Anzeigename',
+					'rid': 'RID',
+					'mail': 'Email intern',
+					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
-					'sn': 'Nachname',
-					'givenname': 'Vorname'
+					'surname': 'Nachname',
+					'description': 'Beschreibung',
+					'office': 'Büro',
+					'telephone': 'Telefon',
+					'firstname': 'Vorname'
 				});
-	
+
 	$('userbox_content').insert(new Element('div', {'style': 'display: none;'}).update(data['dn']));
 	lightbox.setData(new DetailStorage(data, rows));
 	
@@ -369,7 +376,7 @@ function groupDetailsResponse(request) {
 		users_not = arr;
 	}
 	
-	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('Gruppendetails'));
+	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('Grupppendetails'));
 	
 	var box = new Element('table', {'id': 'groupbox', 'cellpadding': '0', 'cellspacing': '0'});
 	lightbox.getContent().insert(box);
@@ -830,8 +837,12 @@ function userMod(uid) {
 
 function userModResponse(request) {
 	invis.deleteCookie('invis-request');
-	if (request.responseText == '0') lightbox.setStatus('Änderungen wurden gespeichert!');
-	else {
+	if (request.responseText == '"Success"' ) { 
+	    // irgendwie bekomme ich keine Verzoegerung hin, hide greift sofort
+	    lightbox.setStatus('Änderungen wurden gespeichert!', 5000);
+	    lightbox.hide();
+	
+	} else {
 		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
 	}
 }
