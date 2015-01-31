@@ -1216,6 +1216,8 @@ samba_ad() {
     # User fuer LDAP-Lese-Zugang anlegen
     ldappw=`getconfdata "LDAPAdminPW" "2"`
     samba-tool user add ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
+    ## Passwort dard nicht ablaufen
+    samba-tool user setexpiry --noexpiry ldap.admin
     #samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
     #samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $setupdir/sine.log | pgbox
