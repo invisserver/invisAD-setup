@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Examples file
 
@@ -28,6 +28,14 @@ catch (adLDAPException $e) {
 }
 //var_dump($ldap);
 
+//--------------------
+// main functionality
+//--------------------
+
+$conn = connect();
+$bind = bind($conn);
+
+
 echo ("<pre>\n");
 
 // authenticate a username/password
@@ -36,6 +44,28 @@ if (0) {
 	if ($result == true) {
 	    var_dump($result);
 	}
+}
+
+function groupCN($conn, $dn) {
+	global $BASE_DN_USERS;
+	$result = search($conn, $dn, 'objectclass=*', array('samaccountname'));
+	$entry = cleanup($result[0]);
+	//$result = ldap_get_attributes($conn, $dn);
+	return $entry;
+}
+
+
+if (1) {
+  $collection = $adldap->group()->infoCollection('gruppe23');
+
+  print_r($collection->member);
+  echo $collection->member[0];
+  $result = groupCN($conn, $collection->member[0]);
+  var_dump($result);
+  echo $result['samaccountname'];
+
+  
+
 }
 
 // add a group to a group
@@ -62,7 +92,7 @@ if (0) {
 }
 
 // retrieve information about a group
-if (1) {
+if (0) {
     // Raw data array returned
 	$result = $adldap->group()->infoCollection("ffff",array('*'));
 	$rid = ridfromsid(bin_to_str_sid($result->objectsid));
