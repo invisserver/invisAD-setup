@@ -1,10 +1,10 @@
 <?php
 
 /*
- * script/adajax.php v0.1
+ * script/adajax.php v0.5
  * AJAX script, user/group/host administration functions
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2009, 2010, 2011, 2012, 2014 Stefan Schaefer, invis-server.org
+ * (C) 2009, 2010, 2011, 2012, 2014, 2015 Stefan Schaefer, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: stefan@invis-server.org
@@ -318,6 +318,69 @@ function groupCreate() {
 		$result = $adldap->group()->addUser($cookie_data['cn'], "$member");
 	}
 	if ($ok) {
+	    return 0;
+	}
+}
+
+function groupModify($conn, $cn) {
+	global $cookie_data, $adldap, $NISDOMAIN, $SFU_GUID_BASE;
+	$attributes=array(
+		"description"=>$cookie_data['description'],
+	);
+	// Description aendern
+	$result = $adldap->group()->modify($cn,$attributes);
+
+	if ( empty($result) || $result == 1 ) {
+	    $ok = 1;
+	}
+
+	// erst mal alle Gruppenmitgliedeer ermitteln
+	$collection = $adldap->group()->infoCollection("$cn", array("*"));
+	$groupmember = $collection->member;
+
+	// DNs in samaccountnames umwandeln
+	$membersingroup = array();
+	
+	if (is_array($groupmember)) {
+	    foreach($groupmember as $memberdn) {
+		$result = search($conn, $memberdn, 'objectclass=*', array('samaccountname'));
+		$entry = cleanup($result[0]);
+		array_push($membersingroup, $entry['samaccountname']);
+	    }
+	} else {
+		$result = search($conn, $groupmember, 'objectclass=*', array('samaccountname'));
+		$entry = cleanup($result[0]);
+		array_push($membersingroup, $entry['samaccountname']);
+	}
+
+	// neue Memberliste aus cookie extrahieren
+	$members = $cookie_data['memberuid'];
+
+	// Differenz-Array bilden.
+	$memberstoremove = array_diff($membersingroup, $members);
+
+	// Mitglieder hinzufuegen
+	foreach ($members as $i => $member) {
+		//echo $member;
+	    if (! $adldap->user()->inGroup("$member","$cn")) {
+		$result = $adldap->group()->addUser($cn, "$member");
+		if ( ! $result == 1 ) {
+		    unset($ok);
+		}
+	    }
+	}
+	// Mitglieder entfernen
+	foreach ($memberstoremove as $i => $member) {
+		//echo $member;
+	    if ($adldap->user()->inGroup("$member","$cn")) {
+		$result = $adldap->group()->removeUser($cn, "$member");
+		if ( ! $result == 1 ) {
+		    unset($ok);
+		}
+	    }
+	}
+	//echo "<br>$ok<br>";
+	if ($ok == 1 ) {
 	    return 0;
 	}
 }
