@@ -255,10 +255,17 @@ function groupDetail($conn, $cn) {
 	// sieht bietet adLDAP dafuer keine Funktion, unser eigenes ldap.php
 	// aber vermutlich schon.
 	$member = array();
-	foreach($groupmember as $memberdn) {
-	    $result = search($conn, $memberdn, 'objectclass=*', array('samaccountname'));
-	    $entry = cleanup($result[0]);
-	    array_push($member, $entry['samaccountname']);
+	
+	if (is_array($groupmember)) {
+	    foreach($groupmember as $memberdn) {
+		$result = search($conn, $memberdn, 'objectclass=*', array('samaccountname'));
+		$entry = cleanup($result[0]);
+		array_push($member, $entry['samaccountname']);
+	    }
+	} else {
+		$result = search($conn, $groupmember, 'objectclass=*', array('samaccountname'));
+		$entry = cleanup($result[0]);
+		array_push($member, $entry['samaccountname']);
 	}
 
 	
@@ -304,8 +311,10 @@ function groupCreate() {
 	}
 	
 	$members = $cookie_data['memberuid'];
+	//var_dump($members);
 	// Mitglieder hinzufuegen
 	foreach ($members as $i => $member) {
+		//echo $member;
 		$result = $adldap->group()->addUser($cookie_data['cn'], "$member");
 	}
 	if ($ok) {
