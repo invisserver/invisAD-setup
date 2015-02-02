@@ -1967,6 +1967,7 @@ webserver() {
 Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
     fqdn=`getconfdata "FQDN" "2"`
     ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+    company=`getconfdata "Organisation" "2"`
     path="/etc/invis/portal"
     cp $path/config.php.dist $path/config.php
     file="config.php"
@@ -1974,6 +1975,9 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     changevalues $path $file "$strings"
 
     strings="invis.invis-net.loc%$fqdn"
+    changevalues $path $file "$strings"
+
+    strings="MyCompany%$company"
     changevalues $path $file "$strings"
     
     ipaddr=`getconfdata "IP" "2"`

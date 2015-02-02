@@ -175,8 +175,9 @@ function userDetail($uid) {
 	    'display_name' => $result->displayname,
 	    'uid' => $result->samaccountname,
 	    'description' => $result->description,
-	    'mail' => $result->mail,
+	    'department' => $result->department,
 	    'office' => $result->physicaldeliveryofficename,
+	    'mail' => $result->mail,
 	    'telephone' => $result->telephonenumber,
 	// adtstamp2date($result->accountExpires)."<br>";
 	    'rid' => ridfromsid(bin_to_str_sid($result->objectsid)));
@@ -184,10 +185,117 @@ function userDetail($uid) {
 	return $userdetails;
 }
 
-function userCreate() {
-	global $cookie_data, $adldap;
+function userCreate($uid) {
+	global $cookie_data, $adldap, $DOMAIN, $COMPANY, $mdrid;
 	// read user data from cookie
-	$attributes = $cookie_data;
+	//$attributes = $cookie_data;
+
+	// account type, fetch from POST var
+	// (default 0) 0: user, 1: admin, 2: guest, 3: mail, 4: zarafa-user
+	if (isset($_POST['t'])) {
+		//echo $_POST['t'];
+		$accounttype = intval($_POST['t']); 
+	}
+	// Standard-Attribute - unabhaengig vom Kontentyp
+	$attributes=array(
+	    "username"=>$uid,
+	    "logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+	    "firstname"=>$cookie_data['firstname'],
+	    "surname"=>$cookie_data['surname'],
+	    "description"=>$cookie_data['description'],
+	    "company"=>"$COMPANY",
+	    "department"=>$cookie_data['department'],
+	    "office"=>$cookie_data['office'],
+	    "email"=>$cookie_data['uid']."@".$DOMAIN,
+	    "container"=>array("Users"),
+	    "enabled"=>1,
+	    "password"=>'p@$$w0rd'
+	    );
+
+
+	// hier mit case weiter, Atribute werden je nach Accounttype gesetzt
+	
+	switch ($accounttype) {
+	
+	case 0:
+		// Benutzer anlegen
+		try {
+		    $result = $adldap->user()->create($attributes);
+		} catch (adLDAPException $e) {
+		    if (! empty($e)) {
+			return $e;
+			exit();
+		    }
+		}
+		// Benutzer der Gruppe "Domain Guests" hinzufuegen
+		try {
+		    $result = $adldap->group()->addUser("Domain Guests", "$uid");
+		} catch (adLDAPException $e) {
+		    if (! empty($e)) {
+			return $e;
+			exit();
+		    }
+		}
+		// Primaergruppe auf "Domain Guests" setzen
+	        $attrmod=array("primarygroupid"=>"514");
+		try {
+		    $result = $adldap->user()->modify("$uid",$attrmod);
+		} catch (adLDAPException $e) {
+		    if (! empty($e)) {
+    			return $e;
+    			exit();
+    		    }
+		}
+		// Benutzer aus Gruppe "Domain Users" entfernen
+		try {
+		    $result = $adldap->group()->removeUser("Domain Users", "$uid");
+		} catch (adLDAPException $e) {
+		    if (! empty($e)) {
+			return $e;
+			exit();
+		    }
+		}
+		break;
+	case 1:
+		$attributes['mssfu30nisdomain'] = "$NISDOMAIN";
+		$attributes['mssfu30name'] = $cookie_data['uid'];
+		$attributes['primarygroupid'] = $mdrid;
+		$attributes['loginShell'] = '/bin/false';
+		$attributes['unixhomedirectory'] = "/home/".$cookie_data['uid'];
+		break;
+	case 2:
+		
+		break;
+	case 3:
+		
+		break;
+	case 4:
+		
+		break;
+	case 5:
+		
+		break;
+	case 6:
+		
+		break;
+	case 7:
+		
+		break;
+	}
+
+    try {
+	$result = $adldap->user()->create($attributes);
+//	    var_dump($result);
+    }
+    catch (adLDAPException $e) {
+        //echo $e;
+        //exit();   
+        if (! empty($e)) {
+    	    return $e;
+    	} else {
+    	    return 0;
+    	}
+    }
 
 }
 
@@ -608,6 +716,31 @@ function fileUploadProgress($conn, $id) {
 $conn = connect();
 $bind = bind($conn);
 
+// Gruppe maildummies mit UNIX-Attributen erweitern, wenn noch nicht geschehen
+// Informationen zur Gruppe "maildummies" sammeln
+
+$mdgroup = "maildummies";
+$collection = $adldap->group()->infoCollection($mdgroup,array('*'));
+$mdrid = ridfromsid(bin_to_str_sid($collection->objectsid));
+//echo $mdrid;
+
+if (empty($collection->mssfu30nisdomain)) {
+    $attributes = array(
+	"mssfu30nisdomain" => $NISDOMAIN,
+	"mssfu30name" => $mdgroup,
+	"gidnumber" => 9500
+	);
+}
+
+try {
+	$result = $adldap->group()->modify($mdgroup,$attributes);
+}
+
+catch (adLDAPException $e) {
+    echo $e;
+    exit();   
+}
+
 //--------------------
 // commands allowed for users
 $ALLOWED_CMDS = array('user_detail', 'user_mod', 'links_list', 'support_mail', 'upload_progress', 'download');
@@ -651,7 +784,7 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 		echo json_encode(hostDiscover($conn, $USR));
 	}
 	elseif ($CMD == 'user_create') {
-		echo json_encode(userCreate($conn, $USR));
+		echo json_encode(userCreate($USR));
 	}
 	elseif ($CMD == 'group_create') {
 		echo json_encode(groupCreate($conn, $USR));

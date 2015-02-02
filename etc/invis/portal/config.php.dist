@@ -13,6 +13,7 @@
 //--------------------
 
 // GENERAL
+$COMAPNY = 'MyCompany';
 $FQDN = 'invis.invis-net.loc';
 $DOMAIN_PARTS = explode('.', $FQDN);
 $DOMAIN = $DOMAIN_PARTS[1].".".$DOMAIN_PARTS[2];

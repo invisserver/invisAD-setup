@@ -55,7 +55,7 @@ function groupCN($conn, $dn) {
 }
 
 
-if (1) {
+if (0) {
   $collection = $adldap->group()->infoCollection('gruppe23');
 
   print_r($collection->member);
@@ -180,31 +180,50 @@ if (0) {
 }
 
 // create a user account
-if (0) {
+if (1) {
 	$attributes=array(
-		"username"=>"bpink",
-		"logon_name"=>"bpink@orr2014-net.loc",
-		"firstname"=>"Babsi",
-		"surname"=>"Pink",
-		"company"=>"ORR Inc",
-		"department"=>"Smokers Lounge",
-		"email"=>"bpink@orr2014-net.loc",
+		"username"=>"iarmbrust",
+		"logon_name"=>"iarmbrust@invis-ad.loc",
+		"firstname"=>"Ines",
+		"surname"=>"Armbrust",
+		"company"=>"FSP",
+		"department"=>"Geld",
+		"email"=>"iarmbrust@invis-ad.loc",
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"password"=>"Passw#rd123",
+//		"primarygroupid"=>"Domain Users",
 //		"mssfu30nisdomain"=>"orr2014-net",
 //		"mssfu30name"=>"bpink"
 	);
 	
     try {
-    	$result = $adldap->user()->create($attributes);
-	    var_dump($result);
+	$result = $adldap->user()->create($attributes);
+//	    var_dump($result);
     }
     catch (adLDAPException $e) {
         echo $e;
         exit();   
     }
+
+    $result = $adldap->group()->addUser("Domain Guests", "iarmbrust");
+
+    $attrmod=array("primarygroupid"=>"514");
+    var_dump($attrmod);
+    try {
+	$result = $adldap->user()->modify("iarmbrust",$attrmod);
+    }
+    catch (adLDAPException $e) {
+        echo $e;
+        exit();   
+    }
+    $result = $adldap->group()->removeUser("Domain Users", "iarmbrust");
+
 }
+
+
+
+
 
 // retrieve the group membership for a user
 if (0) {
@@ -228,7 +247,7 @@ if (0) {
 
 // check if a user is a member of a group
 if (0) {
-	$result = $adldap->user()->inGroup("stefan","mobilusers");
+	$result = $adldap->user()->inGroup("bpink","gr578");
 	var_dump($result);
 }
 

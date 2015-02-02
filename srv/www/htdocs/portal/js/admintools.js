@@ -304,6 +304,7 @@ function userDetailsResponse(request) {
 					'firstname': true,
 					'surname': true,
 					'description': true,
+					'department': true,
 					'office': true,
 					'telephone': true,
 					'userpassword': true
@@ -318,6 +319,7 @@ function userDetailsResponse(request) {
 					'userpassword': 'Passwort',
 					'surname': 'Nachname',
 					'description': 'Beschreibung',
+					'department': 'Abteilung',
 					'office': 'Büro',
 					'telephone': 'Telefon',
 					'firstname': 'Vorname'
@@ -909,26 +911,36 @@ function userAdd() {
 	});
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
-	
-	// editable attributes
+
 	var rows = $H({
 					'uid': true,
-//					'uidnumber': false,
-					'displayname': true,
-					'givenname': true,
-					'sn': true,
+//					'rid': false,
+//					'mail': false,
+					'display_name': true,
+					'firstname': true,
+					'surname': true,
+					'description': true,
+					'department': true,
+					'office': true,
+					'telephone': true,
 					'userpassword': true
 				});
 	
 	// attribute description
 	var row_names = $H({
 					'uid': 'Login',
-					'uidnumber': 'UID',
-					'displayname': 'Anzeigename',
+//					'rid': 'RID',
+//					'mail': 'Email intern',
+					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
-					'sn': 'Nachname',
-					'givenname': 'Vorname'
+					'surname': 'Nachname',
+					'description': 'Beschreibung',
+					'department': 'Abteilung',
+					'office': 'Büro',
+					'telephone': 'Telefon',
+					'firstname': 'Vorname'
 				});
+
 	
 	lightbox.setData(new DetailStorage('{}', rows));
 	
@@ -963,13 +975,16 @@ function userAdd() {
 	);
 	
 	var line = new Element('div', {'class': 'line'});
-	line.insert(new Element('div', {'class': 'key'}).update('Account-Typ'));
+	line.insert(new Element('div', {'class': 'key'}).update('Konten-Typ'));
 	var sel = new Element('select', {'style': 'width: 30%'});
-	sel.insert(new Element('option', {'value': 0}).update('Benutzer'));
-	sel.insert(new Element('option', {'value': 1}).update('Administrator'));
-	sel.insert(new Element('option', {'value': 2}).update('Gastkonto'));
-	sel.insert(new Element('option', {'value': 3}).update('Mailkonto'));
-	sel.insert(new Element('option', {'value': 4}).update('Groupware-Benutzer'));
+	sel.insert(new Element('option', {'value': 0}).update('Gast'));
+	sel.insert(new Element('option', {'value': 1}).update('Mailkonto'));
+	sel.insert(new Element('option', {'value': 2}).update('Windows'));
+	sel.insert(new Element('option', {'value': 3}).update('Windows+Unix'));
+	sel.insert(new Element('option', {'value': 4}).update('Windows+Unix+GW'));
+	sel.insert(new Element('option', {'value': 5}).update('WinAdmin'));
+	sel.insert(new Element('option', {'value': 6}).update('WinAdmin+Unix'));
+	sel.insert(new Element('option', {'value': 7}).update('WinAdmin+Unix+GW'));
 	sel.observe('change', function(e) { account_type = this.value; });
 	var value_div = new Element('div');
 	value_div.insert(sel);
