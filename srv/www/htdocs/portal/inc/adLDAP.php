@@ -107,7 +107,7 @@ class adLDAP {
     * 
     * @var array
     */
-    protected $domainControllers = array("invisad.orr2014-net.loc");
+    protected $domainControllers = array("invisad.invis-net.loc");
 	
     /**
     * Optional account with higher privileges for searching
@@ -866,6 +866,24 @@ class adLDAP {
         if ($attributes["uidnumber"]){ $mod["uidNumber"][0]=$attributes["uidnumber"]; }    
         if ($attributes["homedirectory"]){ $mod["homeDirectory"][0]=$attributes["homedirectory"]; }    
         if ($attributes["gidnumber"]){ $mod["gidNumber"][0]=$attributes["gidnumber"]; }    
+
+	// invis-server.org - Zarafa Attribute
+        if ($attributes["zarafaaccount"]){ $mod["zarafaAccount"][0]=$attributes["zarafaaccount"]; }    
+        if ($attributes["zarafaadmin"]){ $mod["zarafaAdmin"][0]=$attributes["zarafaadmin"]; }    
+        if ($attributes["zarafadisabledfeatures"]){ $mod["zarafaDisabledFeatures"][0]=$attributes["zarafadisabledfeatures"]; }    
+        if ($attributes["zarafaenabledfeatures"]){ $mod["zarafaEnabledFeatures"][0]=$attributes["zarafaenabledfeatures"]; }    
+        if ($attributes["zarafahidden"]){ $mod["zarafaHidden"][0]=$attributes["zarafahidden"]; }    
+        if ($attributes["zarafaquotahard"]){ $mod["zarafaQuotaHard"][0]=$attributes["zarafaquotahard"]; }    
+        if ($attributes["zarafaquotaoverride"]){ $mod["zarafaQuotaOverride"][0]=$attributes["zarafaquotaoverride"]; }    
+        if ($attributes["zarafaquotasoft"]){ $mod["zarafaQuotaSoft"][0]=$attributes["zarafaquotasoft"]; }    
+        if ($attributes["zarafaquotawarn"]){ $mod["zarafaQuotaWarn"][0]=$attributes["zarafaquotawarn"]; }    
+        if ($attributes["zarafaressourcecapacity"]){ $mod["zarafaRessourceCapacity"][0]=$attributes["zarafaressourcecapacity"]; }    
+        if ($attributes["zarafaressourcetype"]){ $mod["zarafaRessourceType"][0]=$attributes["zarafaressourcetype"]; }    
+        if ($attributes["zarafasendasprivilege"]){ $mod["zarafaSendSsPrivilege"][0]=$attributes["zarafasendasprivilege"]; }    
+        if ($attributes["zarafasharedstoreonly"]){ $mod["zarafaSharedStoreOnly"][0]=$attributes["zarafasharedstoreonly"]; }    
+        if ($attributes["zarafaarchivecouplings"]){ $mod["zarafaArchiveCouplings"][0]=$attributes["zarafaarchivecouplings"]; }    
+        if ($attributes["zarafaarchiveserver"]){ $mod["zarafaArchiveServer"][0]=$attributes["zarafaarchiveserver"]; }    
+        if ($attributes["zarafauserserver"]){ $mod["zarafaUserServer"][0]=$attributes["zarafauserserver"]; }    
 
         //echo ("<pre>"); print_r($mod);
         /*

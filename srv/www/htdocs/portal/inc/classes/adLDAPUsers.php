@@ -2,7 +2,8 @@
 /**
  * PHP LDAP CLASS FOR MANIPULATING ACTIVE DIRECTORY 
  * Version 4.0.4
- * 
+ * invis-Server modified version
+
  * PHP Version 5 with SSL and LDAP support
  * 
  * Written by Scott Barnett, Richard Hyland
@@ -11,7 +12,7 @@
  * 
  * Copyright (c) 2006-2012 Scott Barnett, Richard Hyland
  * 
- * Modified 2014 by Stefan Schaefer stefan@invis-server.org
+ * Copyright (c) 2014,2015 Stefan Schaefer stefan@invis-server.org
  *
  * We'd appreciate any improvements or additions to be submitted back
  * to benefit the entire community :)
@@ -83,8 +84,11 @@ class adLDAPUsers {
         if (!array_key_exists("email", $attributes)){ return "Missing compulsory field [email]"; }
         if (!array_key_exists("container", $attributes)){ return "Missing compulsory field [container]"; }
         if (!is_array($attributes["container"])){ return "Container attribute must be an array."; }
-	// 08112014 Stefan Schaefer - stefan@invis-server.org SFU Attributes added
-	
+	// 08112014 Stefan Schaefer - stefan@invis-server.org SFU and Zarafa Attributes added
+	//if (!array_key_exists("mssfu30name", $attributes)){ return "Missing compulsory field [mssfu30name]"; }
+        //if (!array_key_exists("mssfu30nisdomain", $attributes)){ return "Missing compulsory field [mssfu30nisdomain]"; }
+        //if (!array_key_exists("zarafaaccount", $attributes)){ return "Missing compulsory field [zarafaaccount]"; }
+
         if (array_key_exists("password",$attributes) && (!$this->adldap->getUseSSL() && !$this->adldap->getUseTLS())){ 
             throw new adLDAPException('SSL must be configured on your webserver and enabled in the class to set passwords.');
         }
@@ -103,6 +107,16 @@ class adLDAPUsers {
         $add["objectclass"][1] = "person";
         $add["objectclass"][2] = "organizationalPerson";
         $add["objectclass"][3] = "user"; //person?
+
+        // POSIX Attribute
+        //$add["msSFU30NisDomain"] = $attributes["mssfu30nisdomain"];
+        //$add["msSFU30Name"] = $attributes["mssfu30name"];
+
+	// Groupware Objektklasse
+        if (array_key_exists("zarafaaccount",$attributes)) {
+	    $add["objectclass"][4] = "zarafaUser";
+	}
+
         //$add["name"][0]=$attributes["firstname"]." ".$attributes["surname"];
 
         // Set the account control attribute

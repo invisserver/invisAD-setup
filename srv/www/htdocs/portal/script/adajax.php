@@ -186,7 +186,7 @@ function userDetail($uid) {
 }
 
 function userCreate($uid) {
-	global $cookie_data, $adldap, $DOMAIN, $COMPANY, $mdrid;
+	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid;
 	// read user data from cookie
 	//$attributes = $cookie_data;
 
@@ -196,82 +196,258 @@ function userCreate($uid) {
 		//echo $_POST['t'];
 		$accounttype = intval($_POST['t']); 
 	}
-	// Standard-Attribute - unabhaengig vom Kontentyp
-	$attributes=array(
-	    "username"=>$uid,
-	    "logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-	    "firstname"=>$cookie_data['firstname'],
-	    "surname"=>$cookie_data['surname'],
-	    "description"=>$cookie_data['description'],
-	    "company"=>"$COMPANY",
-	    "department"=>$cookie_data['department'],
-	    "office"=>$cookie_data['office'],
-	    "email"=>$cookie_data['uid']."@".$DOMAIN,
-	    "container"=>array("Users"),
-	    "enabled"=>1,
-	    "password"=>'p@$$w0rd'
-	    );
-
 
 	// hier mit case weiter, Atribute werden je nach Accounttype gesetzt
 	
 	switch ($accounttype) {
 	
 	case 0:
-		// Benutzer anlegen
-		try {
-		    $result = $adldap->user()->create($attributes);
-		} catch (adLDAPException $e) {
-		    if (! empty($e)) {
-			return $e;
-			exit();
-		    }
+	    // Gastbenutzer
+	    // Standard-Attribute - unabhaengig vom Kontentyp
+	    $attributes=array(
+		"username"=>$uid,
+		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+		"firstname"=>$cookie_data['firstname'],
+		"surname"=>$cookie_data['surname'],
+		"description"=>$cookie_data['description'],
+		"company"=>"$COMPANY",
+		"department"=>$cookie_data['department'],
+		"office"=>$cookie_data['office'],
+		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"container"=>array("Users"),
+		"enabled"=>1,
+		"password"=>'p@$$w0rd'
+	    );
+	    // Benutzer anlegen
+	    try {
+		$result = $adldap->user()->create($attributes);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
 		}
+	    }
 		// Benutzer der Gruppe "Domain Guests" hinzufuegen
-		try {
-		    $result = $adldap->group()->addUser("Domain Guests", "$uid");
-		} catch (adLDAPException $e) {
-		    if (! empty($e)) {
-			return $e;
-			exit();
-		    }
+	    try {
+		$result = $adldap->group()->addUser("Domain Guests", "$uid");
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
 		}
-		// Primaergruppe auf "Domain Guests" setzen
-	        $attrmod=array("primarygroupid"=>"514");
-		try {
-		    $result = $adldap->user()->modify("$uid",$attrmod);
-		} catch (adLDAPException $e) {
-		    if (! empty($e)) {
-    			return $e;
-    			exit();
-    		    }
+	    }
+	    // Primaergruppe auf "Domain Guests" setzen
+	    $attrmod=array("primarygroupid"=>"514");
+	    try {
+		$result = $adldap->user()->modify("$uid",$attrmod);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+    		    return $e;
+    		    exit();
+    		}
+	    }
+	    // Benutzer aus Gruppe "Domain Users" entfernen
+	    try {
+		$result = $adldap->group()->removeUser("Domain Users", "$uid");
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
 		}
-		// Benutzer aus Gruppe "Domain Users" entfernen
-		try {
-		    $result = $adldap->group()->removeUser("Domain Users", "$uid");
-		} catch (adLDAPException $e) {
-		    if (! empty($e)) {
-			return $e;
-			exit();
-		    }
-		}
-		break;
+	    }
+	    break;
 	case 1:
-		$attributes['mssfu30nisdomain'] = "$NISDOMAIN";
-		$attributes['mssfu30name'] = $cookie_data['uid'];
-		$attributes['primarygroupid'] = $mdrid;
-		$attributes['loginShell'] = '/bin/false';
-		$attributes['unixhomedirectory'] = "/home/".$cookie_data['uid'];
-		break;
+	    // Maildummie Konto
+	    // Standard-Attribute - unabhaengig vom Kontentyp
+	    $attributes=array(
+		"username"=>$uid,
+		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+		"firstname"=>$cookie_data['firstname'],
+		"surname"=>$cookie_data['surname'],
+		"description"=>$cookie_data['description'],
+		"company"=>"$COMPANY",
+		"department"=>$cookie_data['department'],
+		"office"=>$cookie_data['office'],
+		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"container"=>array("Users"),
+		"enabled"=>1,
+		"password"=>'p@$$w0rd'
+	    );
+	    // Benutzer anlegen
+	    try {
+		$result = $adldap->user()->create($attributes);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
+	    // RID der Gruppe maildummies ermitteln
+	    $mdgroup = "maildummies";
+	
+	    try {
+		$collection = $adldap->group()->infoCollection($mdgroup,array('*'));
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
+	    $mdgidnumber = ($collection->gidnumber);
+	
+		// Benutzer der Gruppe "maildummies" hinzufuegen
+	    try {
+		$result = $adldap->group()->addUser("$mdgroup", "$uid");
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
+	    // Attribute anpassen
+	    $attrmod=array(
+	        'mssfu30nisdomain' => "$NISDOMAIN",
+		'mssfu30name' => $cookie_data['uid'],
+		'primarygroupid' => $mdrid,
+		'gidnumber' => $mdgidnumber,
+		'loginshell' => '/bin/false',
+		'unixhomedirectory' => "/home/".$cookie_data['uid']
+	    );
+	    try {
+		$result = $adldap->user()->modify("$uid",$attrmod);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+    		    return $e;
+    		    exit();
+    		}
+	    }
+	    // Benutzer aus Gruppe "Domain Users" entfernen
+	    try {
+		$result = $adldap->group()->removeUser("Domain Users", "$uid");
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
+	    break;
 	case 2:
-		
+	    // reiner Windows User
+	    // Standard-Attribute - unabhaengig vom Kontentyp
+	    $attributes=array(
+		"username"=>$uid,
+		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+		"firstname"=>$cookie_data['firstname'],
+		"surname"=>$cookie_data['surname'],
+		"description"=>$cookie_data['description'],
+		"company"=>"$COMPANY",
+		"department"=>$cookie_data['department'],
+		"office"=>$cookie_data['office'],
+		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"container"=>array("Users"),
+		"enabled"=>1,
+		"password"=>'p@$$w0rd'
+	    );
+	    // Benutzer anlegen
+	    try {
+		$result = $adldap->user()->create($attributes);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
 		break;
 	case 3:
-		
+	    // Windows und UNIX Benutzer
+	    // GIDNumber der Gruppe Domain Users ermitteln
+	    try {
+		$collection = $adldap->group()->infoCollection("Domain Users",array('*'));
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
+	    $dugidnumber = ($collection->gidnumber);
+	    // Attribute anpassen
+	    // Standard-Attribute - unabhaengig vom Kontentyp
+	    $attributes=array(
+		"username"=>$uid,
+		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+		"firstname"=>$cookie_data['firstname'],
+		"surname"=>$cookie_data['surname'],
+		"description"=>$cookie_data['description'],
+		"company"=>"$COMPANY",
+		"department"=>$cookie_data['department'],
+		"office"=>$cookie_data['office'],
+		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"container"=>array("Users"),
+		"enabled"=>1,
+		"password"=>'p@$$w0rd'
+	    );
+	    // Benutzer anlegen
+	    try {
+		$result = $adldap->user()->create($attributes);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
+	    // Attribute anpassen
+	    $attrmod=array(
+		"mssfu30nisdomain" => "$NISDOMAIN",
+		"mssfu30name" => $cookie_data['uid'],
+		"loginshell" => '/bin/bash',
+		"unixhomedirectory" => "/home/".$cookie_data['uid'],
+		'primarygroupid' => '513',
+		'gidnumber' => $dugidnumber
+	    );
+	    try {
+		$result = $adldap->user()->modify("$uid",$attrmod);
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+    		    return $e;
+    		    exit();
+    		}
+	    }
+
+
 		break;
 	case 4:
-		
-		break;
+	    // Windows und UNIX Benutzer
+	    // Attribute anpassen
+	    // Standard-Attribute - unabhaengig vom Kontentyp
+	    $attributes=array(
+		"username"=>$uid,
+		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+		"firstname"=>$cookie_data['firstname'],
+		"surname"=>$cookie_data['surname'],
+		"description"=>$cookie_data['description'],
+		"company"=>"$COMPANY",
+		"department"=>$cookie_data['department'],
+		"office"=>$cookie_data['office'],
+		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"container"=>array("Users"),
+		"enabled"=>1,
+		"password"=>'p@$$w0rd',
+		"mssfu30nisdomain" => "$NISDOMAIN",
+		"mssfu30name" => $cookie_data['uid'],
+		"loginshell" => '/bin/bash',
+		"unixhomedirectory" => "/home/".$cookie_data['uid'],
+		"zarafaaccount" => true
+	    );
+	    // Benutzer anlegen
+	    try {
+		$result = $adldap->user()->create($attributes);
+	    } catch (adLDAPException $e) {
+//		if (! empty($e)) {
+		    return $e;
+//		    exit();
+//		}
+	    }
+	    break;
 	case 5:
 		
 		break;
@@ -282,20 +458,6 @@ function userCreate($uid) {
 		
 		break;
 	}
-
-    try {
-	$result = $adldap->user()->create($attributes);
-//	    var_dump($result);
-    }
-    catch (adLDAPException $e) {
-        //echo $e;
-        //exit();   
-        if (! empty($e)) {
-    	    return $e;
-    	} else {
-    	    return 0;
-    	}
-    }
 
 }
 

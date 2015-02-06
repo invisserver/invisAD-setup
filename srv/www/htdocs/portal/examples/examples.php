@@ -55,15 +55,15 @@ function groupCN($conn, $dn) {
 }
 
 
-if (0) {
-  $collection = $adldap->group()->infoCollection('gruppe23');
+if (1) {
+  $collection = $adldap->group()->infoCollection("Domain Users",array('*'));
 
-  print_r($collection->member);
-  echo $collection->member[0];
+  print_r($collection->gidnumber);
+/*  echo $collection->member[0];
   $result = groupCN($conn, $collection->member[0]);
   var_dump($result);
   echo $result['samaccountname'];
-
+*/
   
 
 }
@@ -180,7 +180,7 @@ if (0) {
 }
 
 // create a user account
-if (1) {
+if (0) {
 	$attributes=array(
 		"username"=>"iarmbrust",
 		"logon_name"=>"iarmbrust@invis-ad.loc",
@@ -220,10 +220,6 @@ if (1) {
     $result = $adldap->group()->removeUser("Domain Users", "iarmbrust");
 
 }
-
-
-
-
 
 // retrieve the group membership for a user
 if (0) {
