@@ -210,9 +210,9 @@ class adLDAPGroups {
         if (!array_key_exists("group_name", $attributes)){ return "Missing compulsory field [group_name]"; }
         if (!array_key_exists("container", $attributes)){ return "Missing compulsory field [container]"; }
         if (!array_key_exists("description", $attributes)){ return "Missing compulsory field [description]"; }
-	// invis-server -- POSIX / MS SFU 3.0 Attribute
+	// invis-server -- POSIX / MS SFU 3.0 und Zarafa Attribute
 	if (!array_key_exists("mssfu30name", $attributes)){ return "Missing compulsory field [mssfu30name]"; }
-        if (!array_key_exists("mssfu30nisdomain", $attributes)){ return "Missing compulsory field [mssfunisdomain]"; }
+        if (!array_key_exists("mssfu30nisdomain", $attributes)){ return "Missing compulsory field [mssfu30nisdomain]"; }
         if (!is_array($attributes["container"])){ return "Container attribute must be an array."; }
         $attributes["container"] = array_reverse($attributes["container"]);
 
@@ -223,14 +223,21 @@ class adLDAPGroups {
         $add = array();
         $add["cn"] = $attributes["group_name"];
         $add["samaccountname"] = $attributes["group_name"];
-        $add["objectClass"] = "Group";
+        $add["objectClass"][0] = "Group";
         $add["description"] = $attributes["description"];
+	// Unix Attribute
         $add["msSFU30NisDomain"] = $attributes["mssfu30nisdomain"];
         $add["msSFU30Name"] = $attributes["mssfu30name"];
+
         //$add["member"] = $member_array; UNTESTED
 
+	// Groupware Objektklasse - UNTESTED
+        if (array_key_exists("zarafaaccount",$attributes)) {
+	    $add["objectclass"][1] = "zarafaGroup";
+	}
+
         //$container = "OU=" . implode(",OU=", $attributes["container"]);
-        // invis-server.org - im AD sind Benutzer und Gruppen nich in einer OU
+        // invis-server.org - im AD sind Benutzer und Gruppen nicht in einer OU
         // sondern in einem Container CN angelegt.
         $container = "CN=" . implode(",CN=", $attributes["container"]);
         $result = ldap_add($this->adldap->getLdapConnection(), "CN=" . $add["cn"] . ", " . $container . "," . $this->adldap->getBaseDn(), $add);

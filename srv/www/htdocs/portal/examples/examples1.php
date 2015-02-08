@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Examples file
 
@@ -88,6 +88,20 @@ if (0) {
 	return $json;
 }
 
+if (1) {
+	$maxuidnr = 0;
+	$users = $adldap->user()->all();
+	foreach ($users as $i => $user) {
+	    $collection = $adldap->user()->infoCollection("$result[$i]", array("*") );
+	    $uidnumber = $collection->uidnumber;
+	    if ( $uidnumber > $maxuidnumber ) {
+		$maxuidnumber = $uidnumber;
+	    }
+	}
+	$nextuid = $maxuidnumber + 1;
+	echo $nextuid;
+}
+
 if (0) {
 	// Raw data array returned
 	$result = $adldap->user()->all();
@@ -103,44 +117,78 @@ if (0) {
 	    $gwaccount = $collection->zarafaaccount;
 	    $admin = $adldap->user()->inGroup("$result[$i]","Domain Admins");
 	    $maildummy = $adldap->user()->inGroup("$result[$i]","maildummies");
+	    $enterpriseadmin = $adldap->user()->inGroup("$result[$i]","Enterprise Admins");
 	    
-	    // Benutzerty ermitteln
+	    // Benutzertyp ermitteln
 	    $utval = array();
 	    $typevalue = 0;
 	    
 	    if ( $pgid == "514" ) {
 		$utval[0] = 1; 
 	    }
-
 	    if ( $pgid == "513" ) {
 		$utval[1] = 2; 
 	    }
-	    
+	    if ( $pgid == "512" ) {
+		$utval[1] = 4; 
+	    }
+	    if ( $pgid == "9500" ) {
+		$utval[1] = 8; 
+	    }
 	    if ( $shell == "/bin/false" ) {
-		$utval[2] = 4; 
+		$utval[2] = 16; 
 	    }
-
 	    if ( $shell == "/bin/bash" ) {
-		$utval[3] = 8; 
+		$utval[3] = 32; 
 	    }
-
 	    if ( $maildummy == "1" ) {
-		$utval[4] = 16; 
+		$utval[4] = 64; 
 	    }
-
 	    if ( $admin == true ) {
-		$utval[5] = 32; 
+		$utval[5] = 128; 
 	    }
-
 	    if ( $gwaccount == true ) {
-		$utval[6] = 64; 
+		$utval[6] = 256; 
 	    }
-
+	    if ( $enterpriseadmin == "1" ) {
+		$utval[7] = 512;
+	    }
 	    foreach ($utval as $val => $value) {
-		//echo "$value <br>";
 		$typevalue = $typevalue + $value;
 	    }
-
+	    
+	    switch ($typevalue) {
+		case 1:
+		    $type = 0;
+		    break;
+		case 24:
+		    $type = 1;
+		    break;
+		case 2:
+		    $type = 2;
+		    break;
+		case 34:
+		    $type = 3;
+		    break;
+		case 290:
+		    $type = 4;
+		    break;
+		case 132:
+		    $type = 5;
+		    break;
+		case 164:
+		    $type = 6;
+		    break;
+		case 420:
+		    $type = 7;
+		    break;
+		case 642:
+		    $type = 8;
+		    break;
+		case 674:
+		    $type = 8;
+		    break;
+		}
 	    echo "$result[$i] - $rid - $typevalue <br>";
 
 	    $entry = array("$result[$i]",$rid);
@@ -151,7 +199,7 @@ if (0) {
 }
 
 // create a user account
-if (1) {
+if (0) {
 	$attributes=array(
 		"username"=>"bpink",
 		"logon_name"=>"bpink@orr2014-net.loc",

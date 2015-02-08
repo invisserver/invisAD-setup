@@ -107,7 +107,7 @@ class adLDAP {
     * 
     * @var array
     */
-    protected $domainControllers = array("invisad.invis-net.loc");
+    protected $domainControllers = array("invisad.invis-ad.loc");
 	
     /**
     * Optional account with higher privileges for searching
@@ -864,7 +864,7 @@ class adLDAP {
         if ($attributes["primarygroupid"]){ $mod["primaryGroupID"][0]=$attributes["primarygroupid"]; }    
         if ($attributes["loginshell"]){ $mod["loginShell"][0]=$attributes["loginshell"]; }    
         if ($attributes["uidnumber"]){ $mod["uidNumber"][0]=$attributes["uidnumber"]; }    
-        if ($attributes["homedirectory"]){ $mod["homeDirectory"][0]=$attributes["homedirectory"]; }    
+        if ($attributes["unixhomedirectory"]){ $mod["unixHomeDirectory"][0]=$attributes["unixhomedirectory"]; }    
         if ($attributes["gidnumber"]){ $mod["gidNumber"][0]=$attributes["gidnumber"]; }    
 
 	// invis-server.org - Zarafa Attribute
