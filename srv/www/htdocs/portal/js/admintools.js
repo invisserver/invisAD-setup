@@ -810,7 +810,7 @@ function groupDeleteResponse(request) {
 	if (request.responseText == '0')
 		invis.request('script/adajax.php', groupListResponse, {c: 'group_list'}); // reload group list
 	else
-		alert('Gruppe konnte nicht gelöscht werden!' + request.responseText);
+		alert('AD-Standard-Gruppen können nicht gelöscht werden! Fehlercode: ' + request.responseText);
 }
 
 

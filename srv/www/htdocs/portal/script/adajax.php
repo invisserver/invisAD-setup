@@ -915,6 +915,32 @@ function groupModify($conn, $cn) {
 	}
 }
 
+function groupDelete($cn) {
+	global $adldap;
+	// Gruppe loeschen (und Gruppenverzeichnis archivieren?)
+	// Es duerfen per Portal keine Gruppen geloescht werden
+	// die zum AD-Standardumfang gehoeren.
+
+	// RID ermitteln
+	$collection = $adldap->group()->infoCollection("$cn", array("*"));
+	$rid = ridfromsid(bin_to_str_sid($collection->objectsid));
+	// RID 1105 basiert auf Beobachtung,, nicht auf Fakten....
+	if ($rid >= 1105) {
+	    try {
+		$result = $adldap->group()->delete($cn);
+
+	    } catch (adLDAPException $e) {
+		echo $e;
+	    }
+
+	    if (empty($e)) {
+		return 0;
+	    }
+	} else {
+	    return 3;
+	}
+}
+
 //--------------------
 // HOST STUFF
 //--------------------
@@ -1224,7 +1250,7 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 		echo json_encode(userDelete($conn, $USR));
 	}
 	elseif ($CMD == 'group_delete') {
-		echo json_encode(groupDelete($conn, $USR));
+		echo json_encode(groupDelete($USR));
 	}
 	elseif ($CMD == 'host_delete') {
 		echo json_encode(hostDelete($conn, $USR));
