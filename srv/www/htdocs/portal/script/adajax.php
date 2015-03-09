@@ -747,6 +747,26 @@ function userModify($uid) {
 	//return $e;
 }
 
+function userDelete($uid) {
+	global $adldap;
+	
+	$flag = intval($_POST['t']);
+	//Benutzer loeschen 
+	try {
+	    $ok = $adldap->user()->delete($uid);
+	} catch (adLDAPException $e) {
+		echo $e;
+	}
+	if ($ok) {
+		if ($flag == 1) shell_exec("sudo /usr/bin/deletehome $uid;");
+	//	removeAdmin($uid);
+	}
+	if (empty($e)) {
+		return 0;
+	}
+
+}
+
 //--------------------
 // GROUP STUFF
 //--------------------
@@ -1247,7 +1267,7 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 		echo json_encode(hostDetail($conn, $USR));
 	}
 	elseif ($CMD == 'user_delete') {
-		echo json_encode(userDelete($conn, $USR));
+		echo json_encode(userDelete($USR));
 	}
 	elseif ($CMD == 'group_delete') {
 		echo json_encode(groupDelete($USR));
