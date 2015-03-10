@@ -49,5 +49,9 @@ MAILTO=/dev/null
 0 5 * * * root /usr/bin/clean_transfer
 
 # Saeubern der Recycle-Ordner
-# Einmal taeglich um 4:00 Uhr
-0 4 * * * root /usr/bin/clean_recycle
+# Einmal taeglich um 4:45 Uhr
+45 4 * * * root /usr/bin/clean_recycle
+
+# Verzeichnisse geloeschter Benutzer und Gruppen archivieren
+# Einmal taeglich um 2:00 Uhr
+0 2 * * * root /usr/bin/invisarchiver

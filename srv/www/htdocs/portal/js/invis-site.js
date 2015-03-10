@@ -286,6 +286,7 @@ function profileRequestPasswordChange(event) {
 			
 			lightbox.setWaitStatus(true);
 //			invis.setCookie('invis-request', $H({'userpassword': ssha, 'sambantpassword': md4}).toJSON());
+			// Passwort im Klartext an adLDAP uebergeben.
 			invis.setCookie('invis-request', $H({'userpassword': secret}).toJSON());
 			invis.request('script/adajax.php', 
 				function(request) {

@@ -842,7 +842,7 @@ function groupCreate() {
 		// Container Auswahl evtl spaeter.
 		"container"=>array("Users")
 	);
-	
+	$cn = $cookie_data['cn'];
 	$ok = $adldap->group()->create($attributes);
 	
 	// jetzt wirds lustig -> GID muss erzeugt werden.
@@ -853,7 +853,7 @@ function groupCreate() {
 	$attributes = array(
 		"gidNumber"=>$gidnumber
 	);
-	$resultmod = $adldap->group()->modify($cookie_data['cn'],$attributes);
+	$resultmod = $adldap->group()->modify($cn,$attributes);
 	
 	// Gruppenverzeichnis anlegen
 	if ($ok) {
@@ -865,7 +865,7 @@ function groupCreate() {
 	// Mitglieder hinzufuegen
 	foreach ($members as $i => $member) {
 		//echo $member;
-		$result = $adldap->group()->addUser($cookie_data['cn'], "$member");
+		$result = $adldap->group()->addUser($cn, "$member");
 	}
 	if ($ok) {
 	    return 0;
@@ -947,10 +947,14 @@ function groupDelete($cn) {
 	// RID 1105 basiert auf Beobachtung,, nicht auf Fakten....
 	if ($rid >= 1105) {
 	    try {
-		$result = $adldap->group()->delete($cn);
+		$ok = $adldap->group()->delete($cn);
 
 	    } catch (adLDAPException $e) {
 		echo $e;
+	    }
+	
+	    if ($ok) {
+		shell_exec("sudo /usr/bin/deletehome $cn;");
 	    }
 
 	    if (empty($e)) {

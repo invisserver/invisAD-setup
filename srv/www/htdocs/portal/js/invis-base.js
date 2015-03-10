@@ -443,7 +443,7 @@ var Lightbox = Class.create({
 			if (key == 'userpassword') {
 				var ssha = invis.ssha(node.value);
 				var md4 = invis.md4(node.value);
-				node.value = ssha;
+				node.value = '*************************************';
 				this.data.set('sambantpassword', md4);
 			}
 			this.data.set(key, node.value);
