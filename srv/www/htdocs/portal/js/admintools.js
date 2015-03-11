@@ -18,6 +18,7 @@ var PAGED_DATA = null;
 var PAGED_DATA_UNSORTED = null;
 var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Windows+Unix+GW', 'WinAdmin', ' WinAdmin+Unix', 'WinAdmin+Unix+GW', 'MasterAdmin' );
 var USERLIST_MAIL_FLAG = true;
+var GROUPLIST_BI_FLAG = true;
 var PINGER_FLAG = false;
 var PINGER_REQUEST = [];
 
@@ -79,12 +80,28 @@ function filterData(data) {
 	PAGED_DATA = new Array();
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
-			if (item['TYPE'] != 2 || (item['TYPE'] == 2 && USERLIST_MAIL_FLAG))
+			if (item['TYPE'] != 1 || (item['TYPE'] == 1 && USERLIST_MAIL_FLAG))
 				PAGED_DATA.push(item);
 		}
 	);
 	
 	PAGED_DATA.sort(mysort);
+}
+
+// filter paged data groups
+function filterGroups(data) {
+	if (data != null)
+		PAGED_DATA_UNSORTED = data;
+	
+	PAGED_DATA = new Array();
+	PAGED_DATA_UNSORTED.each(
+		function (item) {
+			if ( ! isNaN(item['rid']) || (isNaN(item['rid']) && GROUPLIST_BI_FLAG))
+				PAGED_DATA.push(item);
+		}
+	);
+	
+	PAGED_DATA.sort(groupsort);
 }
 
 //**********************************************************************
@@ -194,8 +211,9 @@ function groupListResponse(request) {
 	
 	stopAllPingers();
 	
-	PAGED_DATA = request.responseText.evalJSON();
-	PAGED_DATA.sort(groupsort);
+	//PAGED_DATA = request.responseText.evalJSON();
+	//PAGED_DATA.sort(groupsort);
+	filterGroups(request.responseText.evalJSON());
 	PAGE_CURRENT = 0;
 	
 	// header
@@ -231,17 +249,7 @@ function populateGroupList(event, page) {
 	
 	$('result-body').innerHTML = "";
 	$('result-paging').innerHTML = "";
-	
-	var n_entries = PAGED_DATA.length;
-	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
-	for (var i = 0; i < n_pages; i++) {
-		var a = new Element('a', {'class': 'page-link'}).update(i + 1);
-		if (i == PAGE_CURRENT)
-			a.addClassName('page-active');
-		else
-			a.observe('click', populateGroupList);
-		$('result-paging').insert(a);
-	}
+
 	
 	for (var i = page * PAGE_SIZE; i < (page+1) * PAGE_SIZE; i++) {
 		if (PAGED_DATA[i] == null) break;
@@ -272,6 +280,32 @@ function populateGroupList(event, page) {
 		
 		$('result-body').insert(tr);
 	}
+	// account type selector
+	var check = new Element('input', {'type': 'checkbox'});
+	check.checked = GROUPLIST_BI_FLAG;
+	
+	check.observe('click',
+		function(e) {
+			GROUPLIST_BI_FLAG = this.checked;
+			filterGroups();
+			populateGroupList(null, 0);
+		}
+	);
+
+	$('result-paging').insert(check);
+	$('result-paging').insert(' BuiltIn-Gruppen einblenden<br/>');
+
+	var n_entries = PAGED_DATA.length;
+	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
+	for (var i = 0; i < n_pages; i++) {
+		var a = new Element('a', {'class': 'page-link'}).update(i + 1);
+		if (i == PAGE_CURRENT)
+			a.addClassName('page-active');
+		else
+			a.observe('click', populateGroupList);
+		$('result-paging').insert(a);
+	}
+	
 }
 
 
