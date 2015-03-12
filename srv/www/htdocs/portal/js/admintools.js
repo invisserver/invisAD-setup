@@ -16,7 +16,8 @@ var PAGE_SIZE = 10;
 var PAGE_CURRENT = 0;
 var PAGED_DATA = null;
 var PAGED_DATA_UNSORTED = null;
-var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Windows+Unix+GW', 'WinAdmin', ' WinAdmin+Unix', 'WinAdmin+Unix+GW', 'MasterAdmin' );
+var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Windows+Unix+Groupware', 'WinAdmin', ' WinAdmin+Unix', 'WinAdmin+Unix+Groupware', 'MasterAdmin' );
+var GROUP_TYPE = new Array('Windows+Unix', 'Windows+Unix+Groupware', 'Mail-Verteiler', 'Sonstige');
 var USERLIST_MAIL_FLAG = true;
 var GROUPLIST_BI_FLAG = true;
 var PINGER_FLAG = false;
@@ -229,7 +230,7 @@ function groupListResponse(request) {
 	//content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / GID</th><th class="type">Typ</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
 	
 	// 2 colums (name, delete)
-	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / RID / POSIX-GID</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
+	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Name / RID / POSIX-GID</th><th class="type">Typ</th><th class="delete">Bearbeiten</th></tr></thead><tbody id="result-body"></tbody></table>');
 	populateGroupList(null, 0);
 	
 	// add group button
@@ -265,8 +266,9 @@ function populateGroupList(event, page) {
 		tr.insert(td_name);
 		
 		// type
-		//var td_type = new Element('td');
-		//tr.insert(td_type);
+		var td_type = new Element('td');
+		td_type.insert(new Element('span', {'class': 'name'}).update(GROUP_TYPE[item.TYPE]));
+		tr.insert(td_type);
 		
 		// delete
 		var td_delete = new Element('td', {'class': 'delete'});
@@ -936,15 +938,17 @@ function userAdd() {
 	var tr_content = new Element('tr');
 	tr_content.insert(new Element('td', {'id': 'userbox_content'}));
 	box.insert(tr_content);
-	
 	var tmp_btn = new Element('button').update('Speichern');
 	tmp_btn.observe('click', function () {
 		var uid = lightbox.data.get('uid');
 		invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
 		invis.request('script/adajax.php', userAddResponse, {c: 'user_create', u: uid, t: account_type});
 	});
+
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
+
+//	lightbox.addButton('<button onclick="userAddRequest();">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
 
 	var rows = $H({
 					'uid': true,
@@ -1010,15 +1014,15 @@ function userAdd() {
 	
 	var line = new Element('div', {'class': 'line'});
 	line.insert(new Element('div', {'class': 'key'}).update('Konten-Typ'));
-	var sel = new Element('select', {'style': 'width: 30%'});
+	var sel = new Element('select', {'style': 'width: 60%'});
 	sel.insert(new Element('option', {'value': 0}).update('Gast'));
 	sel.insert(new Element('option', {'value': 1}).update('Mailkonto'));
 	sel.insert(new Element('option', {'value': 2}).update('Windows'));
 	sel.insert(new Element('option', {'value': 3}).update('Windows+Unix'));
-	sel.insert(new Element('option', {'value': 4}).update('Windows+Unix+GW'));
+	sel.insert(new Element('option', {'value': 4}).update('Windows+Unix+Groupware'));
 	sel.insert(new Element('option', {'value': 5}).update('WinAdmin'));
 	sel.insert(new Element('option', {'value': 6}).update('WinAdmin+Unix'));
-	sel.insert(new Element('option', {'value': 7}).update('WinAdmin+Unix+GW'));
+	sel.insert(new Element('option', {'value': 7}).update('WinAdmin+Unix+Groupware'));
 	sel.observe('change', function(e) { account_type = this.value; });
 	var value_div = new Element('div');
 	value_div.insert(sel);
@@ -1051,6 +1055,7 @@ function userAddResponse(request) {
 
 // show user add box
 function groupAdd(request) {
+	var group_type = 0;
 	lightbox.show(500, true);
 	var users_not = request.responseText.evalJSON();
 	
@@ -1062,8 +1067,19 @@ function groupAdd(request) {
 	var tr_content = new Element('tr');
 	tr_content.insert(new Element('td', {'id': 'groupbox_content'}));
 	box.insert(tr_content);
+
+	var tmp_btn = new Element('button').update('Speichern');
+	tmp_btn.observe('click', function () {
+		var cn = lightbox.data.get('cn');
+		invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
+		invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn, t: group_type});
+	});
+
+	lightbox.addButton(tmp_btn);
+	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
+
 	
-	lightbox.addButton('<button onclick="groupAddRequest();">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
+//	lightbox.addButton('<button onclick="groupAddRequest();">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
 	
 	var rows = $H({
 					'cn': true,
@@ -1099,6 +1115,20 @@ function groupAdd(request) {
 			$('groupbox_content').insert(line);
 		}
 	);
+	
+	// Hier Pulldown fuer Gruppentyp
+	var line = new Element('div', {'class': 'line'});
+	line.insert(new Element('div', {'class': 'key'}).update('Gruppen-Typ'));
+	var sel = new Element('select', {'style': 'width: 60%'});
+	sel.insert(new Element('option', {'value': 0}).update('Windows+Unix'));
+	sel.insert(new Element('option', {'value': 1}).update('Windows+Unix+Groupware'));
+	sel.insert(new Element('option', {'value': 2}).update('Mail-Verteiler'));
+	sel.observe('change', function(e) { group_type = this.value; });
+	var value_div = new Element('div');
+	value_div.insert(sel);
+	//value_div.addClassName('value');
+	line.insert(value_div);
+	$('groupbox_content').insert(line);;
 	
 	// grouplists table
 	$('groupbox_content').insert('<table id="groupbox_table"><tr class="line"><td colspan="3" class="key">Gruppenmitglieder</td></tr><tr><td id="groupbox_left"></td><td id="groupbox_center"></td><td id="groupbox_right"></td></tr></table>');
@@ -1158,7 +1188,7 @@ function groupAdd(request) {
 function groupAddRequest() {
 	var cn = lightbox.data.get('cn');
 	invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-	invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn});
+	invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn, t: group_type});
 }
 
 
@@ -1318,11 +1348,12 @@ function hostDiscoverResponse(request) {
 	var box = new Element('table', {
 		'id': 'host_discover',
 		'cellpadding': '0',
-		'cellspacing': '0'
+		'cellspacing': '0',
+		'border': '0'
 	});
 	lightbox.getContent().insert(box);
 	
-	box.insert('<tr><th width="100px">MAC</th><th width="50px">Status</th><th width="50px"></th><th>Hinzufügen</th><th>Name</th><th>Typ</th></tr>');
+	box.insert('<tr><th>MAC</th><th>Status</th><th>Hinzufügen</th><th>Name</th><th>Typ</th></tr>');
 	for (var i = 0; i < data.length; i++) {
 		var item = data[i];
 		box.insert('<tr><td>' + item['mac'] + '</td><td valign="middle" id="' + item['mac'] + '"><img src="images/ajax-loader.gif" width="16px" height="16px" /></td>' +
@@ -1338,12 +1369,13 @@ function hostDiscoverResponse(request) {
 	}
 	if (data.length == 0) box.insert('<tr><td colspan="5"><b>Keine Rechner gefunden.</b></td></tr>');
 	
-	var tmp_btn = new Element('button').update('Hinzufügen2');
+	var tmp_btn = new Element('button').update('Hinzufügen');
 	tmp_btn.observe('click', function () {
 		lightbox.setWaitStatus(true);
+		//Stefan
 		var data = lightbox.data.getHash();
 		invis.setCookie('invis-request', data.toJSON());
-		invis.request('script/adajax.php', hostDiscover, {c: 'host_create', u: data.get('cn'), t: host_type})
+		invis.request('script/adajax.php', hostAdd, {c: 'host_create', u: data.get('cn'), t: host_type})
 	});
 	
 	lightbox.addButton(tmp_btn);

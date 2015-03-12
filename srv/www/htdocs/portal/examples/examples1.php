@@ -79,16 +79,17 @@ if (0) {
 	    $collection = $adldap->group()->infoCollection("$result[$i]", array("*") );
 	    //print_r($collection->member);
 	    //print_r($collection->description);
+	    print_r($collection->grouptype);
 	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
 	    echo "$result[$i] - $rid <br>";
 	    $entry = array("$result[$i]",$rid);
 	    // create JSON response
 	    array_push($json, $entry);
 	}
-	return $json;
+//	return $json;
 }
 
-if (1) {
+if (0) {
 	$maxuidnr = 0;
 	$users = $adldap->user()->all();
 	foreach ($users as $i => $user) {

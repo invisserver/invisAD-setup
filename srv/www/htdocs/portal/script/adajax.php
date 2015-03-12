@@ -238,7 +238,9 @@ function userCreate($uid) {
 	$profilepath = "\\\\$SMB_HOSTNAME\\profiles\\$uid";
 
 	// hier mit case weiter, Atribute werden je nach Accounttype gesetzt
-	
+	//$password = $cookie_data['userpassword'];
+	$password = $cookie_data['adpassword'];
+	//error_log ( $password,  0);
 	switch ($accounttype) {
 	
 	case 0:
@@ -256,7 +258,7 @@ function userCreate($uid) {
 		"email"=>$cookie_data['uid']."@".$DOMAIN,
 		"container"=>array("Users"),
 		"enabled"=>1,
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -311,7 +313,7 @@ function userCreate($uid) {
 		"email"=>$cookie_data['uid']."@".$DOMAIN,
 		"container"=>array("Users"),
 		"enabled"=>1,
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -383,7 +385,7 @@ function userCreate($uid) {
 		"home_drive"=>'u:',
 		"profile_path"=>$profilepath,
 		"script_path"=>"user.cmd",
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -414,7 +416,7 @@ function userCreate($uid) {
 		"home_drive"=>'u:',
 		"profile_path"=>$profilepath,
 		"script_path"=>"user.cmd",
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -474,7 +476,7 @@ function userCreate($uid) {
 		"home_drive"=>'u:',
 		"profile_path"=>$profilepath,
 		"script_path"=>"user.cmd",
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -533,7 +535,7 @@ function userCreate($uid) {
 		"home_drive"=>'u:',
 		"profile_path"=>$profilepath,
 		"script_path"=>"admin.cmd",
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -584,7 +586,7 @@ function userCreate($uid) {
 		"home_drive"=>'u:',
 		"profile_path"=>$profilepath,
 		"script_path"=>"admin.cmd",
-		"password"=>'p@$$w0rd'
+		"password"=>$password
 	    );
 	    // Benutzer anlegen
 	    try {
@@ -655,7 +657,7 @@ function userCreate($uid) {
 		"home_drive"=>'u:',
 		"profile_path"=>$profilepath,
 		"script_path"=>"admin.cmd",
-		"password"=>'p@$$w0rd',
+		"password"=>$password,
 		"zarafaaccount" => true,
 		"zarafaadmin" => true
 	    );
@@ -782,7 +784,46 @@ function groupList() {
 	    //print_r($collection->description);
 	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
 	    //echo "$result[$i] - $rid <br>";
-	    $entry = array("rid" => "$rid","cn" => "$result[$i]","gidnumber" => $collection->gidNumber );
+	    $gtype=dechex(trim(($collection->grouptype)));
+	    $zaccount=($collection->zarafaaccount);
+	    $gidnumber=($collection->gidnumber);
+ 
+	    // Benutzerty ermitteln
+	    $gtval = array();
+	    $typevalue = 0;
+
+	    if ( $gtype == "2" ) {
+		$gtval[0] = 1;
+	    }
+
+	    if ( $zaccount == "1" ) {
+		$gtval[1] = 2;
+	    }
+
+	    if ( isset($gidnumber) ) {
+		$gtval[2] = 4;
+	    }
+
+	    foreach ($gtval as $val => $value) {
+	    //echo "$value <br>";
+		$typevalue = $typevalue + $value;
+	    }
+
+	    switch ($typevalue) {
+		case 4:
+		    $type = 0;
+		    break;
+		case 6:
+		    $type = 1;
+		    break;
+		case 3:
+		    $type = 2;
+		    break;
+		case 0:
+		    $type = 3;
+		}
+
+	    $entry = array("rid" => "$rid","cn" => "$result[$i]","gidnumber" => $collection->gidNumber, "TYPE" => $type );
 	    // create JSON response
 	    array_push($json, $entry);
 	}
@@ -842,19 +883,52 @@ function groupCreate() {
 		// Container Auswahl evtl spaeter.
 		"container"=>array("Users")
 	);
+
+	// group type, fetch from POST var
+	// (default 0)
+	if (isset($_POST['t'])) {
+		//echo $_POST['t'];
+		$grouptype = intval($_POST['t']); 
+	}
+
 	$cn = $cookie_data['cn'];
 	$ok = $adldap->group()->create($attributes);
 	
+	// Grundsaetzlich legt das Portal nur Gruppen an,
+	// die auch fuer Unix-Clients zur Verfuegung stehen.
 	// jetzt wirds lustig -> GID muss erzeugt werden.
 	// rid ermitteln
 	$result = $adldap->group()->infoCollection($cookie_data['cn'],array('*'));
 	$rid = ridfromsid(bin_to_str_sid($result->objectsid));
 	$gidnumber = $SFU_GUID_BASE + $rid;
-	$attributes = array(
-		"gidNumber"=>$gidnumber
-	);
-	$resultmod = $adldap->group()->modify($cn,$attributes);
 	
+	// Gruppe, je nach Gruppentyp modifizieren
+	switch ($grouptype) {
+
+	case 0:
+		// Typ Windows+Unix
+		$attributes = array(
+		    "gidNumber"=>$gidnumber
+		);
+		break;
+	case 1:
+		// Typ Windows+Unix+Groupware
+		$attributes = array(
+		    "gidNumber"=>$gidnumber,
+		    "zarafaAccount"=>1
+		);
+		break;
+	case 2:
+		// Typ Verteiler
+		$attributes = array(
+		    "zarafaAccount"=>1,
+		    "groupType"=>2
+		);
+		break;
+	}
+	
+	$resultmod = $adldap->group()->modify($cn,$attributes);
+
 	// Gruppenverzeichnis anlegen
 	if ($ok) {
 		shell_exec("sudo /usr/bin/creategroupshare $cn;");

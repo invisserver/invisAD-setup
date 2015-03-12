@@ -56,9 +56,35 @@ function groupCN($conn, $dn) {
 
 
 if (1) {
-  $collection = $adldap->group()->infoCollection("Domain Users",array('*'));
+  $collection = $adldap->group()->infoCollection("Domain Computers",array('*'));
 
-  print_r($collection->gidnumber);
+  $gtype=dechex(trim(($collection->grouptype)));
+  $zaccount=($collection->zarafaaccount);
+  $gidnumber=($collection->gidnumber);
+  print_r("GID: $gidnumber <br>");
+  
+    // Benutzerty ermitteln
+    $gtval = array();
+    $typevalue = 0;
+
+    if ( $gtype == "2" ) {
+	$gtval[0] = 1;
+    }
+
+    if ( $zaccount == "1" ) {
+	$gtval[1] = 2;
+    }
+
+    if ( isset($gidnumber) ) {
+	$gtval[2] = 4;
+    }
+
+    foreach ($gtval as $val => $value) {
+	//echo "$value <br>";
+	$typevalue = $typevalue + $value;
+    }
+
+    print_r($typevalue);
 /*  echo $collection->member[0];
   $result = groupCN($conn, $collection->member[0]);
   var_dump($result);
