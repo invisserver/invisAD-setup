@@ -19,7 +19,6 @@ zarafa-libcommon_mapi-7_1_11
 zarafa-libcommon_service-7_1_11
 zarafa-libcommon_ssl-7_1_11
 zarafa-libcommon_util-7_1_11
-zarafa-libgsoap-7_1_11
 zarafa-libserver-7_1_11
 zarafa-libsoapclient-7_1_11
 zarafa-libsoapserver-7_1_11
@@ -36,3 +35,7 @@ libopenssl0_9_8
 zarafa-webapp-gmaps
 zarafa-webapp-pdfbox
 zarafa-webapp-spreed
+zarafa-webapp-contactfax
+zarafa-webapp-folderwidgets
+zarafa-webapp-zperformance
+zarafa-webapp-pdfbox
