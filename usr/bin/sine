@@ -1682,7 +1682,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
 	    ;;
 esac
-
+    pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"
     # Postfix Konfiguration anpassen
     path="/etc/postfix"
     file="main.cf"
@@ -1799,6 +1799,7 @@ fileserver() {
     cd $setupdir
     clear
     windowtitle="Samba Server"
+    pgsubtitle="Fileserver wird eingerichtet"
     ipaddr=`getconfdata "IP" "2"`
     smbdom=`getconfdata "Workgroup" "2"`
     basedn=`getconfdata "baseDN" "2"`
@@ -1812,13 +1813,11 @@ fileserver() {
     nmaskshort=`getconfdata "NMask-short" "2"`
     smbdom=`getconfdata "Workgroup" "2"`
     ddns=`getconfdata "DDNS" "2"`
-#    cp $cfilesdir/fileserver/samba/smb.conf /etc/samba 2>&1| tee -a $setupdir/sine.log
     # Scriptvorlage fuer das Verschieben der Windows-Bibliotheken kopieren
-    cp $cfilesdir/fileserver/service/Win_Scripts/movelibdirs.cmd /etc/invis/templates/ 2>&1| tee -a $setupdir/sine.log
     unix2dos /etc/invis/templates/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     unix2dos /srv/shares/service/Win_Scripts/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     unix2dos /srv/shares/service/Win_Timeserver/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
-    unix2dos /srv/shares/service/VPN-Clients/Windows/vpn-client.ovpn
+    unix2dos /srv/shares/service/VPN-Clients/Windows/vpn-client.ovpn 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # Gruppen anlegen
     samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1874,17 +1873,11 @@ fileserver() {
     mkdir -p -m 2775 /srv/shares/service/winscripts 2>&1| tee -a $setupdir/sine.log
     
     # Service Dateien kopieren
-    cp -r $cfilesdir/fileserver/service/* /srv/shares/service 2>&1| tee -a $setupdir/sine.log
     chmod -R g+w /srv/shares/service 2>&1| tee -a $setupdir/sine.log
     
-    ## to be removed
-    # Setzen des LDAP Zugangspasswort
-    #pgsubtitle="Samba erhält das LDAP-Administrationspasswort"
-    #smbpasswd -w $masterpw 2>&1| tee -a $setupdir/sine.log | pgbox
-
     # Logon-Scripts werden kopiert und ins DOS-Format ueberfuehrt
-    netlogonpath="/var/lib/samba/private/sysvol/$domain/scripts"
-    cp $cfilesdir/fileserver/samba/logon-scripts/*.cmd $netlogonpath
+    netlogonpath="/var/lib/samba/sysvol/$domain/scripts/"
+    cp $cfilesdir/fileserver/samba/logon-scripts/*.cmd $netlogonpath 2>&1| tee -a $setupdir/sine.log
     unix2dos $netlogonpath/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     # Samba4 wertet X-Bit aus
     chmod +x $netlogonpath/*  2>&1| tee -a $setupdir/sine.log
@@ -1910,25 +1903,25 @@ fileserver() {
     #sss_cache -UG
 
     #Anpassen der Besitzrechte der Freigaben
-    chown -R root:"Archiv" /srv/shares/archiv 2>&1| tee -a $setupdir/sine.log
-    chown -R root:"Domain Users" /srv/shares/gruppen 2>&1| tee -a $setupdir/sine.log
-    chown -R root:"Domain Users" /srv/shares/projekte 2>&1| tee -a $setupdir/sine.log
-    chown -R root:"Domain Users" /srv/shares/media 2>&1| tee -a $setupdir/sine.log
-    chown -R root:"Domain Admins" /srv/shares/service 2>&1| tee -a $setupdir/sine.log
-    chown -R root:"Domain Guests" /srv/shares/transfer 2>&1| tee -a $setupdir/sine.log
-    chown -R root:"Verwaltung" /srv/shares/verwaltung 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Archiv" /srv/shares/archiv 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Domain Users" /srv/shares/gruppen 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Domain Users" /srv/shares/projekte 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Domain Users" /srv/shares/media 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Domain Admins" /srv/shares/service 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Domain Guests" /srv/shares/transfer 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Verwaltung" /srv/shares/verwaltung 2>&1| tee -a $setupdir/sine.log
 
     # Zielverzeichnis fuer aschenputtel anlegen
-    chown root:"Domain Users" /srv/shares/portal/uploads 2>&1| tee -a $setupdir/sine.log
+    #chown root:"Domain Users" /srv/shares/portal/uploads 2>&1| tee -a $setupdir/sine.log
     # Download-Verzeichnis anlegen
-    chown administrator:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
+    #chown administrator:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Profilverzeichnisse
-    chown root:"Domain Users" /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
+    #chown root:"Domain Users" /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
     chmod 1777 /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Druckertreiber Freigabe print$
-    chown -R root:"Domain Admins" /var/lib/samba/drivers 2>&1| tee -a $setupdir/sine.log
+    #chown -R root:"Domain Admins" /var/lib/samba/drivers 2>&1| tee -a $setupdir/sine.log
     chmod -R g+ws /var/lib/samba/drivers 2>&1| tee -a $setupdir/sine.log
 
     msgbox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
