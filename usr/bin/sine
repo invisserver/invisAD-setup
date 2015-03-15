@@ -1440,6 +1440,9 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     ln -s /usr/lib64/samba/libtevent.so.0.9.18 /usr/lib64/libtevent.so.0
 
     ## sssd konfiguration erzeugen
+    domain=`getconfdata "Domain" "2"`
+    fqdn=`getconfdata "FQDN" "2"`
+
     path="/etc/sssd"
     file="sssd.conf"
 	
