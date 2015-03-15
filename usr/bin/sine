@@ -259,8 +259,8 @@ check() {
 	changevalues $path $file "$strings"
 	strings="NETCONFIG_NTP_POLICY=\"auto\"%NETCONFIG_NTP_POLICY=\"\""
 	changevalues $path $file "$strings"
-	# Das Verzeichnis /var/run/ntp existiert nicht. ??
-	cp $cfilesdir/System/sysconfig/network/servers-netconfig /var/run/ntp
+	
+	cp $cfilesdir/System/ntp/servers-netconfig /var/run/ntp
 	chkservice "ntp"
         hwclock --systohc
 
