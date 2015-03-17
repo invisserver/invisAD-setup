@@ -2966,11 +2966,11 @@ dokuwiki() {
     changevalues $path $file "$strings"
     
     basedn=`getconfdata "baseDN" "2"`
-    strings="basedn%$basedn"
+    strings="dc=invis-net,dc=loc%$basedn"
     changevalues $path $file "$strings"
 
     domain=`getconfdata "domain" "2"`
-    strings="invis-net.loc%$basedn"
+    strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
     
     # Gruppen fuer Dokuwiki anlegen
