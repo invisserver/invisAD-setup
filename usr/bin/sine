@@ -1823,7 +1823,7 @@ fileserver() {
     samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" Verwaltung 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Verwaltung 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # invisconnect-Script anpassen
     path="/srv/shares/service/VPN-Clients/Linux"
