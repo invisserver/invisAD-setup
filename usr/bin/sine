@@ -305,7 +305,6 @@ quest() {
     IFS=$'\n'
 
     # zentrales invis Konfigurationsverzeichnis anlegen
-    #mkdir -p /etc/invis
     textbox "$setupdir/infofiles/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "Weiter"
 
     # Vorgaben ermitteln
@@ -471,38 +470,6 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
     #echo $forwarders
 #---#System Passwörter
     ok=0
-#    while (( $ok != "3" ));do
-#	dialog --backtitle "$dialogtitle" --title "LDAP Passworte" --insecure --passwordform "$dialogshorthelp\n\n
-#Für den Umgang mit dem zentralen LDAP-Verzeichnis werden drei administrative Benutzerkonten mit unterschiedlichen Berechtigungen
-#angelgt. Es ist aus Sicherheitsgründen sinnvoll für alle drei Konten unterschiedliche Passwörter zu vergeben.\n\n
-#Die vergebenen Passwörter müssen mindestens 6 Zeichen lang sein." 22 80 6 \
-#	"LDAP-Manager:" 2 2 "${ldapsecrets[0]}" 2 30 10 0\
-#	"Kontrolle:" 2 44 "${ldapsecrets[1]}" 2 56 10 0\
-#	"LDAP-Administrator:" 4 2 "${ldapsecrets[2]}" 4 30 10 0\
-#	"Kontrolle:" 4 44 "${ldapsecrets[3]}" 4 56 10 0\
-#	"LDAP-Sektionsadministrator:" 6 2 "${ldapsecrets[4]}" 6 30 10 0\
-#	"Kontrolle:" 6 44 "${ldapsecrets[5]}" 6 56 10 0\
-#	2>$setupdir/sine_temp
-#	ldapsecrets=(`cat $setupdir/sine_temp`)
-#	i=0
-#	while (( $i < 6 ));do
-#		if [[ $i =~ [0,2,4] ]];then
-#		    (( k=$i + 1 ))
-#		    if [[ ${ldapsecrets[$i]} == ${ldapsecrets[$k]} ]] && (( ${#ldapsecrets[$i]} >= 6 ));then
-#			(( ok=$ok + 1 ))
-#		    else
-#			ldapsecrets[$i]=""
-#			ldapsecrets[$k]=""
-#			ok=0
-#		    fi
-#		fi
-#		(( i= $i + 1 ))
-#	done
-#    done
-#    # LDAP Passwoerter zuordnen
-#    manpass="${ldapsecrets[0]}"
-#    masterpass="${ldapsecrets[2]}"
-#    adminpass="${ldapsecrets[4]}"
 
     # MySQL root-Passwort 
     ok=0
@@ -985,6 +952,18 @@ sysprep() {
 	# avguard in RL-Konzept aufnehmen und starten
 	chkservice "avguard"
     fi
+
+    ## invis-Konfigurationsdatei anpassen
+    domain=`getconfdata "Domain" "2"`
+    adminmail=`getconfdata "Admail" "2"`
+    
+    path="/etc/invis"
+    file="invis.conf"
+    strings="administrator@invis-net.loc%$adminmail"
+    changevalues $path $file "$strings"
+    
+    strings="invis-net.loc%$domain"
+    changevalues $path $file "$strings"
 
     ## ownCloud Synchronisation
     ocsync=`getconfdata "ownCloudSync" "2"`
@@ -2002,11 +1981,6 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     # Link fuer Portal-Konfiguration anlegen
     ln -s $path/$file /srv/www/htdocs/portal/config.php
     
-    # auch in invis.conf anpassen
-    path="/etc/invis/"
-    file="invis.conf"
-    changevalues $path $file "$strings"
-
     # Putty bereitstellen
     cp $cfilesdir/putty/putty.exe /srv/www/htdocs/portal/
     
