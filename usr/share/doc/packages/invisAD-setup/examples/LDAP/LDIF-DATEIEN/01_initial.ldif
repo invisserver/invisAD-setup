@@ -24,11 +24,11 @@ CN: DHCP-Server
 description: Basis fuer den DHCP-Server
 
 # Basisknoten invis-Portal
-dn: CN=invis-Portal,CN=invis-Server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: container
-CN: invis-Portal
-description: Basis fuer die Eintraege des invis-Portals
+#dn: CN=invis-Portal,CN=invis-Server,dc=invis-net,dc=loc
+#objectClass: top
+#objectClass: container
+#CN: invis-Portal
+#description: Basis fuer die Eintraege des invis-Portals
 
 # Basisknoten Information
 dn: CN=Informationen,CN=invis-Server,dc=invis-net,dc=loc

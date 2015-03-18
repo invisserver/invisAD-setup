@@ -44,7 +44,7 @@ cn: ZarafaAcc
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webaccess
 iPortEntryDescription: Der klassische Webaccess der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen im Oulook "Look & Feel". 
-iPortEntryActive: ZARAFATRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -583,11 +583,11 @@ iPortEntryButton: Routenplaner
 iPortEntryPriv:	guest
 
 # Google Maps
-dn: cn=Google Maps,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=GoogleMaps,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Google Maps
-cn: Google Maps
+cn: GoogleMaps
 iPortEntrySSL: FALSE
 iPortEntryURL: maps.google.de
 iPortEntryDescription: Google Maps
@@ -595,6 +595,21 @@ iPortEntryActive: TRUE
 iPortEntryPosition: Internet
 iPortEntryLinkRubrik: Info
 iPortEntryButton: Google Maps
+iPortEntryPriv:	guest
+
+# OpenstreeMap
+dn: cn=OpenStreetMap,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: OpenStreetMap
+cn: GoogleMaps
+iPortEntrySSL: FALSE
+iPortEntryURL: www.openstreetmap.de/karte.html
+iPortEntryDescription: OpenStreetMap
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: OpenStreetMap
 iPortEntryPriv:	guest
 
 # Tagesschau
@@ -628,11 +643,11 @@ iPortEntryButton: Telepolis
 iPortEntryPriv:	guest
 
 # invis Projekt
-dn: cn=invis Server,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=invisServer,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Server
-cn: invis Server
+cn: invisServer
 iPortEntrySSL: FALSE
 iPortEntryURL: www.invis-server.org
 iPortEntryDescription: invis Server im Internet
@@ -643,11 +658,11 @@ iPortEntryButton: invis Server
 iPortEntryPriv:	guest
 
 # invis Forum
-dn: cn=invis Forum,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=invisForum,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Forum
-cn: invis Forum
+cn: invisForum
 iPortEntrySSL: FALSE
 iPortEntryURL: forum.invis-server.org
 iPortEntryDescription: invis Server Support Forum
@@ -658,11 +673,11 @@ iPortEntryButton: invis Forum
 iPortEntryPriv:	guest
 
 # invis Wiki
-dn: cn=invis Wiki,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+dn: cn=invisWiki,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invis Wiki
-cn: invis Wiki
+cn: invisWiki
 iPortEntrySSL: FALSE
 iPortEntryURL: wiki.invis-server.org
 iPortEntryDescription: invis Server Dokumentations-Wiki
