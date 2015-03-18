@@ -142,7 +142,7 @@ cn: Etherpad
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/etherpad/
 iPortEntryDescription: Das Etherpad Lite ist eine Form der Textverarbeitung, die es mehreren Benutzern erlaubt, gleichzeitig, an verschiedenen Rechnern an einem Text zu arbeiten.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Etherpad Lite
 iPortEntryPriv:	user
@@ -602,7 +602,7 @@ dn: cn=OpenStreetMap,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-n
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: OpenStreetMap
-cn: GoogleMaps
+cn: OpenStreetMap
 iPortEntrySSL: FALSE
 iPortEntryURL: www.openstreetmap.de/karte.html
 iPortEntryDescription: OpenStreetMap
