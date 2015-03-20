@@ -1832,7 +1832,11 @@ fileserver() {
     # Anpassen der Datei smb.conf
     path="/etc/samba"
     file="smb.conf"
-    echo "include /etc/samba/smb.shares.conf" >> $path/$file
+    
+    # Freigaben Erweiterung in Samba-Konfiguration einbinden
+    echo >> $path/$file
+    echo "## invis-server.org Freigabenkonfiguration einbinden" >> $path/$file
+    echo "include = /etc/samba/smb.shares.conf" >> $path/$file
     
     if [[ $av == "beide" ]]; then
 	av="antivir"
