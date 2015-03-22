@@ -81,27 +81,11 @@ function filterData(data) {
 	PAGED_DATA = new Array();
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
-//			if (item['TYPE'] != 1 || (item['TYPE'] == 1 && USERLIST_MAIL_FLAG))
-//				PAGED_DATA.push(item);
-
-			    if (USERLIST_FLAG[item['TYPE']])
-				PAGED_DATA.push(item);
-
-/*		    switch (item['TYPE']) {
-			case "1":
-			    if (USERLIST_FLAG[1])
-				PAGED_DATA.push(item);
-			    break;
-			
-			case "4":
-			    if (USERLIST_X_FLAG)
-				PAGED_DATA.push(item);
-			    break;
-			    
-			default:
-			    PAGED_DATA.push(item); 
+		    if (item['TYPE'] < USERLIST_FLAG.length)
+		    {
+			if (USERLIST_FLAG[item['TYPE']])
+			    PAGED_DATA.push(item);
 		    }
-*/
 		}
 	);
 	
@@ -193,36 +177,29 @@ function populateUserList(event, page) {
 		$('result-body').insert(tr);
 	}
 	
-	// account type selector
-	var check = new Element('input', {'type': 'checkbox'});
-	check.checked = USERLIST_FLAG[1];
+	var check = new Array (USERLIST_FLAG.length);
 	
-	check.observe('click',
-		function(e) {
-			USERLIST_FLAG[1] = this.checked;
-			filterData();
-			populateUserList(null, 0);
-		}
-	);
-	// account type selector
-	var check1 = new Element('input', {'type': 'checkbox'});
-	check1.checked = USERLIST_FLAG[4];
-	
-	check1.observe('click',
-		function(e) {
-			USERLIST_FLAG[4] = this.checked;
-			filterData();
-			populateUserList(null, 0);
-		}
-	);
+	for (i = 0; i < check.length; i++)
+	{
+	    // account type selector
+	    check[i] = new Element('input', {'type': 'checkbox'});
+	    check[i].checked = USERLIST_FLAG[i];
+	    check[i].indexNum = i;
+	    
+	    check[i].observe('click',
+	    	function(e) {
+	    		USERLIST_FLAG[this.indexNum] = this.checked;
+	    		filterData();
+	    		populateUserList(null, 0);
+	    	}
+	    )
+	    
+	    $('result-paging').insert(check[i]);
+	    $('result-paging').insert(ACCOUNT_TYPE[i] + ' einblenden');
+	    if ((i > 0) && ((i%3 == 0) || (i == check.length - 1)))
+		$('result-paging').insert('<br/>');
+	}
 
-
-	
-	$('result-paging').insert(check);
-	$('result-paging').insert(' Mail-Dummies einblenden');
-	$('result-paging').insert(check1);
-	$('result-paging').insert(' UNIX-User einblenden<br/>');
-	
 	// paging links
 	var n_entries = PAGED_DATA.length;
 	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
