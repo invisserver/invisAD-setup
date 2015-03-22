@@ -911,9 +911,11 @@ class adLDAP {
                 }
             }
         }
+        /* UTF-8 muss nicht in UTF-8 umgewandelt werden! invis-server.org
         if ($encode === true && $key != 'password') {
-            $item = utf8_encode($item);   
+            //$item = utf8_encode($item);   
         }
+        */
     }
     
     /**

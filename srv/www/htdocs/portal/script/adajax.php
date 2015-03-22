@@ -1288,9 +1288,7 @@ catch (adLDAPException $e) {
     exit();   
 }
 
-$groupstoextend=array("Domain Users", "Domain Admins", "Domain Guests");
-
-foreach ( $groupstoextend as $extgroup ) {
+foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
     $collection = $adldap->group()->infoCollection($extgroup,array('*'));
     $grouprid = ridfromsid(bin_to_str_sid($collection->objectsid));
     if (empty($collection->mssfu30nisdomain)) {

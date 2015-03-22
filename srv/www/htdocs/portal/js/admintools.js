@@ -3,7 +3,7 @@
  * functions for user/group/host administration
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2010,2011,2012,2014,2015 Stefan Schäfer, invis-server.org
- * (C) 2013 Ingo Göppert, invis-server.org
+ * (C) 2013,2015 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: http://wiki.invis-server.org
  */
@@ -18,7 +18,7 @@ var PAGED_DATA = null;
 var PAGED_DATA_UNSORTED = null;
 var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Windows+Unix+Groupware', 'WinAdmin', ' WinAdmin+Unix', 'WinAdmin+Unix+Groupware', 'MasterAdmin' );
 var GROUP_TYPE = new Array('Windows+Unix', 'Windows+Unix+Groupware', 'Mail-Verteiler', 'Sonstige');
-var USERLIST_MAIL_FLAG = true;
+var USERLIST_FLAG = new Array (true,true,true,true,true,true,true,true,true);
 var GROUPLIST_BI_FLAG = true;
 var PINGER_FLAG = false;
 var PINGER_REQUEST = [];
@@ -81,8 +81,27 @@ function filterData(data) {
 	PAGED_DATA = new Array();
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
-			if (item['TYPE'] != 1 || (item['TYPE'] == 1 && USERLIST_MAIL_FLAG))
+//			if (item['TYPE'] != 1 || (item['TYPE'] == 1 && USERLIST_MAIL_FLAG))
+//				PAGED_DATA.push(item);
+
+			    if (USERLIST_FLAG[item['TYPE']])
 				PAGED_DATA.push(item);
+
+/*		    switch (item['TYPE']) {
+			case "1":
+			    if (USERLIST_FLAG[1])
+				PAGED_DATA.push(item);
+			    break;
+			
+			case "4":
+			    if (USERLIST_X_FLAG)
+				PAGED_DATA.push(item);
+			    break;
+			    
+			default:
+			    PAGED_DATA.push(item); 
+		    }
+*/
 		}
 	);
 	
@@ -176,18 +195,33 @@ function populateUserList(event, page) {
 	
 	// account type selector
 	var check = new Element('input', {'type': 'checkbox'});
-	check.checked = USERLIST_MAIL_FLAG;
+	check.checked = USERLIST_FLAG[1];
 	
 	check.observe('click',
 		function(e) {
-			USERLIST_MAIL_FLAG = this.checked;
+			USERLIST_FLAG[1] = this.checked;
 			filterData();
 			populateUserList(null, 0);
 		}
 	);
+	// account type selector
+	var check1 = new Element('input', {'type': 'checkbox'});
+	check1.checked = USERLIST_FLAG[4];
+	
+	check1.observe('click',
+		function(e) {
+			USERLIST_FLAG[4] = this.checked;
+			filterData();
+			populateUserList(null, 0);
+		}
+	);
+
+
 	
 	$('result-paging').insert(check);
-	$('result-paging').insert(' Mail-Dummies einblenden<br/>');
+	$('result-paging').insert(' Mail-Dummies einblenden');
+	$('result-paging').insert(check1);
+	$('result-paging').insert(' UNIX-User einblenden<br/>');
 	
 	// paging links
 	var n_entries = PAGED_DATA.length;
