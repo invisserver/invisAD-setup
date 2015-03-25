@@ -682,8 +682,8 @@ smtp_tls_security_level = may
 smtp_tls_CApath = /etc/ssl/certs
 
 #Stefan: Nur fuer gegenseitige ueberpruefung notwendig
-#smtp_tls_key_file = /etc/ssl/private/i5-key.pem
-#smtp_tls_cert_file = /etc/ssl/certs/i5-cert.pem
+#smtp_tls_key_file = /etc/ssl/private/mail-key.pem
+#smtp_tls_cert_file = /etc/ssl/certs/mail-cert.pem
 #smtp_tls_CA_file = /etc/ssl/certs/cacert.pem
 
 # Mailannahme
@@ -697,8 +697,8 @@ smtpd_sasl_auth_enable = yes
 smtpd_tls_security_level = may
 
 # Mailannahme verschluesseln
-smtpd_tls_key_file = /etc/ssl/private/i5-key.pem
-smtpd_tls_cert_file = /etc/ssl/certs/i5-cert.pem
+smtpd_tls_key_file = /etc/ssl/private/mail-key.pem
+smtpd_tls_cert_file = /etc/ssl/certs/mail-cert.pem
 smtpd_tls_CA_file = /etc/ssl/certs/cacert.pem
 
 # Relay Domains und Transportwege-Regelungs Tabelle bekannt machen 

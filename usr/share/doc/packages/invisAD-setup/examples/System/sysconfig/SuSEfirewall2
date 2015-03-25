@@ -389,7 +389,7 @@ FW_CONFIGURATIONS_DMZ=""
 #
 ## invis-server.org
 # see comments for FW_SERVICES_EXT_TCP
-FW_SERVICES_INT_TCP="22 sshport smtp domain http httpsport imap imaps 111 237 631 3000 8080 9090 10000 12411"
+FW_SERVICES_INT_TCP="22 sshport smtp domain http httpsport imap imaps 111 237 631 3000 8080 8443 10000 12411"
 
 ## Type:	string
 #

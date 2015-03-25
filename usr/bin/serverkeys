@@ -91,8 +91,8 @@ else
     # Dadurch steht kein Klartext mehr im Zertifikat
     /usr/bin/openssl x509 -in server-cert.pem -out invis-server.crt
     /usr/bin/openssl rsa -in CA/server-key.pem -out invis-server.key
-    mv ./invis-server.crt /etc/ssl/certs/i5-cert.pem
-    mv ./invis-server.key /etc/ssl/private/i5-key.pem
+    mv ./invis-server.crt /etc/ssl/certs/mail-cert.pem
+    mv ./invis-server.key /etc/ssl/private/mail-key.pem
 fi
 
 # Aufraeumen

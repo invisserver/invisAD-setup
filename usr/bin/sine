@@ -1,10 +1,10 @@
 #!/bin/bash
 # invis AD 10.0 Server Setup Script
-# Version 0000
+# Version 0.9
 # (c) August 2008 by Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009, 2010, 2011, 2012, 2013, 2014 by Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015 by Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
-# (c) 2013,2014 Ingo Göppert / invis-server.org / ingo@invis-server.org
+# (c) 2013,2014,2015 Ingo Göppert / invis-server.org / ingo@invis-server.org
 # License: GPLv3
 # Dieses Script führt alle zur Installation eines invis Servers AD notwendigen 
 # Konfigurationsschritte aus.
@@ -1452,6 +1452,11 @@ dns() {
     clear
     s4workingdir="/var/lib/samba/private"
     windowtitle="DNS Server"
+    domain=`getconfdata "Domain" "2"`
+    forwarders=`getconfdata "Forwarders" "2"`
+    ipaddr=`getconfdata "IP" "2"`
+    ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+    
     #echo -e "\033[1;33mIhr Nameserver wird eingerichtet\033[0m"
     cp $cfilesdir/dhcp-dns/named.conf /etc 2>&1| tee -a $setupdir/sine.log
     cp $cfilesdir/dhcp-dns/s4.named.conf $s4workingdir/named.conf 2>&1| tee -a $setupdir/sine.log
@@ -1462,7 +1467,6 @@ dns() {
     # Konfiguration von bind wird angepasst
     path="/etc"
     file="named.conf"
-    forwarders=`getconfdata "Forwarders" "2"`
     strings="FORWARD-DNS-SERVERS%$forwarders"
     changevalues $path $file "$strings"
 
@@ -1482,6 +1486,10 @@ dns() {
     # DNS Dienst starten und ins Runlevel-Konzept einbinden.
     chkservice "named"
     
+    ## DNS Eintraege fuer Mailserver in Zone eintragen
+    samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log
+    samba-tool dns add 127.0.0.1 $domain mail A $ipaddr -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log
+
     writeprepstat "dhcp"
     waitbox "dns" "dhcp"
 }
@@ -1700,24 +1708,28 @@ esac
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
     postmap $path/$file
-    
-    file="s-canonical.cf"
-    basedn=`getconfdata "baseDN" "2"`
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
-    
-    adminpw=`getconfdata "AdminPW" "2"`
-    strings="admin-secret%$adminpw"
-    changevalues $path $file "$strings"
 
-    file="r-canonical.cf"
-    basedn=`getconfdata "baseDN" "2"`
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $path $file "$strings"
+    files=(s-canonical r-canonical ldap-users.cf ldap-aliases.cf ldap-groups.cf)
 
-    adminpw=`getconfdata "AdminPW" "2"`
-    strings="admin-secret%$adminpw"
-    changevalues $path $file "$strings"
+    for datei in ${files[*]}; do
+    #file="s-canonical.cf"
+	basedn=`getconfdata "baseDN" "2"`
+	strings="dc=invis-net,dc=loc%$basedn"
+	changevalues $path $datei "$strings"
+    
+	adminpw=`getconfdata "LDAPAdminPW" "2"`
+	strings="admin-secret%$adminpw"
+	changevalues $path $datei "$strings"
+    done
+    
+#    file="r-canonical.cf"
+#    basedn=`getconfdata "baseDN" "2"`
+#    strings="dc=invis-net,dc=loc%$basedn"
+#    changevalues $path $file "$strings"
+#
+#    adminpw=`getconfdata "AdminPW" "2"`
+#    strings="admin-secret%$adminpw"
+#    changevalues $path $file "$strings"
 
 
 
@@ -2580,7 +2592,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 		changevalues $path $file "$strings"
 		strings="module = DB%module = LDAP"
 		changevalues $path $file "$strings"
-		ldapadminpw=`getconfdata "AdminPW" "2"`
+		ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
 		strings="admin_secret%$ldapadminpw"
 		changevalues $path $file "$strings"
 	    fi

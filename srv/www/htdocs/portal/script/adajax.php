@@ -882,7 +882,7 @@ function groupDetail($conn, $cn) {
 
 
 function groupCreate() {
-	global $cookie_data, $adldap, $NISDOMAIN, $SFU_GUID_BASE;
+	global $cookie_data, $adldap, $NISDOMAIN, $SFU_GUID_BASE, $DOMAIN;
 	$attributes=array(
 		"group_name"=>$cookie_data['cn'],
 		"description"=>$cookie_data['description'],
@@ -928,9 +928,11 @@ function groupCreate() {
 		break;
 	case 2:
 		// Typ Verteiler
+		$email = $cn."@".$DOMAIN;
 		$attributes = array(
 		    "zarafaAccount"=>1,
-		    "groupType"=>2
+		    "groupType"=>2,
+		    "mail"=>$email
 		);
 		break;
 	}
