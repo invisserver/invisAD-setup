@@ -657,19 +657,19 @@ iPortEntryLinkRubrik: invis
 iPortEntryButton: invis Server
 iPortEntryPriv:	guest
 
-# invis Forum
-dn: cn=invisForum,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+# invis Blog
+dn: cn=invisBlog,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-iPortEntryName: invis Forum
+iPortEntryName: invis Blog
 cn: invisForum
 iPortEntrySSL: FALSE
-iPortEntryURL: forum.invis-server.org
+iPortEntryURL: blog.invis-server.org
 iPortEntryDescription: invis Server Support Forum
 iPortEntryActive: TRUE
 iPortEntryPosition: Internet
 iPortEntryLinkRubrik: invis
-iPortEntryButton: invis Forum
+iPortEntryButton: invis Blog
 iPortEntryPriv:	guest
 
 # invis Wiki
