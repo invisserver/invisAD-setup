@@ -166,6 +166,7 @@ chkservice() {
 	fi   
 	;;
 esac
+}
 
 # Passwoerter sicher aendern
 smbadpw() {
