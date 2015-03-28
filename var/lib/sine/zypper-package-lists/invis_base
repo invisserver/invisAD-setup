@@ -10,7 +10,6 @@ perl-Unicode-Map8
 perl-Unicode-MapUTF8
 apache2-worker
 apache2-mod_fcgid
-apache2-mod_proxy_html
 php5-pear-MIME_Type
 php5-fastcgi
 postgresql
