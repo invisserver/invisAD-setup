@@ -5,3 +5,4 @@ baseurl=http://download.opensuse.org/repositories/spins:/invis:/common/openSUSE_
 gpgcheck=1
 gpgkey=http://download.opensuse.org/repositories/spins:/invis:/common/openSUSE_13.1/repodata/repomd.xml.key
 enabled=1
+autorefresh=1
