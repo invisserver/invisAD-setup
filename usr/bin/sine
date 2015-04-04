@@ -1058,7 +1058,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     strings="i6lib%$libdir"
     changevalues $path $file "$strings"
 
-    strings="UTC%$timezone"
+    strings="CEST%$timezone"
     changevalues $path $file "$strings"
 
     cp $cfilesdir/webserver/fcgid/php.ini /etc/php5/fastcgi/
