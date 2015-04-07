@@ -1798,6 +1798,7 @@ fileserver() {
     unix2dos /srv/shares/service/Win_Scripts/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     unix2dos /srv/shares/service/Win_Timeserver/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
     unix2dos /srv/shares/service/VPN-Clients/Windows/vpn-client.ovpn 2>&1| tee -a $setupdir/sine.log | pgbox
+    unix2dos /srv/shares/service/Remove_DC/* 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # Gruppen anlegen
     samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox

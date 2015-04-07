@@ -1,0 +1,11 @@
+Das GUI Metadata Cleanup Utility entfernt Domaincontroller Metadaten aus einer 
+Active Directory-Domäne nach dem dieser Domänencontroller nicht ordnungsgemäß entfernt 
+oder erfolglos zu entferen versucht wurde (z.B. nach dcpromo /forceremoval). 
+Dieses Skript wurde von Clay Perrine geschrieben und von Kurt Hudson, 
+beide von Microsoft eingereicht.
+
+Das Skript fragt das Active Directory ab, um alle Domänencontroller in der Domäne
+zu finden. Es zeigt dann diese Domänencontroller in einem Eingabefeld mit der Anweisung:
+"Geben Sie den Namen des Domänencontrollers ein und klicken Sie auf OK" an. 
+Folgen Sie den Anweisungen und die Metadaten für den eingegebenen Hostnamen, 
+werden aus dem Verzeichnis entfernt.
