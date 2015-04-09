@@ -105,7 +105,7 @@ elif [[ $stype == "ldap" ]]; then
     mv ./invis-server.crt /etc/ssl/certs/ldap-cert.pem
     mv ./invis-server.key /etc/ssl/private/ldap-key.pem
     chown root.root /etc/ssl/private/ldap-key.pem
-    chmod 0640 /etc/ssl/private/ldap-key.pem
+    chmod 0600 /etc/ssl/private/ldap-key.pem
 else
     # Dadurch steht kein Klartext mehr im Zertifikat
     /usr/bin/openssl x509 -in server-cert.pem -out invis-server.crt
