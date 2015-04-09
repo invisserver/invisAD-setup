@@ -171,10 +171,10 @@ chkservice() {
 	    systemctl restart $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
 	else
 	    if [[ `chkconfig $1 |tr -s " "|cut -d " " -f 2` == "off" ]]; then
-		chkconfig -a $1
+		chkconfig -a $1 2>&1| tee -a $setupdir/sine.log | pgbox
 	    fi
     	    if [[ $1 != "avguard" ]]; then
-    		service "$1" restart 2>&1|pgbox
+    		service "$1" restart 2>&1| tee -a $setupdir/sine.log | pgbox
     	    else
     		service "$1" restart
     	    fi
@@ -1625,9 +1625,10 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	"zarafa" )
 	    pgsubtitle="Zarafa Groupware und Mailserver wird installiert und eingerichtet"
 	    # temporaer mariadb wieder enfernen und durch mysql ersetzen
-	    zypper -n rm mariadb mariadb-client  2>&1| tee -a $setupdir/sine.log | pgbox
-	    zyppercheck ${PIPESTATUS[0]}
-	    zypper -n in mysql-community-server mysql-community-server-client mysql-community-server-tools  2>&1| tee -a $setupdir/sine.log | pgbox
+	    ## Probieren wir es mal mit MariaDB
+	    #zypper -n rm mariadb mariadb-client  2>&1| tee -a $setupdir/sine.log | pgbox
+	    #zyppercheck ${PIPESTATUS[0]}
+	    #zypper -n in mysql-community-server mysql-community-server-client mysql-community-server-tools  2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    zypper -n install -n `cat $setupdir/zypper-package-lists/zarafa` 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
@@ -2966,18 +2967,19 @@ etherpad() {
 	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zypper -n install nodejs etherpad-lite 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
-	npm install -g node-inspector 2>&1 | tee -a $setupdir/sine.log | pgbox
+	#npm install -g node-inspector 2>&1 | tee -a $setupdir/sine.log | pgbox
 	confdir="/var/lib/etherpad-lite"
 	file="settings.json"
 	mv $confdir/$file $confdir/$file.orig
-	cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
+	#cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
+	#cp $confdir/settings.json.template $confdir/settings.json
 	etherpaddbuserpw=`mkdbsilent etherpad etherpad a`
-	strings="dbuserpw%$etherpaddbuserpw"
+	strings="dbuserpassword%$etherpaddbuserpw"
 	changevalues $confdir $file "$strings"
 	chkservice "etherpad-lite"
-	service etherpad-lite stop
-	mysql -u root -p < $cfilesdir/etherpad/charset.sql
-	service etherpad-lite start
+	#service etherpad-lite stop
+	#mysql -u etherpad --password=$etherpaddbuserpw -D etherpad < $cfilesdir/etherpad/charset.sql
+	#service etherpad-lite start
     else
 	msgbox "Etherpad-Lite Installation übersprungen" "$windowtitle"
     fi
