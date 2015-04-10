@@ -127,7 +127,7 @@ waitinfobox() {
 	(( i=$i+1 ))
 	echo $(( $i * 100 / 70 ))
 	sleep 0.1
-    done } | dialog --backtitle "$dialogtitle" --title "$2" --gauge "$1" 8 70 0
+    done } | dialog --backtitle "$dialogtitle" --title "$2" --gauge "$1" 12 70 0
 }
 
 zyppercheck() {
@@ -2124,12 +2124,28 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 mysqlserver() {
     cd $setupdir
     clear
-    windowtitle="MySQL Server"
+    windowtitle="MariaDB Server"
+    pgsubtitle="MariaDB einrichten"
 
+    waitinfobox "Für MariaDB werden Einstellungen zur Speichernutzung getroffen
+die sich am verfügbaren RAM des Servers und den Empfehlungen von Zarafa orientieren. 
+Bei weniger als 2GB RAM werden ca. 30%, bei 2-4GB
+RAM ca. 40% und bei mehr als 4GB RAM ca 50% des RAMs reserviert.
+Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Speicherbelegung dur MariaDB"
     cp $cfilesdir/sql/mysql/config.inc.php /srv/www/htdocs/phpMyAdmin/config.inc.php
     chown wwwrun:www /srv/www/htdocs/phpMyAdmin/config.inc.php
-    #MySQL Config schreiben und in Runlevel integrieren und starten.
+    # MySQL Config schreiben, Speichereinstellungen anpassen
+    # und in Runlevel integrieren und starten.
     cp $cfilesdir/sql/mysql/my.cnf /etc/
+    memsizes=($(zmemcalc))
+    path="/etc/"
+    file="my.cnf"
+    strings="innodbbps%${memsizes[0]}M"
+    changevalues $path $file "$strings"
+
+    strings="innodblfs%${memsizes[1]}M"
+    changevalues $path $file "$strings"
+    
     chkservice "mysql"
 
     #MySQL Root-Passwort setzen
