@@ -2421,6 +2421,13 @@ case "$whichimap" in
 	strings="postmaster@localhost%administrator@$domain"
 	changevalues $path $file "$strings"
 
+	# cache_cell_size anpassen, wenn zmemcalc mehr als 512M berechnet
+	zarafamem=($(zmemcalc))
+	if (( ${zarafamem[2]} > 512 ));then
+	    strings="512M%${zarafamem[2]}M"
+	    changevalues $path $file "$strings"
+	fi
+	
 	## Plugin-Path bei Bedarf anpassen
 	if [[ $libdir == "/usr/lib64" ]]; then
 	    strings="/usr/lib/zarafa%$libdir/zarafa"
