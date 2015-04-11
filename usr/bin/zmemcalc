@@ -15,7 +15,7 @@ if (( $memtotalmb <= 2048 )); then
 	innodbbps=$(echo "scale=0;$memtotalmb/4"|bc)
 	# 12,5 % fuer Zarafa cache_cell_size
 	zarafaccs=$(echo "scale=0;$memtotalmb/8"|bc)
-elif (( $memtotal > 2048 && <= 4096 ));then
+elif (( $memtotal > 2048 && $memtotal <= 4096 ));then
 	# 33% fuer MariaDB innodb_buffer_pool_size
 	innodbbps=$(echo "scale=0;$memtotalmb/3"|bc)
 	# 17,5 % fuer Zarafa cache_cell_size
@@ -32,4 +32,8 @@ innodblfs=$(echo "scale=0;$innodbbps/4"|bc)
 
 #echo $memtotalmb
 # Ausgabe
-echo "$innodbbps $innodblfs $zarafaccs"
+if [[ -n $1 && $1 == "v" ]]; then
+    echo -e "Empfohlene Einstellungen:\n\tVerfügbarer Arbeitsspeicher:\t\t$memtotalmb MB\n\tMariaDB innodb_buffer_pool_size:\t$innodbbps MB\n\tMariaDB innodb_log_file_size:\t\t$innodblfs MB\n\tZarafa cache_cell_size:\t\t\t$zarafaccs MB"
+else
+    echo "$innodbbps $innodblfs $zarafaccs"
+fi
