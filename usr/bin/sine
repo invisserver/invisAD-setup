@@ -204,6 +204,22 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
     samba-tool user setpassword $1 --newpassword="$newpw"
 }
 
+revzone() {
+	localip=$(hostname -i)
+	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+	for wert in ${netbase[*]}; do
+	    #echo "$wert -"
+	    if [[ $wert == 0 ]]; then
+		revzone=$revzone
+	    else
+		revzone=$wert.$revzone
+	    fi
+	done
+	echo "$revzone""in-addr.arpa"
+}
+
+
 # Installationsvoraussetzungen prüfen
 check() {
     dialog --backtitle "$dialogtitle" --title "Installationvoraussetzungen" --exit-label "Weiter" --textbox "$setupdir/infofiles/setuprequires.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "Installationvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
@@ -1466,6 +1482,10 @@ dns() {
 
     # DNS Dienst starten und ins Runlevel-Konzept einbinden.
     chkservice "named"
+    
+    # Reverse-Zone anlegen
+    zone=$(revzone)
+    samba-tool dns zonecreate 127.0.0.l $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log
     
     ## DNS Eintraege fuer Mailserver in Zone eintragen
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log

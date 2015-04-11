@@ -1,0 +1,205 @@
+#!/bin/bash
+# Script zum Anlegen oder Entfernen von A- und PTR Records
+# im AD. Das Script nutzt wiederum samba-tool.
+# (c) 2015 Stefan Schaefer invis-server.org
+# License: GPLv3
+# Questions: stefan@invis-server.org 
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+confdir="/etc/invis"
+passfile="/etc/invis/invis-pws.conf"
+
+# DNS Server = localhost
+dnsserver="127.0.0.1"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+usage() {
+	echo "Nutzungshinweis:"
+	echo "moddnsrecord {a|r|u} {A|PTR} objektname wert"
+	echo "a = hinzufügen, r = löschen, u = aktualisieren"
+	echo "Beispiel A-Record: objektname = Hostname ohne Domain, wert = IP-Adresse"
+	echo "Beispiel PTR-Record: objektname = IP-Adresse, wert = FQDN"
+}
+
+revzone() {
+	localip=$(hostname -i)
+	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+
+	for wert in ${netbase[*]}; do
+	    #echo "$wert -"
+	    if [[ $wert == 0 ]]; then
+		revzone=$revzone
+	    else
+		revzone=$wert.$revzone
+	    fi
+	done
+	echo "$revzone""in-addr.arpa"
+}
+
+netbase() {
+	localip=$(hostname -i)
+	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+
+	for wert in ${netbase[*]}; do
+	    #echo "$wert -"
+	    if [[ $wert == 0 ]]; then
+		base=$base
+	    else
+		if [[ -z $base ]]; then
+		    base=$wert
+		else
+		    base=$base.$wert
+		fi
+	    fi
+	done
+	echo $base
+}
+
+hostpart() {
+	recordip=$1
+	iparray=($(echo $recordip | tr "." " "))
+
+	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+	netbase=($(ipcalc -b $recordip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+	
+	i=0
+	for wert in ${iparray[*]}; do
+	    if [[ ! $wert == ${netbase[$i]} ]]; then
+		if [[ -z $hostpart ]]; then
+		    hostpart=$wert
+		else
+		    hostpart=$hostpart.$wert
+		fi
+	    fi
+	(( i=$i+1 ))
+	done
+	echo $hostpart
+}
+
+if [[ -z $2 ]]; then
+    usage
+    exit
+else
+    recordtype=$(echo $2| tr [:lower:] [:upper:])
+fi
+
+if [[ -z $3 ]]; then
+    usage
+    exit
+else
+    recordname=$(echo $3| tr [:upper:] [:lower:])
+fi
+
+if [[ -z $4 ]]; then
+    usage
+    exit
+else
+    recordvalue=$(echo $4| tr [:upper:] [:lower:])
+fi
+
+# AD Credentials lesen
+adadmin=$(getconfdata $conffile "LDAPAdmin" "2")
+adminpw=$(getconfdata $passfile "LDAPAdminPW" "2")
+
+case $1 in
+    "a") 
+	echo "Record wird angelegt" 
+	case $recordtype in 
+	    A)
+		zone=$(hostname -d)
+		recordname="$recordname.$zone"
+		starguments="add $dnsserver $zone $recordname $recordtype $recordvalue"
+		;;
+	    PTR)
+		zone=$(revzone)
+		hostpart=$(hostpart $recordname)
+		starguments="add $dnsserver $zone $hostpart $recordtype $recordvalue"
+		;;
+	    *)
+		usage
+		exit
+		;;
+	esac
+	;;
+    "r")
+	echo "Record wird gelöscht"
+	case $recordtype in 
+	    A)
+		zone=$(hostname -d)
+		recordname="$recordname.$zone"
+		starguments="delete $dnsserver $zone $recordname $recordtype $recordvalue"
+		;;
+	    PTR)
+		zone=$(revzone)
+		hostpart=$(hostpart $recordname)
+		starguments="delete $dnsserver $zone $hostpart $recordtype $recordvalue"
+		;;
+	    *)
+		usage
+		exit
+		;;
+	esac
+	;;
+    "u")
+	echo "Record wird aktualisiert"
+	case $recordtype in 
+	    A)
+		zone=$(hostname -d)
+		recordname="$recordname.$zone"
+		oldvalue=$(dig @$dnsserver $recordname +short)
+		starguments="update $dnsserver $zone $recordname $recordtype $oldvalue $recordvalue"
+		;;
+	    PTR)
+		zone=$(revzone)
+		hostpart=$(hostpart $recordname)
+		echo $hostpart
+		sleep 15
+		oldvalue=$(dig @$dnsserver -x $recordname +short)
+		if [[ -z $oldvalue ]]; then
+		    exit 1
+		fi
+		starguments="update $dnsserver $zone $hostpart $recordtype $oldvalue $recordvalue"
+		;;
+	    *)
+		usage
+		exit
+		;;
+	esac
+
+	;;
+    *)
+	usage
+	;;
+esac
+
+# Samba Tool anwenden
+samba-tool dns $starguments --username $adadmin --password=$adminpw
