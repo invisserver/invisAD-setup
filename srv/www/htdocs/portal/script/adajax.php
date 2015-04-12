@@ -1176,50 +1176,72 @@ function hostCreate($conn, $cn) {
 			'objectclass' => array('top', 'iscdhcphost')
 		);
 		$ok1 = add($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
-		
+		// Workaround
 		// DNS Eintraege muessen mit "exec samba-tool dns" erzeugt werden.
+		// moddnsrecords ist ein bash Frontend fuer samba-tool
+		$ipaddress = "$DHCP_IP_BASE.$next";
+		$fqdn = "$cn.$DOMAIN";
+		shell_exec("sudo /usr/bin/moddnsrecords a A $cn $ipaddress;");
+		shell_exec("sudo /usr/bin/moddnsrecords a PTR $ipaddress $fqdn;");
 	}
 }
 
 // host mod
 function hostModify($conn, $cn) {
-	global $BASE_DN_DHCP, $cookie_data, $DOMAIN;
+	global $BASE_DN_DHCP, $cookie_data, $DOMAIN, $DHCP_IP_BASE;
 	$attributes = $cookie_data;
 	
 	// if cn has changed, rename DHCP&DNS-forward, change DNS-reverse
 	if (isset($attributes['cn'])) {
 		$newcn = $attributes['cn'];
 		unset($attributes['cn']);
-		
-		// Test fuer neues Atttribut
 		echo $attributes['location'];
-		
+
+		// DNS-Eintraege aendern
+		$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
+		if ($result) {
+			$result = cleanup($result[0]);
+			$ip = strrchr($result['iscdhcpstatements'], '.');
+			$ip = substr($ip, 1);
+			// Workaround!
+			// DNS Eintraege muessen mit "exec samba-tool dns" geloescht werden.
+			// moddnsrecords ist ein bash Frontend fuer samba-tool
+			$fullip = "$DHCP_IP_BASE.$ip";
+			shell_exec("sudo /usr/bin/moddnsrecords r A $cn $fullip;");
+			shell_exec("sudo /usr/bin/moddnsrecords a A $newcn $fullip;");
+
+			//$oldfqdn = "$cn.$DOMAIN";
+			$newfqdn = "$newcn.$DOMAIN";
+			shell_exec("sudo /usr/bin/moddnsrecords u PTR $fullip $newfqdn;");
+		}
 		// rename DHCP
 		rename_ldap($conn, "cn=$cn,$BASE_DN_DHCP", "cn=$newcn");
 	}
-	// modify DHCP
-	// Hier scheint es mit MS AD LDAP ein Problem zu geben
-	// aus irgend einem Grund gibt er Fehlercode 32 "no such object"
-	// zurueck, fuehrt die gewuenschte Aenderung aber trotzdem aus.
-	// Daher Quick and Dirty -> Fehercode 32 wird als Erfolg zurueck
-	// geliefert.
-	$ok1 = modify($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
-	if ( ldap_errno($conn) == '32'  ){
-	    return 0;
+	// modify DHCP Location
+	if (isset($newcn)) {
+	    $ok1 = modify($conn, "cn=$newcn,$BASE_DN_DHCP", $attributes);
 	} else {
-	    return ($ok1)?0:array(ldap_errno($conn) => ldap_error($conn));
+	    $ok1 = modify($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
 	}
+	return ($ok1)?0:array(ldap_errno($conn) => ldap_error($conn));
 }
 
 // host delete
 function hostDelete($conn, $cn) {
-	global $BASE_DN_DHCP;
+	global $BASE_DN_DHCP, $DOMAIN, $DHCP_IP_BASE;
 	// fetch associated IP for cn
 	$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
 	if ($result) {
 		$result = cleanup($result[0]);
 		$ip = strrchr($result['iscdhcpstatements'], '.');
 		$ip = substr($ip, 1);
+		// Workaround
+		// DNS Eintraege muessen mit "exec samba-tool dns" geloescht werden.
+		// moddnsrecords ist ein bash Frontend fuer samba-tool
+		$fqdn = "$cn.$DOMAIN";
+		shell_exec("sudo /usr/bin/moddnsrecords r PTR $ip $fqdn;");
+		$fullip = "$DHCP_IP_BASE.$ip";
+		shell_exec("sudo /usr/bin/moddnsrecords r A $cn $fullip;");
 		
 		// DHCP entry
 		$ok1 = delete($conn, "cn=$cn,$BASE_DN_DHCP");
