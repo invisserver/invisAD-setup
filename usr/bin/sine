@@ -1485,7 +1485,7 @@ dns() {
     
     # Reverse-Zone anlegen
     zone=$(revzone)
-    samba-tool dns zonecreate 127.0.0.l $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log
+    samba-tool dns zonecreate 127.0.0.1 $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log
     
     ## DNS Eintraege fuer Mailserver in Zone eintragen
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log
