@@ -16,7 +16,7 @@ iPortEntryName: Group-e
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/group-e
 iPortEntryDescription: Die Groupware "Group-e" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails und Zeiterfassung. 
-iPortEntryActive: GROUPETRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -30,7 +30,7 @@ iPortEntryName: SOGo
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/sogo
 iPortEntryDescription: Die Groupware "SOGo" bietet unter anderem Zugriff auf E-Mails,Terminkalender und Kontakterwaltung. 
-iPortEntryActive: SOGOTRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -58,7 +58,7 @@ cn: ZarafaApp
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webapp
 iPortEntryDescription: Die moderne Webapp der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen in frischem "Look & Feel". 
-iPortEntryActive: ZARAFATRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -72,7 +72,7 @@ cn: Roundcube
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/roundcube
 iPortEntryDescription: Der moderne Webmailer Roundcubemail ist ein potenter Mail-Client mit angenehmem "Look & Feel". 
-iPortEntryActive: ROUNDCUBETRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
@@ -86,7 +86,7 @@ cn: Kivitendo
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/kivitendo-erp
 iPortEntryDescription: Das ERP Progamm Kivitendo umfasst Warenwirtschaft, Rechnungswesen, Umsatzsteuervoranmeldung, Einnahme-Überschuss-Berechnung und Bilanzen inklusive DATEV-Export.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
@@ -128,7 +128,7 @@ cn: Dokuwiki
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/dokuwiki
 iPortEntryDescription: Ein Wiki-System ermöglicht Ihnen auf einfache Weise die Einrichtung einer eignen Wissensdatenbank für Ihr Unternehmen. Auf Ihrem invis Server ist Dokuwiki vorinstalliert. Bevor Sie eigene Einträge schreiben, müssen Sie sich einmalig registrieren.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Wissensdatenbank
 iPortEntryPriv:	user
@@ -170,7 +170,7 @@ cn: WebCDwriter
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/cdwriter
 iPortEntryDescription: WebCDwriter ermöglicht Ihnen das Brennen von CDs über den CD/DVD-Brenner Ihres invis-Servers.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: CDs brennen
 iPortEntryPriv:	guest
@@ -184,7 +184,7 @@ cn: FaxClient
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/java/FaxgateClient.jar
 iPortEntryDescription: Mit dem FaxgateClient erhalten Sie Zugriff auf die Fax-Funktionen Ihres invis-Servers. Den Client benötigen Sie etwa zur Eingabe der Empfänger-Fax-Nummer. Das Handbuch zum FaxgateClient finden Sie auf der Dokumentationsseite des Portals.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Faxserver Client
 iPortEntryPriv:	guest

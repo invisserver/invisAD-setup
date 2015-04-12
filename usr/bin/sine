@@ -1318,70 +1318,6 @@ samba_ad() {
 	
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    ## Aktive LDAP-Eintrage fuer Groupware und ERP aktivieren/deaktivieren
-    whichgroupware=`getconfdata "IMAPserver" "2"`
-    whicherp=`getconfdata "ERPSoftware" "2"`
-    
-    file="04_iportal-initial.ldif"
-    case $whichgroupware in
-	"zarafa" )
-	    strings="GROUPETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="SOGOTRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="ROUNDCUBETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-	"groupe" )
-	    strings="GROUPETRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="SOGOTRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ROUNDCUBETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-	"sogo" )
-	    strings="SOGOTRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="GROUPETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="ROUNDCUBETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-	"roundcube" )
-	    strings="ROUNDCUBETRUE%TRUE"
-	    changevalues $path $file "$strings"
-	    strings="ZARAFATRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="GROUPETRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    strings="SOGOTRUE%FALSE"
-	    changevalues $path $file "$strings"
-	    ;;
-    esac
-
-    if [[ $whicherp == "wawision" ]]; then
-	strings="LXTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="OPENERPTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="WAWISIONTRUE%TRUE"
-	changevalues $path $file "$strings"
-    else
-	strings="LXTRUE%TRUE"
-	changevalues $path $file "$strings"
-	strings="OPENERPTRUE%FALSE"
-	changevalues $path $file "$strings"
-	strings="WAWISIONTRUE%FALSE"
-	changevalues $path $file "$strings"
-    fi
-
     # LDAP fuellen
     pgsubtitle="Ergänzende LDAP Daten werden eingepflegt"
     { for x in $path/*; do
@@ -2310,7 +2246,6 @@ groupware() {
 
 whichimap=`getconfdata "IMAPserver" "2"`
 
-#if [[ $whichimap == "groupe" ]]; then
 case "$whichimap" in
 
     "groupe" )
@@ -2358,6 +2293,9 @@ case "$whichimap" in
 	    echo "Initmail" |mailx -s Initmail projekte@localhost
 
 	    cp $cfilesdir/webserver/z-push_vh-groupe.conf /etc/apache2/vhosts.d/
+
+	    # Group-e im Portal aktivieren
+	    swpestat Group-e TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	
 	    chkservice "apache2"
 	
@@ -2368,7 +2306,7 @@ case "$whichimap" in
 	    writeprepstat "erp" 
 	fi
 	;; 
-#elif [[ $whichimap == "sogo" ]]; then
+
     "sogo" )
 	cd $setupdir
 	clear
@@ -2393,6 +2331,9 @@ case "$whichimap" in
 	changevalues $confdir $file "$strings"
 	chown :sogo /etc/sogo/sogo.conf
 	chkservice "sogod"
+
+	# SoGo im Portal aktivieren
+	swpestat SOGo TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 
 	writeprepstat "erp"
 	waitbox "groupware" "erp"
@@ -2512,6 +2453,9 @@ case "$whichimap" in
 	zarafa-admin -s    
 	## extzu Script an AD anpassen
 	#extzu junk 1
+
+	# Webapp im Portal aktivieren
+	swpestat ZarafaApp TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
     
 	writeprepstat "erp"
 	waitbox "groupware" "erp"
@@ -2538,6 +2482,9 @@ case "$whichimap" in
 	file="main.inc.php"
 	strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
+
+	# Roundcube im Portal aktivieren
+	swpestat Roundcube TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 
 	writeprepstat "erp"
 	waitbox "groupware" "erp"
@@ -2625,6 +2572,9 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    strings="lxpw%$lxpw"
 	    changevalues $path $file "$strings"
 
+	    # Kivitendo im Portal aktivieren
+	    swpestat Kivitendo TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+	    
 	    writeprepstat "faxgate"
 	    waitbox "erp" "faxgate"
 	
@@ -2650,8 +2600,13 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    wawipass=`mkdbsilent wawision1 wawision a`
 	    msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision1\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
 	    chkservice apache2 r
+	    # Wawision im Portal aktivieren
+	    swpestat waWision TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+
 	    writeprepstat "faxgate"
 	    waitbox "erp" "faxgate"
+	    
+	    
 	else
 	    msgbox "waWision Installation übersprungenen" "$windowtitle"
 	    writeprepstat "faxgate"
@@ -2758,9 +2713,13 @@ Geben Sie ein zugehöriges Passwort ein." "$windowtitle"
 	lpadmin -p Faxgate -v faxgate://capisuite -m Faxgate.ppd.gz -E 2>&1 |pgbox
 	
 	sleep 1
+	# Faxgate im Portal aktivieren
+	swpestat FaxClient TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 
 	writeprepstat "webcdwriter"
 	waitbox "lxerp" "webcdwriter"
+	
+	
     else
 	msgbox "Fax-Server-Installation übersprungenen." "$windowtitle"
 	writeprepstat "webcdwriter"
@@ -2805,6 +2764,10 @@ webcdwriter() {
 	# cdwserver ins Runlevel-Konzept integrieren und starten
 	cp $cfilesdir/CDWserver/CDWserver /etc/init.d
 	chkservice "CDWserver"
+	
+	# CDWServer im Portal aktivieren
+	swpestat WebCDWriter TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+	
     else
 	msgbox "WebCDWriter Installation übersprungen" "$windowtitle"
     fi
@@ -2989,6 +2952,9 @@ dokuwiki() {
     cp $cfilesdir/dokuwiki/acl.auth.php /srv/www/htdocs/dokuwiki/conf/
     chown wwwrun:www /srv/www/htdocs/dokuwiki/conf/acl.auth.php
 
+    # Dokuwiki im Portal aktivieren
+    swpestat Dokuwiki TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+
     else
 	msgbox "Wenn Sie es sich zu einem späteren Zeitpunkt anders überlegen, können Sie diesen Schritt durch erneutes Aufrufen des Setup-Scripts mit dem Parameter \"dokuwiki\" wiederholen." "Dokuwiki Installation übersprungen"
     fi
@@ -3023,6 +2989,9 @@ etherpad() {
 	#service etherpad-lite stop
 	#mysql -u etherpad --password=$etherpaddbuserpw -D etherpad < $cfilesdir/etherpad/charset.sql
 	#service etherpad-lite start
+	
+	# Etherpad im Portal aktivieren
+	swpestat Etherpad TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
     else
 	msgbox "Etherpad-Lite Installation übersprungen" "$windowtitle"
     fi
