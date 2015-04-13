@@ -4,6 +4,7 @@ Cmnd_Alias      CREATEGROUPSHARE = /usr/bin/creategroupshare
 Cmnd_Alias      FETCHPHP = /var/lib/cornaz/bin/fetchcopy
 Cmnd_Alias      HOLIDAY = /var/lib/cornaz/bin/holiday
 Cmnd_Alias      BACKHOME = /var/lib/cornaz/bin/backhome
+Cmnd_Alias      MDNSREC = /usr/bin/moddnsrecords
 
 wwwrun  ALL = (root) NOPASSWD:CREATEHOME
 wwwrun  ALL = (root) NOPASSWD:DELETEHOME
@@ -11,4 +12,4 @@ wwwrun  ALL = (root) NOPASSWD:CREATEGROUPSHARE
 wwwrun  ALL = (root) NOPASSWD:FETCHPHP
 wwwrun  ALL = (root) NOPASSWD:HOLIDAY
 wwwrun  ALL = (root) NOPASSWD:BACKHOME
-
+wwwrun  ALL = (root) NOPASSWD:MDNSREC
