@@ -2895,11 +2895,15 @@ dokuwiki() {
     pgsubtitle="Dokuwiki wird heruntergeladen und installiert"
     cd $setupdir
     #wget `lynx --dump http://www.splitbrain.org/projects/dokuwiki|grep "http"|grep ".tgz"|head -n1|tr -s " "|cut -d " " -f3` 2>&1 |pgbox
-    wget http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+    #wget http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
     
-    getpath=`find $setupdir -name "dokuwiki*.tgz"`
-    tar -xzf $getpath -C /srv/www/htdocs 2>&1 |pgbox
-    mv /srv/www/htdocs/dokuwiki* /srv/www/htdocs/dokuwiki
+    #getpath=`find $setupdir -name "dokuwiki*.tgz"`
+    #tar -xzf $getpath -C /srv/www/htdocs 2>&1 |pgbox
+    #mv /srv/www/htdocs/dokuwiki* /srv/www/htdocs/dokuwiki
+
+    pgsubtitle="Dokuwiki wird installiert" 
+    zypper -n install -n dokuwiki 2>&1 | tee -a $setupdir/sine.log | pgbox
+    zyppercheck ${PIPESTATUS[0]}
 
     # Display Wiki Page Plugin herunterladen
     # Vorübergehender Link fuer Displaywikipage
