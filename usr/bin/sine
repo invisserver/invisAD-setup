@@ -2943,7 +2943,7 @@ dokuwiki() {
     strings="dc=invis-net,dc=loc%$basedn"
     changevalues $path $file "$strings"
 
-    domain=`getconfdata "domain" "2"`
+    domain=`getconfdata "Domain" "2"`
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
     
@@ -2962,11 +2962,12 @@ dokuwiki() {
     else
 	msgbox "Wenn Sie es sich zu einem späteren Zeitpunkt anders überlegen, können Sie diesen Schritt durch erneutes Aufrufen des Setup-Scripts mit dem Parameter \"dokuwiki\" wiederholen." "Dokuwiki Installation übersprungen"
     fi
-    writeprepstat "etherpad"
-    waitbox "dokuwiki" "etherpad"
+    writeprepstat "virtualbox"
+    waitbox "dokuwiki" "virtualbox"
 }
 
 etherpad() {
+    # Wird uebersprungen bis nodejs funktioniert. April 2015
     cd $setupdir
     clear
     windowtitle="Etherpad Lite Installation"

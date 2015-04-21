@@ -295,7 +295,7 @@ objectClass: iPortEntry
 iPortEntryName: CUPS
 cn: CUPS
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/cups
+iPortEntryURL: [servername]:631
 iPortEntryDescription: Ihr invis-Server ist in der Lage im Netzwerk vorhandene Drucker zentral zu verwalten und freizugeben. Hierüber erhalten Sie Zugriff auf die Administrationsseiten des zugehörigen Dienstes CUPS.
 iPortEntryActive: TRUE
 iPortEntryPosition: Administration
@@ -646,7 +646,7 @@ iPortEntryPriv:	guest
 dn: cn=invisServer,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-iPortEntryName: invis Server
+iPortEntryName: invisServer
 cn: invisServer
 iPortEntrySSL: FALSE
 iPortEntryURL: www.invis-server.org
@@ -661,7 +661,7 @@ iPortEntryPriv:	guest
 dn: cn=invisBlog,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-iPortEntryName: invis Blog
+iPortEntryName: invisBlog
 cn: invisForum
 iPortEntrySSL: FALSE
 iPortEntryURL: blog.invis-server.org
@@ -676,7 +676,7 @@ iPortEntryPriv:	guest
 dn: cn=invisWiki,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-iPortEntryName: invis Wiki
+iPortEntryName: invisWiki
 cn: invisWiki
 iPortEntrySSL: FALSE
 iPortEntryURL: wiki.invis-server.org
