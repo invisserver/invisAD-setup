@@ -662,7 +662,7 @@ dn: cn=invisBlog,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,d
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: invisBlog
-cn: invisForum
+cn: invisBlog
 iPortEntrySSL: FALSE
 iPortEntryURL: blog.invis-server.org
 iPortEntryDescription: invis Server Support Forum
