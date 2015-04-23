@@ -912,6 +912,16 @@ sysprep() {
 	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
     
+    # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
+    libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
+    libtevent=`basename $libtevent`
+    cd $libdir
+    ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
+    libndr=`basename $libndr`
+    ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+    
     # NFS-Server
     pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
     zypper -n install -n `cat $setupdir/zypper-package-lists/fileserver_additional` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 

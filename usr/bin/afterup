@@ -21,6 +21,28 @@ changevalues() {
     mv $1/$2.new $1/$2
 }
 
+# Testen, ob es sich um ein 64Bit-System handelt.
+if [[ -d /usr/lib64 ]]; then
+    libdir="/usr/lib64"
+else
+    libdir="/usr/lib"
+fi
+
+
+# Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
+libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
+libtevent=`basename $libtevent`
+cd $libdir
+ln -s samba/$libtevent libtevent.so.0 2>/dev/null
+
+libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
+libndr=`basename $libndr`
+ln -s samba/$libndr libndr.so.0 2>/dev/null
+
+systemctl restart sssd.service
+
+sleep 3
+
 # Samba Updates verändern die Rechte an Verzeichnissen unter /var/lib/samba
 chown -R ."Domain Admins" /var/lib/samba/drivers
 chown -R ."Domain Users" /var/lib/samba/profiles
@@ -42,7 +64,7 @@ chown -R root:"Domain Admins" /srv/shares/service
 chown -R root:"Domain Guests" /srv/shares/transfer
 chown -R root:"Verwaltung" /srv/shares/verwaltung
 chown root:"Domain Users" /srv/shares/portal/uploads
-chown administrator:"Domain Users" /srv/shares/portal/downloads
+chown root:"Domain Users" /srv/shares/portal/downloads
 
 # Zugriffsrechte auf Private-Key Verzeichnis bereinigen
 chown -R .pkeys /etc/ssl/private
@@ -56,8 +78,4 @@ if [[ -f /usr/lib/nagios/plugins/check-icmp ]]; then
     chmod u+s /usr/lib/nagios/plugins/check-icmp
 fi
 
-# Link zur Zarafa-Client-Library erneuern
-#if [[ -d /etc/zarafa ]]; then
-#    fixzarafaclientlib
-#fi
 
