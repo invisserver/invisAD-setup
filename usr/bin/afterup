@@ -69,7 +69,8 @@ chown root:"Domain Users" /srv/shares/portal/downloads
 # Zugriffsrechte auf Private-Key Verzeichnis bereinigen
 chown -R .pkeys /etc/ssl/private
 chmod g+rx /etc/ssl/private
-chmod g+r /etc/ssl/private/*
+chmod g+r /etc/ssl/private/mail-key.pem
+chmod 0600 /etc/ssl/private/ldap-key.pem
 
 systemctl restart named.service
 
