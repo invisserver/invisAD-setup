@@ -1,6 +1,6 @@
 #!/bin/bash
 # invis AD 10.0 Server Setup Script
-# Version 0.10
+# Version 0.11
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2015 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -399,7 +399,6 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
 	ldapbase="dc=$dp1,dc=$dp2"
 	# Testweise auf volle Domain geaendert -- noch nicht
         smbdomain=`echo $dp1 | tr [a-z] [A-Z]`
-        #smbdomain=`echo $domain | tr [a-z] [A-Z]`
         
         # Umgekehrte Netzwerkadresse bilden
         i=0
@@ -472,7 +471,6 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
     done
     # Forward-String erzeugen
     forwarders=`echo ${fdns[@]} | sed s/" "/"; "/g`";"
-    #echo $forwarders
 #---#System Passwörter
     ok=0
 
@@ -519,10 +517,10 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
     # - Zarafa schließt Cyrus und Group-e aus
     dialog --backtitle "$dialogtitle" --title "MAIL & Groupware Server" --radiolist "$dialogshorthelp\n\n
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
+	zarafa "Mailserver/Groupware Kombination für Outlook-Freunde" on\
+	roundcube "Webmailer Roundcube in Kombination mit Dovecot (not yet with AD)" off\
 	groupe "Group-e in Kombination mit Cyrus IMAP (not yet with AD)" off\
 	sogo "SOGo in Kombination mit Dovecot (not yet with AD)" off\
-	zarafa "Mailserver/Groupware Kombination für Outlook-Freunde" on\
-	roundcube "Schlanker Webmailer Roundcube in Kombination mit Dovecot (not yet with AD)" off\
 	2>$setupdir/sine_temp
 	whichimap=`cat $setupdir/sine_temp`
     
@@ -1012,7 +1010,7 @@ sysprep() {
 
     # Vorbereitete sysconfig Dateien kopieren
     # Ist QnD, sollte mit changevalues erledigt werden....
-    cp $cfilesdir/System/sysconfig/* /etc/sysconfig/ 2>&1| tee -a $setupdir/sine.log
+    cp $cfilesdir/System/sysconfig/* /etc/sysconfig/ 2>&1| tee -a $setupdir/sine.log | pgbox
 
     #/etc/hosts anpassen
     file="hosts"
@@ -1034,8 +1032,8 @@ sysprep() {
     ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $setupdir/sine.log | pgbox
 
     #openSSL einrichten und CA bauen
-    cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log
-    cp $cfilesdir/ssl/CA.pl /usr/share/ssl/misc/ 2>&1| tee -a $setupdir/sine.log
+    cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log | pgbox
+    cp $cfilesdir/ssl/CA.pl /usr/share/ssl/misc/ 2>&1| tee -a $setupdir/sine.log | pgbox
 
     file="openssl.cnf"
     path="/etc/ssl"
@@ -1576,7 +1574,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    zypper -n install -n `cat $setupdir/zypper-package-lists/sasl_mechs` 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    cp $cfilesdir/mailserver/cyrus/*.conf /etc 2>&1| tee -a $setupdir/sine.log
-	    #cp $cfilesdir/syslog-ng/syslog-ng.conf /etc/syslog-ng 2>&1| tee -a $setupdir/sine.log
 	    # Passwort für den User cyrus setzen
 	    cyruspw=`getconfdata "CyrusPw" "2"`
 	    #msgbox "Für den Benutzer \"cyrus\" muss ein Passwort gesetzt werden" "Cyrus IMAP wird vorbereitet"
@@ -1590,11 +1587,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    ;;
 	"zarafa" )
 	    pgsubtitle="Zarafa Groupware und Mailserver wird installiert und eingerichtet"
-	    # temporaer mariadb wieder enfernen und durch mysql ersetzen
-	    ## Probieren wir es mal mit MariaDB
-	    #zypper -n rm mariadb mariadb-client  2>&1| tee -a $setupdir/sine.log | pgbox
-	    #zyppercheck ${PIPESTATUS[0]}
-	    #zypper -n in mysql-community-server mysql-community-server-client mysql-community-server-tools  2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    zypper -n install -n `cat $setupdir/zypper-package-lists/zarafa` 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
@@ -1660,7 +1652,6 @@ esac
     files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-aliases.cf ldap-groups.cf)
 
     for datei in ${files[*]}; do
-    #file="s-canonical.cf"
 	basedn=`getconfdata "baseDN" "2"`
 	strings="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $datei "$strings"
@@ -1670,17 +1661,6 @@ esac
 	changevalues $path $datei "$strings"
     done
     
-#    file="r-canonical.cf"
-#    basedn=`getconfdata "baseDN" "2"`
-#    strings="dc=invis-net,dc=loc%$basedn"
-#    changevalues $path $file "$strings"
-#
-#    adminpw=`getconfdata "AdminPW" "2"`
-#    strings="admin-secret%$adminpw"
-#    changevalues $path $file "$strings"
-
-
-
     # Mailman einrichten ????
     clear
     windowtitle="Mailman Installation"
@@ -1996,7 +1976,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     ddnshn=`getconfdata "DDNS" "2"`
     if [[ $ddnshn != "none" ]]; then
 
-	msgbox "Es werden Schlüssel für den https-Zugriff erzeugt. Geben Sie bei der Frage nach dem Common-Name einen z.B. bei dyndns.org registrierten im Internet gültigen Namen, oder falls vorhanden Ihre feste IP-Adresse ein." "Webserver-Konfiguration"
+	msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
 	serverkeys ws
 	
         # Kopieren und anpassend der Konfigurationsdateien
@@ -2054,18 +2034,12 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     chown wwwrun.www $fetchmailrc
     chmod 0660 $fetchmailrc
     
-    ##RPM
-    #Dateirechte anpassen -- testen, wenn notwendig, dann ins specfile
-    #chown -R wwwrun:root /var/lib/cornaz
-    #chown -R wwwrun:www /srv/www/htdocs/cornaz
-
     # fetchcopy ausfuehren
     /var/lib/cornaz/bin/fetchcopy				2>&1|tee -a $setupdir/sine.log |pgbox
     chmod 0700 /var/lib/cornaz/inuse/.fetchmailrc		2>&1|tee -a $setupdir/sine.log |pgbox
     chown fetchmail /var/lib/cornaz/inuse/.fetchmailrc	2>&1|tee -a $setupdir/sine.log |pgbox
 
     # Webserver fuer prefork-MPM konfigurieren
-    #a2enmod -d php5
     a2enmod fcgid
     a2enmod rewrite
     path="/etc/sysconfig/"
@@ -2215,12 +2189,11 @@ firewall() {
 monitoring() {
     cd $setupdir
     clear
+    whichmonitoring=`getconfdata "MonitoringSoftware" "2"`
     windowtitle="Vorbereitung für Server Monitoring"
-    dialog --backtitle "$dialogtitle" --title "Vorbereitung für Server Monitoring" --exit-label "Weiter" --textbox "$setupdir/infofiles/monitoring.txt" 24 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Planen Sie den Server via zu überwachen?" 0 0
+    dialog --backtitle "$dialogtitle" --title "Vorbereitung für Server Monitoring" --exit-label "Weiter" --textbox "$setupdir/infofiles/monitoring.txt" 24 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Planen Sie den Server via $whichmonitoring zu überwachen?" 0 0
     cont=${?}
     if [[ $cont == "0" ]]; then
-    
-    whichmonitoring=`getconfdata "MonitoringSoftware" "2"`
 
     case $whichmonitoring in
     "nagios" )
@@ -2454,15 +2427,13 @@ case "$whichimap" in
 	    chkservice $zinit
 	done
     
-	#z-push als vHost anlegen & apache reload
+	# z-push als vHost anlegen & apache reload
 	cp $cfilesdir/webserver/z-push_vh.conf /etc/apache2/vhosts.d/
 	rm -f /etc/apache2/conf.d/z-push.conf
 	chkservice apache2 r
     
 	# Oeffentlichen Speicher anlegen
 	zarafa-admin -s    
-	## extzu Script an AD anpassen
-	#extzu junk 1
 
 	# Webapp im Portal aktivieren
 	swpestat ZarafaApp TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
