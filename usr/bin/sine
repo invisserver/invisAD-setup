@@ -2065,13 +2065,13 @@ mysqlserver() {
     cd $setupdir
     clear
     windowtitle="MariaDB Server"
-    pgsubtitle="MariaDB einrichten"
+    pgsubtitle="MariaDB einrichten, bitte haben Sie etwas Geduld."
 
     waitinfobox "Für MariaDB werden Einstellungen zur Speichernutzung getroffen
 die sich am verfügbaren RAM des Servers und den Empfehlungen von Zarafa orientieren. 
 Bei weniger als 2GB RAM werden ca. 30%, bei 2-4GB
 RAM ca. 40% und bei mehr als 4GB RAM ca 50% des RAMs reserviert.
-Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Speicherbelegung dur MariaDB"
+Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Speicherreservierung für MariaDB"
     cp $cfilesdir/sql/mysql/config.inc.php /srv/www/htdocs/phpMyAdmin/config.inc.php
     chown wwwrun:www /srv/www/htdocs/phpMyAdmin/config.inc.php
     # MySQL Config schreiben, Speichereinstellungen anpassen
@@ -2085,9 +2085,18 @@ Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Spe
 
     strings="innodblfs%${memsizes[1]}M"
     changevalues $path $file "$strings"
-    
+
     chkservice "mysql"
 
+    # Der besch. systemd wartet einfach nicht lange genug auf den MySQL Socket
+    until [[ -S /var/run/mysql/mysql.sock ]]; do
+	echo "Warte, bis der MySQL-Socket erscheint. ;-)" | pgbox
+	sleep 2 | pgbox
+    done
+
+    # Restart, weil systemd ggf. glaubt, dass mysql nicht laeuft.
+    systemctl restart mysql.service 2>&1|tee -a $setupdir/sine.log |pgbox
+    
     #MySQL Root-Passwort setzen
     mysqlpw=`getconfdata "MySQLpw" "2"`
     mysqladmin password $mysqlpw
@@ -2107,7 +2116,7 @@ postgresqlserver() {
 
     #cp /srv/www/htdocs/phpPgAdmin/conf/config.inc.php-dist /srv/www/htdocs/phpPgAdmin/conf/config.inc.php
     pgsubtitle="PostgreSQL \"vorübergehend\" starten."
-    /etc/init.d/postgresql start 2>&1|tee -a $setupdir/sine.log |pgbox
+    systemctl start postgresql.service 2>&1|tee -a $setupdir/sine.log |pgbox
 
     # Konfigurationsdateien kopieren -> sind fuer kivitendo vorbereitet.
     cp $cfilesdir/sql/postgresql/*.conf /var/lib/pgsql/data 2>&1 |tee -a $setupdir/sine.log
