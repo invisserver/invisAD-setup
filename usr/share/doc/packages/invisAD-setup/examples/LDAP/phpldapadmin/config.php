@@ -152,7 +152,7 @@ $config->custom->commands['script'] = array(
 #  $config->custom->appearance['tree'] = 'HTMLTree';
 
 /* Just show your custom templates. */
-$config->custom->appearance['custom_templates_only'] = false;
+$config->custom->appearance['custom_templates_only'] = true;
 
 /* Disable the default template. */
 // $config->custom->appearance['disable_default_template'] = false;
