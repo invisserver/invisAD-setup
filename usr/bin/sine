@@ -28,7 +28,7 @@
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
 # Setup-Verzeichnis einlesen
-setupdir="/var/lib/sine"
+setupdir="/root/sine-pgsql"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
 # Setup-Dialog Titel
@@ -2113,6 +2113,11 @@ postgresqlserver() {
     cd $setupdir
     clear
     windowtitle="PostgreSQL Server"
+
+    # Basis Software
+    pgsubtitle="Basis Software wird installiert" 
+    zypper -n install -n `cat $setupdir/zypper-package-lists/postgresql` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
+    zyppercheck ${PIPESTATUS[0]}
 
     #cp /srv/www/htdocs/phpPgAdmin/conf/config.inc.php-dist /srv/www/htdocs/phpPgAdmin/conf/config.inc.php
     pgsubtitle="PostgreSQL \"vorübergehend\" starten."
