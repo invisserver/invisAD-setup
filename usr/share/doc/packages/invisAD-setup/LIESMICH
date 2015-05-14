@@ -57,7 +57,7 @@ invis.cron unter /etc/cron.d zusammengefasst. Auch das vereinfacht die Administr
 !! Achtung !!
 Gelegentlich - vermutlich bei einem Update der Samba-Pakete werden die Besitzrechte
 auf alle Verzeichnisse unter /var/lib/samba geändert. So wird das Verzeichnis
-/var/lib/samba/profiles der Gruppe "users" und das Verzeichnis "drivers" der Gruppe 
+/srv/shares/profiles der Gruppe "users" und das Verzeichnis "drivers" der Gruppe 
 ntadmin zugeordnet, was unschöne Folgen für den Betrieb des Samba-Servers hat. So
 können servergespeicherte Profile nicht mehr geschrieben und auch keine Drucker-
 treiber mehr hochgeladen werden. Diese Verzeichnisse müssen "Domain Users" (profiles)

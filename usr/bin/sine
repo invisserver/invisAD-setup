@@ -1841,8 +1841,8 @@ fileserver() {
     #chown administrator:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Profilverzeichnisse
-    #chown root:"Domain Users" /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
-    chmod 1777 /var/lib/samba/profiles 2>&1| tee -a $setupdir/sine.log
+    #chown root:"Domain Users" /srv/shares/profiles 2>&1| tee -a $setupdir/sine.log
+    chmod 1777 /srv/shares/profiles 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Druckertreiber Freigabe print$
     #chown -R root:"Domain Admins" /var/lib/samba/drivers 2>&1| tee -a $setupdir/sine.log
