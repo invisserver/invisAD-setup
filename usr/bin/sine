@@ -3029,7 +3029,12 @@ owncloud() {
 	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zypper -n install owncloud 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
-#	#npm install -g node-inspector 2>&1 | tee -a $setupdir/sine.log | pgbox
+	# Hier Datenbank installation einfügen
+	ocpass=`mkdbsilent owncloud owncloud a`
+	msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
+	chkservice apache2 r
+	# ownCloud im Portal aktivieren
+	swpestat ownCloud TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 #	confdir="/var/lib/etherpad-lite"
 #	file="settings.json"
 #	mv $confdir/$file $confdir/$file.orig
@@ -3040,11 +3045,8 @@ owncloud() {
 #	changevalues $confdir $file "$strings"
 #	chkservice "etherpad-lite"
 #	#service etherpad-lite stop
-#	#mysql -u etherpad --password=$etherpaddbuserpw -D etherpad < $cfilesdir/etherpad/charset.sql
 #	#service etherpad-lite start
 	
-#	# Etherpad im Portal aktivieren
-#	swpestat Etherpad TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
     else
 	msgbox "ownCloud Installation übersprungen" "$windowtitle"
     fi

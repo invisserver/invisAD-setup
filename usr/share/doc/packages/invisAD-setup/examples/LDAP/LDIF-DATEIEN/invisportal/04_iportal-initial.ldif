@@ -105,18 +105,18 @@ iPortEntryPosition: Lokal
 iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
-# OpenERP
-dn: cn=OpenERP,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+# ownCloud
+dn: cn=ownCloud,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-iPortEntryName: OpenERP
-cn: OpenERP
+iPortEntryName: ownCloud
+cn: ownCloud
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]:9090
-iPortEntryDescription: Das ERP Progamm OpenERP umfasst Warenwirtschaft, Rechnungswesen, Arbeitszeitverwaltung, Produktion, Lagerverwaltung, Projektverwaltung und CRM.
+iPortEntryURL: [servername]/owncloud
+iPortEntryDescription: ownCloud ist eine freie Software für das Vorhalten von Daten (Filehosting) in einer eigenen privaten Cloud
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
-iPortEntryButton: Warenwirtschaft
+iPortEntryButton: Cloud Computing
 iPortEntryPriv:	user
 
 # Dokuwiki
