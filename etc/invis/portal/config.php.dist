@@ -63,6 +63,31 @@ $SMB_DOMAIN = strtoupper($DOMAIN_PARTS[1]);
 $SMB_HOSTNAME = strtoupper($DOMAIN_PARTS[0]);
 $SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "Archiv", "Verwaltung");
 
+// Services
+// Dienste muessen als Array in das globale Array eingetragen werden.
+// Jedes Service-Array besteht aus 2 Feldern, von denen das erste der korrekte Daemon-Name
+// sein muss und das zweite eine kurze Bemerkung zur Funktion des Dienstes.
+$SERVER_SERVICES = array(
+	array('postfix','Email-Versand'),
+	array('fetchmail','Emails abholen'),
+	array('amavis', 'Spamfilter'),
+	array('clamd', 'Virenscanner'),
+	array('freshclam', 'Virenscanner Updater'),
+	array('dhcpd','IP Adressvergabe'),
+	array('named','DNS Namensauflösung'),
+	array('sernet-samba-ad', 'Active Directory'),
+	array('zarafa-server', 'Zarafa Server'),
+	array('zarafa-spooler', 'Zarafa Versand'),
+	array('zarafa-dagent', 'Zarafa Empfang'),
+	array('zarafa-gateway', 'Zarafa Postfach'),
+	array('zarafa-ical', 'Zarafa Kalender'),
+	array('zarafa-monitor', 'Zarafa Monitor'),
+	array('zarafa-search', 'Zarafa Suche'),
+	array('mysql', 'MariaDB Datenbank'),
+	array('cups', 'Druckserver'),
+	array('ntp', 'Zeitserver')
+	);
+
 // WEBSITE SPECIFIC
 $PORTAL_LOGO_PATH = 'images/invis-logo.png';
 $PORTAL_SUPPORT_MAIL = 'hilfe@fsproductions.de';

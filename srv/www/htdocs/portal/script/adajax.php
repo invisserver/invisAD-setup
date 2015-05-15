@@ -17,6 +17,7 @@ require_once('../config.php');
 // adLDAP Klasse einbinden und Objekt erzeugen
 require_once('../inc/adLDAP.php');
 require_once('../inc/adfunctions.inc.php');
+require_once('../inc/services.inc.php');
 
 // Array mit Globalvariablen bilden
 $options = array(
@@ -1309,16 +1310,18 @@ if (empty($collection->mssfu30nisdomain)) {
 	"gidnumber" => 9500,
 	"zarafaaccount" => true
 	);
+
+    try {
+	    $result = $adldap->group()->modify($mdgroup,$attributes);
+    }
+
+    catch (adLDAPException $e) {
+	echo $e;
+	exit();   
+    }
 }
 
-try {
-	$result = $adldap->group()->modify($mdgroup,$attributes);
-}
 
-catch (adLDAPException $e) {
-    echo $e;
-    exit();   
-}
 
 foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
     $collection = $adldap->group()->infoCollection($extgroup,array('*'));
@@ -1329,15 +1332,15 @@ foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
 	    "mssfu30name" => $extgroup,
 	    "gidnumber" => ( $grouprid + $SFU_GUID_BASE )
 	);
-}
 
-try {
-	$result = $adldap->group()->modify($extgroup,$attributes);
-}
+    try {
+	    $result = $adldap->group()->modify($extgroup,$attributes);
+    }
 
-catch (adLDAPException $e) {
-    echo $e;
-    exit();   
+    catch (adLDAPException $e) {
+	echo $e;
+	exit();   
+    }
 }
 
 }
@@ -1361,6 +1364,9 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 	}
 	elseif ($CMD == 'host_list') {
 		echo json_encode(hostList($conn));
+	}
+	elseif ($CMD == 'service_list') {
+		echo json_encode(serviceList($conn));
 	}
 	elseif($CMD == 'links_list') {
 		echo json_encode(linksList($conn, $USR));
@@ -1403,6 +1409,18 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 	}
 	elseif ($CMD == 'host_mod') {
 		echo json_encode(hostModify($conn, $USR));
+	}
+	elseif ($CMD == 'service_start') {
+		echo json_encode(serviceControl('start', $USR));
+	}
+	elseif ($CMD == 'service_stopp') {
+		echo json_encode(serviceControl('stop', $USR));
+	}
+	elseif ($CMD == 'service_restart') {
+		echo json_encode(serviceControl('restart', $USR));
+	}
+	elseif ($CMD == 'service_reload') {
+		echo json_encode(serviceControl('reload', $USR));
 	}
 	elseif ($CMD == 'support_mail') {
 		echo json_encode(supportMail($conn, $USR));

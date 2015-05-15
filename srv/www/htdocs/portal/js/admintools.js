@@ -824,6 +824,160 @@ function stopAllPingers() {
     }
 }
 
+
+//
+// Dienste
+//
+
+//
+// Dienste anzeigen
+//
+
+function serviceListResponse(request) {
+	PAGED_DATA = request.responseText.evalJSON();
+	
+	var title = $('admin-content-title');
+	var content = $('admin-content-content');
+	content.innerHTML = "";
+	
+	PAGE_CURRENT = 0;
+	
+	// header
+	title.update('Dienste:');
+
+	var p = new Element('div', {'id': 'result-paging'});
+	content.insert(p);
+	
+	// Dienst | Info | Aktiviert | Status | Aktionen
+	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Dienst</th><th class="name">Info</th><th class="name">Aktiviert</th><th class="name">Status</th><th class="delete">Aktionen</th></tr></thead><tbody id="result-body"></tbody></table>');
+	
+	populateServiceList(null, 0);
+
+	content.insert(node2);
+}
+
+function populateServiceList(event, page) {
+	if (page == null) page = this.firstChild.nodeValue -1;
+	PAGE_CURRENT = page;
+
+	$('result-body').innerHTML = "";
+	$('result-paging').innerHTML = "";
+
+	
+	// Dienst | Info | Aktiviert | Status | Aktionen
+	for (var i = page * PAGE_SIZE; i < (page+1) * PAGE_SIZE; i++) {
+		if (PAGED_DATA[i] == null) break;
+		var service = PAGED_DATA[i];
+		
+		var tr = new Element('tr');
+		
+		var td_name = new Element('td');
+		td_name.insert(service['name']);
+		
+		var td_info = new Element('td');
+		td_info.insert(service['info']);
+		
+		var td_enabled = new Element('td');
+		td_enabled.insert(service['enabled']);
+		
+		var td_status = new Element('td');
+		td_status.insert(service['status']);
+		
+		var td_action = new Element('td', {'class': 'delete'});
+		td_action.insert(new Element('span', {'onclick': 'serviceStart(\'' + service['name'] + '\');'}).update('<img src="images/start_small.png" />Starten'));
+		td_action.insert(new Element('br'));
+		td_action.insert(new Element('span', {'onclick': 'serviceStopp(\'' + service['name'] + '\');'}).update('<img src="images/stopp_small.png" />Stoppen'));
+		td_action.insert(new Element('br'));
+		td_action.insert(new Element('span', {'onclick': 'serviceRestart(\'' + service['name'] + '\');'}).update('<img src="images/restart_small.png" />Neu starten'));
+		td_action.insert(new Element('br'));
+		td_action.insert(new Element('span', {'onclick': 'serviceReload(\'' + service['name'] + '\');'}).update('<img src="images/reload_small.png" />Neu laden'));
+		
+		tr.insert(td_name);
+		tr.insert(td_info);
+		tr.insert(td_enabled);
+		tr.insert(td_status);
+		tr.insert(td_action);
+		
+		$('result-body').insert(tr);
+	}
+
+	// table with current page data
+	var n_entries = PAGED_DATA.length;
+	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
+	for (var i = 0; i < n_pages; i++) {
+		var a = new Element('a', {'class': 'page-link'}).update(i + 1);
+		if (i == PAGE_CURRENT)
+			a.addClassName('page-active');
+		else
+			a.observe('click', populateServiceList);
+		$('result-paging').insert(a);
+	}
+}
+
+
+//
+// Dienste starten
+//
+
+function serviceStart(name) {
+	if (confirm('Möchten Sie den Dienst "' + name + '" wirklich starten?')) {
+		invis.request("script/adajax.php", serviceStartResponse, {c: 'service_start', u: name});
+	}
+}
+
+function serviceStartResponse(request) {
+	if (request.responseText == '0')
+		invis.request('script/adajax.php', serviceListResponse, {c: 'service_list'}); // reload service list
+	else
+		alert('Dienst konnte nicht gestartet werden!\nMeldung: ' + request.responseText);
+}
+
+// Dienste stoppen
+
+function serviceStopp(name) {
+	if (confirm('Möchten Sie den Dienst "' + name + '" wirklich stoppen?')) {
+		invis.request("script/adajax.php", serviceStoppResponse, {c: 'service_stopp', u: name});
+	}
+}
+
+function serviceStoppResponse(request) {
+	if (request.responseText == '0')
+		invis.request('script/adajax.php', serviceListResponse, {c: 'service_list'}); // reload service list
+	else
+		alert('Dienst konnte nicht gestoppt werden!\nMeldung: ' + request.responseText);
+}
+
+// Dienste neustarten
+
+function serviceRestart(name) {
+	if (confirm('Möchten Sie den Dienst "' + name + '" wirklich neu starten?')) {
+		invis.request("script/adajax.php", serviceRestartResponse, {c: 'service_restart', u: name});
+	}
+}
+
+function serviceRestartResponse(request) {
+	if (request.responseText == '0')
+		invis.request('script/adajax.php', serviceListResponse, {c: 'service_list'}); // reload service list
+	else
+		alert('Dienst konnte nicht neu gestartet werden!\nMeldung: ' + request.responseText);
+}
+
+
+// Dienste neuladen
+
+function serviceReload(name) {
+	if (confirm('Möchten Sie den Dienst "' + name + '" wirklich neu laden?')) {
+		invis.request("script/adajax.php", serviceReloadResponse, {c: 'service_reload', u: name});
+	}
+}
+
+function serviceReloadResponse(request) {
+	if (request.responseText == '0')
+		invis.request('script/adajax.php', serviceListResponse, {c: 'service_list'}); // reload service list
+	else
+		alert('Dienst konnte nicht neu geladen werden!\nMeldung: ' + request.responseText);
+}
+
 //
 // DELETE USER / GROUP / HOST
 //

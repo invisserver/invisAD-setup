@@ -7,6 +7,7 @@
     // Converts a little-endian hex-number to one, that 'hexdec' can convert
     
 function little_endian($hex) {
+	$result = "";
         for ($x = strlen($hex) - 2; $x >= 0; $x = $x - 2) {
             $result .= substr($hex, $x, 2);
         }
