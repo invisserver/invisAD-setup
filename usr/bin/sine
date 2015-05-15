@@ -266,6 +266,7 @@ check() {
 	changevalues $path $file "$strings"
 	
 	cp $cfilesdir/System/ntp/servers-netconfig /var/run/ntp
+	
 	chkservice "ntp"
         hwclock --systohc
 
@@ -1140,6 +1141,18 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 	    changevalues $confdir $file "$strings"
 	    ;;
     esac
+    
+    # NTP-Dienst fuer AD anpassen
+    ntpconf="/etc/ntp.conf"
+    echo -e "\n" >> $ntpconf
+    echo '# Signed Socket for Samba 4 AD DC' >> $ntpconf
+    echo 'ntpsigndsocket /var/lib/samba/ntp_signd' >> $ntpconf
+    echo 'restrict default mssntp' >> $ntpconf
+    
+    sockdir="/var/lib/ntp/var/lib/samba/ntp_signd"
+    mkdir $sockdir
+    chown .ntp $sockdir
+    chmod o-rwx $sockdir
 
     # invis Passwort-Datei anpassen
     file="invis-pws.conf"
