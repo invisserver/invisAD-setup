@@ -1659,6 +1659,9 @@ esac
 	adminpw=`getconfdata "LDAPAdminPW" "2"`
 	strings="admin-secret%$adminpw"
 	changevalues $path $datei "$strings"
+
+	strings="invis-net.loc%$domain"
+	changevalues $path $file "$strings"
     done
     
     # Mailman einrichten ????
