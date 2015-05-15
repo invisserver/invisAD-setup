@@ -28,7 +28,7 @@
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
 # Setup-Verzeichnis einlesen
-setupdir="/root/sine-pgsql"
+setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
 # Setup-Dialog Titel
@@ -2995,10 +2995,46 @@ etherpad() {
     else
 	msgbox "Etherpad-Lite Installation übersprungen" "$windowtitle"
     fi
-    writeprepstat "virtualbox"
-    waitbox "etherpad" "virtualbox"
+    writeprepstat "owncloud"
+    waitbox "etherpad" "owncloud"
 }
 
+owncloud() {
+    cd $setupdir
+    clear
+    windowtitle="ownCloud Installation"
+
+    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/owncloud.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie ownCloud installieren?" 0 0
+    cont=${?}
+
+    # Weitermachen?
+    if [[ $cont == "0" ]]; then
+	pgsubtitle="Software wird installiert"
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zypper -n install owncloud 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#	#npm install -g node-inspector 2>&1 | tee -a $setupdir/sine.log | pgbox
+#	confdir="/var/lib/etherpad-lite"
+#	file="settings.json"
+#	mv $confdir/$file $confdir/$file.orig
+#	#cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
+#	#cp $confdir/settings.json.template $confdir/settings.json
+#	etherpaddbuserpw=`mkdbsilent etherpad etherpad a`
+#	strings="dbuserpassword%$etherpaddbuserpw"
+#	changevalues $confdir $file "$strings"
+#	chkservice "etherpad-lite"
+#	#service etherpad-lite stop
+#	#mysql -u etherpad --password=$etherpaddbuserpw -D etherpad < $cfilesdir/etherpad/charset.sql
+#	#service etherpad-lite start
+	
+#	# Etherpad im Portal aktivieren
+#	swpestat Etherpad TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+    else
+	msgbox "ownCloud Installation übersprungen" "$windowtitle"
+    fi
+    writeprepstat "virtualbox"
+    waitbox "owncloud" "virtualbox"
+}
 virtualbox() {
     cd $setupdir
     clear
@@ -3115,7 +3151,7 @@ if [[ -z `which dialog 2>/dev/null` ]]; then
     zyppercheck ${PIPESTATUS[0]}
 fi
 
-if [[ $prepstat == "ready" ]] && [[ $1 == "monitoring" || $1 == "groupware" || $1 == "erp" || $1 == "faxgate" || $1 == "webcdwriter" || $1 == "openvpn" || $1 == "dokuwiki" || $1 == "etherpad" || $1 == "virtualbox" ]]; then
+if [[ $prepstat == "ready" ]] && [[ $1 == "monitoring" || $1 == "groupware" || $1 == "erp" || $1 == "faxgate" || $1 == "webcdwriter" || $1 == "openvpn" || $1 == "dokuwiki" || $1 == "etherpad" || $1 == "owncloud" || $1 == "virtualbox" ]]; then
 	echo $1
 	sleep 1
 	$1
