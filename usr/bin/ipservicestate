@@ -1,0 +1,39 @@
+#!/bin/bash
+# Helfer-Script fuer das invis-Portal zur Ermittlung von Daemon Infos
+# Version 0.1
+# (c) 2015 Stefan Schäfer / invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Dieses Script ermittelt, den aktuellen Zustand eines Dienstes und fragt ab,
+# ob der Dienst zum automatischen Start vorgesehen ist.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+service=$1
+
+# abfragen, ob der Dienst im Autostart ist
+enabled=`systemctl is-enabled $service.service 2>/dev/null`
+
+# abfragen, ob der Dienst laeuft.
+status=`systemctl is-active $service.service 2>/dev/null`
+
+# Sicher stellen, dass ein als "active" gefuehrter Dienst nicht "exited" ist
+if [[ $status == "active" ]];then
+    if [[ `systemctl status $service.service 2>/dev/null | grep "(exited)"` ]]; then
+	status="exited"
+    fi
+fi
+echo "$enabled $status"
