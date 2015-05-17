@@ -1150,9 +1150,9 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     echo 'restrict default mssntp' >> $ntpconf
     
     sockdir="/var/lib/ntp/var/lib/samba/ntp_signd"
-    mkdir $sockdir
+    mkdir -p $sockdir
     chown .ntp $sockdir
-    chmod o-rwx $sockdir
+    chmod 0750 $sockdir
 
     # invis Passwort-Datei anpassen
     file="invis-pws.conf"
