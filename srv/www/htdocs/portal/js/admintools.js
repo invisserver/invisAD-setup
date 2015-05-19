@@ -884,13 +884,13 @@ function populateServiceList(event, page) {
 		td_status.insert(service['status']);
 		
 		var td_action = new Element('td', {'class': 'delete'});
-		td_action.insert(new Element('span', {'onclick': 'serviceStart(\'' + service['name'] + '\');'}).update('<img src="images/start_small.png" />Starten'));
+		td_action.insert(new Element('span', {'onclick': 'serviceStart(\'' + service['name'] + '\');'}).update('<img src="images/start_small.png" />'));
 		td_action.insert(new Element('br'));
-		td_action.insert(new Element('span', {'onclick': 'serviceStopp(\'' + service['name'] + '\');'}).update('<img src="images/stopp_small.png" />Stoppen'));
+		td_action.insert(new Element('span', {'onclick': 'serviceStopp(\'' + service['name'] + '\');'}).update('<img src="images/stopp_small.png" />'));
 		td_action.insert(new Element('br'));
-		td_action.insert(new Element('span', {'onclick': 'serviceRestart(\'' + service['name'] + '\');'}).update('<img src="images/restart_small.png" />Neu starten'));
+		td_action.insert(new Element('span', {'onclick': 'serviceRestart(\'' + service['name'] + '\');'}).update('<img src="images/restart_small.png" />'));
 		td_action.insert(new Element('br'));
-		td_action.insert(new Element('span', {'onclick': 'serviceReload(\'' + service['name'] + '\');'}).update('<img src="images/reload_small.png" />Neu laden'));
+		td_action.insert(new Element('span', {'onclick': 'serviceReload(\'' + service['name'] + '\');'}).update('<img src="images/reload_small.png" />'));
 		
 		tr.insert(td_name);
 		tr.insert(td_info);
