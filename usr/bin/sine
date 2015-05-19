@@ -116,7 +116,7 @@ waitbox() {
 	(( i=$i+1 ))
 	echo $(( $i * 100 / 50 ))
 	sleep 0.1
-    done } | dialog --backtitle "$dialogtitle" --title "Modul \"$1\" abgeschlossen" --gauge "Sie haben ca. 5 Sekunden Zeit um das Setup-Script mit \"Strg+C\" abzubrechen. Beim nächsten Aufruf wir es mit Modul \"$2\" fortgesetzt." 8 70 0
+    done } | dialog --backtitle "$dialogtitle" --title "Modul \"$1\" abgeschlossen" --gauge "Sie haben ca. 5 Sekunden Zeit um das Setup-Script mit \"Strg+C\" abzubrechen. Beim nächsten Aufruf wird sine mit Modul \"$2\" fortgesetzt." 8 70 0
 }
 
 waitinfobox() {
@@ -189,7 +189,7 @@ smbadpw() {
     while (( $ok != "1" ));do
 	dialog --backtitle "$dialogtitle" --title "Benutzer Passwort ändern" --insecure --passwordform "$dialogshorthelp\n\n
 Geben Sie das Passwort für Benutzer $1 ein.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein, Zahlen und Sonderzeichen enthalten." 17 64 2 \
 	"Benutzer Passwort:" 2 2 "" 2 23 10 0\
 	"Kontrolle:" 2 36 "" 2 47 10 0\
 	2>$setupdir/sine_temp
@@ -1872,7 +1872,7 @@ Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt
     - Service: Dateien für den Domänen-Administrator, wie Software, Treiber und Patches.\n
     - Transfer: Freigabe für Dateiaustausch.\n
     - & Media: Freigabe für Multimedia-Dateien.\n\n
-Es wurde die Gruppen Verwaltung, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
+Es wurde die Gruppen Verwaltung, Archiv, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
 
     systemctl restart sernet-samba-ad.service
 
