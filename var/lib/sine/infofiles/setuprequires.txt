@@ -1,4 +1,4 @@
-Für die Installation eines invis Servers 10.0 AD müssen folgende Voraussetzungen erfüllt sein:
+Für die Installation eines invis Servers 10.1 AD müssen folgende Voraussetzungen erfüllt sein:
 
     - Als Basis muss openSUSE Linux 13.1, möglichst ohne grafische Oberfläche installiert sein.
     
