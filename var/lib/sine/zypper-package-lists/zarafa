@@ -26,8 +26,6 @@ zarafa-libzarafacommon-7_2_0
 zarafa-webapp
 php5-mapi
 python-mapi
-python-zarafa
-python-xapian
 zarafa-base
 zarafa-utils
 zarafa-bash-completion
