@@ -95,6 +95,9 @@ for login in ${logins[@]}; do
     if [[ $login == "vscan" ]]; then
 	echo "amavis"  >> $workingdir/daemons
     fi
+    if [[ $login == "postgres" ]]; then
+	echo "postgresql"  >> $workingdir/daemons
+    fi
 done
 
 # Liste neu zu startender Dienste erstellen
