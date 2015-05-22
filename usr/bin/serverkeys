@@ -88,7 +88,7 @@ changevalues $path $file "$string"
 
 # Schluessel bauen
 cd /etc/ssl/CA
-/usr/bin/openssl req -new -nodes -batch -config /$path/$file -keyout server-key.pem -out server-cert_req.pem
+/usr/bin/openssl req -new -sha256 -nodes -batch -config /$path/$file -keyout server-key.pem -out server-cert_req.pem
 cd /etc/ssl
 /usr/bin/openssl ca -policy policy_anything -out server-cert.pem -in CA/server-cert_req.pem
 
