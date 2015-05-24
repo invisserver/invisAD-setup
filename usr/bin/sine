@@ -714,9 +714,9 @@ Sollen alte Dateien und Verzeichnisse automatisch aus der Transfer-Freigabe gel�
 
     yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
     avcron=${?}
-
-    yesno "Soll Ihr Server ein beliebiges Verzeichnis im Hintergrund mit einem ownCloud Konto synchronisieren?" "ownCloud Synchronisation"
-    owncloudsync=${?}
+## Wird dank ownCloud-Integration und Server zu Server sync nicht mehr benoetigt
+#    yesno "Soll Ihr Server ein beliebiges Verzeichnis im Hintergrund mit einem ownCloud Konto synchronisieren?" "ownCloud Synchronisation"
+#    owncloudsync=${?}
 
     ok=0
     if [[ $owncloudsync == "0" ]]; then
@@ -2978,8 +2978,8 @@ dokuwiki() {
     else
 	msgbox "Wenn Sie es sich zu einem späteren Zeitpunkt anders überlegen, können Sie diesen Schritt durch erneutes Aufrufen des Setup-Scripts mit dem Parameter \"dokuwiki\" wiederholen." "Dokuwiki Installation übersprungen"
     fi
-    writeprepstat "virtualbox"
-    waitbox "dokuwiki" "virtualbox"
+    writeprepstat "owncloud"
+    waitbox "dokuwiki" "owncloud"
 }
 
 etherpad() {
