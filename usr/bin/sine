@@ -397,7 +397,7 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
 	bcastaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Broadcast:"|tr -s " "| cut -d " " -f2`
 	dp1=`echo "$domain" | cut -d "." -f 1`
 	dp2=`echo "$domain" | cut -d "." -f 2`
-	ldapbase="dc=$dp1,dc=$dp2"
+	ldapbase="DC=$dp1,DC=$dp2"
 	# Testweise auf volle Domain geaendert -- noch nicht
         smbdomain=`echo $dp1 | tr [a-z] [A-Z]`
         
