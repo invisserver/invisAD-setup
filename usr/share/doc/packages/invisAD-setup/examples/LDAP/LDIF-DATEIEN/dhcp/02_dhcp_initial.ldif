@@ -2,19 +2,19 @@
 # LDIF Vorlage fuer Samba4 AD LDAP Backend
 # (c) 2014 Stefan Schaefer -- invis-server.org
 
-dn: cn=invisfqdn,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
+dn: CN=invisfqdn,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
 cn: invisfqdn
 objectClass: top
 objectClass: iscDhcpServer
-iscDhcpServiceDN: cn=DHCP Config,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
+iscDhcpServiceDN: CN=DHCP Config,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
 
 # Basis Konfiguration
-dn: cn=DHCP Config,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
+dn: CN=DHCP Config,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
 cn: DHCP Config
 objectClass: top
 objectClass: iscDhcpService
 objectClass: iscDhcpOptions
-iscDhcpPrimaryDN: cn=invisfqdn,CN=DHCP-Server,cn=invis-server,dc=invis-net,dc=loc
+iscDhcpPrimaryDN: CN=invisfqdn,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
 iscDhcpStatements: ddns-update-style interim
 iscDhcpStatements: ignore client-updates
 iscDhcpStatements: default-lease-time 86400

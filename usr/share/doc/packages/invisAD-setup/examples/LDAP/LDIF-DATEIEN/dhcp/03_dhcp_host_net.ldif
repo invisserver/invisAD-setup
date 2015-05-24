@@ -7,7 +7,7 @@
 # Zusaetzlich dynamischer Bereich: 200 - 220 inkl. 
 
 # Dynamischer Bereich
-dn: cn=192.168.220.0,cn=DHCP Config,CN=DHCP-Server,CN=invis-Server,DC=invis-net,DC=loc
+dn: CN=192.168.220.0,CN=DHCP Config,CN=DHCP-Server,CN=invis-Server,DC=invis-net,DC=loc
 cn: 192.168.220.0
 objectClass: top
 objectClass: iscDhcpSubnet
