@@ -1290,6 +1290,9 @@ samba_ad() {
 	basedn=`getconfdata "baseDN" "2"`
 	strings="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $file "$strings"
+
+	strings="DC=invis-net,DC=loc%$basedn"
+	changevalues $path $file "$strings"
         
 	organization=`getconfdata "Organisation" "2"`
 	strings="targetOrganization%$organization"
