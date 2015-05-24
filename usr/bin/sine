@@ -1628,15 +1628,16 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    ;;
 esac
     pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"
+    
     # Postfix Konfiguration anpassen
     path="/etc/postfix"
     file="main.cf"
     fqdn=`getconfdata "FQDN" "2"`
-    strings="invis5.i5-net.loc%$fqdn"
+    strings="invis.invis-net.loc%$fqdn"
     changevalues $path $file "$strings"
     
     domain=`getconfdata "Domain" "2"`
-    strings="i5-net.loc%$domain"
+    strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
     
     nw=`getconfdata "Networkbase" "2"`
@@ -1670,6 +1671,7 @@ esac
     files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-aliases.cf ldap-groups.cf)
 
     for datei in ${files[*]}; do
+	#echo $datei
 	basedn=`getconfdata "baseDN" "2"`
 	strings="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $datei "$strings"
@@ -1679,7 +1681,7 @@ esac
 	changevalues $path $datei "$strings"
 
 	strings="invis-net.loc%$domain"
-	changevalues $path $file "$strings"
+	changevalues $path $datei "$strings"
     done
     
     # Mailman einrichten ????
