@@ -1,4 +1,3 @@
-net time \\invis5 /set /y
 net use o: \\invis5\archiv
 net use p: \\invis5\projekte
 net use v: \\invis5\aktuell

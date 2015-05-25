@@ -1832,12 +1832,10 @@ fileserver() {
     chmod -R g+w /srv/shares/service 2>&1| tee -a $setupdir/sine.log
     
     # Logon-Scripts werden kopiert und ins DOS-Format ueberfuehrt
-    netlogonpath="/var/lib/samba/sysvol/$domain/scripts/"
-    cp $cfilesdir/fileserver/samba/logon-scripts/*.cmd $netlogonpath 2>&1| tee -a $setupdir/sine.log
+    netlogonpath="/var/lib/samba/sysvol/$domain/scripts"
+    cp $cfilesdir/fileserver/samba/logon-scripts/*.cmd $netlogonpath/ 2>&1| tee -a $setupdir/sine.log
     unix2dos $netlogonpath/*.cmd 2>&1| tee -a $setupdir/sine.log | pgbox
-    # Samba4 wertet X-Bit aus
-    chmod +x $netlogonpath/*  2>&1| tee -a $setupdir/sine.log
-    
+
     path="$netlogonpath"
     file="user.cmd"
     strings="invis5%$hn"
@@ -1854,6 +1852,9 @@ fileserver() {
     file="verwaltung.cmd"
     strings="invis5%$hn"
     changevalues $path $file "$strings"
+
+    # Samba4 wertet X-Bit aus
+    chmod +x $netlogonpath/*  2>&1| tee -a $setupdir/sine.log
     
     # SSSD Cache fuer ungueltig erklaeren
     #sss_cache -UG
