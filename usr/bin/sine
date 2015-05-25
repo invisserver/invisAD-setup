@@ -1154,6 +1154,15 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     chown .ntp $sockdir
     chmod 0750 $sockdir
 
+    # Pfade gehen fest von CHROOTED yes aus, deshalb:
+    sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
+    sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
+    
+    # IPv4 bevorzugen weil IPv6 (bisher) nicht benutzt wird:
+    sysconf_addword /etc/sysconfig/ntp NTPD_OPTIONS -4
+
+    chkservice "ntp"
+
     # invis Passwort-Datei anpassen
     file="invis-pws.conf"
 
