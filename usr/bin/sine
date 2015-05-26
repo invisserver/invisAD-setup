@@ -771,14 +771,21 @@ Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres ownCloud Servers, sowie 
 
     sshport=`freeports`
     httpsport=`freeports`
+    ocport=`freeports`
+    # Doppelte Portbelegung verhindern
     while [[ $sshport == $httpsport ]]; do
 	httpsport=`freeports`
     done
- 
+
+    while [[ $ocport == $httpsport || $ocport == $sshport]]; do
+	ocport=`freeports`
+    done
+
     msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
 Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
 SSH Port: $sshport\n\n
 HTTPS Port: $httpsport\n\n
+ownCloud Port: $ocport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
     # Passwort fuer LDAP-Lesezugang erzeugen
@@ -822,6 +829,8 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 
     echo "SSHPORT:$sshport" >> $setupdir/invis_confdata
     echo "HTTPSPORT:$httpsport" >> $setupdir/invis_confdata
+    echo "OCPORT:$ocport" >> $setupdir/invis_confdata
+    
     echo "AV:$av" >> $setupdir/invis_confdata
     if [[ $avcron == "0" ]]; then
         echo "AVCRON:j" >> $setupdir/invis_confdata
@@ -2328,7 +2337,17 @@ case "$whichimap" in
 	    smbldappw projekte
 	    echo "Initmail" |mailx -s Initmail projekte@localhost
 
+	    ## z-push konfigurieren
 	    cp $cfilesdir/webserver/z-push_vh-groupe.conf /etc/apache2/vhosts.d/
+	    
+	    file="z-push_vh-groupe.conf"
+	    path="/etc/apache2/vhosts.d/"
+	    
+	    ddnsname=`getconfdata "DDNS" "2"`
+	    strings="your.ddns-domain.net%$ddnsname"
+	    changevalues $path $file "$strings"
+
+
 
 	    # Group-e im Portal aktivieren
 	    swpestat Group-e TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
@@ -2483,6 +2502,13 @@ case "$whichimap" in
 	# z-push als vHost anlegen & apache reload
 	cp $cfilesdir/webserver/z-push_vh.conf /etc/apache2/vhosts.d/
 	rm -f /etc/apache2/conf.d/z-push.conf
+
+	file="z-push_vh.conf"
+	path="/etc/apache2/vhosts.d/"
+	ddnsname=`getconfdata "DDNS" "2"`
+	strings="your.ddns-domain.net%$ddnsname"
+	changevalues $path $file "$strings"
+
 	chkservice apache2 r
     
 	# Oeffentlichen Speicher anlegen
@@ -3054,21 +3080,34 @@ owncloud() {
 	zyppercheck ${PIPESTATUS[0]}
 	# Hier Datenbank installation einfügen
 	ocpass=`mkdbsilent owncloud owncloud a`
+
+	## Apache vorbereiten
+	# Flag OWNCLOUD setzen
+	a2enflag OWNCLOUD
+	
+	# HTTPS-owncloud-Port ändern
+	ocport=`getconfdata "OCPORT" "2"`
+
+	file="listen.conf"
+	path="/etc/apache2"
+	strings="ocport%$ocport"
+	changevalues $path $file "$strings"
+
+	# Apache vHost Konfiguration fuer ownCloud kopieren und anpassen
+	cp $cfilesdir/webserver/owncloud_vh.conf /etc/apache2/vhosts.d/
+	file="owncloud_vh.conf"
+	path="/etc/apache2/vhosts.d"
+	strings="ocport%$ocport"
+	changevalues $path $file "$strings"
+
+	ddnsname=`getconfdata "DDNS" "2"`
+	strings="your.ddns-domain.net%$ddnsname"
+	changevalues $path $file "$strings"
+
 	msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
 	chkservice apache2 r
 	# ownCloud im Portal aktivieren
 	swpestat ownCloud TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
-#	confdir="/var/lib/etherpad-lite"
-#	file="settings.json"
-#	mv $confdir/$file $confdir/$file.orig
-#	#cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
-#	#cp $confdir/settings.json.template $confdir/settings.json
-#	etherpaddbuserpw=`mkdbsilent etherpad etherpad a`
-#	strings="dbuserpassword%$etherpaddbuserpw"
-#	changevalues $confdir $file "$strings"
-#	chkservice "etherpad-lite"
-#	#service etherpad-lite stop
-#	#service etherpad-lite start
 	
     else
 	msgbox "ownCloud Installation übersprungen" "$windowtitle"
