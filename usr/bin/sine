@@ -1421,9 +1421,12 @@ dns() {
     s4workingdir="/var/lib/samba/private"
     windowtitle="DNS Server"
     domain=`getconfdata "Domain" "2"`
+    fqdn=`getconfdata "FQDN" "2"`
     forwarders=`getconfdata "Forwarders" "2"`
     ipaddr=`getconfdata "IP" "2"`
     ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+    
+    hostaddr=`echo $ipaddr|cut -d "." -f4`
     
     #echo -e "\033[1;33mIhr Nameserver wird eingerichtet\033[0m"
     cp $cfilesdir/dhcp-dns/named.conf /etc 2>&1| tee -a $setupdir/sine.log
@@ -1457,6 +1460,9 @@ dns() {
     # Reverse-Zone anlegen
     zone=$(revzone)
     samba-tool dns zonecreate 127.0.0.1 $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    ## DNS PTR Eintrag fuer den Server selbst anlegen
+    samba-tool dns add 127.0.0.1 $zone $hostaddr PTR "$fqdn." -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
     
     ## DNS Eintraege fuer Mailserver in Zone eintragen
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
