@@ -2161,10 +2161,19 @@ postgresqlserver() {
     cd $setupdir
     clear
     windowtitle="PostgreSQL Server"
+    #Frage nach Version von PostgreSQL
+    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/postgresql.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle" --yesno "Soll eine aktuelle Version von PostgreSQL installiert werden?" 0 0
+    cont=${?}
 
-    # Basis Software
-    pgsubtitle="Basis Software wird installiert" 
-    zypper -n install -n `cat $setupdir/zypper-package-lists/postgresql` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
+    # Weitermachen?
+    if [[ $cont == "0" ]]; then
+        pgsubtitle="Aktuelle Version wird installiert"
+        zypper -n install -n `cat $setupdir/zypper-package-lists/postgresql` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110
+    else
+        pgsubtitle="Spezielle Version wird installiert"
+        zypper -n install -D -n `cat $setupdir/zypper-package-lists/postgresql` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110
+    fi
+
     zyppercheck ${PIPESTATUS[0]}
 
     #cp /srv/www/htdocs/phpPgAdmin/conf/config.inc.php-dist /srv/www/htdocs/phpPgAdmin/conf/config.inc.php
@@ -2179,10 +2188,10 @@ postgresqlserver() {
     yesno "Soll PostgreSQL automatisch gestartet werden? (Ist nur notwendig, wenn Kivitendo installiert wird.)" "Runlevel Eintrag für PostgreSQL wird konfiguriert."
     pgsqlrl=${?}
     if [[ $pgsqlrl == "1" ]]; then
-#	/etc/init.d/postgresql stop 2>&1 |tee -a $setupdir/sine.log |pgbox 
-	chkservice "postgresql" disable
+#       /etc/init.d/postgresql stop 2>&1 |tee -a $setupdir/sine.log |pgbox
+        chkservice "postgresql" disable
     else
-	chkservice "postgresql"
+        chkservice "postgresql"
     fi
 
     writeprepstat "firewall"
