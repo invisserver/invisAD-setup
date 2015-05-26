@@ -777,7 +777,7 @@ Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres ownCloud Servers, sowie 
 	httpsport=`freeports`
     done
 
-    while [[ $ocport == $httpsport || $ocport == $sshport]]; do
+    while [[ $ocport == $httpsport || $ocport == $sshport ]]; do
 	ocport=`freeports`
     done
 
