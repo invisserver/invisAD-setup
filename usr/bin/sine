@@ -2246,7 +2246,6 @@ firewall() {
     chmod a+x $path/$file
     
     # SSHd neu starten
-    
     chkservice "sshd"
     
     # Firewall starten und in Runlevel eintragen
