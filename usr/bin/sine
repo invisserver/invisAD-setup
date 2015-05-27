@@ -1164,9 +1164,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     chmod 0750 $sockdir
 
     # Pfade gehen fest von CHROOTED yes aus, deshalb:
-    # sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
-    # Todo: Hier Einstellung z.B. per sed auf yes aendern, Zeile
-    # oben funktioniert nicht, da Leerzeichen eingefuegt wird
+    sed -i /NTPD_RUN_CHROOTED/s/no/yes/ /etc/sysconfig/ntp
 
     chkservice "ntp"
 
@@ -1231,6 +1229,9 @@ samba_ad() {
     file="sernet-samba"
     strings="none%ad"
     changevalues $path $file "$strings"
+    chkservice "sernet-samba-nmbd" "d"
+    chkservice "sernet-samba-smbd" "d"
+    chkservice "sernet-samba-winbindd" "d"
     chkservice "sernet-samba-ad"
 
     # User fuer LDAP-Lese-Zugang anlegen
@@ -2245,6 +2246,7 @@ firewall() {
     chmod a+x $path/$file
     
     # SSHd neu starten
+    
     chkservice "sshd"
     
     # Firewall starten und in Runlevel eintragen
