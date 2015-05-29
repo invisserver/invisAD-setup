@@ -6,5 +6,3 @@ zum Parken von Dateien, die nicht in das RPM-Paket wandern sollen.
 D.h. Das gesamte Verzeichnis bitte nicht ins RPM packen!
 
 Stefan
-
-Branch-Test
