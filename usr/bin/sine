@@ -2291,8 +2291,45 @@ monitoring() {
 	;;
     esac
     fi
+    writeprepstat "apcupsd"
+    waitbox "monitoring" "apcupsd"
+}
+
+apcupsd() {
+    cd $setupdir
+    clear
+    windowtitle="Installation von apcupsd"
+
+    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/apcupsd.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie apcupsd installieren?" 0 0
+    cont=${?}
+
+    # Weitermachen?
+    if [[ $cont == "0" ]]; then
+	pgsubtitle="Software wird installiert"
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zypper -n install apcupsd apcupsd-cgi 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+
+	confdir="/etc/apcupsd"
+	file="apcupsd.conf"
+#	mv $confdir/$file $confdir/$file.orig
+#	#cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
+#	#cp $confdir/settings.json.template $confdir/settings.json
+	strings="UPSCABLE smart%UPSCABLE usb"
+	changevalues $confdir $file "$strings"
+	strings="UPSTYPE apcsmart%UPSTYPE usb"
+	changevalues $confdir $file "$strings"
+	strings="DEVICE /dev/ttyS0%DEVICE"
+	changevalues $confdir $file "$strings"
+	chkservice "apcupsd"
+	
+	# apcupsd im Portal aktivieren
+#	swpestat Etherpad TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+    else
+	msgbox "apcupsd Installation übersprungen" "$windowtitle"
+    fi
     writeprepstat "groupware"
-    waitbox "monitoring" "groupware"
+    waitbox "apcupsd" "groupware"
 }
 
 groupware() {
@@ -3242,7 +3279,7 @@ if [[ -z `which dialog 2>/dev/null` ]]; then
     zyppercheck ${PIPESTATUS[0]}
 fi
 
-if [[ $prepstat == "ready" ]] && [[ $1 == "monitoring" || $1 == "groupware" || $1 == "erp" || $1 == "faxgate" || $1 == "webcdwriter" || $1 == "openvpn" || $1 == "dokuwiki" || $1 == "etherpad" || $1 == "owncloud" || $1 == "virtualbox" ]]; then
+if [[ $prepstat == "ready" ]] && [[ $1 == "monitoring" || $1 == "apcupsd" || $1 == "groupware" || $1 == "erp" || $1 == "faxgate" || $1 == "webcdwriter" || $1 == "openvpn" || $1 == "dokuwiki" || $1 == "etherpad" || $1 == "owncloud" || $1 == "virtualbox" ]]; then
 	echo $1
 	sleep 1
 	$1
