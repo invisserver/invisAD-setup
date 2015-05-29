@@ -881,6 +881,10 @@ sysprep() {
     pgsubtitle="Es wird eine Sicherung des /etc Verzeichnisses ertellt."
     tar -czf $setupdir/etc-backup-$timestamp.tar.gz /etc 2>&1| tee -a $setupdir/sine.log | pgbox
 
+    # temporaerer Bugfix fuer sysconf_addword
+    # Original wird ueberschrieben
+    cp $cfilesdir/../scripts/sysconf_addword /usr/sbin
+
     # Verzeichnisse in /etc/skel anlegen
     mkdir /etc/skel/Dokumente
     mkdir /etc/skel/Downloads
@@ -1164,7 +1168,10 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     chmod 0750 $sockdir
 
     # Pfade gehen fest von CHROOTED yes aus, deshalb:
-    sed -i /NTPD_RUN_CHROOTED/s/no/yes/ /etc/sysconfig/ntp
+    #sed -i /NTPD_RUN_CHROOTED/s/no/yes/ /etc/sysconfig/ntp
+    # ntp muss chrooted laufen
+    sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
+    sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
 
     chkservice "ntp"
 
@@ -2291,8 +2298,8 @@ monitoring() {
 	;;
     esac
     fi
-    writeprepstat "apcupsd"
-    waitbox "monitoring" "apcupsd"
+    writeprepstat "groupware"
+    waitbox "monitoring" "groupware"
 }
 
 apcupsd() {
@@ -2391,8 +2398,6 @@ case "$whichimap" in
 	    ddnsname=`getconfdata "DDNS" "2"`
 	    strings="your.ddns-domain.net%$ddnsname"
 	    changevalues $path $file "$strings"
-
-
 
 	    # Group-e im Portal aktivieren
 	    swpestat Group-e TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
@@ -3067,8 +3072,8 @@ dokuwiki() {
     else
 	msgbox "Wenn Sie es sich zu einem späteren Zeitpunkt anders überlegen, können Sie diesen Schritt durch erneutes Aufrufen des Setup-Scripts mit dem Parameter \"dokuwiki\" wiederholen." "Dokuwiki Installation übersprungen"
     fi
-    writeprepstat "owncloud"
-    waitbox "dokuwiki" "owncloud"
+    writeprepstat "virtualbox"
+    waitbox "dokuwiki" "virtualbox"
 }
 
 etherpad() {
@@ -3163,6 +3168,7 @@ owncloud() {
     writeprepstat "virtualbox"
     waitbox "owncloud" "virtualbox"
 }
+
 virtualbox() {
     cd $setupdir
     clear
