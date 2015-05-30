@@ -2298,8 +2298,8 @@ monitoring() {
 	;;
     esac
     fi
-    writeprepstat "groupware"
-    waitbox "monitoring" "groupware"
+    writeprepstat "apcupsd"
+    waitbox "monitoring" "apcupsd"
 }
 
 apcupsd() {
@@ -3072,8 +3072,8 @@ dokuwiki() {
     else
 	msgbox "Wenn Sie es sich zu einem späteren Zeitpunkt anders überlegen, können Sie diesen Schritt durch erneutes Aufrufen des Setup-Scripts mit dem Parameter \"dokuwiki\" wiederholen." "Dokuwiki Installation übersprungen"
     fi
-    writeprepstat "virtualbox"
-    waitbox "dokuwiki" "virtualbox"
+    writeprepstat "owncloud"
+    waitbox "dokuwiki" "owncloud"
 }
 
 etherpad() {
