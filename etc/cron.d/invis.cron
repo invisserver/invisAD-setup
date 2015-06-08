@@ -30,6 +30,14 @@ MAILTO=/dev/null
 # Jeden Samstag um 6:00 Uhr
 0 6 * * 6 root /usr/bin/alldump
 
+# Sichern der Zarafa-Stores
+# an allen ungeraden Wochentagen um 3:00 Uhr
+0 3 * * 1,3,5,7 /usr/bin/zbackup
+
+# Sichern der Zarafa-Datenbank
+# an allen geraden Wochentagen um 3:00 Uhr
+0 3 * * 2,4,6 /usr/bin/zdbdump
+
 # Erstellen eines Snapshots des Dokuwiki-Datenverzeichnisses
 # Jeden Samstag 1:30 Uhr
 30 1 * * 6 root /usr/bin/dwdatasnapshot
@@ -42,7 +50,7 @@ MAILTO=/dev/null
 # Erweitern aller LDAP Gruppeneintraege um die Group-e Attribute
 # bzw. Zarafa Attribute
 # Alle 10 Minuten 
-*/10 * * * * root /usr/bin/manipgroups
+#*/10 * * * * root /usr/bin/manipgroups
 
 # Saeubern der Transfer-Freigabe
 # Einmal taeglich um 5:00 Uhr
