@@ -288,7 +288,7 @@ FW_PROTECT_FROM_INT="yes"
 # Note: this setting has precedence over FW_SERVICES_ACCEPT_*
 #
 ## invis-server.org - Port 1194 = openvpn
-FW_SERVICES_EXT_TCP="443 sshport httpsport 1194"
+FW_SERVICES_EXT_TCP="443 sshport httpsport ocport 1194"
 
 ## Type:	string
 #
@@ -389,7 +389,7 @@ FW_CONFIGURATIONS_DMZ=""
 #
 ## invis-server.org
 # see comments for FW_SERVICES_EXT_TCP
-FW_SERVICES_INT_TCP="22 sshport smtp domain http httpsport imap imaps 111 237 631 3000 8080 8443 10000 12411"
+FW_SERVICES_INT_TCP="22 sshport smtp domain http httpsport ocport imap imaps 111 237 631 3000 8080 8443 10000 12411"
 
 ## Type:	string
 #

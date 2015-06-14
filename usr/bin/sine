@@ -1332,6 +1332,10 @@ samba_ad() {
 	fqdn=`getconfdata "FQDN" "2"`
 	strings="invisfqdn%$fqdn"
 	changevalues $path $file "$strings"
+
+	ocport=`getconfdata "OCPORT" "2"`
+	strings="server-fqdn-ocport%$fqdn:$ocport"
+	changevalues $path $file "$strings"
 	
 	domain=`getconfdata "Domain" "2"`
         strings="invis-net.loc%$domain"
@@ -2233,6 +2237,11 @@ firewall() {
     # geaenderten HTTPS-Port einfuegen
     httpsport=`getconfdata "HTTPSPORT" "2"`
     strings="httpsport%$httpsport"
+    changevalues $path $file "$strings"
+
+    # OwnCloud-Port einfuegen
+    ocport=`getconfdata "OCPORT" "2"`
+    strings="ocport%$httpsport"
     changevalues $path $file "$strings"
     
     # SSH Port ändern
