@@ -1,3 +1,4 @@
+zarafa
 zarafa-server
 zarafa-client
 zarafa-dagent
@@ -26,7 +27,6 @@ zarafa-libzarafacommon-7_2_0
 zarafa-webapp
 php5-mapi
 python-mapi
-zarafa-base
 zarafa-utils
 zarafa-bash-completion
 z-push2
