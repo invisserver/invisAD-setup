@@ -164,7 +164,7 @@ function showProfileResponse(request) {
 					'description': true,
 					'office': true,
 					'telephone': true,
-					'userpassword': true
+					'adpassword': true
 				});
 	
 	// attribute description
@@ -173,7 +173,7 @@ function showProfileResponse(request) {
 					'rid': 'RID',
 					'mail': 'Email intern',
 					'display_name': 'Anzeigename',
-					'userpassword': 'Passwort',
+					'adpassword': 'Passwort',
 					'surname': 'Nachname',
 					'description': 'Beschreibung',
 					'office': 'Büro',
@@ -198,7 +198,7 @@ function showProfileResponse(request) {
 			// description
 			var td = new Element('td');
 			td.writeAttribute('key', item.key)
-			if (item.key == 'userpassword') {
+			if (item.key == 'adpassword') {
 				var btn = new Element('button', {'id': 'btn_change_pw'}).update('Passwort ändern');
 				btn.observe('click', profileRequestPasswordChange);
 				td.insert(btn);
@@ -211,7 +211,7 @@ function showProfileResponse(request) {
 				td.addClassName('nochange');
 			else {
 				td.addClassName('editable');
-				if (item.key != 'userpassword') td.observe('click', lightbox.inputBoxNew.bind(lightbox));
+				if (item.key != 'adpassword') td.observe('click', lightbox.inputBoxNew.bind(lightbox));
 			}
 			
 			tr.insert(th);
@@ -289,7 +289,7 @@ function profileRequestPasswordChange(event) {
 			lightbox.setWaitStatus(true);
 //			invis.setCookie('invis-request', $H({'userpassword': ssha, 'sambantpassword': md4}).toJSON());
 			// Passwort im Klartext an adLDAP uebergeben.
-			invis.setCookie('invis-request', $H({'userpassword': secret}).toJSON());
+			invis.setCookie('invis-request', $H({'adpassword': secret}).toJSON());
 			invis.request('script/adajax.php', 
 				function(request) {
 					lightbox.setWaitStatus(false);

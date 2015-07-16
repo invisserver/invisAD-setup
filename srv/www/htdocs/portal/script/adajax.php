@@ -739,17 +739,19 @@ function userModify($uid) {
 	
 	// wenn das Passwort Attribut zurueck geliefert wird,
 	// passwort aendern und attribut aus array löschen
-	
-	if ( ! empty($attributes->userpassword)) {
+	if ( ! empty($cookie_data['adpassword'])) {
+	    $password = $cookie_data['adpassword'];
 	    try {
-		$result = $adldap->user()->password("$uid","$attributes->userpassword");
+		$result = $adldap->user()->password("$uid","$password");
 		//var_dump($result);
 	    }
 	    catch (adLDAPException $e) {
 		return $e; 
 		//exit();   
 	    }
+	unset($attributes->adpassword);
 	unset($attributes->userpassword);
+	unset($attributes->sambantpassword);
 	}
 	
 	//echo $attributes['office'];
