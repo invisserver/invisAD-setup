@@ -260,7 +260,7 @@ unknown_local_recipient_reject_code = 550
 # of listing the patterns here. Specify type:table for table-based lookups
 # (the value on the table right-hand side is not used).
 #
-mynetworks = 192.168.220.0/24, 192.168.166.0/24, 127.0.0.0/8
+mynetworks = 192.168.220.0/24, 192.168.166.0/24, 127.0.0.0/8 [::1]/128
 #mynetworks = $config_directory/mynetworks
 #mynetworks = hash:/etc/postfix/network_table
 

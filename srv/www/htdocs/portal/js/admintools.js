@@ -1042,8 +1042,8 @@ function userModResponse(request) {
 	invis.deleteCookie('invis-request');
 	if (request.responseText == '"Success"' ) { 
 	    // irgendwie bekomme ich keine Verzoegerung hin, hide greift sofort
-	    lightbox.setStatus('Änderungen wurden gespeichert!', 5000);
-	    lightbox.hide();
+	    lightbox.setStatus('Änderungen wurden gespeichert!');
+	    //lightbox.hide();
 	
 	} else {
 		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);

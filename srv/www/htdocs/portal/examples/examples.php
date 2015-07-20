@@ -55,7 +55,7 @@ function groupCN($conn, $dn) {
 }
 
 
-if (1) {
+if (0) {
   $collection = $adldap->group()->infoCollection("Domain Computers",array('*'));
 
   $gtype=dechex(trim(($collection->grouptype)));
@@ -283,9 +283,10 @@ if (0) {
 }
 
 // change the password of a user. It must meet your domain's password policy
-if (0) {
+if (1) {
+    $password="Passwort123";
     try {
-        $result = $adldap->user()->password("username","Password123");
+        $result = $adldap->user()->password("planung","$password");
         var_dump($result);
     }
     catch (adLDAPException $e) {
