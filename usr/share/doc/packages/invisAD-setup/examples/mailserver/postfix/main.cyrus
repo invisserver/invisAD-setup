@@ -699,6 +699,7 @@ smtpd_tls_CA_file = /etc/ssl/certs/cacert.pem
 
 ## FSP Addressrewriting
 sender_canonical_maps=ldap:/etc/postfix/s-canonical.cf
+recipient_canonical_classes = envelope_recipient
 recipient_canonical_maps=ldap:/etc/postfix/r-canonical.cf
 
 ## Virenscanner
