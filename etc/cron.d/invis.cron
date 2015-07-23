@@ -32,11 +32,11 @@ MAILTO=/dev/null
 
 # Sichern der Zarafa-Stores
 # an allen ungeraden Wochentagen um 3:00 Uhr
-0 3 * * 1,3,5,7 /usr/bin/zbackup
+0 3 * * 1,3,5,7 root /usr/bin/zbackup
 
 # Sichern der Zarafa-Datenbank
 # an allen geraden Wochentagen um 3:00 Uhr
-0 3 * * 2,4,6 /usr/bin/zdbdump
+0 3 * * 2,4,6 root /usr/bin/zdbdump
 
 # Erstellen eines Snapshots des Dokuwiki-Datenverzeichnisses
 # Jeden Samstag 1:30 Uhr
