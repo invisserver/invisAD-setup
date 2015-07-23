@@ -678,10 +678,10 @@ message_size_limit = 162400000
 ## Zarafa, new-style
 virtual_mailbox_domains = invis-net.loc
 
-virtual_mailbox_maps = ldap:/etc/postfix/ldap-users.cf
+virtual_mailbox_maps = ldap:/etc/postfix/ldap-users2.cf,
+		       ldap:/etc/postfix/ldap-users.cf
 
-virtual_alias_maps = ldap:/etc/postfix/ldap-aliases.cf,
-		     ldap:/etc/postfix/ldap-groups.cf,
+virtual_alias_maps = ldap:/etc/postfix/ldap-groups.cf,
 		     hash:/etc/postfix/virtual
 
 virtual_transport = lmtp:127.0.0.1:2003
@@ -733,6 +733,7 @@ transport_maps = hash:/etc/postfix/relay
 
 ## FSP Addressrewriting
 sender_canonical_maps=ldap:/etc/postfix/s-canonical.cf
+recipient_canonical_classes = envelope_recipient
 recipient_canonical_maps=ldap:/etc/postfix/r-canonical.cf
 canonical_maps=hash:/etc/postfix/canonical
 

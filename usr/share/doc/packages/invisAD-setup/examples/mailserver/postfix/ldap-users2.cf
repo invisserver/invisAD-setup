@@ -1,0 +1,8 @@
+server_host = ldap://localhost:389
+search_base = cn=AdditionalUserInformation,cn=invis-server,DC=invis-net,DC=loc
+version = 3
+bind = yes
+bind_dn = ldap.admin@invis-net.loc
+bind_pw = admin-secret
+query_filter = (name=%s)
+result_attribute = fspLocalMailAddress 

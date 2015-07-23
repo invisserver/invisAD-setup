@@ -713,6 +713,7 @@ virtual_transport = lmtp:unix:private/dovecot-lmtp
 
 ## FSP Addressrewriting
 sender_canonical_maps=ldap:/etc/postfix/s-canonical.cf
+recipient_canonical_classes = envelope_recipient
 recipient_canonical_maps=ldap:/etc/postfix/r-canonical.cf
 canonical_maps=hash:/etc/postfix/canonical
 
