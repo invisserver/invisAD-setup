@@ -3156,7 +3156,7 @@ owncloud() {
 	changevalues $path $file "$strings"
 
 	ddnsname=`getconfdata "DDNS" "2"`
-	strings="your.ddns-domain.net%$ddnsname"
+	strings="dummy.invis-server.org%$ddnsname"
 	changevalues $path $file "$strings"
 
 	# Original owncloud-Konfig ueberschreiben
