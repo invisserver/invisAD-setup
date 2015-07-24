@@ -1337,8 +1337,9 @@ samba_ad() {
         strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
 
+	ddnsname=`getconfdata "OCPORT" "2"`
 	ocport=`getconfdata "OCPORT" "2"`
-	strings="server-fqdn-ocport%$fqdn:$ocport"
+	strings="server-fqdn-ocport%$ddnsname:$ocport"
 	changevalues $path $file "$strings"
 	
 	dompart1=`echo $domain|cut -d "." -f 1`
