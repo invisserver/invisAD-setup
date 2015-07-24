@@ -111,8 +111,8 @@ objectClass: top
 objectClass: iPortEntry
 iPortEntryName: ownCloud
 cn: ownCloud
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/owncloud
+iPortEntrySSL: TRUE
+iPortEntryURL: server-fqdn-ocport
 iPortEntryDescription: ownCloud ist eine freie Software für das Vorhalten von Daten (Filehosting) in einer eigenen privaten Cloud
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
