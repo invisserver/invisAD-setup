@@ -1138,7 +1138,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     ## verwendete Groupware in Konfigurationsdatei schreiben
     case $groupware in
 	"zarafa" ) 
-	    strings="usedgroupware%$imapserver"
+	    strings="usedgroupware%zarafa"
 	    changevalues $confdir $file "$strings"
 	    ;;
 	"groupe" )
