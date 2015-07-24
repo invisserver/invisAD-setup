@@ -6,7 +6,7 @@ Für die Installation eines invis Servers 10.1 AD müssen folgende Voraussetzung
       schnittstellen müssen mit Hilfe von Udev-Regeln "extern" und "intern" benannt werden.
       Zur Erzeugung von Udev-Regeln zur korrekten Bennenung der Netzwerkschnittstellen ist das
       Script "netsetup" anzuwenden. Nach Anwendung des Scripts muss der Server neu gestartet
-      werden. Die anschließende Einrichtung der Netzwerkkarten kann per YaST vorgenommen werden.
+      werden. Die anschließende Einrichtung der Netzwerkkarten muss per YaST vorgenommen werden.
       Schnittstelle 1 muss als externe Schnittstelle zur Verbindung mit DSL-Modem oder Router
       eingerichtet sein. Bei Verbindung mit einem Router empfielt es sich auf diesem einen 
       DHCP-Server zu starten und "extern" als DHCP-Client einzurichten. Wird ein DSL-Modem 
@@ -33,3 +33,6 @@ Für die Installation eines invis Servers 10.1 AD müssen folgende Voraussetzung
             https://portal.enterprisesamba.com/users/sign_in 
       Registrieren. Das invis-Setup-Script "sine" wird Sie nach "Username" und "Accesskey" fragen. 
       Die Registrierung ist kostenlos.
+      
+    - Für den Fall, dass Sie ownCloud nutzen möchten, benötigen Sie zwingend einen funktionierenden 
+      DDNS Namen oder eine feste IP Adresse über den bzw. die Sie Ihren Server erreichen können.
