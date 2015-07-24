@@ -564,7 +564,7 @@ Geben Sie bitte Ihre Zugangsdaten für das Enterprise-Samba Repository ein." 18 
 		ok=0
 	    fi
 	
-	    if (( ${#enterprisesambavalues[1]} == 32 ));then
+	    if (( ${#enterprisesambavalues[1]} >= 10 ));then
 		esaccesskey=${enterprisesambavalues[1]}
 		(( ok=$ok + 1 ))
 	    else

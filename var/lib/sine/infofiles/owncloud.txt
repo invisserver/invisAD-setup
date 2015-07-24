@@ -13,3 +13,6 @@ können die ownCloud über eine Schnittstelle ansprechen und Dateien und Daten l
 
 ownCloud-Desktop-Clients gibt es für OS X, Windows, Linux, BSD und anderen unixoiden Betriebssystemen. 
 Es existieren ebenfalls Apps für die mobilen Betriebssysteme Android, iOS und Fire OS.
+
+Um ownCloud nutzen zu können benötigen Sie einen gültigen DDNS Namen oder eine feste IP-Adresse
+über den bzw. die Sie Ihren Server vom Internet aus erreichen können.
