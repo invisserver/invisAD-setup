@@ -3,7 +3,7 @@
 /* script/status.php v1.0
  * AJAX script, displaying several server status messages/numbers
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010 Stefan Schäfer, invis-server.org
+ * (C) 2010,2015 Stefan Schäfer, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
@@ -22,7 +22,7 @@ if ($CMD == 'basic_info') {
 	echo '<b>Servername:</b><br />' . shell_exec('hostname -f') . '<br />';
 	echo '<span style="font-size: 0.7em;">(' . trim(shell_exec('uname -r')) .')</span><br /><br />';
 	
-	echo '<b>Serverzeit:</b><br />' . shell_exec('date +"%d.%m.%Y, %H:%M"') . '<br /><br />';
+	echo '<b>Serverzeit:</b><br />' . shell_exec('date +"%d.%m.%Y, %H:%M"') . 'Uhr<br /><br />';
 	
 	$uptime = intval(shell_exec('cat /proc/uptime | cut -d"." -f1'));
 	
@@ -41,7 +41,7 @@ if ($CMD == 'basic_info') {
 elseif ($CMD == 'inet_info'){
 	$file_inet = file('/var/spool/results/inetcheck/inetcheck');
 	echo '<b>Internet:</b><br />';
-	echo '<span style="font-size: 0.8em;">Zeit: ' . $file_inet[0] . ' Uhr</span><br/>';
+	echo '<span style="font-size: 0.7em;">Zeit: ' . $file_inet[0] . ' Uhr</span><br/>';
 	echo 'Status: ';
 	switch(intval($file_inet[1])) {
 		case 0: echo '<b style="color: green;">online</b>'; break;
@@ -80,15 +80,15 @@ elseif ($CMD == 'hd_info') {
 		} else echo $tmp;
 		echo '<br />';
 	}
-	echo '<span style="font-size: 0.8em;">Zeit: ' . $file_raid[0] . ' Uhr</span><br />';
+	echo '<span style="font-size: 0.7em;">Zeit: ' . $file_raid[0] . ' Uhr</span><br />';
 	if ($raid_error) {
-		echo '<b style="font-size: 0.8em; color: red;">Ein Fehler ist aufgetreten, bitte wenden Sie sich umgehend an Ihren Administrator!</b><br />';
+		echo '<b style="font-size: 0.7em; color: red;">Ein Fehler ist aufgetreten, bitte wenden Sie sich umgehend an Ihren Administrator!</b><br />';
 	}
 }
 elseif ($CMD == 'capacity_info') {
 	echo '<b>Festplattenauslastung:</b>';
 	echo '</td></tr><tr><td valign="top" align="center">';
-	echo '<table border="0" style="font-size: 0.9em; border: 1px solid #e0e0e0;">';
+	echo '<table border="0" style="font-size: 0.8em; border: 1px solid #e0e0e0;">';
 	echo '<tr><th>Verzeichnis</th><th align="center">% belegt</th><th align="center">GB belegt</th><th align="center">GB gesamt</th></tr>';
 	foreach ($STATUS_WATCH_DIRS as $dir) {
 		echo '<tr>';
@@ -98,7 +98,7 @@ elseif ($CMD == 'capacity_info') {
 		$used_factor = $used / $total;
 		$used_percent = $used_factor * 100;
 		
-		$max = 550;
+		$max = 600;
 		
 		$red = dechex(128 + 127 * $used_factor);
 		$green = dechex(255 - 127 * $used_factor);
@@ -127,7 +127,7 @@ elseif ($CMD == 'backup_info') {
 	$diff_days = floor(($now - $last) / (60 * 60 * 24));
 
 	echo '<b>Datensicherung:</b><br>';
-	echo '<span style="font-size: 0.9em;"> Zeit: ' . date('d.m.Y, H:i', $last) . '</span><br />';
+	echo '<span style="font-size: 0.7em;"> Zeit: ' . date('d.m.Y, H:i', $last) . '</span><br />';
 	// Stefan -- Multiline Results added.
 	// Jetzt Zeilen 2 bis X in der Status-Datei durchgehen.
 	foreach($file_backup as $num => $line) {
@@ -154,4 +154,33 @@ elseif ($CMD == 'backup_info') {
 	echo "<br/>";
 
 }
+elseif ($CMD == 'usv_status') {
+	// Status-Datei einlesen
+	$file_usv = file('/var/spool/results/usv/usvstat');
+	$lables = array('USV Typ', 'Status', 'Akku-Ladung', 'V-Spannung', 'Last', 'USV-Temp', 'Akku-Pufferzeit');
+
+	echo '<b>USV Status:</b><br>';
+	
+	foreach($lables as $key => $lable) {
+		$value = explode( ":", $file_usv[$key]);
+		switch ($value[0]) {
+		    case 'Empty':
+			echo '<span style="font-size: 0.8em;"> '. $lable . ': </span><b style="font-size: 0.8em; color: black"> ' . $value[1] . '</b><br />';
+			break;
+		    case 'Fault':
+			echo '<span style="font-size: 0.8em;"> '. $lable . ': </span><b style="font-size: 0.8em; color: red"> ' . $value[1] . '</b><br />';
+			break;
+		    case 'Label':
+			echo '<span style="font-size: 0.8em;"> '. $lable . ': </span><b style="font-size: 0.8em; color: black"> ' . $value[1] . '</b><br />';
+			break;
+		    case 'Normal':
+			echo '<span style="font-size: 0.8em;"> '. $lable . ': </span><b style="font-size: 0.8em; color: green"> ' . $value[1] . '</b><br />';
+			break;
+		    case 'Warning':
+			echo '<span style="font-size: 0.8em;"> '. $lable . ': </span><b style="font-size: 0.8em; color: orange"> ' . $value[1] . '</b><br />';
+			break;
+		}
+	}
+}
+
 ?>
