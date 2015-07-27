@@ -2548,7 +2548,7 @@ case "$whichimap" in
 	strings="London%Berlin"
 	changevalues $path $file "$strings"
 
-	strings="en_EN%de_DE.UTF-8"
+	strings="en_GB%de_DE.UTF-8"
 	changevalues $path $file "$strings"
 
 	path="/etc/zarafa/webapp"
@@ -2557,7 +2557,7 @@ case "$whichimap" in
 	strings="London%Berlin"
 	changevalues $path $file "$strings"
 
-	strings="en_EN%de_DE.UTF-8"
+	strings="en_GB%de_DE.UTF-8"
 	changevalues $path $file "$strings"
     
 	# Zarafa-Schluessel erzeugen
