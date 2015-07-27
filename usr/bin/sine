@@ -189,7 +189,7 @@ smbadpw() {
     while (( $ok != "1" ));do
 	dialog --backtitle "$dialogtitle" --title "Benutzer Passwort ändern" --insecure --passwordform "$dialogshorthelp\n\n
 Geben Sie das Passwort für Benutzer $1 ein.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein, Zahlen und Sonderzeichen enthalten." 17 64 2 \
+Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzeichen enthalten." 17 64 2 \
 	"Benutzer Passwort:" 2 2 "" 2 23 10 0\
 	"Kontrolle:" 2 36 "" 2 47 10 0\
 	2>$setupdir/sine_temp
