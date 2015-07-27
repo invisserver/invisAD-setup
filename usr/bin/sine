@@ -195,7 +195,7 @@ Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzei
 	2>$setupdir/sine_temp
 	usersecrets=(`cat $setupdir/sine_temp`)
 
-	    if [[ ${usersecrets[0]} == ${usersecrets[1]} ]] && (( ${#usersecrets[0]} >= 6 ));then
+	    if [[ ${usersecrets[0]} == ${usersecrets[1]} ]] && (( ${#usersecrets[0]} >= 7 ));then
 		ok=1
 	    fi
     done
