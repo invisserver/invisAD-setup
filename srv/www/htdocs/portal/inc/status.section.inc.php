@@ -64,7 +64,7 @@ if (isset($STATUS_APCUPSD))
 				<tr>
 					<td valign="top"><span id="inet_info"></span></td>
 					<?php if (isset($STATUS_BACKUP_TIMER)) echo '<td valign="top"><span id="backup_info"></span></td>'; ?>
-					<?php if (isset($STATUS_APCUPSD)) echo '<td valign="top"><span id="usv_status"></span></td>'; ?>
+					<?php if ($STATUS_APCUPSD == true) echo '<td valign="top"><span id="usv_status"></span></td>'; ?>
 				</tr>
 			</table>
 			<span id="capacity_info"></span>
