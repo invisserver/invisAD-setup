@@ -35,8 +35,8 @@ if ($CMD == 'basic_info') {
 	$up_m = floor(($uptime - $up_d * 86400 - $up_h * 3600) / 60);
 	
 	$uptime_string = "$up_d Tage, $up_h Stunden, $up_m Minuten";
-	echo '<b>Uptime:</b><br />' . $uptime_string . '<br /><br />';			// neu
-//	echo '<b>Uptime:</b><br />' . shell_exec('uptime') . '<br /><br />';	// alt
+	echo '<b>Uptime:</b><br />' . $uptime_string . '<br /><hr>';			// neu
+
 }
 elseif ($CMD == 'inet_info'){
 	$file_inet = file('/var/spool/results/inetcheck/inetcheck');
@@ -57,6 +57,7 @@ elseif ($CMD == 'hd_info') {
 	$file_raid = file('/var/spool/results/diskchecker/status');
 	echo '<b>Festplatten:</b><br />';
 	$raid_error = false;
+	echo '<span style="font-size: 0.7em;">Zeit: ' . $file_raid[0] . ' Uhr</span><br />';
 	for ($i = 1; $i < count($file_raid); $i++) {
 		// RAID or HD
 		$data = explode(' ', $file_raid[$i]);
@@ -77,10 +78,13 @@ elseif ($CMD == 'hd_info') {
 				$raid_error = true;
 				echo ': <b style="font-size: 0.8em; color: red;">Smart-Fehler ' . $data[2] . '°C</b>';
 			}
-		} else echo $tmp;
-		echo '<br />';
+		} else if ($tmp == "pv") {
+			echo '<hr>';
+			echo '<b style="font-size: 0.8em;">Plattenplatz-Reserve: ' . $data[1] . 'GiB</b>';
+			echo '<hr>';
+		}
+		echo '<span style="font-size: 0.3em;"> </span>';
 	}
-	echo '<span style="font-size: 0.7em;">Zeit: ' . $file_raid[0] . ' Uhr</span><br />';
 	if ($raid_error) {
 		echo '<b style="font-size: 0.7em; color: red;">Ein Fehler ist aufgetreten, bitte wenden Sie sich umgehend an Ihren Administrator!</b><br />';
 	}
