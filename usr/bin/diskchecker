@@ -111,7 +111,7 @@ fi
 # Freien Platz auf evtl. vorhandenen PVs finden
 
 if [[ ! `pvscan -v 2>&1 |grep "No matching physical volumes found"` ]]; then
-    freespace=`pvscan -v 2>&1 |grep PV|tr -s " "|cut -d "[" -f2 | cut -d "/" -f2|cut -d " " -f2`
+    freespace=`pvscan -v 2>&1 |grep PV|tr -s " "|cut -d "[" -f2 | cut -d "/" -f2|cut -d " " -f2-3`
     echo "pvfree $freespace" >> $directory/status
 fi
 

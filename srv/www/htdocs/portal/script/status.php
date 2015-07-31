@@ -80,7 +80,7 @@ elseif ($CMD == 'hd_info') {
 			}
 		} else if ($tmp == "pv") {
 			echo '<hr>';
-			echo '<b style="font-size: 0.8em;">Plattenplatz-Reserve: ' . $data[1] . 'GiB</b>';
+			echo '<b style="font-size: 0.8em;">Plattenplatz-Reserve: ' . $data[1] . $data[2] . '</b>';
 			echo '<hr>';
 		}
 		echo '<span style="font-size: 0.3em;"> </span>';
