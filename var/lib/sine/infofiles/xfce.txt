@@ -1,0 +1,55 @@
+Xfce-Arbeitsumgebung
+
+Xfce ist eine leichtgewichtige Arbeitsumgebung für UNIX-ähnliche Betriebssysteme.
+Ziel ist es, schnell und ressourcenschonend, aber auch optisch ansprechend und 
+benutzerfreundlich zu sein.
+
+Xfce verkörpert die traditionelle UNIX-Philosophie von Modularität und 
+Wiederverwendbarkeit. Es besteht aus einer Vielzahl von Komponenten, die die 
+volle Funktionalität einer modernen Arbeitsumgebung bieten. Die Komponenten 
+werden einzeln als Pakete zur Verfügung gestellt und Sie können aus allen zur 
+Verfügung stehenden Paketen wählen, um Ihre optimale persönliche Arbeitsumgebung 
+zu erstellen.
+
+Eine weitere Priorität von Xfce ist die Einhaltung von Standards, insbesondere
+denen, die auf freedesktop.org definiert sind.
+
+Funktionsmerkmale
+
+Xfce enthält eine Reihe von Kernkomponenten für das Minimum an Aufgaben, die Sie
+in einer Arbeitsumgebung erledigen wollen:
+
+Fensterverwaltung
+Steuert die Platzierung von Fenstern auf dem Bildschirm, bietet Fensterdekorationen
+und verwaltet Arbeitsflächen oder virtuelle Schreibtische.
+
+Schreibtischverwaltung
+Legt das Hintergrundbild fest und bietet ein Menü für das Root-Fenster, 
+Arbeitsflächensymbole oder minimierte Symbole und eine Fensterliste.
+
+Leiste
+Wechsel zwischen geöffneten Fenstern, Starten von Anwendungen und Menü-Plugins zum
+Durchsuchen von Anwendungen oder Ordnern.
+
+Sitzungsverwaltung
+Steuert die An- und Abmeldung sowie die Energieverwaltung der Arbeitsumgebung. 
+Sie können mehrere verschiedene Anmeldesitzungen speichern.
+
+Anwendungsfinder
+Zeigt die in Ihrem System installierten Anwendungen in Kategorien an, so dass sie 
+sich schnell finden und starten lassen.
+
+Dateiverwaltung
+Stellt die Basisfunktionalität zur Dateiverwaltung und einzigartige Werkzeuge, zum
+Beispiel zur Mehrfachumbenennung, zur Verfügung.
+
+Einstellungsverwaltung
+Werkzeuge zur Anpassung verschiedener Einstellungen, wie Tastenkombinationen, 
+Erscheinungsbild, Bildschirmeinstellungen usw.
+
+Neben den grundlegenden Modulen bietet Xfce mehrere Anwendungen und Plugins, damit 
+Sie Ihre Arbeitsumgebung so erweitern können, wie Sie möchten, zum Beispiel einen 
+Terminalemulator, Texteditor, Soundmixer, Anwendungsfinder, Bildbetrachter, 
+iCal-basierten Kalender und eine Anwendung zum Brennen von CDs und DVDs. 
+
+Auf der Projekte Seite erfahren Sie mehr über die Module in Xfce.

@@ -3250,7 +3250,30 @@ virtualbox() {
     else
 	msgbox "Virtualbox Installation übersprungen" "$windowtitle"
     fi
+    writeprepstat "xfce"
+    waitbox "virtualbox" "xfce"
+
+}
+
+xfce() {
+    cd $setupdir
+    clear
+    windowtitle="XFCE Desktop-Umgebung einrichten"
+
+    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/xfce.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie XFCE installieren?" 0 0
+    cont=${?}
+
+    # Weitermachen?
+    if [[ $cont == "0" ]]; then
+	pgsubtitle="Software wird installiert"
+    
+    
+    
+    else
+	msgbox "XFCE Installation übersprungen" "$windowtitle"
+    fi
     writeprepstat "ready"
+
 }
 
 ### Ende der Funktionen - Beginn Hauptprogramm
