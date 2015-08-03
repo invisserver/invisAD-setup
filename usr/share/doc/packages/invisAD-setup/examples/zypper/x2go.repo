@@ -1,0 +1,8 @@
+[X11_RemoteDesktop_x2go]
+name=x2go (replaces NX) (openSUSE_13.1)
+type=rpm-md
+baseurl=http://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_13.1/
+gpgcheck=1
+gpgkey=http://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_13.1/repodata/repomd.xml.key
+enabled=1
+

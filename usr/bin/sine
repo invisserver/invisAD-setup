@@ -3266,7 +3266,13 @@ xfce() {
     # Weitermachen?
     if [[ $cont == "0" ]]; then
 	pgsubtitle="Software wird installiert"
-    
+	# x2go Repo installieren
+	cp $cfilesdir/zypper/x2go.repo /etc/zypp/repos.d/
+	rpmkeyimporter
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zypper -n install -n `cat $setupdir/zypper-package-lists/xfce-x2go` 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+
     
     
     else
