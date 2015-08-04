@@ -1022,6 +1022,9 @@ sysprep() {
 	changevalues $path $file "$strings"
     fi
 
+    # Limits erhoehen fuer Samba und Zarafa
+    cp $cfilesdir/System/security/limits.conf /etc/security/ 2>&1| tee -a $setupdir/sine.log | pgbox
+
     # Vorbereitete sysconfig Dateien kopieren
     # Ist QnD, sollte mit changevalues erledigt werden....
     cp $cfilesdir/System/sysconfig/* /etc/sysconfig/ 2>&1| tee -a $setupdir/sine.log | pgbox
