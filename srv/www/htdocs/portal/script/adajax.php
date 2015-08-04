@@ -200,7 +200,7 @@ function userDetail($uid) {
 }
 
 function userCreate($uid) {
-	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SFU_GUID_BASE;
+	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SFU_GUID_BASE, $GROUPWARE;
 	// read user data from cookie
 	//$attributes = $cookie_data;
 
@@ -242,8 +242,22 @@ function userCreate($uid) {
 	//$password = $cookie_data['userpassword'];
 	$password = $cookie_data['adpassword'];
 	//error_log ( $password,  0);
-	switch ($accounttype) {
 	
+	// Wenn Groupware = roundcube, dann gibt es keine expliziten Groupware Konten
+	// Attributtyp wir jeweils um 1 reduziert.
+	
+	if ($GROUPWARE == 'roundcube') {
+	
+	    if ($accounttype == '4') {
+		$accounttype = '3';
+	    } elseif ($accounttype == '7') {
+		$accounttype = '6';
+	    }
+	    
+	}
+	
+	// Benutzer anlegen
+	switch ($accounttype) {
 	case 0:
 	    // Gastbenutzer
 	    // Standard-Attribute - unabhaengig vom Kontentyp
