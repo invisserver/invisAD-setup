@@ -1706,7 +1706,7 @@ esac
     changevalues $path $file "$strings"
     postmap $path/$file
 
-    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-aliases.cf ldap-groups.cf)
+    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-aliases.cf ldap-groups.cf)
 
     for datei in ${files[*]}; do
 	#echo $datei
@@ -2597,17 +2597,18 @@ case "$whichimap" in
 	zyppercheck ${PIPESTATUS[0]}
 	
 	# Datenbank anlegen
-	rcmdbpass=`mkdbsilent roundcube roundcube a`
+	rcmdbpass=`mkdbsilent roundcubemail roundcube a`
+	mysql -u roundcube --password=$rcmdbpass roundcubemail < /usr/share/doc/packages/roundcubemail/SQL/mysql.initial.sql
 
 	# Konfigurationsdateien kopieren und anpassen
 	path="/etc/roundcubemail/"
-	cp $cfilesdir/roundcubemail/* $path
-	file="db.inc.php"
+	cp $cfilesdir/roundcubemail/*.php $path
+	file="config.inc.php"
 	strings="rcmdbpass%$rcmdbpass"
 	changevalues $path $file "$strings"
 
 	domain=`getconfdata "Domain" "2"`
-	file="main.inc.php"
+	file="defaults.inc.php"
 	strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
 
