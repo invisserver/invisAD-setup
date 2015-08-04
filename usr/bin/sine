@@ -2528,11 +2528,6 @@ case "$whichimap" in
 	strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
     
-	path="/etc/postfix"
-	file="zarafa-users.cf"
-	strings="dbuserpass%$zarafadbuserpw"
-	changevalues $path $file "$strings"
-
 	## Locales anpassen
 	path="/etc/zarafa/userscripts"
 	strings="en_US%de_DE.UTF-8"

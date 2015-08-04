@@ -666,15 +666,6 @@ readme_directory = /usr/share/doc/packages/postfix-doc/README_FILES
 mailbox_size_limit = 0
 message_size_limit = 162400000
 
-## Zarafa, old-style
-#mailbox_transport = zarafa:
-#zarafa_destination_recipient_limit = 1
-
-# Zugriff auf Zarafas Benutzerdatenbank und Mail-Aliase
-# Zarafa old-style
-#virtual_alias_maps = mysql:/etc/postfix/zarafa-users.cf,
-#		     hash:/etc/postfix/virtual
-
 ## Zarafa, new-style
 virtual_mailbox_domains = invis-net.loc
 

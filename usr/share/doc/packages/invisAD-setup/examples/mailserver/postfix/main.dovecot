@@ -83,7 +83,8 @@ myhostname = invis.invis-net.loc
 # parameters.
 #
 mydomain = invis-net.loc
-masquerade_domains = $mydomain
+# Was ist das denn??? Mal auskommentiert / Stefan 04.08.2015
+#masquerade_domains = $mydomain
 
 # SENDING MAIL
 # 
@@ -160,8 +161,8 @@ inet_interfaces = $myhostname, localhost
 #
 # See also below, section "REJECTING MAIL FOR UNKNOWN LOCAL USERS".
 #
-#mydestination = $myhostname, localhost.$mydomain, localhost
-mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+mydestination = $myhostname, localhost.$mydomain, localhost
+#mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
 #mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain,
 #	mail.$mydomain, www.$mydomain, ftp.$mydomain
 
@@ -292,7 +293,7 @@ mynetworks = 192.168.220.0/24, 192.168.166.0/24, 127.0.0.0/8 [::1]/128
 # list this system as their primary or backup MX host. See the
 # permit_mx_backup restriction description in postconf(5).
 #
-relay_domains = $mydestination, hash:/etc/postfix/relay
+#relay_domains = $mydestination, hash:/etc/postfix/relay
 
 # INTERNET OR INTRANET
 
@@ -702,14 +703,20 @@ smtpd_tls_cert_file = /etc/ssl/certs/mail-cert.pem
 smtpd_tls_CA_file = /etc/ssl/certs/cacert.pem
 
 # Relay Domains und Transportwege-Regelungs Tabelle bekannt machen 
-relay_domains = hash:/etc/postfix/relay
-transport_maps = hash:/etc/postfix/relay
+#relay_domains = hash:/etc/postfix/relay
+#transport_maps = hash:/etc/postfix/relay
 
 ## Virtueller Transportweg
-#virtual_transport = dovecot
+virtual_mailbox_domains = invis-net.loc
+
+virtual_mailbox_maps = ldap:/etc/postfix/ldap-users2.cf,
+		       ldap:/etc/postfix/ldap-users.cf
+
+virtual_alias_maps = ldap:/etc/postfix/ldap-groups.cf,
+		     hash:/etc/postfix/virtual
+
 ## jetzt lmtp via socket
 virtual_transport = lmtp:unix:private/dovecot-lmtp
-#dovecot_destination_recipient_limit = 1
 
 ## FSP Addressrewriting
 sender_canonical_maps=ldap:/etc/postfix/s-canonical.cf
@@ -720,6 +727,3 @@ canonical_maps=hash:/etc/postfix/canonical
 ## Virenscanner
 content_filter=smtp-amavis:[127.0.0.1]:10024
 
- 
- 
- 
