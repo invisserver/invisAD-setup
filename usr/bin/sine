@@ -1587,12 +1587,24 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     	    pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
 	    zypper -n install -n dovecot22 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
-	    cp -r $cfilesdir/mailserver/dovecot/* /etc/dovecot/ 2>&1| tee -a $setupdir/sine.log
+	    # Konfiguration anpassen
+	    cp -r $cfilesdir/mailserver/dovecot/ad/* /etc/dovecot/ 2>&1| tee -a $setupdir/sine.log
 	    path="/etc/dovecot/conf.d"
 	    file="15-lda.conf"
 	    domain=`getconfdata "Domain" "2"`
 	    strings="invis-net.loc%$domain"
 	    changevalues $path $file "$strings"
+	    #Dovecot-LDAP Anbindung konfigurieren
+	    path="/etc/dovecot/"
+	    file="dovecot-ldap.conf.ext"
+	    basedn=`getconfdata "baseDN" "2"`
+	    strings="dc=invis-net,dc=.loc%$basedn"
+	    changevalues $path $file "$strings"
+
+	    ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+	    strings="admin-secret%$ldapadminpw"
+	    changevalues $path $file "$strings"
+
 	    # Benutzerkonto fuer das Mailhandling anlegen
 	    groupadd -r -g 399 vmail| tee -a $setupdir/sine.log
 	    useradd -r -u 399 -d /var/spool/mail -c "Benutzerkonto fuer Dovecot Mailhandling" -s /bin/false -g vmail vmail| tee -a $setupdir/sine.log
