@@ -886,7 +886,10 @@ sysprep() {
     # /etc/issue anpassen
     opensuseversion=`cat /etc/os-release |grep VERSION=|cut -d = -f2| tr -d "\""`
     mv /etc/issue /etc/issue.old
-    echo "Willkomen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion." > /etc/issue
+    mv /etc/issue.net /etc/issue.net.old
+    
+    echo "Willkommen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion. \r (\l)." > /etc/issue
+    echo "Willkommen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
 
     # temporaerer Bugfix fuer sysconf_addword
     # Original wird ueberschrieben
