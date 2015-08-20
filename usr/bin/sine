@@ -1099,7 +1099,9 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     cp $cfilesdir/invis/wvd_tmobile.conf /etc/invis 2>&1| tee -a $setupdir/sine.log
 
     # Zeitzoneneinstellung des Servers ermitteln
-    timezone=`date +%Z`
+    # php versteht CEST nict mehr
+    #timezone=`date +%Z`
+    timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
     # PHP ini-Dateien anpassen
     cp $cfilesdir/webserver/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $setupdir/sine.log
