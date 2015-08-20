@@ -1336,7 +1336,7 @@ samba_ad() {
 	strings="invisfqdn%$fqdn"
 	changevalues $path $file "$strings"
 
-	ddnsname=`getconfdata "OCPORT" "2"`
+	ddnsname=`getconfdata "DDNS" "2"`
 	ocport=`getconfdata "OCPORT" "2"`
 	strings="server-fqdn-ocport%$ddnsname:$ocport"
 	changevalues $path $file "$strings"
