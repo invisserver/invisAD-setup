@@ -94,7 +94,7 @@ cd /etc/ssl
 
 # Schluessel anpassen und verschieben
 if [[ $stype == "ws" ]]; then
-    /usr/bin/openssl x509 -in server-cert.pem -out invis-server.crt -outform DER
+    /usr/bin/openssl x509 -in server-cert.pem -out invis-server.crt
     /usr/bin/openssl rsa -in CA/server-key.pem -out invis-server.key
     mv ./invis-server.crt /etc/apache2/ssl.crt/invis-server.crt
     mv ./invis-server.key /etc/apache2/ssl.key/invis-server.key
