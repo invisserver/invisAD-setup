@@ -1,0 +1,53 @@
+#!/bin/bash
+# Serverzertifikate verifizieren und Ablaufdatum ermitteln
+# (C) 2015 Stefan Schäfer - invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+## Variablen
+# Ergebnisverzeichnis
+resultdir="/var/spool/results/certs"
+# Zertifikate
+cacert="/etc/ssl/CA/cacert.pem"
+certs=("/etc/ssl/certs/ldap-cert.pem" "/etc/ssl/certs/mail-cert.pem" "/etc/apache2/ssl.crt/invis-server.crt")
+
+# Ergebnisverzeichnis anlegen, wenn nicht vorhanden
+if [[ ! -d $resultdir ]]; then
+    mkdir -p $resultdir
+fi
+
+# Letzte Ergebnisdatei loeschen, wenn vorhanden
+if [[ -f $resultdir/certstatus ]]; then
+    rm $resultdir/certstatus
+fi
+
+for cert in ${certs[*]}; do
+	unformeddate=`openssl x509 -noout -text -in $cert |grep "Not After"|cut -d ":" -f2-`
+	datum=`date -d "$unformeddate" "+%d.%m.%Y"`
+	verify=`openssl verify -CAfile $cacert $cert`
+	certpath=`echo $verify| tr -d " " |cut -d ":" -f 1`
+	certname=`basename $certpath`
+	certstate=`echo $verify| tr -d " " |cut -d ":" -f 2`
+	if [[ `echo $certname | grep "^ldap"` ]]; then
+	    certtype="LDAP-Server"
+	fi
+	if [[ `echo $certname | grep "^mail"` ]]; then
+	    certtype="Mail-Server"
+	fi
+	if [[ `echo $certname | grep "^invis"` ]]; then
+	    certtype="Web-Server"
+	fi
+	echo "$certtype:$datum:$certstate" >> $resultdir/certstatus
+done
