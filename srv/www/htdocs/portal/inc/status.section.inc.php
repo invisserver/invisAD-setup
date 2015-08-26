@@ -3,8 +3,9 @@
  * inc/status.section.php v1.0
  * portal drop-in, requesting/displaying server status information
  * (C) 2009 Daniel T. Bender, invis-server.org
+ * (C) 2014,2015 Stefan Schaefer, invis-server.org
  * License GPLv3
- * Questions: daniel@invis-server.org
+ * Questions: stefan@invis-server.org
  */
  
 if (!isset($CONF)) die;
@@ -36,6 +37,13 @@ new Ajax.PeriodicalUpdater(
 	{ method: 'post', frequency: 5, parameters: {c: 'capacity_info'}}
 );
 
+new Ajax.PeriodicalUpdater(
+	'cert_info',
+	'script/status.php',
+	{ method: 'post', frequency: 5, parameters: {c: 'cert_info'}}
+);
+
+
 <?php 
 if (isset($STATUS_BACKUP_TIMER))
 	echo "new Ajax.PeriodicalUpdater('backup_info', 'script/status.php', { method: 'post', frequency: 60, parameters: {c: 'backup_info'}});";
@@ -57,7 +65,7 @@ if (isset($STATUS_APCUPSD))
 			<span id="basic_info"></span>
 			<span id="hd_info"></span>
 		</td>
-		
+		<td valign="top" align="left" rowspan="2" width="3%"></td>
 		<!-- right -->
 		<td valign="top" align="left">
 			<table rowspan="2" width="100%">
@@ -68,6 +76,7 @@ if (isset($STATUS_APCUPSD))
 				</tr>
 			</table>
 			<span id="capacity_info"></span>
+			<br><span id="cert_info"></span></td>
 		</td>
 	</tr>
 </table>

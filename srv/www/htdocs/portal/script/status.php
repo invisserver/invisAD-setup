@@ -15,8 +15,7 @@ $EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE
 // Script not allowed from external without login!
 if ($EXTERNAL_ACCESS && !isset($_COOKIE['invis'])) die();
 
-	
-	$CMD = $_POST['c'];
+$CMD = $_POST['c'];
 	
 if ($CMD == 'basic_info') {
 	echo '<b>Servername:</b><br />' . shell_exec('hostname -f') . '<br />';
@@ -64,19 +63,19 @@ elseif ($CMD == 'hd_info') {
 		$tmp = substr($data[0], 0, 2);
 		
 		if ($tmp == 'md') {
-			echo 'RAID-Verbund <b><i>' . $data[0] . '</i></b>';
+			echo '<span style="font-size: 0.9em;">RAID-Verbund </span><b style="font-size: 0.9em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'nOK') {
 				$raid_error = true;
-				echo ': <b style="font-size: 0.8em; color: red;">' . $data[2] . '</b>';
+				echo ': <b style="font-size: 0.8em; color: red;">' . $data[2] . '</b><br>';
 			} else
-				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1] . '</b>';
+				echo ': <b style="font-size: 0.9em; color: green;">' . $data[1] . '</b><br>';
 		} else if ($tmp == 'sd') {
-			echo 'Festplatte <b><i>' . $data[0] . '</i></b>';
+			echo '<span style="font-size: 0.9em;">Festplatte </span><b style="font-size: 0.9em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'OK') {
-				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] . '°C</b>';
+				echo ': <b style="font-size: 0.9em; color: green;">' . $data[1]. ' ' . $data[2] . '°C</b><br>';
 			} else {
 				$raid_error = true;
-				echo ': <b style="font-size: 0.8em; color: red;">Smart-Fehler ' . $data[2] . '°C</b>';
+				echo ': <b style="font-size: 0.8em; color: red;">Smart-Fehler ' . $data[2] . '°C</b><br>';
 			}
 		} else if ($tmp == "pv") {
 			echo '<hr>';
@@ -90,6 +89,7 @@ elseif ($CMD == 'hd_info') {
 	}
 }
 elseif ($CMD == 'capacity_info') {
+	echo '<hr>';
 	echo '<b>Festplattenauslastung:</b>';
 	echo '</td></tr><tr><td valign="top" align="center">';
 	echo '<table border="0" style="font-size: 0.8em; border: 1px solid #e0e0e0;">';
@@ -121,6 +121,46 @@ elseif ($CMD == 'capacity_info') {
 			</tr>";
 	}
 	echo "</table>";
+}
+elseif ($CMD == 'cert_info') {
+//	echo '<hr>';
+	echo '<b>Serverzertifikate </b><span style="font-size: 0.8em;"> (Verwendungszweck:Ablaufdatum:Status)</span><br>';
+	// Status-Datei einlesen
+	$file_certs = file('/var/spool/results/certs/certstatus');
+	// Datei verarbeiten
+	for ($i = 0; $i < count($file_certs); $i++) {
+	    // Zeile zerlegen
+		$data = explode(':', $file_certs[$i]);
+		
+		// Welches Zertifikat
+		$type = substr($data[0], 0);
+		
+		//Ablaufdatum & Darstellungsfarbe
+		$enddate = substr($data[1], 0);
+		$enddatestamp = strtotime($enddate);
+		$now = strtotime(date('d.m.Y', time()));
+		//Differenz in Tagen
+		$diff = ($enddatestamp - $now) / 86400;
+		// Differenz <=0 -> rot, 1-7 -> orange, > 7 -> gruen
+		if ( $diff > 7 ) {
+		    $datestyle = '<b style="font-size: 0.8em; color: green;">';
+		} if ( $diff <= 7) {
+		    $datestyle = '<b style="font-size: 0.8em; color: orange;">';
+		} if ( $diff <= 0) {
+		    $datestyle = '<b style="font-size: 0.8em; color: red;">';
+		}
+		// Zertifikatsstatus & Darstellungsfarbe
+		$certstate = substr($data[2], 0, 2);
+		if (strcasecmp($certstate, 'OK') == 0) {
+		    $statestyle = '<b style="font-size: 0.8em; color: green;">';
+		} else {
+		    $statestyle = '<b style="font-size: 0.8em; color: red;">';
+		}
+		echo '<b style="font-size: 0.8em;">' . $type . ': </b>';
+		echo $datestyle . $enddate . ': </b>';
+		echo $statestyle . $certstate . '</b>&nbsp;';
+	}
+
 }
 elseif ($CMD == 'backup_info') {
 	// Status-Datei einlesen
