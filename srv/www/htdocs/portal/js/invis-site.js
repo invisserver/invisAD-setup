@@ -141,7 +141,7 @@ function userReLoginResponse(request) {
 }
 
 function showProfile(event) {
-	lightbox.show(400, 400, true);
+	lightbox.show(600, 400, true);
 	lightbox.setWaitStatus(true);
 	var data = invis.getCookie('invis').evalJSON();
 	invis.request('script/adajax.php', showProfileResponse, {c: 'user_detail', u: data.uid});

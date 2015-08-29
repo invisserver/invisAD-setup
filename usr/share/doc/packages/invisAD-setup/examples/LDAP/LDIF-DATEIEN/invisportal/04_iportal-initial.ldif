@@ -239,10 +239,10 @@ iPortEntryName: phpMyAdmin
 cn: phpMyAdmin
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/phpMyAdmin
-iPortEntryDescription: Administration der Datenbank-Engine MySQL. MySQL wird beispielsweise vom Groupware-System Ihres invis-Server genutzt. Sie können hiermit neue Datenbanken anlegen, sollten aber keine vorhandenen Löschen. Sie können phpMyAdmin auch zur Erstellung von Datensicherungen der Datenbanken nutzen.
+iPortEntryDescription: Administration der Datenbank-Engine MariaDB. MariaDB wird beispielsweise vom Groupware-System Ihres invis-Server genutzt. Sie können hiermit neue Datenbanken anlegen, sollten aber keine vorhandenen Löschen. Sie können phpMyAdmin auch zur Erstellung von Datensicherungen der Datenbanken nutzen.
 iPortEntryActive: TRUE
 iPortEntryPosition: Administration
-iPortEntryButton: MySQL Administration
+iPortEntryButton: MariaDB Administration
 iPortEntryPriv:	admin
 
 # phpPgAdmin

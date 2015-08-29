@@ -13,7 +13,7 @@ body {
 /*	background-color: #336699;*/
 	background-color: #e0e0e0;
 	
-	font-family: 'Arial', sans-serif;
+	font-family: 'verdana', sans-serif;
 }
 
 .section-title {
@@ -27,7 +27,8 @@ body {
 	color: #b0b0b0;
 	
 	font-size: 24pt;
-	font-family: "Times New Roman", times, serif;
+	/*font-family: "Times New Roman", times, serif;*/
+	font-family: 'verdana', sans-serif;
 	font-weight: bold;
 	
 	letter-spacing: 3pt;
@@ -56,13 +57,19 @@ body {
 	border-bottom: 1px solid #c0c0c0;
 }
 
+hr { 
+	border: 0; 
+	height: 0; 
+	border-bottom: 1px solid #c0c0c0;
+}
 
 #header {
 	color: #e0e0e0;
 	
 	font-size: 36pt;
 	font-weight: bold;
-	font-family: "Times New Roman", times, serif;
+	/*font-family: "Times New Roman", times, serif;*/
+	font-family: verdana, sans-serif;;
 }
 
 #menu {
@@ -86,7 +93,8 @@ body {
 	background-color: #e8e8e8;
 	
 	font-weight: bold;
-	font-family: "Times New Roman", times, serif;
+	/*font-family: "Times New Roman", times, serif;*/
+	font-family: verdana, sans-serif;;
 	
 	text-decoration: none;
 }
@@ -129,9 +137,9 @@ body {
 	
 	color: #808080;	
 	
-	font-size: 8pt;
-	font-family: "Times New Roman", times, serif;
-	
+	font-size: 7pt;
+	/*font-family: "Times New Roman", times, serif;*/
+	foont-family: verdana, sans-serif;
 	text-align: center;
 }
 
@@ -211,7 +219,8 @@ body {
 	background-color: #fdfdfd;
 	
 	font-size: 0.8em;
-	font-family: "Times New Roman", times, serif;
+	/*font-family: "Times New Roman", times, serif;*/
+	foont-family: verdana, sans-serif;
 	
 	text-align: right;
 }
@@ -264,7 +273,6 @@ body {
 	background-color: #ffffff;
 }
 
-
 #lightbox button {
 	cursor: pointer;
 	
@@ -291,7 +299,9 @@ body {
 	
 	font-size: 0.8em;
 	font-weight: bold;
-	font-family: "Times New Roman", time, serif;
+	/*font-family: "Times New Roman", time, serif;*/
+	foont-family: verdana, sans-serif;
+
 }
 
 #lightbox-wait {
@@ -319,7 +329,8 @@ body {
 
 #profile-table .description {
 	vertical-align: top;
-	font-family: "Times New Roman", times, serif;
+	/*font-family: "Times New Roman", times, serif;*/
+	font-family: verdana, sans-serif;
 	text-align: right;
 	text-transform: lowercase;
 }

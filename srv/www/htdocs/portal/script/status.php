@@ -63,23 +63,23 @@ elseif ($CMD == 'hd_info') {
 		$tmp = substr($data[0], 0, 2);
 		
 		if ($tmp == 'md') {
-			echo '<span style="font-size: 0.9em;">RAID-Verbund </span><b style="font-size: 0.9em;"><i>' . $data[0] . '</i></b>';
+			echo '<span style="font-size: 0.8em;">RAID-Verbund </span><b style="font-size: 0.8em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'nOK') {
 				$raid_error = true;
-				echo ': <b style="font-size: 0.8em; color: red;">' . $data[2] . '</b><br>';
+				echo ': <b style="font-size: 0.75em; color: red;">' . $data[2] . '</b><br>';
 			} else
-				echo ': <b style="font-size: 0.9em; color: green;">' . $data[1] . '</b><br>';
+				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1] . '</b><br>';
 		} else if ($tmp == 'sd') {
-			echo '<span style="font-size: 0.9em;">Festplatte </span><b style="font-size: 0.9em;"><i>' . $data[0] . '</i></b>';
+			echo '<span style="font-size: 0.8em;">Festplatte </span><b style="font-size: 0.8em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'OK') {
-				echo ': <b style="font-size: 0.9em; color: green;">' . $data[1]. ' ' . $data[2] . '°C</b><br>';
+				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] . '°C</b><br>';
 			} else {
 				$raid_error = true;
-				echo ': <b style="font-size: 0.8em; color: red;">Smart-Fehler ' . $data[2] . '°C</b><br>';
+				echo ': <b style="font-size: 0.75em; color: red;">Smart-Fehler ' . $data[2] . '°C</b><br>';
 			}
 		} else if ($tmp == "pv") {
 			echo '<hr>';
-			echo '<b style="font-size: 0.8em;">Plattenplatz-Reserve: ' . $data[1] . $data[2] . '</b>';
+			echo '<b style="font-size: 0.75em;">Plattenplatz-Reserve: ' . $data[1] . $data[2] . '</b>';
 			echo '<hr>';
 		}
 		echo '<span style="font-size: 0.3em;"> </span>';
@@ -124,7 +124,7 @@ elseif ($CMD == 'capacity_info') {
 }
 elseif ($CMD == 'cert_info') {
 //	echo '<hr>';
-	echo '<b>Serverzertifikate </b><span style="font-size: 0.8em;"> (Verwendungszweck:Ablaufdatum:Status)</span><br>';
+	echo '<b>Serverzertifikate </b><span style="font-size: 0.7em;"> (Verwendungszweck:Ablaufdatum:Status)</span><br>';
 	// Status-Datei einlesen
 	$file_certs = file('/var/spool/results/certs/certstatus');
 	// Datei verarbeiten
@@ -143,20 +143,20 @@ elseif ($CMD == 'cert_info') {
 		$diff = ($enddatestamp - $now) / 86400;
 		// Differenz <=0 -> rot, 1-7 -> orange, > 7 -> gruen
 		if ( $diff > 7 ) {
-		    $datestyle = '<b style="font-size: 0.8em; color: green;">';
+		    $datestyle = '<b style="font-size: 0.75em; color: green;">';
 		} if ( $diff <= 7) {
-		    $datestyle = '<b style="font-size: 0.8em; color: orange;">';
+		    $datestyle = '<b style="font-size: 0.75em; color: orange;">';
 		} if ( $diff <= 0) {
-		    $datestyle = '<b style="font-size: 0.8em; color: red;">';
+		    $datestyle = '<b style="font-size: 0.75em; color: red;">';
 		}
 		// Zertifikatsstatus & Darstellungsfarbe
 		$certstate = substr($data[2], 0, 2);
 		if (strcasecmp($certstate, 'OK') == 0) {
-		    $statestyle = '<b style="font-size: 0.8em; color: green;">';
+		    $statestyle = '<b style="font-size: 0.75em; color: green;">';
 		} else {
-		    $statestyle = '<b style="font-size: 0.8em; color: red;">';
+		    $statestyle = '<b style="font-size: 0.75em; color: red;">';
 		}
-		echo '<b style="font-size: 0.8em;">' . $type . ': </b>';
+		echo '<b style="font-size: 0.75em;">' . $type . ': </b>';
 		echo $datestyle . $enddate . ': </b>';
 		echo $statestyle . $certstate . '</b>&nbsp;';
 	}

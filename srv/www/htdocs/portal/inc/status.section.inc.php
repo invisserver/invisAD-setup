@@ -61,18 +61,18 @@ if (isset($STATUS_APCUPSD))
 <table width="100%" border="0">
 	<tr>
 		<!-- left -->
-		<td valign="top" align="left" rowspan="2" width="27%">
+		<td valign="top" align="left" rowspan="2" width="28%">
 			<span id="basic_info"></span>
 			<span id="hd_info"></span>
 		</td>
-		<td valign="top" align="left" rowspan="2" width="3%"></td>
+		<td valign="top" align="left" rowspan="2" width="2%"></td>
 		<!-- right -->
 		<td valign="top" align="left">
 			<table rowspan="2" width="100%">
 				<tr>
 					<td valign="top"><span id="inet_info"></span></td>
 					<?php if (isset($STATUS_BACKUP_TIMER)) echo '<td valign="top"><span id="backup_info"></span></td>'; ?>
-					<?php if ($STATUS_APCUPSD == true) echo '<td valign="top"><span id="usv_status"></span></td>'; ?>
+					<?php if ($STATUS_APCUPSD == true) echo '<td width="30%" valign="top"><span id="usv_status"></span></td>'; ?>
 				</tr>
 			</table>
 			<span id="capacity_info"></span>

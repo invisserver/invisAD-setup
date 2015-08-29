@@ -28,23 +28,23 @@ function serviceList($conn) {
 	    // farblich Darstellung des Dienststatus festlegen
 	    // Runlevelintegration
 	    if ( $status[0] == 'enabled' ) {
-		$rlstatus = '<b style="font-family: verdana; color: green;">' . $status[0] . '</b>';
+		$rlstatus = '<b style="color: green;">' . $status[0] . '</b>';
 	    } else {
-		$rlstatus = '<b style="font-family: verdana; color: orange;">' . $status[0] . '</b>';
+		$rlstatus = '<b style="orange;">' . $status[0] . '</b>';
 	    }
 	
 	    // Dienststatus
-	    $srvstatus = '<b style="font-family: verdana; color: orange;">' . $status[1] . '</b>';
+	    $srvstatus = '<b style="color: orange;">' . $status[1] . '</b>';
 	    if ( trim($status[1]) == 'active' ) {
-		$srvstatus = '<b style="font-family: verdana; color: green;">' . $status[1] . '</b>';
+		$srvstatus = '<b style="color: green;">' . $status[1] . '</b>';
 	    } elseif ( trim($status[1]) == 'inactive' ) {
-		$srvstatus = '<b style="font-family: verdana; color: red;">' . $status[1] . '</b>';
+		$srvstatus = '<b style="color: red;">' . $status[1] . '</b>';
 	    }
 	    
 	    $entry = array(
 		    "service" => $service[0],
-		    "name" => '<b style="font-family: verdana;">' . $service[0] . '</b>',
-		    "info" => '<span style="font-family: verdana;">' . $service[1] . '</span>',
+		    "name" => '<b>' . $service[0] . '</b>',
+		    "info" => '<span>' . $service[1] . '</span>',
 		    "enabled" => $rlstatus,
 		    "status" => $srvstatus);
 

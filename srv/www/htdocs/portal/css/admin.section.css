@@ -35,11 +35,13 @@
 	
 	border-bottom: 1px solid #b0b0b0;
 	
-	color: #b0b0b0;
+	color: #6E6E6E;
 	
 	font-weight: bold;
-	font-family: "Times New Roman", times, serif;
-	
+	/*font-family: "Times New Roman", times, serif;
+	*/
+	font-family: verdana, sans-serif;
+	font-size: 0.9em;
 	list-style-type: none;
 }
 
@@ -81,7 +83,9 @@
 #result-table {
 	width: 100%;
 	
-	font-family: "Times New Roman", times, serif;
+	/*font-family: "Times New Roman", times, serif;*/
+	font-family: verdana, sans-serif;
+	font-size: 0.8em;
 }
 
 #result-table th {
@@ -91,8 +95,11 @@
 	border-bottom: 1px solid #b0b0b0;
 	background-color: #fafafa;
 	
-	font-family: Helvetica, Arial, sans-serif;
-	font-weight: normal;
+	/*font-family: Helvetica, Arial, sans-serif;*/
+	font-family: verdana, sans-serif;
+	color: #6E6E6E;
+	
+	font-weight: bold;
 	text-align: left;
 }
 
@@ -121,7 +128,9 @@
 
 #result-body .delete {
 	font-size: 0.7em;
-	font-family: Helvetica, Arial, sans-serif;
+	/*font-family: Helvetica, Arial, sans-serif;*/
+	font-family: verdana, sans-serif;
+
 	color: #808080;
 	cursor: pointer;
 }
@@ -266,12 +275,15 @@ input {
 
 #host_discover th {
 	font-size: 0.8em;
-	font-family: Arial, Helvetica, sans-serif;
+	/*font-family: Arial, Helvetica, sans-serif;*/
+	font-family: verdana, sans-serif;
 	border-bottom: 1px solid #c0c0c0;
 }
 
 #host_discover td {
 	text-align: center;
-	font-family: "Times New Roman", Times, serif;
+	/*font-family: "Times New Roman", Times, serif;*/
+	font-family: verdana, sans-serif;
+
 	padding: 5px;
 }

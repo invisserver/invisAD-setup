@@ -68,7 +68,6 @@ $serverNoPort = isset($_SERVER['HTTPS']) ? 'https://'.$_SERVER['SERVER_ADDR'] : 
 		<td id='admin-content'>
 			<div id='admin-content-title'>Titel</div>
 			<div id='admin-content-content'>
-				<h2>Kurzinfos</h2>
 <?php
 	
 $result = search($conn, "$LDAP_SUFFIX_PORTAL", 'iportentryposition=administration');
@@ -77,7 +76,7 @@ if ($result) {
 		$entry = cleanup($result[$i]);
 		if ($entry['iportentryactive'] == 'FALSE') continue;
 		$type = $entry['iportentrypriv'];
-		echo '<p style="text-align: justify;"><b>' . $entry['iportentrybutton'] . ':</b> <span style="font-size: 0.9em;">' . $entry['iportentrydescription'] . '</span></p>';
+		echo '<div style="text-align: justify;"><b style="font-size: 0.8em;">' . $entry['iportentrybutton'] . ':</b> <span style="font-size: 0.8em;">' . $entry['iportentrydescription'] . '</span></div><hr>';
 	}
 } else {
 	echo ldap_error($conn);
