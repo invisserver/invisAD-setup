@@ -67,25 +67,29 @@ $SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "A
 // Dienste muessen als Array in das globale Array eingetragen werden.
 // Jedes Service-Array besteht aus 2 Feldern, von denen das erste der korrekte Daemon-Name
 // sein muss und das zweite eine kurze Bemerkung zur Funktion des Dienstes.
+// BITTE neue Dienste alphabetisch einsortieren!!!
+
 $SERVER_SERVICES = array(
-	array('postfix','Email-Versand'),
-	array('fetchmail','Emails abholen'),
 	array('amavis', 'Spamfilter'),
 	array('clamd', 'Virenscanner'),
-	array('freshclam', 'Virenscanner Updater'),
+	array('cups', 'Druckserver'),
 	array('dhcpd','IP Adressvergabe'),
+	array('fetchmail','Emails abholen'),
+	array('freshclam', 'Virenscanner Updater'),
+	array('mysql', 'MariaDB Datenbank'),
 	array('named','DNS Namensauflösung'),
+	array('ntop', 'Netzwerkanalyse'),
+	array('ntp', 'Zeitserver'),
+	array('postfix','Email-Versand'),
+	array('postgresql', 'PostgreSQL Datenbank'),
 	array('sernet-samba-ad', 'Active Directory'),
-	array('zarafa-server', 'Zarafa Server'),
-	array('zarafa-spooler', 'Zarafa Versand'),
 	array('zarafa-dagent', 'Zarafa Empfang'),
 	array('zarafa-gateway', 'Zarafa Postfach'),
 	array('zarafa-ical', 'Zarafa Kalender'),
 	array('zarafa-monitor', 'Zarafa Monitor'),
 	array('zarafa-search', 'Zarafa Suche'),
-	array('mysql', 'MariaDB Datenbank'),
-	array('cups', 'Druckserver'),
-	array('ntp', 'Zeitserver')
+	array('zarafa-server', 'Zarafa Server'),
+	array('zarafa-spooler', 'Zarafa Versand')
 	);
 
 // WEBSITE SPECIFIC

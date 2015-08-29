@@ -25,11 +25,28 @@ function serviceList($conn) {
 	    
 	    $status = explode( " ", $result);
 	    
+	    // farblich Darstellung des Dienststatus festlegen
+	    // Runlevelintegration
+	    if ( $status[0] == 'enabled' ) {
+		$rlstatus = '<b style="font-family: verdana; color: green;">' . $status[0] . '</b>';
+	    } else {
+		$rlstatus = '<b style="font-family: verdana; color: orange;">' . $status[0] . '</b>';
+	    }
+	
+	    // Dienststatus
+	    $srvstatus = '<b style="font-family: verdana; color: orange;">' . $status[1] . '</b>';
+	    if ( trim($status[1]) == 'active' ) {
+		$srvstatus = '<b style="font-family: verdana; color: green;">' . $status[1] . '</b>';
+	    } elseif ( trim($status[1]) == 'inactive' ) {
+		$srvstatus = '<b style="font-family: verdana; color: red;">' . $status[1] . '</b>';
+	    }
+	    
 	    $entry = array(
-		    "name" => $service[0],
-		    "info" => $service[1],
-		    "enabled" => $status[0],
-		    "status" => $status[1]);
+		    "service" => $service[0],
+		    "name" => '<b style="font-family: verdana;">' . $service[0] . '</b>',
+		    "info" => '<span style="font-family: verdana;">' . $service[1] . '</span>',
+		    "enabled" => $rlstatus,
+		    "status" => $srvstatus);
 
 	    array_push($json, $entry);
 	}

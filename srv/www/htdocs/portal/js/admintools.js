@@ -12,7 +12,8 @@
 // page-global vars
 //**********************************************************************
 
-var PAGE_SIZE = 10;
+var PAGE_SIZE = 8;
+var PAGE_SIZE_SERVICE = 5;
 var PAGE_CURRENT = 0;
 var PAGED_DATA = null;
 var PAGED_DATA_UNSORTED = null;
@@ -865,7 +866,7 @@ function populateServiceList(event, page) {
 
 	
 	// Dienst | Info | Aktiviert | Status | Aktionen
-	for (var i = page * PAGE_SIZE; i < (page+1) * PAGE_SIZE; i++) {
+	for (var i = page * PAGE_SIZE_SERVICE; i < (page+1) * PAGE_SIZE_SERVICE; i++) {
 		if (PAGED_DATA[i] == null) break;
 		var service = PAGED_DATA[i];
 		
@@ -884,13 +885,13 @@ function populateServiceList(event, page) {
 		td_status.insert(service['status']);
 		
 		var td_action = new Element('td', {'class': 'delete'});
-		td_action.insert(new Element('span', {'onclick': 'serviceStart(\'' + service['name'] + '\');'}).update('<img src="images/start_small.png" />'));
+		td_action.insert(new Element('span', {'onclick': 'serviceStart(\'' + service['service'] + '\');'}).update('<img src="images/start_small.png" />'));
 		td_action.insert(new Element('br'));
-		td_action.insert(new Element('span', {'onclick': 'serviceStopp(\'' + service['name'] + '\');'}).update('<img src="images/stopp_small.png" />'));
+		td_action.insert(new Element('span', {'onclick': 'serviceStopp(\'' + service['service'] + '\');'}).update('<img src="images/stopp_small.png" />'));
 		td_action.insert(new Element('br'));
-		td_action.insert(new Element('span', {'onclick': 'serviceRestart(\'' + service['name'] + '\');'}).update('<img src="images/restart_small.png" />'));
+		td_action.insert(new Element('span', {'onclick': 'serviceRestart(\'' + service['service'] + '\');'}).update('<img src="images/restart_small.png" />'));
 		td_action.insert(new Element('br'));
-		td_action.insert(new Element('span', {'onclick': 'serviceReload(\'' + service['name'] + '\');'}).update('<img src="images/reload_small.png" />'));
+		td_action.insert(new Element('span', {'onclick': 'serviceReload(\'' + service['service'] + '\');'}).update('<img src="images/reload_small.png" />'));
 		
 		tr.insert(td_name);
 		tr.insert(td_info);
@@ -903,7 +904,7 @@ function populateServiceList(event, page) {
 
 	// table with current page data
 	var n_entries = PAGED_DATA.length;
-	var n_pages = Math.ceil(n_entries / PAGE_SIZE);
+	var n_pages = Math.ceil(n_entries / PAGE_SIZE_SERVICE);
 	for (var i = 0; i < n_pages; i++) {
 		var a = new Element('a', {'class': 'page-link'}).update(i + 1);
 		if (i == PAGE_CURRENT)
