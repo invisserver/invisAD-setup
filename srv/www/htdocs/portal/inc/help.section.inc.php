@@ -76,11 +76,11 @@ function supportMailResponse(request) {
 
 </script>
 
-<div style="padding: 10px;">
+<div style="padding: 1px;">
 	<h3>Kontaktformular:</h3>
-	<p>Nutzen Sie dieses Formular um mit Ihren IT-Dienstleister in Kontakt zu treten.</p>
+	<div>Nutzen Sie dieses Formular um mit Ihren IT-Dienstleister in Kontakt zu treten.</div>
 	<form onsubmit="return false;">
-		<table width="450px" border="0">
+		<table width="100%" border="0">
 			<tr>
 				<td width="50px"><label for="form_origin" style="font-size: 0.8em;">Absender:</label></td>
 				<td><input id="form_origin" type="text" style="width: 100%; padding: 2px; border: 1px solid #b0b0b0; background-color: #e0e0e0; font-style: italic; color: #808080;" value="<?php echo($USER_DATA -> uid); ?>" readonly="readonly" /></td>
@@ -89,7 +89,7 @@ function supportMailResponse(request) {
 				<td><input id="form_subject" type="text" style="width: 100%; padding: 2px; border: 1px solid #b0b0b0; font-weight: bold;" /></td>
 			</tr>
 			<tr>
-				<td colspan="2"><textarea id="form_content" style="width: 100%; border: 1px solid #b0b0b0;" cols="50" rows="20"></textarea></td>
+				<td colspan="2"><textarea id="form_content" style="width: 100%; border: 1px solid #b0b0b0;" cols="50" rows="15"></textarea></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input id="form_button" style="border: 1px solid #b0b0b0; cursor: pointer; margin: 2px; padding: 3px; color: #000000; background-color: #fafafa;" type="button" value="Senden" onclick="supportMail();"/></td>
