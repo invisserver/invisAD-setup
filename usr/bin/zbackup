@@ -1,7 +1,6 @@
 #!/bin/bash
 # Script zur regelmaessigen Sicherung der Zarafa-Stores
-# (c) 2011 Stefan Schäfer -- invis-server.org
-# License: GPLv3
+# (c) 2011, 2015 Stefan Schäfer -- invis-server.org
 # Questions: stefan@invis-server.org
 
 # License: GPLv3
@@ -18,9 +17,13 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
+
 # Konfigurationsdaten
 conffile="/etc/invis/invis.conf"
 #passfile="/etc/invis/invis-pws.conf"
+
+# Dasi neu beginnen, wenn 20 Inkremente vorhanden sind
+splitbu=0
 
 if [[ ! -d "/opt/zarafa-extensions" ]]; then
     echo "Installieren Sie bitte die invis-Server Zarafa-Erweiterungen."
@@ -57,17 +60,19 @@ fi
 
 
 # Ggf. vorhandene Sicherung nach oldbackup verschieben
-if [[ -n `ls $dasipath|grep ".zbk.20"` ]]; then 
+if [[ $splitbu == 1 ]]; then
+    if [[ -n `ls $dasipath|grep ".zbk.20"` ]]; then 
 
-    if [[ ! -d $dasipath/oldbackup ]]; then
-	mkdir -p $dasipath/oldbackup
+	if [[ ! -d $dasipath/oldbackup ]]; then
+	    mkdir -p $dasipath/oldbackup
+	fi
+    
+	# Verzeichnis leeren
+	rm -rf $dasipath/oldbackup/*
+    
+	# vorhandene Sicherung verschieben
+	find $dasipath/ -maxdepth 1 -type f -exec mv {} $dasipath/oldbackup/ \;
     fi
-    
-    # Verzeichnis leeren
-    rm -rf $dasipath/oldbackup/*
-    
-    # vorhandene Sicherung verschieben
-    find $dasipath/ -maxdepth 1 -type f -exec mv {} $dasipath/oldbackup/ \;
 fi
 
 # Datensicherung der Stores durchführen
