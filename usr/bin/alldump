@@ -42,9 +42,9 @@ zarafadb=`getconfdata $conffile "zDatabase" "2"`
 
 dasibase=`getconfdata $conffile "DasiDir" "2"`
 dasitarget=`getconfdata $conffile "DBTarget" "2"`
-dasidir="$dasibase/$dasitarget"
+dasidir="$dasibase/vollsicherungen/$dasitarget"
 
-dumpdir="/srv/shares/archiv/dbdumps"
+dumpdir="$dasibase/dbdumps"
 
 # Erstellen, wenn nicht vorhanden
 if [[ ! -d $dumpdir ]]; then
@@ -58,8 +58,10 @@ fi
 
 datum=`date +%Y%m%d`
 
-## Sichern des LDAP-Verzeichnisses
-slapcat > $dumpdir/ldap-sicherung.ldif
+## Sichern des LDAP-Verzeichnisses, wenn moeglich
+if [[ -f `which slapcat` ]];then
+    slapcat > $dumpdir/ldap-sicherung.ldif
+fi
 
 ## MySQL
 # root PW einlesen

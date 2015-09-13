@@ -41,7 +41,7 @@ IGGY="test"
 dasidir=$(getconfdata $conffile "DasiDir" "2")
 dbtarget=$(getconfdata $conffile "DBTarget" "2")
 
-DEST="$dasidir/$dbtarget"
+DEST="$dasidir/vollsicherungen/$dbtarget"
 
 # mysqldump parameters
 DUMP_OPTS="-Q --single-transaction"

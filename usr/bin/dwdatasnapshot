@@ -43,7 +43,7 @@ if [[ -d $sourcedir ]]; then
     ## Sicherungsverzeichnis
     dasibase=`getconfdata $conffile "DasiDir" "2"`
     dasitarget=`getconfdata $conffile "DWTarget" "2"`
-    dasidir="$dasibase/$dasitarget"
+    dasidir="$dasibase/vollsicherungen/$dasitarget"
 
     # Verzeichnis erstellen, wenn nicht vorhanden
     if [[ ! -d $dasidir ]]; then

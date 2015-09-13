@@ -42,6 +42,10 @@ MAILTO=/dev/null
 # Jeden Samstag 1:30 Uhr
 30 1 * * 6 root /usr/bin/dwdatasnapshot
 
+# Saeubern des Sicherungsverzeichnisses
+# Einmal taeglich um 5:10 Uhr
+10 5 * * * root /usr/bin/clean_dasi
+
 # Aktualisieren des internen LDAP-Adressbuchs
 # Alle 6 Stunden an den Tagen Montag - Freitag jeweils um X:30 Uhr
 30 */6 * * 1-5 root /usr/bin/addaddress
