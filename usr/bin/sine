@@ -714,8 +714,26 @@ Sollen alte Dateien und Verzeichnisse automatisch aus der Transfer-Freigabe gel�
 	trdays=`cat $setupdir/sine_temp|cut -d " " -f1`
     fi
 
+#---# CleanTransfer
+    yesno "Auf Ihrem invis-Server werden regelmäßig Sicherung vorhandener Datenbanken und des Wiki-Datenbestandes angelegt.\n\n
+Dabei fallen schnell große Datenmengen schnell an. Da jeweils Vollsicherungen angelegt werden, können problemlos ältere 
+Sicherungen gelöscht werden.\n\n
+Sollen alte Datesicherungen automatisch gelöscht werden?" "Datensicherungen aufräumen"
+    cleandasi=${?}
+    
+    if [[ $cleandasi == "0" ]]; then
+	dialog --backtitle "$dialogtitle" --title "Datensicherungen aufräumen" --radiolist "Wie alt sollen interne Datensicherungen maximal werden?" 12 50 4\
+	"21 Tage" "3 Wochen" on\
+	"42 Tage" "6 Wochen" off\
+	"90 Tage" "3 Monate" off\
+	2>$setupdir/sine_temp
+	dasidays=`cat $setupdir/sine_temp|cut -d " " -f1`
+    fi
+
+#   regelmässige Virenscans
     yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
     avcron=${?}
+
 ## Wird dank ownCloud-Integration und Server zu Server sync nicht mehr benoetigt
 #    yesno "Soll Ihr Server ein beliebiges Verzeichnis im Hintergrund mit einem ownCloud Konto synchronisieren?" "ownCloud Synchronisation"
 #    owncloudsync=${?}
@@ -852,6 +870,13 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 	echo "TRmaxDays:$trdays" >> $setupdir/invis_confdata
     else
 	echo "cleanTR:n" >> $setupdir/invis_confdata
+    fi
+
+    if [[ $cleandasi == "0" ]]; then
+	echo "cleanDasi:j" >> $setupdir/invis_confdata
+	echo "DasimaxDays:$trdays" >> $setupdir/invis_confdata
+    else
+	echo "cleanDasi:n" >> $setupdir/invis_confdata
     fi
 
     if [[ $owncloudsync == "0" ]]; then
@@ -1140,6 +1165,15 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 	changevalues $confdir $file "$strings"
 	maxdays=`getconfdata "TRmaxDays" "2"`
 	strings="trMaxDays:21%trMaxDays:$maxdays"
+	changevalues $confdir $file "$strings"
+    fi
+
+    cleandasi=`getconfdata "cleanDasi" "2"`
+    if [[ $cleantr == "j" ]]; then
+	strings="cleanDasi:n%cleanDasi:$cleandasi"
+	changevalues $confdir $file "$strings"
+	maxdays=`getconfdata "DasimaxDays" "2"`
+	strings="DasiMaxDays:21%DasiMaxDays:$maxdays"
 	changevalues $confdir $file "$strings"
     fi
 
