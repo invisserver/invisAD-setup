@@ -65,7 +65,7 @@ if (isset($STATUS_APCUPSD))
 			<span id="basic_info"></span>
 			<span id="hd_info"></span>
 		</td>
-		<td valign="top" align="left" rowspan="2" width="2%"></td>
+		<td valign="top" align="left" rowspan="2" width="1%"></td>
 		<!-- right -->
 		<td valign="top" align="left">
 			<table rowspan="2" width="100%">
