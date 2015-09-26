@@ -1,5 +1,5 @@
 #!/bin/bash
-# invis AD 10.3 Server Setup Script
+# invis AD 10.4 Server Setup Script
 # Version 1.04
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2015 Stefan Schäfer / invis-server.org / stefan@invis-server.org
@@ -31,7 +31,7 @@
 setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
-invisversion="10.3"
+invisversion="10.4"
 
 # Setup-Dialog Titel
 dialogtitle="invis AD Server $invisversion Setup"
