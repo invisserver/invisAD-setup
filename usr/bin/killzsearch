@@ -1,0 +1,16 @@
+#! /bin/bash
+# Zarafa Search plus beenden
+# (c) 2015 Stefan Schaefer -- invis-server.org
+# License GPLv3
+
+pidfile="/var/run/zarafa-search.pid"
+program="zarafa-search"
+socket="/var/run/zarafa-search"
+
+
+if [[ -f $pidfile ]]; then
+    systemctl stop zarafa-search.service
+    kill -15 `cat $pidfile`
+    rm $socket
+fi
+
