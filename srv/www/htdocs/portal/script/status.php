@@ -102,7 +102,7 @@ elseif ($CMD == 'capacity_info') {
 		$used_factor = $used / $total;
 		$used_percent = $used_factor * 100;
 		
-		$max = 600;
+		$max = 620;
 		
 		$red = dechex(128 + 127 * $used_factor);
 		$green = dechex(255 - 127 * $used_factor);
@@ -143,20 +143,20 @@ elseif ($CMD == 'cert_info') {
 		$diff = ($enddatestamp - $now) / 86400;
 		// Differenz <=0 -> rot, 1-7 -> orange, > 7 -> gruen
 		if ( $diff > 7 ) {
-		    $datestyle = '<b style="font-size: 0.6em; color: green;">';
+		    $datestyle = '<b style="font-size: 0.75em; color: green;">';
 		} if ( $diff <= 7) {
-		    $datestyle = '<b style="font-size: 0.6em; color: orange;">';
+		    $datestyle = '<b style="font-size: 0.75em; color: orange;">';
 		} if ( $diff <= 0) {
-		    $datestyle = '<b style="font-size: 0.6em; color: red;">';
+		    $datestyle = '<b style="font-size: 0.75em; color: red;">';
 		}
 		// Zertifikatsstatus & Darstellungsfarbe
 		$certstate = substr($data[2], 0, 2);
 		if (strcasecmp($certstate, 'OK') == 0) {
-		    $statestyle = '<b style="font-size: 0.6em; color: green;">';
+		    $statestyle = '<b style="font-size: 0.75em; color: green;">';
 		} else {
-		    $statestyle = '<b style="font-size: 0.6em; color: red;">';
+		    $statestyle = '<b style="font-size: 0.75em; color: red;">';
 		}
-		echo '<b style="font-size: 0.6em;">' . $type . ': </b>';
+		echo '<b style="font-size: 0.75em;">' . $type . ': </b>';
 		echo $datestyle . $enddate . ': </b>';
 		echo $statestyle . $certstate . '</b>&nbsp;';
 	}
