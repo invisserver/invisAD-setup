@@ -237,6 +237,7 @@ function userCreate($uid) {
 	
 	// Profilpfad
 	$profilepath = "\\\\$SMB_HOSTNAME\\profiles\\$uid";
+	$smbhomepath = "\\\\$SMB_HOSTNAME\\$uid";
 
 	// hier mit case weiter, Atribute werden je nach Accounttype gesetzt
 	//$password = $cookie_data['userpassword'];
@@ -401,6 +402,7 @@ function userCreate($uid) {
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
+		"home_directory"=>$smbhomepath,
 		"profile_path"=>$profilepath,
 		"script_path"=>"user.cmd",
 		"password"=>$password
@@ -433,6 +435,7 @@ function userCreate($uid) {
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
+		"home_directory"=>$smbhomepath,
 		"profile_path"=>$profilepath,
 		"script_path"=>"user.cmd",
 		"password"=>$password
@@ -494,6 +497,7 @@ function userCreate($uid) {
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
+		"home_directory"=>$smbhomepath,
 		"profile_path"=>$profilepath,
 		"script_path"=>"user.cmd",
 		"password"=>$password
@@ -554,6 +558,7 @@ function userCreate($uid) {
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
+		"home_directory"=>$smbhomepath,
 		"profile_path"=>$profilepath,
 		"script_path"=>"admin.cmd",
 		"password"=>$password
@@ -606,6 +611,7 @@ function userCreate($uid) {
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
+		"home_directory"=>$smbhomepath,
 		"profile_path"=>$profilepath,
 		"script_path"=>"admin.cmd",
 		"password"=>$password
@@ -678,6 +684,7 @@ function userCreate($uid) {
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
+		"home_directory"=>$smbhomepath,
 		"profile_path"=>$profilepath,
 		"script_path"=>"admin.cmd",
 		"password"=>$password,
