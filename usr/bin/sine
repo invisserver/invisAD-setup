@@ -1764,7 +1764,7 @@ esac
     changevalues $path $file "$strings"
     postmap $path/$file
 
-    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-aliases.cf ldap-groups.cf)
+    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-aliases.cf ldap-groups.cf)
 
     for datei in ${files[*]}; do
 	#echo $datei
