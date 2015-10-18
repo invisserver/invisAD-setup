@@ -18,11 +18,12 @@
 
 # Variablen
 syspath="/sys/class/net"
-rulefile="/etc/udev/rules.d/30-invis-net.rules"
+rulefile="/etc/udev/rules.d/75-invis-net.rules"
 netconfigpath="/etc/sysconfig/network/"
 
 # ggf. Vorhandene Netzwerkkonfigurationen löschen
 rm -f $netconfigpath/ifcfg-enp*
+rm -f $netconfigpath/ifcfg-eth*
 
 # Weiteres Script nur ausführen, wenn noch nicht geschehen
 if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
@@ -42,13 +43,13 @@ if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
 	echo "Ihr Server verfuegt lediglich ueber eine Netzwerkkarte, damit ist kein invis-Setup möglich."
 	;;
     2)
-	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[0]}, ATTR{type}==\"1\" NAME=\"extern\", OPTIONS=\"last_rule\"" > $rulefile
-	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[1]}, ATTR{type}==\"1\" NAME=\"intern\", OPTIONS=\"last_rule\"" >> $rulefile
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[0]}, ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"extern\", OPTIONS=\"last_rule\"" > $rulefile
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[1]}, ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"intern\", OPTIONS=\"last_rule\"" >> $rulefile
 	;;
     *)
-	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[0]}, ATTR{type}==\"1\", NAME=\"dmz\", OPTIONS=\"last_rule\"" > $rulefile
-	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[1]}, ATTR{type}==\"1\", NAME=\"extern\", OPTIONS=\"last_rule\"" >> $rulefile
-	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[2]}, ATTR{type}==\"1\", NAME=\"intern\", OPTIONS=\"last_rule\"" >> $rulefile
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[0]}, ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"dmz\", OPTIONS=\"last_rule\"" > $rulefile
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[1]}, ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"extern\", OPTIONS=\"last_rule\"" >> $rulefile
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[2]}, ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"intern\", OPTIONS=\"last_rule\"" >> $rulefile
 	;;
     esac
 
