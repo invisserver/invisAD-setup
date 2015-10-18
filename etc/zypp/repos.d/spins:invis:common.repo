@@ -1,8 +1,8 @@
 [spins_invis_common]
-name=Common packages for invis-Server stable & unstable (openSUSE_13.1)
+name=Common packages for invis-Server stable & unstable (openSUSE_42.1)
 type=rpm-md
-baseurl=http://download.opensuse.org/repositories/spins:/invis:/common/openSUSE_13.1/
+baseurl=http://download.opensuse.org/repositories/spins:/invis:/common/openSUSE_42.1/
 gpgcheck=1
-gpgkey=http://download.opensuse.org/repositories/spins:/invis:/common/openSUSE_13.1/repodata/repomd.xml.key
+gpgkey=http://download.opensuse.org/repositories/spins:/invis:/common/openSUSE_42.1/repodata/repomd.xml.key
 enabled=1
 autorefresh=1
