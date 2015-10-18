@@ -102,7 +102,7 @@ elseif ($CMD == 'capacity_info') {
 		$used_factor = $used / $total;
 		$used_percent = $used_factor * 100;
 		
-		$max = 600;
+		$max = 620;
 		
 		$red = dechex(128 + 127 * $used_factor);
 		$green = dechex(255 - 127 * $used_factor);

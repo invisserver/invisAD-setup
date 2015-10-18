@@ -1764,7 +1764,7 @@ esac
     changevalues $path $file "$strings"
     postmap $path/$file
 
-    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-aliases.cf ldap-groups.cf)
+    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-aliases.cf ldap-groups.cf)
 
     for datei in ${files[*]}; do
 	#echo $datei
@@ -3307,37 +3307,37 @@ virtualbox() {
     else
 	msgbox "Virtualbox Installation übersprungen" "$windowtitle"
     fi
-    writeprepstat "xfce"
-    waitbox "virtualbox" "xfce"
-
-}
-
-xfce() {
-    cd $setupdir
-    clear
-    windowtitle="XFCE Desktop-Umgebung einrichten"
-
-    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/xfce.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie XFCE installieren?" 0 0
-    cont=${?}
-
-    # Weitermachen?
-    if [[ $cont == "0" ]]; then
-	pgsubtitle="Software wird installiert"
-	# x2go Repo installieren
-	cp $cfilesdir/zypper/x2go.repo /etc/zypp/repos.d/
-	rpmkeyimporter
-	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
-	zypper -n install -n `cat $setupdir/zypper-package-lists/xfce-x2go` 2>&1 | tee -a $setupdir/sine.log | pgbox
-	zyppercheck ${PIPESTATUS[0]}
-
-    
-    
-    else
-	msgbox "XFCE Installation übersprungen" "$windowtitle"
-    fi
     writeprepstat "ready"
+    #waitbox "virtualbox" "xfce"
 
 }
+
+#xfce() {
+#    cd $setupdir
+#    clear
+#    windowtitle="XFCE Desktop-Umgebung einrichten"
+#
+#    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/xfce.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie XFCE installieren?" 0 0
+#    cont=${?}
+#
+#    # Weitermachen?
+#    if [[ $cont == "0" ]]; then
+#	pgsubtitle="Software wird installiert"
+#	# x2go Repo installieren
+#	cp $cfilesdir/zypper/x2go.repo /etc/zypp/repos.d/
+#	rpmkeyimporter
+#	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
+#	zypper -n install -n `cat $setupdir/zypper-package-lists/xfce-x2go` 2>&1 | tee -a $setupdir/sine.log | pgbox
+#	zyppercheck ${PIPESTATUS[0]}
+
+    
+#    
+#    else
+#	msgbox "XFCE Installation übersprungen" "$windowtitle"
+#    fi
+#    writeprepstat "ready"
+
+#}
 
 ### Ende der Funktionen - Beginn Hauptprogramm
 
