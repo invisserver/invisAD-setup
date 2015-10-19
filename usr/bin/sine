@@ -269,7 +269,7 @@ check() {
 	
 	cp $cfilesdir/System/ntp/servers-netconfig /var/run/ntp
 	
-	chkservice "ntp"
+	chkservice "ntpd"
         hwclock --systohc
 
         # cron & at-Daemon in Runlevel integrieren und starten
@@ -1222,7 +1222,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
     sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
 
-    chkservice "ntp"
+    chkservice "ntpd"
 
     # invis Passwort-Datei anpassen
     file="invis-pws.conf"
