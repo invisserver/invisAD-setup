@@ -6,7 +6,6 @@ libtevent-util0
 libnetapi0
 libgensec0
 libdcerpc-binding0
-libpdb0
 libsamba-credentials0
 libsamba-hostconfig0
 libsamba-util0
