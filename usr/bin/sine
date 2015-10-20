@@ -2697,14 +2697,14 @@ case $whicherp in
 
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
-	    zypper refresh 2>&1 |pgbox
-	    zypper -n install -n `cat $setupdir/zypper-package-lists/kivitendo` 2>&1 |pgbox
+	    zypper refresh 2>&1 | tee -a $setupdir/sine.log  |pgbox
+	    zypper -n install -n `cat $setupdir/zypper-package-lists/kivitendo` 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	
 	    # Apache FCGID-Modul aktivieren, wenn nicht bereits geschehen
 	    if [[ -z `a2enmod -l | grep fcgid` ]]; then
 		a2enmod fcgid
-		/etc/init.d/apache2 reload 2>&1 |pgbox
+		/etc/init.d/apache2 reload 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	    fi
 
 	    # Kivitendo Konfiguration vorbereiten
