@@ -700,7 +700,6 @@ smtpd_tls_security_level = may
 # Mailannahme verschluesseln
 smtpd_tls_key_file = /etc/ssl/private/mail-key.pem
 smtpd_tls_cert_file = /etc/ssl/certs/mail-cert.pem
-smtpd_tls_CA_file = /etc/ssl/certs/cacert.pem
 
 # Relay Domains und Transportwege-Regelungs Tabelle bekannt machen 
 #relay_domains = hash:/etc/postfix/relay
