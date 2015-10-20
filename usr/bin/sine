@@ -3108,7 +3108,7 @@ dokuwiki() {
     wget https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
     getpath=`find $setupdir -name "master.zip"`
     unzip $getpath -d /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $setupdir/sine.log | pgbox
-    mv /srv/www/htdocs/dokuwiki/lib/plugins/dw-plugin-encryptedpasswords-master /srv/www/htdocs/dokuwiki/lib/plugins/encryptedpasswords
+    mv /srv/www/htdocs/dokuwiki/lib/plugins/dw-plugin-encryptedpasswords-master /srv/www/htdocs/dokuwiki/lib/plugins/encryptedpasswords 2>&1 | tee -a $setupdir/sine.log | pgbox
     chown -R wwwrun:www /srv/www/htdocs/dokuwiki
     
     # Konfigurieren
