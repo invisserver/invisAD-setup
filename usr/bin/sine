@@ -611,6 +611,11 @@ Welche Lösung möchten Sie einsetzen?\n\n" 18 80 8 \
 	2>$setupdir/sine_temp
 	whichmonitoring=`cat $setupdir/sine_temp`
 
+#---# rsyslog installieren
+#    yesno "Moderne Linux-Systeme ersetzen mit dem Tool Systemd-Journald den klassischen System-Protokolldienst. Journald protokolliert nicht mehr in einfachen Textdateien, sondern in einem Binärformat. Zum Lesen der Protokolle ist das Tool journalctl erforderlich. Soll zusätzlich zum Journald ein klassischer Protokolldienst installieret werden?" "rsyslog installieren?"
+#    instsyslog=${?}
+    
+
 #---# HTTPS    
     yesno "Soll Ihr invis Server via Internet (HTTPS) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
     exthttps=${?}
@@ -847,6 +852,13 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 
     echo "MonitoringSoftware:$whichmonitoring" >> $setupdir/invis_confdata
 
+#    if [[ $instsyslog == "0" ]]; then
+#	rsyslogsetup="1"
+#    else
+#	rsyslogsetup="0"
+#    fi
+#    echo "Rsyslog:$rsyslogsetup" >> $setupdir/invis_confdata
+
     echo "SSHPORT:$sshport" >> $setupdir/invis_confdata
     echo "HTTPSPORT:$httpsport" >> $setupdir/invis_confdata
     echo "OCPORT:$ocport" >> $setupdir/invis_confdata
@@ -934,6 +946,14 @@ sysprep() {
     av=`getconfdata "AV" "2"`
     avcron=`getconfdata "AVCRON" "2"`
     
+#    rsyslogsetup=`getconfdate "Rsyslog" "2"`
+    
+#    if [[ $rsyslogsetup == "1" ]]; then
+#        zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
+#	pgsubtitle="Systemprotokolldienst rsyslog wird installiert"
+#	zypper -n in -n rsyslog 2>&1| tee -a $setupdir/sine.log | pgbox
+
+#    fi
     # Samba Pakete werden installiert
     pgsubtitle="Die gewählten Samba-Pakete werden installiert"
     sambapackages=`getconfdata "SambaPakete" "2"`
@@ -1595,6 +1615,9 @@ mailserver() {
     # Rechte am Virusmails-Quarantaene-Verzeichnis anpassen
     chown -R vscan:vscan /var/spool/amavis 2>&1| tee -a $setupdir/sine.log
     chmod g+rwx /var/spool/amavis/virusmails 2>&1| tee -a $setupdir/sine.log
+
+    # Spam-Assassin aktualisieren
+    sa-update
 
     path="/etc"
     file="amavisd.conf"
