@@ -1667,7 +1667,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    path="/etc/dovecot/"
 	    file="dovecot-ldap.conf.ext"
 	    basedn=`getconfdata "baseDN" "2"`
-	    strings="dc=invis-net,dc=.loc%$basedn"
+	    strings="dc=invis-net,dc=loc%$basedn"
 	    changevalues $path $file "$strings"
 
 	    ldapadminpw=`getconfdata "LDAPAdminPW" "2"`

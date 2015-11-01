@@ -25,7 +25,7 @@ hosts = 127.0.0.1
 
 # Distinguished Name - the username used to login to the LDAP server.
 # Leave it commented out to bind anonymously (useful with auth_bind=yes).
-dn = cn=admin ldap,cn=users,dc=invis-net,dc=loc
+dn = CN=Admin LDAP,CN=users,DC=invis-net,DC=loc
 
 # Password for LDAP server, if dn is specified.
 dnpass = admin-secret
@@ -90,7 +90,7 @@ ldap_version = 3
 
 # LDAP base. %variables can be used here.
 # For example: dc=mail, dc=example, dc=org
-base = cn=users,dc=med-net,dc=loc
+base = cn=users,dc=invis-net,dc=loc
 
 # Dereference: never, searching, finding, always
 deref = never
