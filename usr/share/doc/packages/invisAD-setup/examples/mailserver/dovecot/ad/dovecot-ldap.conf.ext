@@ -90,7 +90,7 @@ ldap_version = 3
 
 # LDAP base. %variables can be used here.
 # For example: dc=mail, dc=example, dc=org
-base = cn=users,dc=invis-net,dc=loc
+base = CN=users,DC=invis-net,DC=loc
 
 # Dereference: never, searching, finding, always
 deref = never
