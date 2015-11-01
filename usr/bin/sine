@@ -2167,9 +2167,10 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
     
     # Sysconfig Datei bearbeiten
-    cp $cfilesdir/mailserver/fetchmail/fetchmail /etc/sysconfig/
-    path="/etc/sysconfig/"
-    file="fetchmail"
+    cp $cfilesdir/mailserver/fetchmail/fetchmail.service /etc/systemd/system/
+    systemctl daemon reload
+    path="/etc/systemd/system"
+    file="fetchmail.service"
     strings="localdomain%$domain"
     changevalues $path $file "$strings"
 
