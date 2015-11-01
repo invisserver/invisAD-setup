@@ -1327,12 +1327,24 @@ $mdrid = ridfromsid(bin_to_str_sid($collection->objectsid));
 //echo $mdrid;
 
 if (empty($collection->mssfu30nisdomain)) {
-    $attributes = array(
-	"mssfu30nisdomain" => $NISDOMAIN,
-	"mssfu30name" => $mdgroup,
-	"gidnumber" => 9500,
-	"zarafaaccount" => true
+
+    // Klappt nur mit Zarafa, sollte auch mit anderen Mailsystemen funktionieren
+    if ( $GROUPWARE == "zarafa" ) {
+	$attributes = array(
+	    "mssfu30nisdomain" => $NISDOMAIN,
+	    "mssfu30name" => $mdgroup,
+	    "gidnumber" => 9500,
+	    "zarafaaccount" => true
 	);
+    } else {
+	$attributes = array(
+	    "mssfu30nisdomain" => $NISDOMAIN,
+	    "mssfu30name" => $mdgroup,
+	    "gidnumber" => 9500
+	);
+    
+    }
+
 
     try {
 	    $result = $adldap->group()->modify($mdgroup,$attributes);
