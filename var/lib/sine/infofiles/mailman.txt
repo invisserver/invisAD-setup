@@ -1,7 +1,7 @@
 Mailman, der freie Mailinglisten-Manager
 
-Zur Erweiterung der Funktionalität des Mailserteils Ihres invis-Servers können Sie
-mit Mailman einen mächtigen Mailinglisten-Manager installieren.
+Zur Erweiterung der Funktionalität der Mailserver-Komponente Ihres invis-Servers
+können Sie mit Mailman einen mächtigen Mailinglisten-Manager installieren.
 
 Mit Mailman lassen sich vergleichsweise einfach Diskussionslisten oder Newsletter
 mit Opt-in und Opt-out Funktion erstellen und verwalten.
