@@ -72,7 +72,7 @@ chown -R root:"Domain Users" /srv/shares/aktuell
 chown -R root:"Archiv" /srv/shares/archiv
 chown -R root:"Domain Users" /srv/shares/gruppen
 chown -R root:"Domain Users" /srv/shares/projekte
-chown -R root:"Domain Users" /srv/shares/profiles
+chown root:"Domain Users" /srv/shares/profiles
 chown -R root:"Domain Users" /srv/shares/media
 chown -R root:"Domain Admins" /srv/shares/service
 chown -R root:"Domain Guests" /srv/shares/transfer
