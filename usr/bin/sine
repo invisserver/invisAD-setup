@@ -2347,14 +2347,6 @@ firewall() {
     strings="sshport%$sshport"
     changevalues $path $file "$strings"
 
-
-    # Kleinen Bug im SSH init-Script fixen
-    path="/etc/init.d"
-    file="sshd"
-    strings="ssh-keygen -t dsa -b 2048%ssh-keygen -t dsa -b 1024"
-    changevalues $path $file "$strings"
-    chmod a+x $path/$file
-    
     # SSHd neu starten
     chkservice "sshd"
     
