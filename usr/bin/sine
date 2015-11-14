@@ -1640,6 +1640,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     chown :pkeys /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
     chmod g+rx /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
     usermod -a -G pkeys postfix 2>&1| tee -a $setupdir/sine.log
+    usermod -a -G pkeys wwwrun 2>&1| tee -a $setupdir/sine.log
     usermod -a -G mail postfix 2>&1| tee -a $setupdir/sine.log
 
     cd $OLDPWD
