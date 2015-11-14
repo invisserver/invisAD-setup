@@ -83,6 +83,7 @@ function userList() {
 	    $collection = $adldap->user()->infoCollection("$result[$i]", array("*") );
 	    $rid = ridfromsid(bin_to_str_sid($collection->objectsid));
 	    $pgid = $collection->primarygroupid;
+	    $gidnr = $collection->gidnumber;
 	    $shell = $collection->loginshell;
 	    $gwaccount = $collection->zarafaaccount;
 	    $admin = $adldap->user()->inGroup("$result[$i]","Domain Admins");
@@ -102,7 +103,7 @@ function userList() {
 	    if ( $pgid == "512" ) {
 		$utval[1] = 4; 
 	    }
-	    if ( $pgid == "9500" ) {
+	    if ( $gidnr == "9500" ) {
 		$utval[1] = 8; 
 	    }
 	    if ( $shell == "/bin/false" ) {
@@ -131,7 +132,7 @@ function userList() {
 		case 1:
 		    $type = 0;
 		    break;
-		case 24:
+		case 88:
 		    $type = 1;
 		    break;
 		case 2:
@@ -352,6 +353,8 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
+	    $userrid = ridfromsid(bin_to_str_sid($collection->objectsid));
+
 	    // Attribute anpassen
 	    $attrmod=array(
 	        'mssfu30nisdomain' => "$NISDOMAIN",
@@ -359,7 +362,8 @@ function userCreate($uid) {
 		'primarygroupid' => $mdrid,
 		'gidnumber' => $mdgidnumber,
 		'loginshell' => '/bin/false',
-		'unixhomedirectory' => "/home/".$cookie_data['uid']
+		'unixhomedirectory' => "/home/".$cookie_data['uid'],
+		'uidnumber' => ( $userrid + $SFU_GUID_BASE )
 	    );
 	    try {
 		$result = $adldap->user()->modify("$uid",$attrmod);
@@ -1327,12 +1331,24 @@ $mdrid = ridfromsid(bin_to_str_sid($collection->objectsid));
 //echo $mdrid;
 
 if (empty($collection->mssfu30nisdomain)) {
-    $attributes = array(
-	"mssfu30nisdomain" => $NISDOMAIN,
-	"mssfu30name" => $mdgroup,
-	"gidnumber" => 9500,
-	"zarafaaccount" => true
+
+    // Klappt nur mit Zarafa, sollte auch mit anderen Mailsystemen funktionieren
+    if ( $GROUPWARE == "zarafa" ) {
+	$attributes = array(
+	    "mssfu30nisdomain" => $NISDOMAIN,
+	    "mssfu30name" => $mdgroup,
+	    "gidnumber" => 9500,
+	    "zarafaaccount" => true
 	);
+    } else {
+	$attributes = array(
+	    "mssfu30nisdomain" => $NISDOMAIN,
+	    "mssfu30name" => $mdgroup,
+	    "gidnumber" => 9500
+	);
+    
+    }
+
 
     try {
 	    $result = $adldap->group()->modify($mdgroup,$attributes);
