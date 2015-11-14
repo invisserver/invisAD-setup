@@ -2164,9 +2164,9 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     strings="ldapserver%$ldaphost"
     changevalues $path $file "$strings"
 
-    path="/srv/www/htdocs/portal/inc"
+    path="/srv/www/htdocs/portal/inc/"
     file="adLDAP.php"
-    strings="dc=invis-net,dc=loc%$basedn"
+    strings="DC=invis-net,DC=loc%$basedn"
     changevalues $path $file "$strings"
     strings="ldapserver%$ldaphost"
     changevalues $path $file "$strings"

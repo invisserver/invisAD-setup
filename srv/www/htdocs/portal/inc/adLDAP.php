@@ -107,7 +107,7 @@ class adLDAP {
     * 
     * @var array
     */
-    protected $domainControllers = array("invisad.invis-ad.loc");
+    protected $domainControllers = array("ldapserver");
 	
     /**
     * Optional account with higher privileges for searching

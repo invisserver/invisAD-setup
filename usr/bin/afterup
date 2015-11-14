@@ -93,4 +93,7 @@ if [[ -f /usr/lib/nagios/plugins/check-icmp ]]; then
     chmod u+s /usr/lib/nagios/plugins/check-icmp
 fi
 
-
+# Den Benutzer "wwwrun" in die Gruppe "pkeys" aufnehmen, wenn noch nicht geschehen.
+if [[ ! `getent group |grep pkeys|grep wwwrun` ]]; then
+    usermod -a -G pkeys wwwrun
+fi
