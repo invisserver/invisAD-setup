@@ -52,6 +52,10 @@ libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
 libndr=`basename $libndr`
 ln -s samba/$libndr libndr.so.0 2>/dev/null
 
+libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
+libndrnbt=`basename $libndrnbt`
+ln -s samba/$libndrnbt libndr-nbt.so.0 2>/dev/null
+
 systemctl restart sssd.service
 
 sleep 3

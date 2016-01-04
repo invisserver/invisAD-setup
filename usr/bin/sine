@@ -988,7 +988,11 @@ sysprep() {
     libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
     libndr=`basename $libndr`
     ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
-    
+
+    libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
+    libndrnbt=`basename $libndrnbt`
+    ln -s samba/$libndrnbt libndr-nbt.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+
     # NFS-Server
     pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
     zypper -n install -n `cat $setupdir/zypper-package-lists/fileserver_additional` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
