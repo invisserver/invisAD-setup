@@ -31,7 +31,7 @@ class mailprovider {
 	}
 
 	# Einen vorhandenen Schneeball auslesen	
-	function readmailprovider($mpvendor,$ldapbinddn,$password,$LDAP_SUFFIX,$LDAP_SERVER) {
+	function readmailprovider($mpvendor,$ldapbinddn,$password,$LDAP_SUFFIX_MAILPROVIDERS,$LDAP_SERVER) {
 	# Am LDAP per SimpleBind anmelden
 	# Verbindung zum LDAP Server aufbauen
 		$ditcon=ldap_connect("$LDAP_SERVER");
@@ -41,9 +41,9 @@ class mailprovider {
 		// bind mit passendem dn für aktulisierenden Zugriff
 	if ($ditcon) {
    		$r=ldap_bind($ditcon,$ldapbinddn,$password);
-		$filter="(fspMailProviderVendor=$mpvendor)";
-		$justthese = array("fspMailProviderVendor", "fspMailProviderDescription", "fspMailProviderUserName", "fspMailProviderPOP", "fspMailProviderIMAP", "fspMailProviderPOPSSL", "fspMailProviderIMAPSSL" );
-		$sr=ldap_search($ditcon, $LDAP_SUFFIX, $filter, $justthese);
+		$filter="(CN=$mpvendor)";
+		$justthese = array("CN", "fspMailProviderVendor", "fspMailProviderDescription", "fspMailProviderUserName", "fspMailProviderPOP", "fspMailProviderIMAP", "fspMailProviderPOPSSL", "fspMailProviderIMAPSSL" );
+		$sr=ldap_search($ditcon, $LDAP_SUFFIX_MAILPROVIDERS, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 		//print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);

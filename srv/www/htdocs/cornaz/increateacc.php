@@ -13,7 +13,7 @@ $mpvendor = "*";
 $result = $mp->readmailprovider($mpvendor,$LDAP_BIND_DN,$LDAP_BIND_PW,$LDAP_SUFFIX_MAILPROVIDERS,$LDAP_SERVER);
 
 foreach ( $result as $mp ) {
-    $mailproviders[] = $mp['fspmailprovidervendor'][0];
+    $mailproviders[] = $mp['cn'][0];
 }
 
 // Ergebnis-Array sortieren
