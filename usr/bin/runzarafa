@@ -1,6 +1,7 @@
 #!/bin/bash
-# Alle Zarafa-Dienste starten oder stoppen
-# (C) 2009 Stefan Schaefer -- stefan@invis-server.org
+# Script to control all zarafa services together
+# This script is using systemctl!
+# (c) 2016 Stefan Schaefer - stefan@invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -16,27 +17,25 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
-case $1 in
+services=(licensed server search spooler dagent gateway ical monitor)
 
+case "$1" in
     start)
-	action=start
+	for service in ${services[*]}; do
+	    systemctl start zarafa-$service.service
+	done
 	;;
     stop)
-	action=stop
+	for service in `echo ${services[*]} | tr " " '\n' |tac`; do
+	    systemctl stop zarafa-$service.service
+	done
+	;;
+    status)
+	for service in ${services[*]}; do
+	    systemctl status zarafa-$service.service
+	done
 	;;
     *)
-	action=dumm
+	echo "Usage: runzarafa {start|stop|status}"
 	;;
 esac
-
-if [[ $action != "dumm" ]];then
-    for script in /etc/init.d/zarafa-*; do $script $action; done
-fi
-
-if [[ $action == stop ]];then
-    zpid=`pgrep zarafa-server`
-    if [[ -n $zpid ]]; then
-	echo "Terminating zarafa-server if still running"
-	kill $zpid
-    fi
-fi
