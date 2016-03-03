@@ -181,8 +181,6 @@ case $1 in
 	    PTR)
 		zone=$(revzone)
 		hostpart=$(hostpart $recordname)
-		echo $hostpart
-		sleep 15
 		oldvalue=$(dig @$dnsserver -x $recordname +short)
 		if [[ -z $oldvalue ]]; then
 		    exit 1
