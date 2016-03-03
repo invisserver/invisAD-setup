@@ -97,7 +97,7 @@ hostpart() {
 		if [[ -z $hostpart ]]; then
 		    hostpart=$wert
 		else
-		    hostpart=$hostpart.$wert
+		    hostpart=$wert.$hostpart
 		fi
 	    fi
 	(( i=$i+1 ))
