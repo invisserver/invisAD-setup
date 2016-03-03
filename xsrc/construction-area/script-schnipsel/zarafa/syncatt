@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rsync -aHAXv --exclude=lost+found/ --exclude=.recycle/ --exclude=*.tmp --exclude=*.vir -e "ssh -p xxxxx -c arcfour256" root@192.168.xxx.xxx:/var/zarafa/attachements/ /srv/zarafa/attachments/

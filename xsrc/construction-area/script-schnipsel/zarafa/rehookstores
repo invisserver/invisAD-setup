@@ -1,0 +1,31 @@
+#!/bin/bash
+# Zarafa Stores neu verbinden.
+# Nach der Migration einer Zarafa-Datenbank legt Zarafa beim ersten Start fuer
+# alle in der Benutzerverwaltung gefundene Benutzer neue Stores an, auch wenn
+# fuer den jeweiligen Benutzer bereits Stores in der migrierten Datenbank
+# vorhanden sind.
+#
+# (C) 2016 Stefan Schäfer - invis-server.org
+# License: GPLv3
+
+
+# Benutzerliste erstellen
+laengederausgabe=`zarafa-admin -l |wc -l`
+(( anzahluser=$laengederausgabe - 4 ))
+
+userliste=`zarafa-admin -l | tail -n $anzahluser | grep -v ^$ | tr "\t" " " | tr -s " " | cut -d " " -f2`
+
+# alle Benutzer durchlaufen
+for user in ${userliste[*]}; do
+    echo "User = $user";
+
+    # neuen leeren Store abhaengen
+    storetoremove=`zarafa-admin --unhook-store $user |cut -d " " -f 6`
+    # neuen leeren Store loeschen
+    zarafa-admin --remove-store $storetoremove
+    
+    # migrierten Store ermitteln
+    storetohook=`zarafa-admin --list-orphans | grep $user | tr "\t" " " | tr -s " " | cut -d " " -f 2 | head -n 1`
+    # migrierten Store anhengen
+    zarafa-admin --hook-store $storetohook -u $user
+done
