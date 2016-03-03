@@ -159,7 +159,7 @@ foreach ($CONF -> sections as $section) {
 		$classes = 'active';
 	
 	if ($restricted) {
-		$classes .= 'admin';
+		$classes .= ' admin';
 	}
 	
 	// dont show restricted sections if not admin user
