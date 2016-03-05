@@ -1041,13 +1041,17 @@ sysprep() {
     ## invis-Konfigurationsdatei anpassen
     domain=`getconfdata "Domain" "2"`
     adminmail=`getconfdata "Admail" "2"`
-    
+    revdomain=`getconfdata "revDomain" "2"`
+        
     path="/etc/invis"
     file="invis.conf"
     strings="administrator@invis-net.loc%$adminmail"
     changevalues $path $file "$strings"
     
     strings="invis-net.loc%$domain"
+    changevalues $path $file "$strings"
+
+    strings="220.168.192.in-addr.arpa%$revdomain"
     changevalues $path $file "$strings"
 
     ## ownCloud Synchronisation
