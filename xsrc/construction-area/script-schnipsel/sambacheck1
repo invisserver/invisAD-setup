@@ -1,0 +1,22 @@
+#!/bin/bash
+# Script zur Prüfung des Samba Logfiles auf bestimmte Ereignisse
+# (C) 2013 Ingo Göppert
+# License: GPLv3
+# Version: 2.0
+
+checkusername() {
+  # Log durchsuchen
+  if [ -f "$loginfile" ]; then
+    grep -B 1 "$username" "$loginfile" >> "$logoutdir/$username"
+  fi
+}
+
+# Global
+loginfile="/var/log/samba/log.smbd"
+logoutdir="/var/log/samba"
+
+# Lokal
+username="vorname.nachname"
+checkusername
+
+exit 0
