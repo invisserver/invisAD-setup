@@ -43,18 +43,19 @@ fi
 
 
 # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
-libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
-libtevent=`basename $libtevent`
-cd $libdir
-ln -s samba/$libtevent libtevent.so.0 2>/dev/null
+# Geaendert fuer neue sernet-Pakete
+#libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
+#libtevent=`basename $libtevent`
+#cd $libdir
+#ln -s samba/$libtevent libtevent.so.0 2>/dev/null
 
-libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
-libndr=`basename $libndr`
-ln -s samba/$libndr libndr.so.0 2>/dev/null
+#libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
+#libndr=`basename $libndr`
+#ln -s samba/$libndr libndr.so.0 2>/dev/null
 
-libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
-libndrnbt=`basename $libndrnbt`
-ln -s samba/$libndrnbt libndr-nbt.so.0 2>/dev/null
+#libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
+#libndrnbt=`basename $libndrnbt`
+#ln -s samba/$libndrnbt libndr-nbt.so.0 2>/dev/null
 
 libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
 libldb=`basename $libldb`
