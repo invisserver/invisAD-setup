@@ -985,7 +985,7 @@ sysprep() {
     # zu Testzwecken auskommentiert
     #libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
     #libtevent=`basename $libtevent`
-    #cd $libdir
+    cd $libdir
     #ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
     
     #libndr=`find $libdir/samba/ -type f -name "libndr.so*"`

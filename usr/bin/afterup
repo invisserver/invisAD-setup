@@ -46,7 +46,7 @@ fi
 # Geaendert fuer neue sernet-Pakete
 #libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
 #libtevent=`basename $libtevent`
-#cd $libdir
+cd $libdir
 #ln -s samba/$libtevent libtevent.so.0 2>/dev/null
 
 #libndr=`find $libdir/samba/ -type f -name "libndr.so*"`

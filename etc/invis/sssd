@@ -5,4 +5,4 @@
 # der openSUSE eigenen verwendet, findet sssd den Pfad zu seinem 
 # memberof Modul nicht. Dieser muss als Umgebungsvariable gesetzt werden.
 
-LDB_MODULES_PATH="/var/lib64/ldb"
+LDB_MODULES_PATH="/usr/lib64/ldb"
