@@ -1048,8 +1048,9 @@ sysprep() {
     ## invis-Konfigurationsdatei anpassen
     domain=`getconfdata "Domain" "2"`
     adminmail=`getconfdata "Admail" "2"`
-    revdomain=`getconfdata "revDomain" "2"`
-        
+    revdomain=`getconfdata "ReverseDom" "2"`
+    revdomain="$revdomain.in-addr.arpa"
+
     path="/etc/invis"
     file="invis.conf"
     strings="administrator@invis-net.loc%$adminmail"
