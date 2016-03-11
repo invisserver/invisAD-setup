@@ -44,7 +44,7 @@ echo -e "\nDas dauert eine Weile\t\c"
 # Ergebnisse testen und in Ergebnis-Datei eintragen
 for ip in ${leaseips[*]}; do
     echo -e ".\c"
-    arpingresult=`arping -c1 -I eth1 $ip|grep Unicast|cut -d " " -f4-5`
+    arpingresult=`arping -c1 -I intern $ip|grep Unicast|cut -d " " -f4-5`
     portscanresult=`nmap $ip`
     line=`cat $leasefile| grep -n $ip| cut -d ":" -f1`
     line=`echo $line|cut -d " " -f1`
