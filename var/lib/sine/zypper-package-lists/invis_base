@@ -21,3 +21,4 @@ dos2unix
 krb5-client
 apcupsd
 apcupsd-cgi
+easy-rsa
