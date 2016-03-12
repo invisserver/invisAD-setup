@@ -1050,7 +1050,7 @@ sysprep() {
     easyrsa gen-dh 2>&1| tee -a $setupdir/sine.log | pgbox
     
     # CRL Umgebung initialisieren
-    easy-rsa gen-crl 2>&1| tee -a $setupdir/sine.log | pgbox
+    easyrsa gen-crl 2>&1| tee -a $setupdir/sine.log | pgbox
 
     ## openSSL einrichten und CA bauen
     cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log | pgbox
