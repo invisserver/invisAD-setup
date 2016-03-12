@@ -1,6 +1,6 @@
 #!/bin/bash
-# invis AD 10.4 Server Setup Script
-# Version 1.04
+# invis AD 10.5 Server Setup Script
+# Version 1.05
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2015 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -31,7 +31,7 @@
 setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
-invisversion="10.4"
+invisversion="10.5"
 
 # Setup-Dialog Titel
 dialogtitle="invis AD Server $invisversion Setup"
@@ -739,61 +739,6 @@ Sollen alte Datesicherungen automatisch gelöscht werden?" "Datensicherungen auf
     yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
     avcron=${?}
 
-## Wird dank ownCloud-Integration und Server zu Server sync nicht mehr benoetigt
-#    yesno "Soll Ihr Server ein beliebiges Verzeichnis im Hintergrund mit einem ownCloud Konto synchronisieren?" "ownCloud Synchronisation"
-#    owncloudsync=${?}
-
-    ok=0
-    if [[ $owncloudsync == "0" ]]; then
-    ocsyncdir="/srv/shares/media/owncloud"
-    while (( $ok != "4" ));do
-	dialog --backtitle "$dialogtitle" --title "ownCloud Zugangsdaten" --form "$dialogshorthelp\n\n
-Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres ownCloud Servers, sowie die zuhehörigen Zugangsdaten ein." 19 74 9 \
-	"ownCloud Server:" 2 2 "$ocserver" 2 20 45 0\
-	"Sync-Verzeichnis" 4 2 "$ocsyncdir" 4 20 45 0\
-	"Benutzername:" 6 2 "$ocusername" 6 20 45 0\
-	"Passwort:" 8 2 "$ocpassword" 8 20 45 0\
-	2>$setupdir/sine_temp
-	exitcode=${?}
-	# Doch noch abbrechen
-	if [[ $exitcode == "1" || $exitcode == "255" ]]; then
-	    break
-	fi
-	
-	ocvalues=(`cat $setupdir/sine_temp`)
-
-	if (( ${#ocvalues[0]} > 0 ));then
-	    ocserver=${ocvalues[0]}
-	    (( ok=$ok + 1 ))
-	else
-	    ok=0
-	fi
-
-	if (( ${#ocvalues[1]} > 0 ));then
-	    ocsyncdir=${ocvalues[1]}
-	    (( ok=$ok + 1 ))
-	else
-	    ok=0
-	fi
-
-	if (( ${#ocvalues[2]} > 0 ));then
-	    ocusername=${ocvalues[2]}
-	    (( ok=$ok + 1 ))
-	else
-	    ok=0
-	fi
-
-	if (( ${#ocvalues[3]} > 0 ));then
-	    ocpassword=${ocvalues[3]}
-	    (( ok=$ok + 1 ))
-	else
-	    ok=0
-	fi
-
-    done
-    fi
-#---# Ende der Fragestunde
-
     sshport=`freeports`
     httpsport=`freeports`
     ocport=`freeports`
@@ -891,16 +836,6 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 	echo "cleanDasi:n" >> $setupdir/invis_confdata
     fi
 
-    if [[ $owncloudsync == "0" ]]; then
-	echo "ownCloudSync:j" >> $setupdir/invis_confdata
-	echo "ownCloudServer:$ocserver" >> $setupdir/invis_confdata
-	echo "ownCloudSyncDir:$ocsyncdir" >> $setupdir/invis_confdata
-	echo "ownCloudUser:$ocusername" >> $setupdir/invis_confdata
-	echo "ownCloudPassword:$ocpassword" >> $setupdir/invis_confdata
-    else
-	echo "ownCloudSync:n" >> $setupdir/invis_confdata
-    fi
-    
     writeprepstat "sysprep" 
     waitbox "quest" "sysprep" 
 
@@ -982,19 +917,7 @@ sysprep() {
 
     
     # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
-    # zu Testzwecken auskommentiert
-    #libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
-    #libtevent=`basename $libtevent`
     cd $libdir
-    #ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
-    
-    #libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
-    #libndr=`basename $libndr`
-    #ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
-
-    #libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
-    #libndrnbt=`basename $libndrnbt`
-    #ln -s samba/$libndrnbt libndr-nbt.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
 
     libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
     libldb=`basename $libldb`
@@ -1062,37 +985,6 @@ sysprep() {
     strings="220.168.192.in-addr.arpa%$revdomain"
     changevalues $path $file "$strings"
 
-    ## ownCloud Synchronisation
-    ocsync=`getconfdata "ownCloudSync" "2"`
-    if [[ $ocsync == "j" ]]; then
-        zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
-	zypper -n install -n csync libcsync-plugin-owncloud  2>&1| tee -a $setupdir/sine.log | pgbox
-	ocsyncdir=`getconfdata "ownCloudSyncDir" "2"`
-	if [[ ! -d $ocsyncdir ]]; then
-	    mkdir -p $ocsyncdir
-	fi
-	ocserver=`getconfdata "ownCloudServer" "2"`
-	ocusername=`getconfdata "ownCloudUser" "2"`
-	ocpassword=`getconfdata "ownCloudPassword" "2"`
-	echo $ocserver
-	echo $ocusername
-	echo $ocpassword
-	sleep 3
-	path="/etc/invis"
-	file="invis.conf"
-	strings="ocSync:n%ocSync:j"
-	changevalues $path $file "$strings"
-	strings="oc-user%$ocusername"
-	changevalues $path $file "$strings"
-	strings="oc-syncdir%$ocsyndir"
-	changevalues $path $file "$strings"
-	strings="oc-server%$ocserver"
-	changevalues $path $file "$strings"
-	file="invis-pws.conf"
-	strings="oc-secret%$ocpassword"
-	changevalues $path $file "$strings"
-    fi
-
     # Limits erhoehen fuer Samba und Zarafa
     cp $cfilesdir/System/security/limits.conf /etc/security/ 2>&1| tee -a $setupdir/sine.log | pgbox
 
@@ -1119,7 +1011,48 @@ sysprep() {
     ntoppw=`getconfdata "NtopPw" "2"`
     ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    #openSSL einrichten und CA bauen
+    ## easy-rsa einrichten und CA bauen
+    cp $cfilesdir/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $setupdir/sine.log | pgbox
+    file="vars"
+    path="/etc/easy-rsa"
+
+    domain=`getconfdata "Domain" "2"`
+    strings="localdomain%$domain"
+    changevalues $path $file "$strings"
+    
+    country=`getconfdata "Country" "2"`
+    strings="DE%$country"
+    changevalues $path $file "$strings"
+
+    region=`getconfdata "Region" "2"`
+    strings="Hessen%$region"
+    changevalues $path $file "$strings"
+
+    city=`getconfdata "City" "2"`
+    strings="Schotten%$city"
+    changevalues $path $file "$strings"
+
+    organisation=`getconfdata "Organisation" "2"`
+    strings="invis-server.org%$organisation"
+    changevalues $path $file "$strings"
+
+    admail=`getconfdata "Admail" "2"`
+    strings="domadmin@invis-net.loc%$admail"
+    changevalues $path $file "$strings"
+
+    # PKI initialisieren
+    easyrsa init-pki 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    # CA aufbauen
+    easyrsa build-ca
+    
+    # DH-Parameterdatei erzeugen
+    easyrsa gen-dh 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    # CRL Umgebung initialisieren
+    easy-rsa gen-crl 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    ## openSSL einrichten und CA bauen
     cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log | pgbox
     cp $cfilesdir/ssl/CA.pl /usr/share/ssl/misc/ 2>&1| tee -a $setupdir/sine.log | pgbox
 
