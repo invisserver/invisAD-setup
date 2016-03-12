@@ -1,0 +1,30 @@
+#!/bin/bash
+# Stoppt VirtualBox-Dienste
+# 
+# (C) 2015 Dimitri Asarowski -- dimitri@invis-server.org
+# (C) 2016 Stefan Schaefer -- stefan@invis-server.org
+# License: GPLv3
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+systemctl stop vboxweb-service.service
+systemctl stop vboxautostart-service.service
+systemctl stop vboxballoonctrl-service.service
+systemctl stop vboxdrv.service
+
+if [[ -f /etc/init.d/vboxinit ]]; then
+    systemctl stop vboxinit.service
+fi
+
+kill `pgrep vboxwebsrv`

@@ -41,7 +41,7 @@ fi
 
 # Daten aus Konfiguration holen
 basedn=`getconfdata $conffile "baseDN" "2"`
-fwzone=`getconfdata $conffile "domain" "2"`
+fwzone=`getconfdata $conffile "intDomain" "2"`
 revzone=`getconfdata $conffile "revDomain" "2"`
 server=`getconfdata $conffile "ldapHost" "2"`
 user="ldap.admin"
