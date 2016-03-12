@@ -2584,7 +2584,8 @@ case "$whichimap" in
 
 	# Konfigurationsvorlagen kopieren
 	cp $cfilesdir/zarafa/*.cfg /etc/zarafa/
-    
+	chmod go+r /etc/zarafa/*.cfg
+	
 	# Konfigurationsdaten einlesen
 	domain=`getconfdata "Domain" "2"`
 	basedn=`getconfdata "baseDN" "2"`
@@ -2659,6 +2660,9 @@ case "$whichimap" in
 	# Zarafa-Schluessel erzeugen
 	mkzarafakey
     
+	# Rechte am Zarafa Attachement-Verzeichnis anpassen
+	chown -R zarafa.zarafa /srv/zarafa
+    
 	# Dienste ins Runlevel-Konzept eintragen
 	for zinit in /etc/init.d/zarafa-* ; do
 	    zinit=`basename $zinit`
@@ -2667,7 +2671,7 @@ case "$whichimap" in
     
 	# z-push als vHost anlegen & apache reload
 	cp $cfilesdir/webserver/z-push_vh.conf /etc/apache2/vhosts.d/
-	rm -f /etc/apache2/conf.d/z-push.conf
+	rm -f /etc/apache2/conf.d/z-push2.conf
 
 	file="z-push_vh.conf"
 	path="/etc/apache2/vhosts.d/"

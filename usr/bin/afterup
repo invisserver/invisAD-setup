@@ -89,6 +89,16 @@ chown -R root:"Verwaltung" /srv/shares/verwaltung
 chown root:"Domain Users" /srv/shares/portal/uploads
 chown root:"Domain Users" /srv/shares/portal/downloads
 
+
+groupware=`getconfdata "usedGroupware" "2"`
+
+if [[ $groupware == "zarafa" ]]; then
+    #Anpassen der Besitzrechte des Zarafa Attachementverzeichnisses
+    chown -R zarafa.zarafa /srv/zarafa
+    #Anpassen der Zugriffsrechte der Zarafa-Konfiguration
+    chmod go+r /etc/zarafa/*.cfg
+fi
+
 # Zugriffsrechte auf Private-Key Verzeichnis bereinigen
 chown -R .pkeys /etc/ssl/private
 chmod g+rx /etc/ssl/private
