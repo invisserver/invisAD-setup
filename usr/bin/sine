@@ -2951,50 +2951,6 @@ openvpn() {
 	zypper -n install -n openvpn 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 
-	# openVPN Key-Center einrichten
-	domain=`getconfdata "Domain" "2"`
-	path="$cfilesdir/openvpn/easy-rsa/2.0"
-	file="Makefile"
-	cp $path/$file $path/$file.ori
-	strings="openvpndomain%$domain"
-        changevalues $path $file "$strings"
-	cd $path
-	pgsubtitle="easy-rsa wird installiert"
-	make install 2>&1 | tee -a $setupdir/sine.log | pgbox
-	cp $path/$file.ori $path/$file
-	
-        path="/etc/openvpn/$domain"
-        file="vars"
-	cd $path
-        strings="\`pwd\`%$path"
-        changevalues $path $file "$strings"
-
-        country=`getconfdata "Country" "2"`
-        strings="KEY_COUNTRY=\"US\"%KEY_COUNTRY=\"$country\""
-        changevalues $path $file "$strings"
-
-        region=`getconfdata "Region" "2"`
-        strings="KEY_PROVINCE=\"CA\"%KEY_PROVINCE=\"$region\""
-        changevalues $path $file "$strings"
-
-        city=`getconfdata "City" "2"`
-        strings="SanFrancisco%$city"
-        changevalues $path $file "$strings"
-
-        organisation=`getconfdata "Organisation" "2"`
-        strings="Fort-Funston%$organisation"
-	changevalues $path $file "$strings"
-
-        admail=`getconfdata "Admail" "2"`
-        strings="mail@host.domain%$admail"
-        changevalues $path $file "$strings"
-
-        strings="KEY_SIZE=1024%KEY_SIZE=2048"
-        changevalues $path $file "$strings"
-
-	name=`getconfdata "Admin" "2"`
-	echo "export KEY_NAME=\"$name\"" >> $path/$file
-
 	# Server-Konfiguration erzeugen.
 	cp $cfilesdir/openvpn/invis-server.conf /etc/openvpn
 	path="/etc/openvpn"
@@ -3015,18 +2971,20 @@ openvpn() {
         strings="openvpn_server%$ddns"
         changevalues $path $file "$strings"
 
-	# CA, Schlüssel usw. erzeugen
-	msgbox "CA, Server-Key und Diffie-Hellmann Parameter werden erzeugt. Speziell letzteres kann dauern...\nBeim Erzeugen von Zertifizierungsstelle und Server Zertifikaten können Sie in der Regel die vorgegebenen Parameter übernehmen.\nLediglich beim Feld \"Organizational Unit\" existiert keine Vorgabe. Der Parameter kann frei vergeben werden, sollte aber sinnvoll sein. Beispiel: \n\nOrganizational Unit: VPN CA bei der CA oder VPN Server beim Server-Zertifikat." "$windowtitle"
-	cd /etc/openvpn/$domain
-	# Umgebungsvariablen setzen
-	source ./vars 
-	./clean-all 
-	./build-ca
-	pgsubtitle="Diffie-Hellmann Parameter werden erzeugt"
-	./build-dh 2>&1 |pgbox
-	./build-key-server $ddns
-	# Leere CRL erzeugen.
-	openssl ca -config ./openssl-1.0.0.cnf -gencrl -keyfile ./keys/ca.key -cert ./keys/ca.crt -out ./keys/crl.pem
+	# Schluesselverzeichnis erstellen und fuellen
+	domain=`getconfdata "Domain" "2"`
+
+	keydir="/etc/openvpn/keys"
+	mkdir $keydir
+	cp /etc/easy-rsa/dh.pem $keydir
+	cp /etc/easy-rsa/crl.pem $keydir
+	cp /etc/easy-rsa/ca.crt $keydir
+
+	msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
+	easyrsa build-server-full $ddns nopass
+	cp /etc/easy-rsa/$domain/private/$ddns.key $keydir
+	cp /etc/easy-rsa/$domain/issued/$ddns.crt $keydir
+
 	msgbox "Beispiel Client-Konfigurationsdateien finden Sie im cfiles Unterverzeichnis.
 Um Schlüssel für einen Client zu erzeugen wechseln Sie nach /etc/openvpn/$domain und führen Sie 
 build-key \"clienthostname\" aus. Weitere Infos unter wiki.invis-server.de." "openVPN Clients einrichten"
