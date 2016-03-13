@@ -2976,9 +2976,9 @@ openvpn() {
 
 	keydir="/etc/openvpn/keys"
 	mkdir $keydir
-	cp /etc/easy-rsa/dh.pem $keydir
-	cp /etc/easy-rsa/crl.pem $keydir
-	cp /etc/easy-rsa/ca.crt $keydir
+	cp /etc/easy-rsa/$domain/dh.pem $keydir
+	cp /etc/easy-rsa/$domain/crl.pem $keydir
+	cp /etc/easy-rsa/$domain/ca.crt $keydir
 
 	msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
 	easyrsa build-server-full $ddns nopass
