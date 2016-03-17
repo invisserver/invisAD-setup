@@ -698,8 +698,8 @@ smtpd_sasl_auth_enable = yes
 smtpd_tls_security_level = may
 
 # Mailannahme verschluesseln
-smtpd_tls_key_file = /etc/ssl/private/mail-key.pem
-smtpd_tls_cert_file = /etc/ssl/certs/mail-cert.pem
+smtpd_tls_key_file = /etc/invis/private/mail-key.pem
+smtpd_tls_cert_file = /etc/invis/certs/mail-cert.pem
 
 # Relay Domains und Transportwege-Regelungs Tabelle bekannt machen 
 #relay_domains = hash:/etc/postfix/relay
@@ -726,3 +726,23 @@ canonical_maps=hash:/etc/postfix/canonical
 ## Virenscanner
 content_filter=smtp-amavis:[127.0.0.1]:10024
 
+# SSL absichern
+smtpd_tls_protocols = !SSLv2, !SSLv3
+smtp_tls_protocols = !SSLv2, !SSLv3
+lmtp_tls_protocols = !SSLv2, !SSLv3
+
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+lmtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+
+smtpd_tls_ciphers = medium
+smtp_tls_ciphers = medium
+
+## spaeter aktivieren
+#smtpd_tls_dh1024_param_file = /etc/postfix/dh_2048.pem
+#smtpd_tls_dh512_param_file = /etc/postfix/dh_512.pem
+
+# Postfix ≥ 2.6 für elliptic curve cryptography:
+smtpd_tls_eecdh_grade = strong
+
+tls_preempt_cipherlist = yes

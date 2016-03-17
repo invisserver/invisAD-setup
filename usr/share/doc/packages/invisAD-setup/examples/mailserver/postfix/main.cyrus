@@ -693,8 +693,8 @@ smtpd_sasl_auth_enable = yes
 smtpd_tls_security_level = may
 
 # Mailannahme verschluesseln
-smtpd_tls_key_file = /etc/ssl/private/mail-key.pem
-smtpd_tls_cert_file = /etc/ssl/certs/mail-cert.pem
+smtpd_tls_key_file = /etc/invis/private/mail-key.pem
+smtpd_tls_cert_file = /etc/invis/certs/mail-cert.pem
 
 ## FSP Addressrewriting
 sender_canonical_maps=ldap:/etc/postfix/s-canonical.cf

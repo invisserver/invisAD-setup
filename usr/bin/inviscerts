@@ -1,0 +1,157 @@
+#!/bin/bash
+# Script zur Erzeugung von Zertifikaten und Schluesseln
+# fuer Web-, Mail- und LDAP-Dienst bzw. VPN-Clients auf
+# invis-Servern 
+# Dieses Script ersetzt das fruehere Script "serverkeys"
+# Version 0.1
+# (C) 2011-2016 by Stefan Schäfer / invis-server.org
+# License: GPLv3
+# Questions: stefan@invis-server.org
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+confdir="/etc/invis"
+conffile="$confdir/invis.conf"
+openvpndir="/etc/openvpn/keys"
+
+if [[ -z $1 ]]; then
+    usage
+fi
+
+stype="$1"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+usage() {
+    echo -e "Bitte geben Sie an, ob Sie Zertifikate für LDAP-Server, Mail-Server, den Externzugriff oder einen VPN-Client\nerzeugen möchten:\n\tlinux:~ # serverkeys ldap\n\tlinux:~ # serverkeys ms\n\tlinux:~ # serverkeys extern\noder\n\tlinux:~ # serverkeys vpn"
+    echo -e "Dabei fasst \"extern\" die Zertifikate von Web- und VPN-Server zusammen." 
+    echo -e "Sie benötigen in jedem Fall das Passwort Ihrer Zertifizierungsstelle (CA)."
+    exit
+}
+
+out() {
+    echo -e "\nSie müssen jetzt gegebenenfals betroffene Dienste neu starten."
+    echo -e "\nDanke, dass Sie \"inviscerts\" verwendet haben.\nSie haben ein einfaches Script sehr glücklich gemacht.\nAuf wiedersehn."
+    exit
+}
+
+deploycerts() {
+    # Schluessel anpassen und verschieben
+    case $stype in
+	"extern")
+	    openssl x509 -in $ersadir/issued/$cn.crt -out /etc/apache2/ssl.crt/invis-server.crt
+	    openssl rsa -in $ersadir/private/$cn.key -out /etc/apache2/ssl.key/invis-server.key
+	    if [[ -d $openvpndir ]]; then
+		cp $ersadir/issued/$cn.crt $openvpndir
+		cp $ersadir/private/$cn.key $openvpndir
+	    fi
+	    ;;
+	"ldap")
+	    # Dadurch steht kein Klartext mehr im Zertifikat
+	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/ldap-cert.pem
+	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/ldap-key.pem
+	    chown root.root $confdir/private/ldap-key.pem
+	    chmod 0600 $confdir/private/ldap-key.pem
+	    ;;
+	"ms")
+	    # Dadurch steht kein Klartext mehr im Zertifikat
+	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/mail-cert.pem
+	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/mail-key.pem
+	    ;;
+	"vpn")
+	    mv $ersadir/private/$cn.p12 /srv/shares/service/VPN-Clients/Zertifikate/
+	    ;;
+    esac
+}
+
+# Eingabe pruefen und CN erzeugen bzw. abfragen
+domain=$(hostname -d)
+ersadir="/etc/easy-rsa/$domain"
+
+case $stype in
+    "ms")
+	server="Mail"
+	cn="mail.$domain"
+	;;
+    "ldap")
+	server="ldap"
+	cn="$(hostname -f)"
+	;;
+    "extern")
+	server="Extern"
+	# DDNS Name
+	cn=`getconfdata $conffile "fqdn" "2"`
+	;;
+    "vpn")
+	read -p "Geben Sie bitte den vollen Hostnamen des VPN-Clients ein: " cn
+	;;
+    *)
+	usage
+	;;
+esac
+
+# Kurze Bestätigung
+echo -e "\033[1;33mEs werden Schlüssel und Zertifikat für \"$cn\" erzeugt.\033[0m"
+
+if [[ ! -f $ersadir/issued/$cn.crt ]]; then
+    if [[ $stype != "vpn" ]]; then
+	easyrsa build-server-full $cn nopass
+	deploycerts
+    else
+	easyrsa build-client-full $cn nopass
+	easyrsa export-p12 $cn
+	deploycerts
+    fi
+    out
+else
+    ok=`openssl verify -crl_check -CAfile $ersadir/crl-chain.pem $ersadir/issued/$cn.crt|tr -d " "|cut -d ":" -f2`
+    if [[ $ok == "OK" ]]; then
+	echo -e "Das angeforderte Zertifikat existiert bereits und ist noch gültig.\n"
+	# Widerruf nur bei VPN Client Zertifikaten ermoeglichen"
+	if [[ $stype == "vpn" ]]; then
+	    read -p "Möchten Sie es widerrufen? [j/N] " revoke
+	fi
+	if [[ $revoke == "j" ]]; then
+	    echo -e "Das angeforderte Zertifikat wird widerrufen.\n"
+	    easyrsa revoke $cn
+	    easyrsa gen-crl
+	    cp $ersadir/crl.pem $openvpndir
+	    # Aktuelles CRL-Chain-File erzeugen
+	    cat $ersadir/ca.crt $ersadir/crl.pem > $ersadir/crl-chain.pem
+	else
+	    out
+	fi
+    else
+	echo -e "Das angeforderte Zertifikat wird erneuert.\n"
+	easyrsa sign-req server $cn
+	if [[ $stype == "vpn" ]]; then
+	    easyrsa export-p12 $cn
+	fi
+	deploycerts
+	out
+    fi
+fi

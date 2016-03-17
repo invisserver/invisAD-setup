@@ -11,6 +11,6 @@
 
 <div id='footer_bg'>
 	<div class='site'>
-		<?php echo '<div id=\'footer\'>' . $PORTAL_FOOTER . '&nbsp;|&nbsp;<a style="color: #ff0000 "href="inc/cacert.pem">Server-Stammzertifikat</a></div>'; ?>
+		<?php echo '<div id=\'footer\'>' . $PORTAL_FOOTER . '&nbsp;|&nbsp;<a style="color: #ff0000 "href="inc/ca.crt">Server-Stammzertifikat</a></div>'; ?>
 	</div>
 </div>

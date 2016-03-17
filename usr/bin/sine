@@ -2,7 +2,7 @@
 # invis AD 10.5 Server Setup Script
 # Version 1.05
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2015 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2016 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2015 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -1011,6 +1011,11 @@ sysprep() {
     ntoppw=`getconfdata "NtopPw" "2"`
     ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $setupdir/sine.log | pgbox
 
+    
+    msgbox "Um auf Ihrem invis Server SSL-Schlüssel und Zertifikate für Web- und Mailserver zu erstellen wird eine Zertifizierungsstelle (CA) benötigt.\n\nDies wird im Folgenden vorgenommen. 
+Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie übernehmen. Lediglich den Common Name müssen Sie selbst erdenken. Er taucht als Name der CA in allen damit signierten Zertifikaten auf.
+\n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!\n\nDrücken Sie nach dem OK bitte noch einmal die Enter-Taste." "CA erstellen"
+
     ## easy-rsa einrichten und CA bauen
     cp $cfilesdir/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $setupdir/sine.log | pgbox
     file="vars"
@@ -1045,6 +1050,8 @@ sysprep() {
 
     # CA aufbauen
     easyrsa build-ca
+    # CA Datei kopieren
+    cp $path/$domain/ca.crt /etc/invis/certs
     
     # DH-Parameterdatei erzeugen
     easyrsa gen-dh 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1052,45 +1059,45 @@ sysprep() {
     # CRL Umgebung initialisieren
     easyrsa gen-crl
 
+    # CRL Chain Datei erzeugen
+    cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
+
+### aufraeumen
     ## openSSL einrichten und CA bauen
-    cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log | pgbox
-    cp $cfilesdir/ssl/CA.pl /usr/share/ssl/misc/ 2>&1| tee -a $setupdir/sine.log | pgbox
+#    cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log | pgbox
+#    cp $cfilesdir/ssl/CA.pl /usr/share/ssl/misc/ 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    file="openssl.cnf"
-    path="/etc/ssl"
+#    file="openssl.cnf"
+#    path="/etc/ssl"
     
-    country=`getconfdata "Country" "2"`
-    strings="DE%$country"
-    changevalues $path $file "$strings"
+#    country=`getconfdata "Country" "2"`
+#    strings="DE%$country"
+#    changevalues $path $file "$strings"
 
-    region=`getconfdata "Region" "2"`
-    strings="Hessen%$region"
-    changevalues $path $file "$strings"
+#    region=`getconfdata "Region" "2"`
+#    strings="Hessen%$region"
+#    changevalues $path $file "$strings"
 
-    city=`getconfdata "City" "2"`
-    strings="Schotten%$city"
-    changevalues $path $file "$strings"
+#    city=`getconfdata "City" "2"`
+#    strings="Schotten%$city"
+#    changevalues $path $file "$strings"
 
-    organisation=`getconfdata "Organisation" "2"`
-    strings="invis-server.org%$organisation"
-    changevalues $path $file "$strings"
+#    organisation=`getconfdata "Organisation" "2"`
+#    strings="invis-server.org%$organisation"
+#    changevalues $path $file "$strings"
 
-    admail=`getconfdata "Admail" "2"`
-    strings="domadmin@invis-net.loc%$admail"
-    changevalues $path $file "$strings"
-    
-    msgbox "Um auf Ihrem invis Server SSL-Schlüssel und Zertifikate für Web- und Mailserver zu erstellen wird eine Zertifizierungsstelle (CA) benötigt.\n\nDies wird im Folgenden vorgenommen. 
-Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie übernehmen. Lediglich den Common Name müssen Sie selbst erdenken. Er taucht als Name der CA in allen damit signierten Zertifikaten auf.
-\n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!\n\nDrücken Sie nach dem OK bitte noch einmal die Enter-Taste." "CA erstellen"
-    # invis CA erstellen
-    cd /etc/ssl
-    /usr/share/ssl/misc/CA.pl -newca | tee -a $setupdir/sine.log
-    cd $OLDPWD
-    # Verzeichnis fuer dnssec Schluessel erzeugen
-    mkdir -p /etc/ssl/ddns 2>&1| tee -a $setupdir/sine.log
+#    admail=`getconfdata "Admail" "2"`
+#    strings="domadmin@invis-net.loc%$admail"
+#    changevalues $path $file "$strings"
+#    # invis CA erstellen
+#    cd /etc/ssl
+#    /usr/share/ssl/misc/CA.pl -newca | tee -a $setupdir/sine.log
+#    cd $OLDPWD
+#    # Verzeichnis fuer dnssec Schluessel erzeugen
+#    mkdir -p /etc/ssl/ddns 2>&1| tee -a $setupdir/sine.log
 
     # Konfiguration fuer Notfall-Internetzugang via Handy und T-Mobile (Teathering)
-    cp $cfilesdir/invis/wvd_tmobile.conf /etc/invis 2>&1| tee -a $setupdir/sine.log
+#    cp $cfilesdir/invis/wvd_tmobile.conf /etc/invis 2>&1| tee -a $setupdir/sine.log
 
     # Zeitzoneneinstellung des Servers ermitteln
     # php versteht CEST nict mehr
@@ -1404,9 +1411,9 @@ samba_ad() {
     msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
 
-    serverkeys ldap 2>&1| tee -a $setupdir/sine.log
-    chown -R :pkeys /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
-    chmod g+rx /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
+    inviscerts ldap 2>&1| tee -a $setupdir/sine.log
+    chown -R :pkeys /etc/invis/private 2>&1| tee -a $setupdir/sine.log
+    chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $setupdir/sine.log
 
     systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
     
@@ -1585,9 +1592,10 @@ mailserver() {
     msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren Mailserver erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Mailserver Schlüsselsatzes"
 
-    serverkeys ms 2>&1| tee -a $setupdir/sine.log
-    chown :pkeys /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
-    chmod g+rx /etc/ssl/private 2>&1| tee -a $setupdir/sine.log
+    inviscerts ms 2>&1| tee -a $setupdir/sine.log
+### Zeilen doppelt, aufraeumen
+#    chown :pkeys /etc/invis/private 2>&1| tee -a $setupdir/sine.log
+#    chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $setupdir/sine.log
     usermod -a -G pkeys postfix 2>&1| tee -a $setupdir/sine.log
     usermod -a -G pkeys wwwrun 2>&1| tee -a $setupdir/sine.log
     usermod -a -G mail postfix 2>&1| tee -a $setupdir/sine.log
@@ -2045,7 +2053,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     a2enmod version
     
     # Stammzertifikat der Server-CA bereitstellen
-    cp /etc/ssl/CA/cacert.pem /srv/www/htdocs/portal/inc/
+    cp /etc/invis/certs/ca.crt /srv/www/htdocs/portal/inc/
     
     cp $cfilesdir/webserver/invis-vh.conf /etc/apache2/vhosts.d/
     path="/etc/apache2/vhosts.d"
@@ -2058,6 +2066,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
 
+### aufraeumen -> PHP 5.5 verwendet opcache Module und nicht mehr APC
     # php5-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
     echo "apc.rfc1867 = On" >> /etc/php5/conf.d/apc.ini
     # die folgende Einstellung verhindert den Versuch die Klasse adLDAP mehrfach zu laden.
@@ -2078,7 +2087,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     if [[ $ddnshn != "none" ]]; then
 
 	msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
-	serverkeys ws
+	inviscerts extern
 	
         # Kopieren und anpassend der Konfigurationsdateien
         cd $setupdir
@@ -2981,7 +2990,8 @@ openvpn() {
 	cp /etc/easy-rsa/$domain/ca.crt $keydir
 
 	msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
-	easyrsa build-server-full $ddns nopass
+	## Webserverschluessel übernehmen
+	#easyrsa build-server-full $ddns nopass
 	cp /etc/easy-rsa/$domain/private/$ddns.key $keydir
 	cp /etc/easy-rsa/$domain/issued/$ddns.crt $keydir
 
