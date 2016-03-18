@@ -16,8 +16,8 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
-keypath="/etc/ssl/private"
-certpath="/etc/ssl/certs"
+keypath="/etc/invis/private"
+certpath="/etc/invis/certs"
 
 # Standardschluessel kopieren
 cp $keypath/mail-key.pem $keypath/zarafa.pem
