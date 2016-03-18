@@ -1438,7 +1438,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     # Links auf Sambalibs erzeugen
     ln -s /usr/lib64/samba/libndr-nbt.so.0.0.1 /usr/lib64/libndr-nbt.so.0 
     ln -s /usr/lib64/samba/libndr.so.0.0.2 /usr/lib64/libndr.so.0 
-    ln -s /usr/lib64/samba/libtevent.so.0.9.18 /usr/lib64/libtevent.so.0
+    #ln -s /usr/lib64/samba/libtevent.so.0.9.18 /usr/lib64/libtevent.so.0
 
     ## sssd konfiguration erzeugen
     domain=`getconfdata "Domain" "2"`
