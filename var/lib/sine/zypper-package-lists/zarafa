@@ -1,11 +1,5 @@
 zarafa-server-packages
 zarafa-webaccess
-zarafa-webaccess-spreed
-zarafa-webaccess-mdm
-zarafa-webaccess-dspam
-zarafa-webaccess-smime
-zarafa-webaccess-dspam
-zarafa-webaccess-jira
 zarafa-bash-completion
 z-push2
 postfix-mysql
