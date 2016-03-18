@@ -2998,15 +2998,14 @@ openvpn() {
 	cp /etc/easy-rsa/$domain/crl.pem $keydir
 	cp /etc/easy-rsa/$domain/ca.crt $keydir
 
-	msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
+	#msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
 	## Webserverschluessel übernehmen
 	#easyrsa build-server-full $ddns nopass
 	cp /etc/easy-rsa/$domain/private/$ddns.key $keydir
 	cp /etc/easy-rsa/$domain/issued/$ddns.crt $keydir
 
 	msgbox "Beispiel Client-Konfigurationsdateien finden Sie im cfiles Unterverzeichnis.
-Um Schlüssel für einen Client zu erzeugen wechseln Sie nach /etc/openvpn/$domain und führen Sie 
-build-key \"clienthostname\" aus. Weitere Infos unter wiki.invis-server.de." "openVPN Clients einrichten"
+Um Schlüssel für einen Client zu erzeugen führen Sie inviscerts vpn aus. Weitere Infos unter wiki.invis-server.de." "openVPN Clients einrichten"
     # openvpn ins Runlevel-Konzept integrieren und starten
 	# Seit openSUSE 13.1 bekommt jede openvpn-Konfiguration ein eigenes systemd Service-File
 	# Start und Stop koennen damit fuer jede Konfiguration einzeln erfolgen.
