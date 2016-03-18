@@ -1052,6 +1052,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     easyrsa build-ca
     # CA Datei kopieren
     cp $path/$domain/ca.crt /etc/invis/certs
+    chmod go+r /etc/invis/certs/ca.crt
     
     # DH-Parameterdatei erzeugen
     # easyrsa nutzt die Vorgabe der allgemeinen Schluessellaenge
