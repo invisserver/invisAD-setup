@@ -1054,7 +1054,16 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     cp $path/$domain/ca.crt /etc/invis/certs
     
     # DH-Parameterdatei erzeugen
-    easyrsa gen-dh 2>&1| tee -a $setupdir/sine.log | pgbox
+    # easyrsa nutzt die Vorgabe der allgemeinen Schluessellaenge
+    # auch fuer die DH Parameter Datei. Daraus resultiert eine
+    # sehr laaaaaaaange dauernde Berechnung.
+    #easyrsa gen-dh 2>&1| tee -a $setupdir/sine.log | pgbox
+    
+    # 2048 und 512 Bit DH-Parameter direkt mit openssl 
+    openssl gendh -out $path/$domain/dh.pem -2 2048 2>&1| tee -a $setupdir/sine.log | pgbox
+    openssl gendh -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $setupdir/sine.log | pgbox
+    # Beide Dateien auch fuer Postfix bereit stellen
+    cp $path/$domain/dh*.pem /etc/postfix
     
     # CRL Umgebung initialisieren
     easyrsa gen-crl
