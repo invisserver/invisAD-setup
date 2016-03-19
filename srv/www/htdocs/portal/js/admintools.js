@@ -1183,10 +1183,8 @@ function userAdd() {
 	var sel = new Element('select', {'style': 'width: 60%'});
 	sel.insert(new Element('option', {'value': 0}).update('Gast'));
 	sel.insert(new Element('option', {'value': 1}).update('Mailkonto'));
-	sel.insert(new Element('option', {'value': 2}).update('Windows'));
 	sel.insert(new Element('option', {'value': 3}).update('Windows+Unix'));
 	sel.insert(new Element('option', {'value': 4}).update('Windows+Unix+Groupware'));
-	sel.insert(new Element('option', {'value': 5}).update('WinAdmin'));
 	sel.insert(new Element('option', {'value': 6}).update('WinAdmin+Unix'));
 	sel.insert(new Element('option', {'value': 7}).update('WinAdmin+Unix+Groupware'));
 	sel.observe('change', function(e) { account_type = this.value; });

@@ -139,7 +139,7 @@ hr {
 	
 	font-size: 7pt;
 	/*font-family: "Times New Roman", times, serif;*/
-	foont-family: verdana, sans-serif;
+	font-family: verdana, sans-serif;
 	text-align: center;
 }
 
@@ -220,7 +220,7 @@ hr {
 	
 	font-size: 0.8em;
 	/*font-family: "Times New Roman", times, serif;*/
-	foont-family: verdana, sans-serif;
+	font-family: verdana, sans-serif;
 	
 	text-align: right;
 }
@@ -300,7 +300,7 @@ hr {
 	font-size: 0.8em;
 	font-weight: bold;
 	/*font-family: "Times New Roman", time, serif;*/
-	foont-family: verdana, sans-serif;
+	font-family: verdana, sans-serif;
 
 }
 
@@ -345,3 +345,4 @@ hr {
 #profile-table .input-description {
 	font-size: 0.6em;
 }
+
