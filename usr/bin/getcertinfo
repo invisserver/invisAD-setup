@@ -47,7 +47,7 @@ for cert in ${certs[*]}; do
 	    certtype="Mail-Server"
 	fi
 	if [[ `echo $certname | grep "^invis"` ]]; then
-	    certtype="Web-Server"
+	    certtype="Web- &amp; VPN-Server"
 	fi
 	echo "$certtype:$datum:$certstate" >> $resultdir/certstatus
 done
