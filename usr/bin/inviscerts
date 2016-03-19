@@ -47,14 +47,14 @@ changevalues() {
 }
 
 usage() {
-    echo -e "Bitte geben Sie an, ob Sie Zertifikate für LDAP-Server, Mail-Server, den Externzugriff oder einen VPN-Client\nerzeugen möchten:\n\tlinux:~ # serverkeys ldap\n\tlinux:~ # serverkeys ms\n\tlinux:~ # serverkeys extern\noder\n\tlinux:~ # serverkeys vpn"
+    echo -e "Bitte geben Sie an, ob Sie Zertifikate für LDAP-Server, Mail-Server, den Externzugriff oder einen VPN-Client\nerzeugen möchten:\n\tlinux:~ # inviscerts ldap\n\tlinux:~ # inviscerts ms\n\tlinux:~ # inviscerts extern\noder\n\tlinux:~ # inviscerts vpn"
     echo -e "Dabei fasst \"extern\" die Zertifikate von Web- und VPN-Server zusammen." 
     echo -e "Sie benötigen in jedem Fall das Passwort Ihrer Zertifizierungsstelle (CA)."
     exit
 }
 
 out() {
-    echo -e "\nSie müssen jetzt gegebenenfals betroffene Dienste neu starten."
+    echo -e "\nSie müssen jetzt gegebenenfalls betroffene Dienste neu starten."
     echo -e "\nDanke, dass Sie \"inviscerts\" verwendet haben.\nSie haben ein einfaches Script sehr glücklich gemacht.\nAuf wiedersehn."
     exit
 }
