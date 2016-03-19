@@ -20,8 +20,8 @@
 # Ergebnisverzeichnis
 resultdir="/var/spool/results/certs"
 # Zertifikate
-cacert="/etc/ssl/CA/cacert.pem"
-certs=("/etc/ssl/certs/ldap-cert.pem" "/etc/ssl/certs/mail-cert.pem" "/etc/apache2/ssl.crt/invis-server.crt")
+cacert="/etc/invis/certs/ca.crt"
+certs=("/etc/invis/certs/ldap-cert.pem" "/etc/invis/certs/mail-cert.pem" "/etc/apache2/ssl.crt/invis-server.crt")
 
 # Ergebnisverzeichnis anlegen, wenn nicht vorhanden
 if [[ ! -d $resultdir ]]; then
