@@ -79,7 +79,7 @@ $SERVER_SERVICES = array(
 	array('mysql', 'MariaDB Datenbank'),
 	array('named','DNS Namensauflösung'),
 	array('ntop', 'Netzwerkanalyse'),
-	array('ntp', 'Zeitserver'),
+	array('ntpd', 'Zeitserver'),
 	array('postfix','Email-Versand'),
 	array('postgresql', 'PostgreSQL Datenbank'),
 	array('sernet-samba-ad', 'Active Directory'),
