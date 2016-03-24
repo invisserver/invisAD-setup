@@ -919,6 +919,22 @@ sysprep() {
     # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
     cd $libdir
 
+    libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
+    libtevent=`basename $libtevent`
+    ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
+    libndr=`basename $libndr`
+    ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    #libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
+    #libndrnbt=`basename $libndrnbt`
+    #ln -s samba/$libndrnbt libndr-nbt.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
+    libtalloc=`basename $libtalloc`
+    ln -s samba/$libtalloc libtalloc.so.2 2>&1| tee -a $setupdir/sine.log | pgbox
+
     libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
     libldb=`basename $libldb`
     ln -s samba/$libldb libldb.so.1 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1437,8 +1453,8 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     cp $cfilesdir/System/nsswitch.conf /etc/
     
     # Links auf Sambalibs erzeugen
-    ln -s /usr/lib64/samba/libndr-nbt.so.0.0.1 /usr/lib64/libndr-nbt.so.0 
-    ln -s /usr/lib64/samba/libndr.so.0.0.2 /usr/lib64/libndr.so.0 
+    #ln -s /usr/lib64/samba/libndr-nbt.so.0.0.1 /usr/lib64/libndr-nbt.so.0 
+    #ln -s /usr/lib64/samba/libndr.so.0.0.2 /usr/lib64/libndr.so.0 
     #ln -s /usr/lib64/samba/libtevent.so.0.9.18 /usr/lib64/libtevent.so.0
 
     ## sssd konfiguration erzeugen
