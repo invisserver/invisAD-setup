@@ -1,10 +1,10 @@
 server_host = 127.0.0.1
-search_base = cn=users,dc=invis-net,dc=loc
+search_base = cn=users,DC=clt-net,DC=loc
 version = 3
 bind = yes
-bind_dn = ldap.admin@invis-net.loc
-bind_pw = admin-secret
-query_filter = (&(objectclass=group)(mail=%s))
+bind_dn = ldap.admin@clt-net.loc
+bind_pw = lcH0TYuc
+query_filter = (&(objectclass=group)(cn=%u))
 leaf_result_attribute = mail
 special_result_attribute = member
 
