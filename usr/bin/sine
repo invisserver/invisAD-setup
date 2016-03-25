@@ -520,7 +520,7 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 	tine20 "tine2.0 in Kombination mit Dovecot IMAP (comming soon)" off\
 	sogo "SOGo in Kombination mit Dovecot (not yet with AD)" off\
 	2>$setupdir/sine_temp
-	whichimap=`cat $setupdir/sine_temp`
+	whichgroupware=`cat $setupdir/sine_temp`
 
 #---# Samba Pakete - Es muessen zwingend die Sernet-Pakete verwendet werden
 #---# Zugangsdaten fuer Sernet-Repo abfragen
@@ -730,8 +730,9 @@ HTTPS Port: $httpsport\n\n
 ownCloud Port: $ocport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
-    # Passwort fuer LDAP-Lesezugang erzeugen
+    # Passwort fuer LDAP-Admin und junk erzeugen
     ldappw=`pwgen -s 8 1`
+    junkpw=`pwgen -s 8 1`
 
     # Alle Daten in Kontrolldatei Schreiben
     echo "Country:$country" > $setupdir/invis_confdata
@@ -755,9 +756,10 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "Forwarders:$forwarders"  >> $setupdir/invis_confdata
 
     echo "LDAPAdminPW:$ldappw" >> $setupdir/invis_confdata
+    echo "JunkPW:$junkpw" >> $setupdir/invis_confdata
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
-    echo "IMAPserver:$whichimap"  >> $setupdir/invis_confdata
+    echo "Groupware:$whichgroupware"  >> $setupdir/invis_confdata
     echo "SambaPakete:$whichsamba" >> $setupdir/invis_confdata
     echo "EnterpriseSambaUsername:$esusername" >> $setupdir/invis_confdata
     echo "EnterpriseSambaAccesskey:$esaccesskey" >> $setupdir/invis_confdata
@@ -1102,7 +1104,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 	changevalues $confdir $file "$strings"
     fi
 
-    groupware=`getconfdata "IMAPserver" "2"`
+    groupware=`getconfdata "Groupware" "2"`
     ## verwendete Groupware in Konfigurationsdatei schreiben
     case $groupware in
 	"zarafa" ) 
@@ -1193,7 +1195,6 @@ samba_ad() {
 
     if [[ $provresult != 0 ]]; then
       echo "Provisioning meldet Fehler $provresult! Script wird beendet!" 2>&1| tee -a $setupdir/sine.log | pgbox
-      #exit $provresult
     fi
 
     # Neue config kopieren
@@ -1209,20 +1210,27 @@ samba_ad() {
     chkservice "sernet-samba-winbindd" "d"
     chkservice "sernet-samba-ad"
 
+    # Gruppen anlegen
+    samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" Verwaltung 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $setupdir/sine.log | pgbox
+
     # User fuer LDAP-Lese-Zugang anlegen
     ldappw=`getconfdata "LDAPAdminPW" "2"`
     samba-tool user add ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
-    ## Passwort dard nicht ablaufen
+    ## Passwort darf nicht ablaufen
     samba-tool user setexpiry --noexpiry ldap.admin
     samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # User fuer Junk-Postfach anlegen
-    samba-tool user add junk "$ldappw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group addmembers "Domain Guests" junk 2>&1| tee -a $setupdir/sine.log | pgbox
+    junkpw=`getconfdata "JunkPW" "2"`
+    samba-tool user add junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool user setexpiry --noexpiry junk
+    samba-tool group addmembers "maildummies" junk 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $setupdir/sine.log | pgbox
-    smbadpw junk
 
-    # Primary Group?
+    msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
 
     # Sernet-Samba AD stoppen
     systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1348,7 +1356,6 @@ samba_ad() {
     
     
     # Bauen des Server-Schlüsselsatzes
-    cd /etc/ssl
     msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
 
@@ -1523,7 +1530,6 @@ mailserver() {
     # Mailkonto fuer SPAM-Mails kann erst nach Einrichtung der Samba-Domäne angelegt werden
     
     # Bauen des Server-Schlüsselsatzes
-    cd /etc/ssl
     msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren Mailserver erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Mailserver Schlüsselsatzes"
 
@@ -1532,16 +1538,14 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     usermod -a -G pkeys wwwrun 2>&1| tee -a $setupdir/sine.log
     usermod -a -G mail postfix 2>&1| tee -a $setupdir/sine.log
 
-    cd $OLDPWD
-
     # Kopieren der Postfix-Konfigurationsdateien
     cp $cfilesdir/mailserver/postfix/* /etc/postfix 2>&1| tee -a $setupdir/sine.log
     
     ## SOGo, Group-e, Zarafa oder Roundcube
-    whichimap=`getconfdata "IMAPserver" "2"`
-    case "$whichimap" in
+    whichgroupware=`getconfdata "Groupware" "2"`
+    case "$whichgroupware" in
     
-	"sogo"|"roundcube" )
+	"sogo"|"roundcube"|"tine20" )
 	    # Dovecot einrichten 
 	    pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
 	    zypper -n install -n dovecot22 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1595,9 +1599,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    # Transportweg fuer lokale emails festlegen
 	    echo "$domain	dovecot:" >> /etc/postfix/relay
 	    postmap /etc/postfix/relay
-	    ;;
-	"tine20" )
-		# to be filled
 	    ;;
 	"zarafa" )
 	    pgsubtitle="Zarafa Groupware und Mailserver wird installiert und eingerichtet"
@@ -1762,12 +1763,6 @@ fileserver() {
     unix2dos /srv/shares/service/VPN-Clients/Windows/jowi_openvpnmanager/vpn-client-management.ovpn 2>&1| tee -a $setupdir/sine.log | pgbox
     unix2dos /srv/shares/service/Remove_DC/* 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    # Gruppen anlegen
-    samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" Verwaltung 2>&1| tee -a $setupdir/sine.log | pgbox
-    samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $setupdir/sine.log | pgbox
-
     # invisconnect-Script anpassen
     path="/srv/shares/service/VPN-Clients/Linux"
     file="invisconnect"
@@ -1917,16 +1912,9 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     netpart="$netpart3.$netpart2.$netpart1"
     strings="220.168.192%$netpart"
     changevalues $path $file "$strings"
-    ## Stefan - Was war den das? Kann das weg?
-    # Muss weiter oben geändert werden, da es nur noch dovecot gibt.
-    # Entscheidungskriterium ändern.
-    groupware=`getconfdata "IMAPserver" "2"`
-    if [[ $groupware == "cyrus" ]]; then
-	groupware="groupe"
-    fi
-    if [[ $groupware == "dovecot" ]]; then
-	groupware="sogo"
-    fi
+
+    # Verwendete Groupware in Portal-Konfiguration eintragen
+    groupware=`getconfdata "Groupware" "2"`
     strings="usedgroupware%$groupware"
     changevalues $path $file "$strings"
 
@@ -1936,8 +1924,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     # Putty bereitstellen
     cp $cfilesdir/putty/putty.exe /srv/www/htdocs/portal/
     
-    # Testen, ob php5 Modul aktiviert ist,
-    
+    # Testen, ob php5 Modul aktiviert ist, wenn nicht aktivieren
     if [[ ! `a2enmod -l |grep php5` ]]; then
 	a2enmod php5
     fi
@@ -1965,7 +1952,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
 
-### aufraeumen -> PHP 5.5 verwendet opcache Module und nicht mehr APC
+### aufraeumen -> PHP 5.5 verwendet internes opcache Modul und nicht mehr APC
     # php5-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
     echo "apc.rfc1867 = On" >> /etc/php5/conf.d/apc.ini
     # die folgende Einstellung verhindert den Versuch die Klasse adLDAP mehrfach zu laden.
@@ -2287,9 +2274,9 @@ apcupsd() {
 
 groupware() {
 
-whichimap=`getconfdata "IMAPserver" "2"`
+whichgroupware=`getconfdata "Groupware" "2"`
 
-case "$whichimap" in
+case "$whichgroupware" in
 
     "tine20" )
 	cd $setupdir
