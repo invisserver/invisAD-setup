@@ -983,10 +983,10 @@ sysprep() {
     ntoppw=`getconfdata "NtopPw" "2"`
     ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    
+    pgsubtitle="Es wird eine Zertifizierungsstelle erzeugt"
     msgbox "Um auf Ihrem invis Server SSL-Schlüssel und Zertifikate für Web- und Mailserver zu erstellen wird eine Zertifizierungsstelle (CA) benötigt.\n\nDies wird im Folgenden vorgenommen. 
 Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie übernehmen. Lediglich den Common Name müssen Sie selbst erdenken. Er taucht als Name der CA in allen damit signierten Zertifikaten auf.
-\n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!\n\nDrücken Sie nach dem OK bitte noch einmal die Enter-Taste." "CA erstellen"
+\n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!" "CA erstellen"
 
     ## easy-rsa einrichten und CA bauen
     cp $cfilesdir/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1597,8 +1597,8 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    mv /etc/postfix/main.dovecot /etc/postfix/main.cf 2>&1| tee -a $setupdir/sine.log
 	    
 	    # Transportweg fuer lokale emails festlegen
-	    echo "$domain	dovecot:" >> /etc/postfix/relay
-	    postmap /etc/postfix/relay
+	    echo "$domain	dovecot:" >> /etc/postfix/relay 2>&1| tee -a $setupdir/sine.log
+	    postmap /etc/postfix/relay 2> /dev/null
 	    ;;
 	"zarafa" )
 	    pgsubtitle="Zarafa Groupware und Mailserver wird installiert und eingerichtet"
@@ -1651,7 +1651,7 @@ esac
         smtpun=`getconfdata "SMTPRUN" "2"`
         smtppw=`getconfdata "SMTPRPW" "2"`
 	echo "$mailrelay:$smtpport		$smtpun:$smtppw" >> /etc/postfix/sasl_passwd
-	/usr/sbin/postmap /etc/postfix/sasl_passwd
+	/usr/sbin/postmap /etc/postfix/sasl_passwd 2> /dev/null
     fi
     
     # canonical-files anpassen
