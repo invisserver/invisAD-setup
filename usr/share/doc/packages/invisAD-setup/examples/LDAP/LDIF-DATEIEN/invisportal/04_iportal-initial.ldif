@@ -7,15 +7,15 @@ objectClass: container
 cn: invis-Portal
 description: Liste aller invis-Portal Einträge
 
-# Groupware Group-e
-dn: cn=Group-e,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+# Groupware Tine 2.0
+dn: cn=Tine-2.0,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-cn: Group-e
-iPortEntryName: Group-e
+cn: Tine-2.0
+iPortEntryName: Tine-2.0
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/group-e
-iPortEntryDescription: Die Groupware "Group-e" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails und Zeiterfassung. 
+iPortEntryURL: [servername]/tine20
+iPortEntryDescription: Die Groupware "Tine 2.0" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails, CRM und Zeiterfassung. 
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware

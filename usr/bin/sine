@@ -2292,7 +2292,7 @@ case "$whichgroupware" in
 	    zyppercheck ${PIPESTATUS[0]}
 
 	    pgsubtitle="tine20 wird installiert."
-	    # Group-e im Portal aktivieren
+	    # Tine 2.0 im Portal aktivieren
 	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	
 	    chkservice "apache2"
@@ -2300,7 +2300,7 @@ case "$whichgroupware" in
 	    writeprepstat "erp"
 	    waitbox "groupware" "erp"
 	else
-	    msgbox "Group-e Installation übersprungenen." "$windowtitle"
+	    msgbox "Tine 2.0 Installation übersprungenen." "$windowtitle"
 	    writeprepstat "erp" 
 	fi
 	;; 
