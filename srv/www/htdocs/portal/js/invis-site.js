@@ -32,8 +32,6 @@ function initUserblock() {
 	if (cookie != null) {
 		cookie = cookie.evalJSON();
 		var user_string = cookie.uid + " (" + cookie.displayname + ")";
-		//if (user_string == null) user_string = cookie.uid;
-		
 		var a_profil = new Element("a").update("Einstellungen");
 		a_profil.setStyle({'cursor': 'pointer'});
 		a_profil.observe("click", showProfile);
@@ -187,8 +185,6 @@ function showProfileResponse(request) {
 	
 	rows.each(
 		function (item) {
-			//table.insert('<tr><th class="description">' + row_names.get(item.key) + '</th><td class="editable">' + data[item.key] + '</td></tr>');
-			//*
 			var tr = new Element('tr');
 			var th = new Element('th');
 			
@@ -217,11 +213,9 @@ function showProfileResponse(request) {
 			tr.insert(th);
 			tr.insert(td);
 			table.insert(tr);
-			//*/
 		}
 	);
 	
-	//lightbox.getContent().insert(new Element('div', {'id': 'lightbox_buttons'}));
 	
 	var btn_save = new Element('button').update('Speichern');
 	btn_save.observe('click', function(e) {
@@ -282,14 +276,9 @@ function profileRequestPasswordChange(event) {
 				return;
 			}
 			
-			// Verschluesselung wird von adLDAP erledigt
-			//var ssha = invis.ssha(secret);
-			//var md4 = invis.md4(secret);
-			
 			lightbox.setWaitStatus(true);
-//			invis.setCookie('invis-request', $H({'userpassword': ssha, 'sambantpassword': md4}).toJSON());
 			// Passwort im Klartext an adLDAP uebergeben.
-			invis.setCookie('invis-request', $H({'userpassword': secret}).toJSON());
+			invis.setCookie('invis-request', $H({'adpassword': secret}).toJSON());
 			invis.request('script/adajax.php', 
 				function(request) {
 					lightbox.setWaitStatus(false);

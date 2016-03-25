@@ -56,7 +56,6 @@ if (!isset($_COOKIE['invis-login'])) {
 	// check if request comes from internal address
 	$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
 	$USER_IS_ALLOWED = true;
-	//$EXTERNAL_ACCESS = true;
 	// Ermitteln, ob der User Mitglied der Gruppe mobiluser ist und sich somit auch von extern anmelden darf.
 	if ($EXTERNAL_ACCESS == true) {
 	    //$USER_IS_ALLOWED = array_search($data['uid'], mobilUsers($conn)); //Anpassen auf adLDAP
@@ -90,7 +89,6 @@ if (!isset($_COOKIE['invis-login'])) {
 		}
 	} else {
 		// no entry found OR general connection problems 
-		//echo ldap_error($conn);
 		unauthorized();
 		error_log("Unauthorized access: User \"" . $data['uid'] . "\" general error. LDAP error: \"" . "\" (5, login.php)");
 	}
