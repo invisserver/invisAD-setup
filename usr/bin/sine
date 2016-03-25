@@ -512,38 +512,15 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
     ntoppw="${ntopsecrets[0]}"
 
 #---# MAIL & Groupware Server
-    ## Dovecot, Cyrus oder Zarafa?
-    ## Hier wird es zukuenftig lustig:
-    # - Dovecot laesst sich bedingt mit Group-e kombinieren
-    # - Dovecot laesst sich mit der Software "Mailbridge" als IMAP-Cache fuer Zarafa verwenden, wird auf jeden Fall getestet
-    # - Cyrus und Group-e sind ein gutes Team
-    # - Zarafa schließt Cyrus und Group-e aus
+    ## Dovecot oder Zarafa?
     dialog --backtitle "$dialogtitle" --title "MAIL & Groupware Server" --radiolist "$dialogshorthelp\n\n
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
-	zarafa "Mailserver/Groupware Kombination für Outlook-Freunde" on\
+	zarafa "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
 	roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
-	groupe "Group-e in Kombination mit Cyrus IMAP (not yet with AD)" off\
+	tine20 "tine2.0 in Kombination mit Dovecot IMAP (comming soon)" off\
 	sogo "SOGo in Kombination mit Dovecot (not yet with AD)" off\
 	2>$setupdir/sine_temp
 	whichimap=`cat $setupdir/sine_temp`
-    
-    if [[ $whichimap == "groupe" ]]; then
-	ok=0
-	while (( $ok != "1" ));do
-	    dialog --backtitle "$dialogtitle" --title "cyrus Admin Passwort" --insecure --passwordform "$dialogshorthelp\n\n
-Für die Administration des IMAP-Servers Cyrus muss ein Passwort für den cyrus-Admin Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
-	    "cyrus Passwort:" 2 2 "" 2 23 10 0\
-	    "Kontrolle:" 2 36 "" 2 47 10 0\
-	    2>$setupdir/sine_temp
-	    cyrussecrets=(`cat $setupdir/sine_temp`)
-
-		if [[ ${cyrussecrets[0]} == ${cyrussecrets[1]} ]] && (( ${#cyrussecrets[0]} >= 6 ));then
-		    ok=1
-		fi
-	done
-	cyruspw="${cyrussecrets[0]}"
-    fi
 
 #---# Samba Pakete - Es muessen zwingend die Sernet-Pakete verwendet werden
 #---# Zugangsdaten fuer Sernet-Repo abfragen
@@ -610,11 +587,6 @@ Welche Lösung möchten Sie einsetzen?\n\n" 18 80 8 \
 	keine  "Keine Überwachung" off\
 	2>$setupdir/sine_temp
 	whichmonitoring=`cat $setupdir/sine_temp`
-
-#---# rsyslog installieren
-#    yesno "Moderne Linux-Systeme ersetzen mit dem Tool Systemd-Journald den klassischen System-Protokolldienst. Journald protokolliert nicht mehr in einfachen Textdateien, sondern in einem Binärformat. Zum Lesen der Protokolle ist das Tool journalctl erforderlich. Soll zusätzlich zum Journald ein klassischer Protokolldienst installieret werden?" "rsyslog installieren?"
-#    instsyslog=${?}
-    
 
 #---# HTTPS    
     yesno "Soll Ihr invis Server via Internet (HTTPS) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
@@ -786,9 +758,6 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
     echo "IMAPserver:$whichimap"  >> $setupdir/invis_confdata
-    if [[ $whichimap == "groupe" ]];then
-	echo "CyrusPw:$cyruspw" >> $setupdir/invis_confdata
-    fi
     echo "SambaPakete:$whichsamba" >> $setupdir/invis_confdata
     echo "EnterpriseSambaUsername:$esusername" >> $setupdir/invis_confdata
     echo "EnterpriseSambaAccesskey:$esaccesskey" >> $setupdir/invis_confdata
@@ -796,13 +765,6 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "ERPSoftware:$whicherp" >> $setupdir/invis_confdata
 
     echo "MonitoringSoftware:$whichmonitoring" >> $setupdir/invis_confdata
-
-#    if [[ $instsyslog == "0" ]]; then
-#	rsyslogsetup="1"
-#    else
-#	rsyslogsetup="0"
-#    fi
-#    echo "Rsyslog:$rsyslogsetup" >> $setupdir/invis_confdata
 
     echo "SSHPORT:$sshport" >> $setupdir/invis_confdata
     echo "HTTPSPORT:$httpsport" >> $setupdir/invis_confdata
@@ -865,7 +827,8 @@ sysprep() {
 
     # temporaerer Bugfix fuer sysconf_addword
     # Original wird ueberschrieben
-    cp $cfilesdir/../scripts/sysconf_addword /usr/sbin
+    # ist angeblich gefixt
+    # cp $cfilesdir/../scripts/sysconf_addword /usr/sbin
 
     # Verzeichnisse in /etc/skel anlegen
     mkdir /etc/skel/Dokumente
@@ -881,14 +844,6 @@ sysprep() {
     av=`getconfdata "AV" "2"`
     avcron=`getconfdata "AVCRON" "2"`
     
-#    rsyslogsetup=`getconfdate "Rsyslog" "2"`
-    
-#    if [[ $rsyslogsetup == "1" ]]; then
-#        zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
-#	pgsubtitle="Systemprotokolldienst rsyslog wird installiert"
-#	zypper -n in -n rsyslog 2>&1| tee -a $setupdir/sine.log | pgbox
-
-#    fi
     # Samba Pakete werden installiert
     pgsubtitle="Die gewählten Samba-Pakete werden installiert"
     sambapackages=`getconfdata "SambaPakete" "2"`
@@ -915,7 +870,6 @@ sysprep() {
 	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
 
-    
     # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
     cd $libdir
 
@@ -1022,7 +976,7 @@ sysprep() {
     changevalues $path $file "$strings"
 
     #Admin PW fuer ntop-user wwwrun setzen
-    # Achtung Bug im ntop Paket: Das Verzeichnis ind dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
+    # Achtung Bug im ntop Paket: Das Verzeichnis in dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
     mkdir /var/lib/ntop
     ntoppw=`getconfdata "NtopPw" "2"`
     ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1088,45 +1042,8 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     # CRL Chain Datei erzeugen
     cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
 
-### aufraeumen
-    ## openSSL einrichten und CA bauen
-#    cp $cfilesdir/ssl/openssl.cnf /etc/ssl 2>&1| tee -a $setupdir/sine.log | pgbox
-#    cp $cfilesdir/ssl/CA.pl /usr/share/ssl/misc/ 2>&1| tee -a $setupdir/sine.log | pgbox
-
-#    file="openssl.cnf"
-#    path="/etc/ssl"
-    
-#    country=`getconfdata "Country" "2"`
-#    strings="DE%$country"
-#    changevalues $path $file "$strings"
-
-#    region=`getconfdata "Region" "2"`
-#    strings="Hessen%$region"
-#    changevalues $path $file "$strings"
-
-#    city=`getconfdata "City" "2"`
-#    strings="Schotten%$city"
-#    changevalues $path $file "$strings"
-
-#    organisation=`getconfdata "Organisation" "2"`
-#    strings="invis-server.org%$organisation"
-#    changevalues $path $file "$strings"
-
-#    admail=`getconfdata "Admail" "2"`
-#    strings="domadmin@invis-net.loc%$admail"
-#    changevalues $path $file "$strings"
-#    # invis CA erstellen
-#    cd /etc/ssl
-#    /usr/share/ssl/misc/CA.pl -newca | tee -a $setupdir/sine.log
-#    cd $OLDPWD
-#    # Verzeichnis fuer dnssec Schluessel erzeugen
-#    mkdir -p /etc/ssl/ddns 2>&1| tee -a $setupdir/sine.log
-
-    # Konfiguration fuer Notfall-Internetzugang via Handy und T-Mobile (Teathering)
-#    cp $cfilesdir/invis/wvd_tmobile.conf /etc/invis 2>&1| tee -a $setupdir/sine.log
-
     # Zeitzoneneinstellung des Servers ermitteln
-    # php versteht CEST nict mehr
+    # php versteht CEST nicht mehr
     #timezone=`date +%Z`
     timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
@@ -1192,8 +1109,8 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 	    strings="usedgroupware%zarafa"
 	    changevalues $confdir $file "$strings"
 	    ;;
-	"groupe" )
-	    strings="usedgroupware%groupe"
+	"tine20" )
+	    strings="usedgroupware%tine20"
 	    changevalues $confdir $file "$strings"
 	    ;;
 	"sogo" )
@@ -1297,8 +1214,6 @@ samba_ad() {
     samba-tool user add ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
     ## Passwort dard nicht ablaufen
     samba-tool user setexpiry --noexpiry ldap.admin
-    #samba-tool group addmembers "Domain Guests" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
-    #samba-tool group removemembers "Domain Users" ldap.readonly 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # User fuer Junk-Postfach anlegen
@@ -1452,11 +1367,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     cp $cfilesdir/System/sssd/sssd.conf /etc/sssd/
     cp $cfilesdir/System/nsswitch.conf /etc/
     
-    # Links auf Sambalibs erzeugen
-    #ln -s /usr/lib64/samba/libndr-nbt.so.0.0.1 /usr/lib64/libndr-nbt.so.0 
-    #ln -s /usr/lib64/samba/libndr.so.0.0.2 /usr/lib64/libndr.so.0 
-    #ln -s /usr/lib64/samba/libtevent.so.0.9.18 /usr/lib64/libtevent.so.0
-
     ## sssd konfiguration erzeugen
     domain=`getconfdata "Domain" "2"`
     fqdn=`getconfdata "FQDN" "2"`
@@ -1499,7 +1409,6 @@ dns() {
     
     hostaddr=`echo $ipaddr|cut -d "." -f4`
     
-    #echo -e "\033[1;33mIhr Nameserver wird eingerichtet\033[0m"
     cp $cfilesdir/dhcp-dns/named.conf /etc 2>&1| tee -a $setupdir/sine.log
     cp $cfilesdir/dhcp-dns/s4.named.conf $s4workingdir/named.conf 2>&1| tee -a $setupdir/sine.log
 
@@ -1619,9 +1528,6 @@ mailserver() {
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Mailserver Schlüsselsatzes"
 
     inviscerts ms 2>&1| tee -a $setupdir/sine.log
-### Zeilen doppelt, aufraeumen
-#    chown :pkeys /etc/invis/private 2>&1| tee -a $setupdir/sine.log
-#    chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $setupdir/sine.log
     usermod -a -G pkeys postfix 2>&1| tee -a $setupdir/sine.log
     usermod -a -G pkeys wwwrun 2>&1| tee -a $setupdir/sine.log
     usermod -a -G mail postfix 2>&1| tee -a $setupdir/sine.log
@@ -1637,7 +1543,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     
 	"sogo"|"roundcube" )
 	    # Dovecot einrichten 
-    	    pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
+	    pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
 	    zypper -n install -n dovecot22 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Konfiguration anpassen
@@ -1683,31 +1589,15 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    chkservice "dovecot"
 
 	    # Postfix konfiguration kopieren
-	    rm -f `ls /etc/postfix/ |grep "main.[zarafa|cyrus]"`
+	    rm -f `ls /etc/postfix/ |grep "main.zarafa"`
 	    mv /etc/postfix/main.dovecot /etc/postfix/main.cf 2>&1| tee -a $setupdir/sine.log
 	    
 	    # Transportweg fuer lokale emails festlegen
 	    echo "$domain	dovecot:" >> /etc/postfix/relay
 	    postmap /etc/postfix/relay
 	    ;;
-	"groupe" )
-	    # Cyrus einrichten
-	    pgsubtitle="Cyrus IMAP wird installiert und eingerichtet"
-	    zypper -n install -n cyrus-imapd 2>&1| tee -a $setupdir/sine.log | pgbox
-	    zyppercheck ${PIPESTATUS[0]}
-	    zypper -n install -n `cat $setupdir/zypper-package-lists/sasl_mechs` 2>&1| tee -a $setupdir/sine.log | pgbox
-	    zyppercheck ${PIPESTATUS[0]}
-	    cp $cfilesdir/mailserver/cyrus/*.conf /etc 2>&1| tee -a $setupdir/sine.log
-	    # Passwort für den User cyrus setzen
-	    cyruspw=`getconfdata "CyrusPw" "2"`
-	    #msgbox "Für den Benutzer \"cyrus\" muss ein Passwort gesetzt werden" "Cyrus IMAP wird vorbereitet"
-	    echo "cyrus:$cyruspw" | chpasswd | tee -a $setupdir/sine.log | pgbox
-	    usermod -a -G pkeys cyrus 2>&1| tee -a $setupdir/sine.log
-	    chkservice "saslauthd"
-	    chkservice "cyrus"
-	    # Postfix Konfiguration kopieren
-	    rm -f `ls /etc/postfix/ |grep "main.[dovecot|zarafa]"` 2>&1| tee -a $setupdir/sine.log
-	    mv /etc/postfix/main.cyrus /etc/postfix/main.cf 2>&1| tee -a $setupdir/sine.log
+	"tine20" )
+		# to be filled
 	    ;;
 	"zarafa" )
 	    pgsubtitle="Zarafa Groupware und Mailserver wird installiert und eingerichtet"
@@ -1956,30 +1846,11 @@ fileserver() {
 
     # Samba4 wertet X-Bit aus
     chmod +x $netlogonpath/*  2>&1| tee -a $setupdir/sine.log
-    
-    # SSSD Cache fuer ungueltig erklaeren
-    #sss_cache -UG
-
-    #Anpassen der Besitzrechte der Freigaben
-    #chown -R root:"Archiv" /srv/shares/archiv 2>&1| tee -a $setupdir/sine.log
-    #chown -R root:"Domain Users" /srv/shares/gruppen 2>&1| tee -a $setupdir/sine.log
-    #chown -R root:"Domain Users" /srv/shares/projekte 2>&1| tee -a $setupdir/sine.log
-    #chown -R root:"Domain Users" /srv/shares/media 2>&1| tee -a $setupdir/sine.log
-    #chown -R root:"Domain Admins" /srv/shares/service 2>&1| tee -a $setupdir/sine.log
-    #chown -R root:"Domain Guests" /srv/shares/transfer 2>&1| tee -a $setupdir/sine.log
-    #chown -R root:"Verwaltung" /srv/shares/verwaltung 2>&1| tee -a $setupdir/sine.log
-
-    # Zielverzeichnis fuer aschenputtel anlegen
-    #chown root:"Domain Users" /srv/shares/portal/uploads 2>&1| tee -a $setupdir/sine.log
-    # Download-Verzeichnis anlegen
-    #chown administrator:"Domain Users" /srv/shares/portal/downloads 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Profilverzeichnisse
-    #chown root:"Domain Users" /srv/shares/profiles 2>&1| tee -a $setupdir/sine.log
     chmod 1777 /srv/shares/profiles 2>&1| tee -a $setupdir/sine.log
 
     #Verzeichnisrechte anpassen - Druckertreiber Freigabe print$
-    #chown -R root:"Domain Admins" /var/lib/samba/drivers 2>&1| tee -a $setupdir/sine.log
     chmod -R g+ws /var/lib/samba/drivers 2>&1| tee -a $setupdir/sine.log
 
     msgbox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
@@ -2046,7 +1917,9 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     netpart="$netpart3.$netpart2.$netpart1"
     strings="220.168.192%$netpart"
     changevalues $path $file "$strings"
-    
+    ## Stefan - Was war den das? Kann das weg?
+    # Muss weiter oben geändert werden, da es nur noch dovecot gibt.
+    # Entscheidungskriterium ändern.
     groupware=`getconfdata "IMAPserver" "2"`
     if [[ $groupware == "cyrus" ]]; then
 	groupware="groupe"
@@ -2138,7 +2011,6 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     # LDAP Client- und adLDAP-Konfiguration anpassen
     # Konfigurationsdaten ermitteln.
     cp $cfilesdir/LDAP/conf-client/etc/openldap/ldap.conf /etc/openldap
-    #domain=`getconfdata "Domain" "2"`
     ldaphost=`getconfdata "FQDN" "2"`
     basedn=`getconfdata "baseDN" "2"`
     path="/etc/openldap/"
@@ -2191,7 +2063,6 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     chkservice "fetchmail"
     chkservice "shellinaboxd-invis"
     chkservice "apache2"
-    #chkservice "mailman"
 
     writeprepstat "mysqlserver"
     waitbox "webserver" "mysqlserver"
@@ -2399,9 +2270,6 @@ apcupsd() {
 
 	confdir="/etc/apcupsd"
 	file="apcupsd.conf"
-#	mv $confdir/$file $confdir/$file.orig
-#	#cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
-#	#cp $confdir/settings.json.template $confdir/settings.json
 	strings="UPSCABLE smart%UPSCABLE usb"
 	changevalues $confdir $file "$strings"
 	strings="UPSTYPE apcsmart%UPSTYPE usb"
@@ -2410,8 +2278,6 @@ apcupsd() {
 	changevalues $confdir $file "$strings"
 	chkservice "apcupsd"
 	
-	# apcupsd im Portal aktivieren
-#	swpestat Etherpad TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
     else
 	msgbox "apcupsd Installation übersprungen" "$windowtitle"
     fi
@@ -2425,62 +2291,22 @@ whichimap=`getconfdata "IMAPserver" "2"`
 
 case "$whichimap" in
 
-    "groupe" )
+    "tine20" )
 	cd $setupdir
 	clear
-	windowtitle="Group-e Installation"
-	dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/group-e.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Group-e installieren?" 0 0
+	windowtitle="tine20 Installation"
+	dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/tine20.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
 	cont=${?}
 
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
 	    zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
-	    zypper -n install -n group-e 2>&1 | tee -a $setupdir/sine.log | pgbox
+	    zypper -n install -n tine20 2>&1 | tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 
-	    pgsubtitle="Group-e wird installiert."
-	    path="/etc/apache2/conf.d"
-	    file="groupe.conf"
-	    strings="/opt/group-e%/srv/www/htdocs/group-e"
-	    changevalues $path $file "$strings"
-	    path="/srv/www/htdocs/group-e/www/cfg"
-	    file="global.inc.php"
-	    changevalues $path $file "$strings"
-	    path="/srv/www/htdocs/group-e/etc/phplib"
-	    file="prepend.php"
-	    changevalues $path $file "$strings"
-	    msgbox "Die Datenbank für Group-e wird installiert - Sie benötigen das MySQL root-Passwort." "Group-e Installation"
-	    mysqladmin -u root -p create groupe
-	    msgbox "Für die Group-e-Datenbank wird UTF8 als Zeichensatz gewählt - Sie benötigen das MySQL root-Passwort." "Group-e Installation"
-	    mysql -u root -p --default-character-set=utf8 groupe < /srv/www/htdocs/group-e/dump/group-e_1.6_utf8.sql
-	    msgbox "Die Tabellenstruktur für die Group-e-Datenbank wird installiert - Sie benötigen das MySQL root-Passwort." "Group-e Installation"
-	    mysql -u root -p < $cfilesdir/groupe/user.sql
-	    path="/srv/www/htdocs/group-e/etc/phplib/lib"
-	    file="local.inc"
-	    strings="YOUR_GROUPE_PASSWORD%myxlgruss"
-	    changevalues $path $file "$strings"
-	    # Links fuer cifsmount Kommandos erstellen
-	    ln -s /sbin/mount.cifs /bin/smbmount
-	    ln -s /sbin/umount.cifs /bin/smbumount
-
-	    # Mail-Dummy für Projektmanagement anlegen
-	    smbldap-useradd -m -s /bin/false projekte
-	    msgbox "Es wurde ein Postfach-User für den Group-e Projektmanager angeleget, bitte geben Sie ein Passwort ein." "$windowtitle"
-	    smbldappw projekte
-	    echo "Initmail" |mailx -s Initmail projekte@localhost
-
-	    ## z-push konfigurieren
-	    cp $cfilesdir/webserver/z-push_vh-groupe.conf /etc/apache2/vhosts.d/
-	    
-	    file="z-push_vh-groupe.conf"
-	    path="/etc/apache2/vhosts.d/"
-	    
-	    ddnsname=`getconfdata "DDNS" "2"`
-	    strings="your.ddns-domain.net%$ddnsname"
-	    changevalues $path $file "$strings"
-
+	    pgsubtitle="tine20 wird installiert."
 	    # Group-e im Portal aktivieren
-	    swpestat Group-e TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	
 	    chkservice "apache2"
 	
@@ -2700,7 +2526,6 @@ case $whicherp in
     # PostgreSQL in RL eintragen, wenn noch nicht geschehen
     srvon=`chkconfig postgresql|grep " on"`
     if [[ -z $srvon ]]; then chkservice "postgresql"; fi
-	#lxerpversion="2.7.0"
 	cd $setupdir
 	clear
 	windowtitle="Kivitendo Installation"
@@ -2726,7 +2551,6 @@ case $whicherp in
 Sein Start wird solange fehlschlagen, bis Sie einen gültigen Kivitendo Benutzernamen in
 /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf eingetragen haben." "$windowtitle"
 
-	    #cp /srv/www/htdocs/kivitendo-erp/scripts/boot/systemd/kivitendo-task-server.service /usr/lib/systemd/system/
 	    chkservice "kivitendo-task-server"
 
 	    msgbox "Es wird ein Postgresql-Benutzer - kivitendo - für Kivitendo angelegt. 
@@ -3017,7 +2841,6 @@ openvpn() {
 
 	#msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
 	## Webserverschluessel übernehmen
-	#easyrsa build-server-full $ddns nopass
 	cp /etc/easy-rsa/$domain/private/$ddns.key $keydir
 	cp /etc/easy-rsa/$domain/issued/$ddns.crt $keydir
 
@@ -3048,12 +2871,6 @@ dokuwiki() {
     # Downloadlink ermitteln
     pgsubtitle="Dokuwiki wird heruntergeladen und installiert"
     cd $setupdir
-    #wget `lynx --dump http://www.splitbrain.org/projects/dokuwiki|grep "http"|grep ".tgz"|head -n1|tr -s " "|cut -d " " -f3` 2>&1 |pgbox
-    #wget http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
-    
-    #getpath=`find $setupdir -name "dokuwiki*.tgz"`
-    #tar -xzf $getpath -C /srv/www/htdocs 2>&1 |pgbox
-    #mv /srv/www/htdocs/dokuwiki* /srv/www/htdocs/dokuwiki
 
     pgsubtitle="Dokuwiki wird installiert" 
     zypper -n install -n dokuwiki 2>&1 | tee -a $setupdir/sine.log | pgbox
@@ -3073,7 +2890,6 @@ dokuwiki() {
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $setupdir/sine.log | pgbox
 
     # Encrypt Password Plugin
-    #wget http://www.werbeagentur-willers.de/download/dokuwiki-plugins/encryptedpasswords.zip
     wget https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
     getpath=`find $setupdir -name "master.zip"`
     unzip $getpath -d /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $setupdir/sine.log | pgbox
@@ -3139,15 +2955,10 @@ etherpad() {
 	confdir="/var/lib/etherpad-lite"
 	file="settings.json"
 	mv $confdir/$file $confdir/$file.orig
-	#cp $cfilesdir/etherpad/$file $confdir/$file 2>&1 | tee -a $setupdir/sine.log | pgbox
-	#cp $confdir/settings.json.template $confdir/settings.json
 	etherpaddbuserpw=`mkdbsilent etherpad etherpad a`
 	strings="dbuserpassword%$etherpaddbuserpw"
 	changevalues $confdir $file "$strings"
 	chkservice "etherpad-lite"
-	#service etherpad-lite stop
-	#mysql -u etherpad --password=$etherpaddbuserpw -D etherpad < $cfilesdir/etherpad/charset.sql
-	#service etherpad-lite start
 	
 	# Etherpad im Portal aktivieren
 	swpestat Etherpad TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
