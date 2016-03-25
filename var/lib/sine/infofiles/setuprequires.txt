@@ -1,4 +1,4 @@
-Für die Installation eines invis Servers 10.4 AD müssen folgende Voraussetzungen erfüllt sein:
+Für die Installation eines invis Servers 10.5 AD müssen folgende Voraussetzungen erfüllt sein:
 
     - Als Basis muss openSUSE Leap 42.1, möglichst ohne grafische Oberfläche installiert sein.
     
@@ -28,7 +28,7 @@ Für die Installation eines invis Servers 10.4 AD müssen folgende Voraussetzung
       Server nicht auf Anfragen, beeinträchtig dies sowohl die Installation Ihres invis-Servers
       als auch den späteren Betrieb.
       
-    - Für invis-Server 10.4 AD benötigen Sie zwingend die Samba4 Pakete des Anbieters Sernet GmbH.
+    - Für invis-Server 10.5 AD benötigen Sie zwingend die Samba4 Pakete des Anbieters Sernet GmbH.
       Um diese Pakete installieren zu können müssen Sie sich zunächst unter 
             https://portal.enterprisesamba.com/users/sign_in 
       Registrieren. Das invis-Setup-Script "sine" wird Sie nach "Username" und "Accesskey" fragen. 
