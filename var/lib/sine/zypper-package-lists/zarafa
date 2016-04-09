@@ -1,4 +1,6 @@
 zarafa-server-packages
+systat
+zarafa-compat
 zarafa-webaccess
 zarafa-bash-completion
 z-push2

@@ -4,7 +4,7 @@
 
 # If you change this file, run 'grub2-mkconfig -o /boot/grub2/grub.cfg' afterwards to update
 # /boot/grub2/grub.cfg.
-GRUB_DISTRIBUTOR="invisAD Server 10.4"
+GRUB_DISTRIBUTOR="invisAD Server 10.5"
 GRUB_DEFAULT=saved
 GRUB_HIDDEN_TIMEOUT=0
 GRUB_HIDDEN_TIMEOUT_QUIET=true
