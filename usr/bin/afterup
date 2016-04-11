@@ -41,7 +41,6 @@ else
     libdir="/usr/lib"
 fi
 
-
 # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
 # Geaendert fuer neue sernet-Pakete
 #libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
@@ -50,34 +49,40 @@ fi
 cd $libdir
 libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
 libtevent=`basename $libtevent`
-ln -s samba/$libtevent libtevent.so.0 2>/dev/null
+if [[ ! -L samba/$libtevent ]]; then
+    ln -s samba/$libtevent libtevent.so.0 2>/dev/null
+fi
 
 libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
 libndr=`basename $libndr`
-ln -s samba/$libndr libndr.so.0 2>/dev/null
-
+if [[ ! -L samba/$libndr ]]; then
+    ln -s samba/$libndr libndr.so.0 2>/dev/null
+fi
 #libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
 #libndrnbt=`basename $libndrnbt`
 #ln -s samba/$libndrnbt libndr-nbt.so.0 2>/dev/null
 
 libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
 libtalloc=`basename $libtalloc`
-ln -s samba/$libtalloc libtalloc.so.2 2>/dev/null
-
+if [[ ! -L samba/$libtalloc ]]; then
+    ln -s samba/$libtalloc libtalloc.so.2 2>/dev/null
+fi
 libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
 libldb=`basename $libldb`
-ln -s samba/$libldb libldb.so.1 2>/dev/null
-
+if [[ ! -L samba/$libldb ]]; then
+    ln -s samba/$libldb libldb.so.1 2>/dev/null
+fi
 systemctl restart sssd.service
 
 sleep 3
 
 # Samba Updates verändern die Rechte an Verzeichnissen unter /var/lib/samba
+profiledir="/srv/shares/profiles"
 chown -R ."Domain Admins" /var/lib/samba/drivers
-chown -R ."Domain Users" /var/lib/samba/profiles
 chmod go+rx /var/lib/samba/private
 
-chmod 1777 /var/lib/samba/profiles
+chown -R ."Domain Users" $profiledir
+chmod 1777 $profiledir
 
 if [[ -f /sbin/mount.cifs ]]; then
     chmod u+s /sbin/mount.cifs
@@ -96,8 +101,7 @@ chown -R root:"Verwaltung" /srv/shares/verwaltung
 chown root:"Domain Users" /srv/shares/portal/uploads
 chown root:"Domain Users" /srv/shares/portal/downloads
 
-
-groupware=`getconfdata "usedGroupware" "2"`
+groupware=`getconfdata "$conffile" "usedGroupware" "2"`
 
 if [[ $groupware == "zarafa" ]]; then
     #Anpassen der Besitzrechte des Zarafa Attachementverzeichnisses
@@ -107,10 +111,11 @@ if [[ $groupware == "zarafa" ]]; then
 fi
 
 # Zugriffsrechte auf Private-Key Verzeichnis bereinigen
-chown -R .pkeys /etc/ssl/private
-chmod g+rx /etc/ssl/private
-chmod g+r /etc/ssl/private/mail-key.pem
-chmod 0600 /etc/ssl/private/ldap-key.pem
+privatekeydir="/etc/invis/private"
+chown -R .pkeys $privatekeydir
+chmod g+rx $privatekeydir
+chmod g+r $privatekeydir/mail-key.pem
+chmod 0600 $privatekeydir/ldap-key.pem
 
 systemctl restart named.service
 
