@@ -1,0 +1,91 @@
+#!/bin/bash
+# Script zum Anlegen vieler Gruppen anhand einer Liste
+# (c) 2016 Stefan Schaefer - invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+confdir="/etc/invis"
+passfile="/etc/invis/invis-pws.conf"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Importliste
+liste="$1"
+
+# Pruefen, ob eine Liste genannt wurde
+if [[ -z $liste ]]; then
+    echo "Bitte den Pfad zur Host-Liste angeben."
+    echo "groupadd2ad /pfad/zur/liste.txt"
+    exit
+fi
+
+# Daten aus Konfiguration holen
+basedn=`getconfdata $conffile "baseDN" "2"`
+domain=`getconfdata $conffile "intDomain" "2"`
+user="ldap.admin"
+pw=`getconfdata $passfile "LDAPAdminPW" "2"`
+groupware=`getconfdata $conffile "usedGroupware" "2"`
+
+# Letzte GID Number ermitteln
+# Achtung nicht zweimal kurz hintereinander verwenden, da sssd ca. 5 Min. braucht um auf Stand zu kommen
+# Wer nicht wartet erhaelt doppelte GID-Nummern.
+gidbase=`getent group| grep -v nobody | cut -d ":" -f 3| sort -nu |tail -n1`
+
+(( gid=$gidbase + 1 ))
+
+# dhcphostfile
+workfile="/tmp/group2zarafa.ldif"
+
+# IFS auf Zeilenumbruch umstellen
+oldIFS=$IFS
+IFS=$'\n'
+# Liste verarbeiten.
+for entry in `cat $liste`; do
+    echo "----------------"
+    group=`echo $entry |cut -d "," -f1`
+    type=`echo $entry |cut -d "," -f2`
+    description=`echo $entry |cut -d "," -f3`
+    nisdomain=`echo $domain |cut -d "." -f1`
+    # Gruppe anlegen
+    samba-tool group add $group --group-type=$type --nis-domain=$nisdomain --gid-number=$gid -U $user --password=$pw
+    
+    if [[ $groupware == "zarafa" ]]; then
+	echo "Gruppe für Zarafa aktivieren"
+	echo "dn: CN=$group,CN=Users,$basedn" > $workfile
+	echo "changetype: modify" >> $workfile
+	echo "add: objectclass" >> $workfile
+	echo "objectclass: zarafaGroup" >> $workfile
+	echo "add: zarafaAccount" >> $workfile
+	echo "zarafaAccount: 1" >> $workfile
+	ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
+    fi
+
+    # Mitglieder hinzufuegen
+    members=(`echo $entry |cut -d "," -f4`)
+    IFS=$oldIFS
+    for member in ${members[@]}; do
+	# Samba Tool ist bugy, daher net rpc
+	net rpc group addmem $group $member -U $user%"$pw"
+    done
+    # Naechste GID-Number berechnen
+    (( gid=$gid + 1 ))
+done
