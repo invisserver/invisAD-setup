@@ -2178,7 +2178,7 @@ firewall() {
 
     # OwnCloud-Port einfuegen
     ocport=`getconfdata "OCPORT" "2"`
-    strings="ocport%$httpsport"
+    strings="ocport%$ocport"
     changevalues $path $file "$strings"
     
     # SSH Port ändern
@@ -2993,7 +2993,7 @@ owncloud() {
 	changevalues $path $file "$strings"
 
 	ddnsname=`getconfdata "DDNS" "2"`
-	strings="dummy.invis-server.org%$ddnsname"
+	strings="your.ddns-domain.net%$ddnsname"
 	changevalues $path $file "$strings"
 
 	# Original owncloud-Konfig ueberschreiben
