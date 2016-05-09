@@ -2216,8 +2216,11 @@ monitoring() {
 	zypper -n install -n `cat $setupdir/zypper-package-lists/nagios_plugins` 2>&1 | tee -a $setupdir/sine.log | pgbox
 	groupadd -g 9000 nagios 2>&1 | tee -a $setupdir/sine.log | pgbox
 	useradd -u 9000 -g nagios -d /home/nagios -m -c "Nagios Admin" nagios 2>&1 | tee -a $setupdir/sine.log | pgbox
+	usermod -a -G mysql nagios 2>&1| tee -a $setupdir/sine.log
 	mkdir /home/nagios/.ssh 2>&1 | tee -a $setupdir/sine.log
 	chown -R nagios:nagios /home/nagios/ 2>&1 | tee -a $setupdir/sine.log
+	cp $cfilesdir/monitoring/nagios/sudoers.d/nagios_sudoers /etc/sudoers.d
+	
 	;;
     "zabbix" )
         # Vorbereitung zur Ueberwachung des Servers via Zabbix-Agent mit Zabbix-Proxy
@@ -2225,8 +2228,8 @@ monitoring() {
         chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $setupdir/sine.log
         zabbixdbpw=`mkdbsilent zabbix zabbix a`
         mysql -u zabbix -p$zabbixdbpw zabbix < $cfilesdir/zabbix/schema.sql
-        cp $cfilesdir/zabbix/zabbix-agentd.conf /etc/zabbix 	2>&1| tee -a $setupdir/sine.log
-        cp $cfilesdir/zabbix/zabbix-proxy.conf /etc/zabbix 	2>&1| tee -a $setupdir/sine.log
+        cp $cfilesdir/monitoring/zabbix/zabbix-agentd.conf /etc/zabbix 	2>&1| tee -a $setupdir/sine.log
+        cp $cfilesdir/monitoring/zabbix/zabbix-proxy.conf /etc/zabbix 	2>&1| tee -a $setupdir/sine.log
         confdir="/etc/zabbix"
         file="zabbix-proxy.conf"
         strings="zabbixdbpw%$zabbixdbpw"
