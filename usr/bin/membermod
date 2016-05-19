@@ -56,6 +56,8 @@ echo "add: objectclass" >> $workfile
 echo "objectclass: posixAccount" >> $workfile
 echo "add: uidNumber" >> $workfile
 echo "uidNumber: $rid" >> $workfile
+echo "add: gidNumber" >> $workfile
+echo "gidNumber: 515" >> $workfile
 echo "add: mssfu30nisDomain" >> $workfile
 echo "mssfu30nisDomain: $nisdomain" >> $workfile
 echo "add: loginShell" >> $workfile
