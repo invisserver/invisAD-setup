@@ -1,6 +1,5 @@
-/etc/ssl/certs                               root:pkeys 0755
-/etc/ssl/private                             root:pkeys 0750
-/etc/ssl/CA                                  root:pkeys 0750
+/etc/invis/certs                             root:pkeys 0755
+/etc/invis/private                           root:pkeys 0750
 /srv/shares/profiles                         root:root 1777
 /var/lib/cornaz/build                        wwwrun:www 0755
 /var/lib/cornaz/vacation                     wwwrun:www 0755
