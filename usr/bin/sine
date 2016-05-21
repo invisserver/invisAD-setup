@@ -2048,7 +2048,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     # Webserver, shellinabox, fetchmail und Mailman neustarten und in Runlevel integrieren
     pgsubtitle="Mehrere Dienste werden neu gestartet"
     chkservice "fetchmail"
-    chkservice "shellinaboxd-invis"
+    chkservice "shellinaboxd"
     chkservice "apache2"
 
     writeprepstat "mysqlserver"
