@@ -42,11 +42,11 @@ $passwd = &myGETPARAM("$pwfile", "AdminPW");
 use Net::Domain qw(hostname hostfqdn hostdomain);
 
 # Settings that should be changed for your setup:
-$kontaktdn = "ou=internes_adressbuch,ou=kontakt";
-$userdbdn = "ou=users,ou=benutzerverwaltung";
-$binddn = "uid=Admin,ou=Kontakt,$basedn";
+$kontaktdn = "CN=internes_Adressbuch,CN=Kontakt,CN=invis-Server";
+$userdbdn = "CN=Users";
 $hostname = hostname();
 $domain = hostdomain();
+$binddn = "ldap.admin@$domain";
 $options = ""; # Keine Optionen fuer ldapadd benoetigt.
 
 # End of configuration section - don't edit below here.
@@ -59,7 +59,7 @@ $user = $ARGV[0];
 use Net::LDAP;
 $ldap_con = Net::LDAP->new("$ldaphost");
 
-$resattrs = $ldap_con->search( filter=>"(uid=$user)",base=>"$userdbdn,$basedn",attrs=> ['cn', 'givenname', 'sn'] );
+$resattrs = $ldap_con->search( filter=>"(CN=$user)",base=>"$userdbdn,$basedn",attrs=> ['cn', 'givenname', 'sn'] );
 @entries = $resattrs->entries;
 foreach $entry (@entries) {
     #@attrs = $entry->attributes();

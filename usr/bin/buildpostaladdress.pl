@@ -36,8 +36,9 @@ $ldaphost = &myGETPARAM("$cfile", "ldapHost");
 $passwd = &myGETPARAM("$pwfile", "AdminPW");
 
 # Settings that should be changed for your setup:
-$kontaktdn = "ou=externes_adressbuch,ou=kontakt";
-$binddn = "uid=Admin,ou=Kontakt,$basedn";
+$kontaktdn = "CN=externes_Adressbuch,CN=Kontakt,CN=invis-Server";
+$domain = hostdomain();
+$binddn = "ldap.admin@$domain";
 # End of configuration section - don't edit below here.
 
 # Einzelwerte aus der Kotaktdatenbank ermitteln.
