@@ -2466,7 +2466,7 @@ case "$whichgroupware" in
 	chkservice apache2 r
     
 	# Oeffentlichen Speicher anlegen
-	zarafa-admin -s    
+	zarafa-admin -s
 
 	# Webapp im Portal aktivieren
 	swpestat ZarafaApp TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
