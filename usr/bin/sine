@@ -2445,6 +2445,7 @@ case "$whichgroupware" in
 	mkzarafakey
     
 	# Rechte am Zarafa Attachement-Verzeichnis anpassen
+	mkdir /srv/zarafa
 	chown -R zarafa.zarafa /srv/zarafa
     
 	# Dienste ins Runlevel-Konzept eintragen
