@@ -827,6 +827,13 @@ sysprep() {
     echo "Willkommen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion. \r (\l)." > /etc/issue
     echo "Willkommen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
 
+    # Internes Interface auch offline hochfahren erzwingen
+    grep LINK_REQUIRED /etc/sysconfig/network/ifcfg-intern 2>&1| tee -a $setupdir/sine.log | pgbox
+	if [[ "$?" -ne "0" ]]; then
+        echo "LINK_REQUIRED='no'" >> /etc/sysconfig/network/ifcfg-intern
+        echo "LINK_REQUIRED der Netzwerkkonfiguration hinzugefügt!" 2>&1| tee -a $setupdir/sine.log | pgbox
+    fi
+
     # temporaerer Bugfix fuer sysconf_addword
     # Original wird ueberschrieben
     # ist angeblich gefixt
