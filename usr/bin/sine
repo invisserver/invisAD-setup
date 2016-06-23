@@ -731,8 +731,8 @@ ownCloud Port: $ocport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
     # Passwort fuer LDAP-Admin und junk erzeugen
-    ldappw=`pwgen -s 8 1`
-    junkpw=`pwgen -s 8 1`
+    ldappw=`pwgen -snc 8 1`
+    junkpw=`pwgen -snc 8 1`
 
     # Alle Daten in Kontrolldatei Schreiben
     echo "Country:$country" > $setupdir/invis_confdata
@@ -3048,7 +3048,7 @@ virtualbox() {
 	zyppercheck ${PIPESTATUS[0]}
 	# lokaler Benutzer vbox wird angelegt
 	useradd -c "Dummy Benutzer fuer phpVirtualBox" vbox 2>&1 | tee -a $setupdir/sine.log | pgbox
-	pwvbox=`pwgen -sn 8 1`
+	pwvbox=`pwgen -snc 8 1`
 	echo "vbox:$pwvbox" | chpasswd | tee -a $setupdir/sine.log | pgbox
 	# phpvirtualbox Konfiguration anpassen
 	path="/etc/phpvirtualbox"
