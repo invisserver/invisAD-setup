@@ -1408,6 +1408,9 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     # phpldapadmin konfigurieren
     # Installation entfaellt, da es per rpm installiert wird.
     cp $cfilesdir/LDAP/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
+    fullhostname=$(hostname -f)
+    strings="invis.invis-net.loc%$fullhostname"
+    changevalues /srv/www/htdocs/phpldapadmin/config/ config.php "$strings"
 
     writeprepstat "dns"
     waitbox "samba_ad" "dns"

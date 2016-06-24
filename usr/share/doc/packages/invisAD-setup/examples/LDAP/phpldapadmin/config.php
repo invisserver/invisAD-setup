@@ -290,7 +290,7 @@ $servers->setValue('server','name','AD-LDAP invis-Server');
    'ldaps://ldap.example.com/',
    'ldapi://%2fusr%local%2fvar%2frun%2fldapi'
            (Unix socket at /usr/local/var/run/ldap) */
-// $servers->setValue('server','host','127.0.0.1');
+$servers->setValue('server','host','invis.invis-net.loc');
 
 /* The port your LDAP server listens on (no quotes). 389 is standard. */
 // $servers->setValue('server','port',389);
@@ -332,7 +332,7 @@ $servers->setValue('server','name','AD-LDAP invis-Server');
 #  $servers->setValue('login','bind_pass','secret');
 
 /* Use TLS (Transport Layer Security) to connect to the LDAP server. */
-// $servers->setValue('server','tls',false);
+$servers->setValue('server','tls',true);
 
 /************************************
  *      SASL Authentication         *
