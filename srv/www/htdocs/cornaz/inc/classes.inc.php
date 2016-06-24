@@ -34,13 +34,15 @@ class mailprovider {
 	function readmailprovider($mpvendor,$ldapbinddn,$password,$LDAP_SUFFIX_MAILPROVIDERS,$LDAP_SERVER) {
 	# Am LDAP per SimpleBind anmelden
 	# Verbindung zum LDAP Server aufbauen
-		$ditcon=ldap_connect("$LDAP_SERVER");
-		# LDAP Protokoll auf Version 3 setzen
-		if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-    			echo "Kann das Protokoll nicht auf Version 3 setzen";
-		// bind mit passendem dn für aktulisierenden Zugriff
+	$ditcon=ldap_connect("$LDAP_SERVER");
+	# LDAP Protokoll auf Version 3 setzen
+	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
+		echo "Kann das Protokoll nicht auf Version 3 setzen";
+	if ($LDAP_TLS = "yes")
+	    ldap_start_tls($ditcon);
+	// bind mit passendem dn für aktulisierenden Zugriff
 	if ($ditcon) {
-   		$r=ldap_bind($ditcon,$ldapbinddn,$password);
+		$r=ldap_bind($ditcon,$ldapbinddn,$password);
 		$filter="(CN=$mpvendor)";
 		$justthese = array("CN", "fspMailProviderVendor", "fspMailProviderDescription", "fspMailProviderUserName", "fspMailProviderPOP", "fspMailProviderIMAP", "fspMailProviderPOPSSL", "fspMailProviderIMAPSSL" );
 		$sr=ldap_search($ditcon, $LDAP_SUFFIX_MAILPROVIDERS, $filter, $justthese);

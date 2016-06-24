@@ -10,17 +10,19 @@ $ditcon=ldap_connect("$LDAP_SERVER");  // Annahme: der LDAP Server befindet
 # LDAP Protokoll auf Version 3 setzen
 if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
     echo "Kann das Protokoll nicht auf Version 3 setzen";
+if ($LDAP_TLS = "yes")
+    ldap_start_tls($ditcon);
+
 # Am LDAP per SimpleBind anmelden
 if ($ditcon) {
     // bind mit passendem dn für aktulisierenden Zugriff
     $dn=("uid=$corusername,$BASE_DN_USER");
     $r=ldap_bind($ditcon,$dn, "$corpassword");
-	$filter="(&(fspMailFilterName=*))";
-	$justthese = array( "fspMailFilterName", "fspMailFilterAction", "fspMailFilterComparativeValue");
-	$sr=ldap_search($ditcon, $dn, $filter, $justthese);
-	$entries = ldap_get_entries($ditcon, $sr);
+    $filter="(&(fspMailFilterName=*))";
+    $justthese = array( "fspMailFilterName", "fspMailFilterAction", "fspMailFilterComparativeValue");
+    $sr=ldap_search($ditcon, $dn, $filter, $justthese);
+    $entries = ldap_get_entries($ditcon, $sr);
 
-	
 #	print $entries["count"]." Einträge gefunden<p>";
 
     ldap_close($ditcon);

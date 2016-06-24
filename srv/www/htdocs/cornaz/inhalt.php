@@ -9,10 +9,12 @@
 	$ditcon=ldap_connect("$LDAP_SERVER");
 	# LDAP Protokoll auf Version 3 setzen
 	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-    		echo "Kann das Protokoll nicht auf Version 3 setzen";
+		echo "Kann das Protokoll nicht auf Version 3 setzen";
+	if ($LDAP_TLS = "yes")
+	    ldap_start_tls($ditcon);
 	# Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-    		// bind mit passendem dn für aktulisierenden Zugriff
+		// bind mit passendem dn für aktulisierenden Zugriff
 		$dn=("$LDAP_BIND_DN");
 		$r=ldap_bind($ditcon,$dn, "$LDAP_BIND_PW");
 		$filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
