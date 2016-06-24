@@ -19,6 +19,8 @@ function connect() {
 	global $LDAP_SERVER;
 	$conn = ldap_connect($LDAP_SERVER);
 	ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	if ($LDAP_TLS = "yes")
+	  ldap_start_tls($conn);
 	return $conn;
 }
 

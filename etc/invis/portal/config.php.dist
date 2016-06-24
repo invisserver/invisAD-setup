@@ -39,7 +39,7 @@ $USER_PW_MIN_STRENGTH = '80'; // 0 = Check disabled, 100 = Max
 $SFU_GUID_BASE = '20000';
 
 // LDAP
-$LDAP_TLS = "no"; //wird bisher nur von cornaz verwendet
+$LDAP_TLS = "yes"; // ab 10.5 per default ON wegen neuer Policy bei Samba
 $LDAP_SERVER = 'ldap://localhost';
 $LDAP_SUFFIX = "dc=".$DOMAIN_PARTS[1] .",dc=". $DOMAIN_PARTS[2];
 $LDAP_INVIS_SUFFIX = "CN=invis-Server,$LDAP_SUFFIX";
