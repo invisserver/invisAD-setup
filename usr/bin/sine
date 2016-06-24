@@ -1489,6 +1489,9 @@ dhcp() {
     strings="dc=invis-net,dc=loc%$basedn"
     changevalues $path $file "$strings"
 
+    # Für LDAP TLS notwendig
+    sysconf_addword DHCPD_CONF_INCLUDE_FILES /etc/invis/certs/ca.crt 2>&1| tee -a $setupdir/sine.log | pgbox
+
     # DHCP Dienst starten und ins Runlevel-Konzept einbinden.
     chkservice "dhcpd"
         
