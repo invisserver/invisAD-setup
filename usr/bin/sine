@@ -2304,7 +2304,7 @@ case "$whichgroupware" in
 	    pgsubtitle="tine20 wird installiert."
 	    # Tine 2.0 im Portal aktivieren
 	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
-	
+	    a2enflag TINE20
 	    chkservice "apache2"
 	
 	    writeprepstat "erp"
