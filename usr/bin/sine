@@ -2305,6 +2305,16 @@ case "$whichgroupware" in
 	    zyppercheck ${PIPESTATUS[0]}
 
 	    pgsubtitle="tine20 wird installiert."
+	    # Datenbank anlegen
+	    tinedbpw=`mkdbsilent tine20 tine20 a`
+	    
+	    # Mini-Konfiguration erstellen und anpassen
+	    path="/usr/share/tine20"
+	    cp $cfilesdir/tine20/config.inc.php $path
+	    file="config.ing.php"
+	    strings="tinedbpw%$tinedbpw"
+	    changevalues $confdir $file "$strings"
+
 	    # Tine 2.0 im Portal aktivieren
 	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	    a2enflag TINE20
