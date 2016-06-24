@@ -38,7 +38,7 @@ $conf['plugin']['authad']['base_dn'] = 'dc=invis-net,dc=loc';
 $conf['plugin']['authad']['domain_controllers'] = 'localhost';
 $conf['plugin']['authad']['admin_username'] = 'ldap.admin';
 $conf['plugin']['authad']['admin_password'] = 'admin-secret';
-$conf['plugin']['authad']['use_ssl'] = 0;
+$conf['plugin']['authad']['use_tls'] = 1;
 $conf['plugin']['authad']['mapping']['name'] = 'displayname';
 
 ?>
