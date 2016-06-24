@@ -1163,6 +1163,10 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     strings="mysql-rootpw%$mysqlpw"
     changevalues $confdir $file "$strings"
     
+    # Apparmor deaktivieren -> muss mit eigenen Samba Paketen wieder aktiviert werden
+    systemctl disable apparmor.service
+    systemctl stop apparmor.service
+    
     writeprepstat "samba_ad"
     waitbox "sysprep" "samba_ad"
 }
