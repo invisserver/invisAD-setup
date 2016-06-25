@@ -55,7 +55,7 @@ bindpw=`getconfdata $passfile "MasterPW" "2"`
 ldaphost=`getconfdata $conffile "ldapHost" "2"`
 
 function lds { 
-    ldapsearch -LLL -x -h $ldaphost -D $binddn -w $bindpw -b $1 $2
+    ldapsearch -LLL -x -Z -h $ldaphost -D $binddn -w $bindpw -b $1 $2
 }
 # IFS so aendern, dass die nachfolgende for-Schleife nur noch "newlines" als Listentrenner akzeptiert.
 searchbase="ou=Users,ou=Benutzerverwaltung,$basedn"
@@ -84,5 +84,5 @@ if [[ $iszu == "" ]]; then
     line12="add: zarafaSharedStoreOnly\n"
     line13="zarafaSharedStoreOnly: $zsso\n"
     line14="\n"
-    echo -e $line1$line2$line3$line4$line5$line6$line7$line8$line9$line10$line11$line12$line13$line14 |ldapmodify -x -h $ldaphost -D $binddn -w $bindpw 
+    echo -e $line1$line2$line3$line4$line5$line6$line7$line8$line9$line10$line11$line12$line13$line14 |ldapmodify -x -Z -h $ldaphost -D $binddn -w $bindpw 
 fi

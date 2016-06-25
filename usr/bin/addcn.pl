@@ -72,7 +72,7 @@ $ldap_con->unbind;
 
 print "Adding ou: cn=$cn,$kontaktdn,$basedn";
 
-$FILE = "|/usr/bin/ldapadd -x $options -D '$binddn' -w $passwd";
+$FILE = "|/usr/bin/ldapadd -Z -x $options -D '$binddn' -w $passwd";
 
 open FILE or die;
 
