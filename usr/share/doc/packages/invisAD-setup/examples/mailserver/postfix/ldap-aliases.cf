@@ -1,3 +1,4 @@
+start_tls = yes
 server_host = 127.0.0.1
 search_base = cn=Users,dc=invis-net,dc=loc
 version = 3

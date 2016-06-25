@@ -1,5 +1,6 @@
+start_tls = yes
 server_host = 127.0.0.1
-search_base = cn=users,DC=invis-net,DC=loc
+search_base = cn=Users,dc=invis-net,dc=loc
 version = 3
 bind = yes
 bind_dn = ldap.admin@invis-net.loc

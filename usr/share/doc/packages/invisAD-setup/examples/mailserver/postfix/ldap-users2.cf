@@ -1,5 +1,6 @@
-server_host = ldap://localhost:389
-search_base = cn=AdditionalUserInformation,cn=invis-server,DC=invis-net,DC=loc
+start_tls = yes
+server_host = 127.0.0.1
+search_base = cn=AdditionalUserInformation,cn=invis-server,dc=invis-net,dc=loc
 version = 3
 bind = yes
 bind_dn = ldap.admin@invis-net.loc
