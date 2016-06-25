@@ -1557,6 +1557,8 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 
     # Kopieren der Postfix-Konfigurationsdateien
     cp $cfilesdir/mailserver/postfix/* /etc/postfix 2>&1| tee -a $setupdir/sine.log
+    # ldap-aliases wird nicht mehr benoetigt
+    rm /etc/postfix/ldap-aliases.cf 2>&1| tee -a $setupdir/sine.log
     
     ## SOGo, Group-e, Zarafa oder Roundcube
     whichgroupware=`getconfdata "Groupware" "2"`
@@ -1682,7 +1684,7 @@ esac
     changevalues $path $file "$strings"
     postmap $path/$file
 
-    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-aliases.cf ldap-groups.cf)
+    files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-groups.cf)
 
     for datei in ${files[*]}; do
 	#echo $datei
