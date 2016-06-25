@@ -823,21 +823,16 @@ sysprep() {
     opensuseversion=`cat /etc/os-release |grep VERSION=|cut -d = -f2| tr -d "\""`
     mv /etc/issue /etc/issue.old
     mv /etc/issue.net /etc/issue.net.old
-    
+
     echo "Willkommen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion. \r (\l)." > /etc/issue
     echo "Willkommen an invis-Server Active Directory $invisversion auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
 
     # Internes Interface auch offline hochfahren erzwingen
     grep LINK_REQUIRED /etc/sysconfig/network/ifcfg-intern 2>&1| tee -a $setupdir/sine.log | pgbox
-	if [[ "$?" -ne "0" ]]; then
+    if [[ "$PIPESTATUS[0]" -ne "0" ]]; then
         echo "LINK_REQUIRED='no'" >> /etc/sysconfig/network/ifcfg-intern
         echo "LINK_REQUIRED der Netzwerkkonfiguration hinzugefügt!" 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
-
-    # temporaerer Bugfix fuer sysconf_addword
-    # Original wird ueberschrieben
-    # ist angeblich gefixt
-    # cp $cfilesdir/../scripts/sysconf_addword /usr/sbin
 
     # Verzeichnisse in /etc/skel anlegen
     mkdir /etc/skel/Dokumente
@@ -845,7 +840,7 @@ sysprep() {
     mkdir /etc/skel/Bilder
     mkdir /etc/skel/Musik
     mkdir /etc/skel/Videos
-    
+
     ## Virenscanner einrichten
 
     # Quarantäneverzeichnis anlegen
@@ -1497,7 +1492,7 @@ dhcp() {
     changevalues $path $file "$strings"
 
     # Für LDAP TLS notwendig
-    sysconf_addword DHCPD_CONF_INCLUDE_FILES /etc/invis/certs/ca.crt 2>&1| tee -a $setupdir/sine.log | pgbox
+    sysconf_addword /etc/sysconfig/dhcpd DHCPD_CONF_INCLUDE_FILES /etc/invis/certs/ca.crt 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # DHCP Dienst starten und ins Runlevel-Konzept einbinden.
     chkservice "dhcpd"
