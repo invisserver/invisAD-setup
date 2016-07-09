@@ -172,16 +172,43 @@ elseif ($CMD == 'backup_info') {
 
 	echo '<b>Datensicherung:</b><br>';
 	echo '<span style="font-size: 0.7em;"> Zeit: ' . date('d.m.Y, H:i', $last) . '</span><br />';
-	// Stefan -- Multiline Results added.
-	// Jetzt Zeilen 2 bis X in der Status-Datei durchgehen.
-	foreach($file_backup as $num => $line) {
-	    if ($num != 0) {
-		$line = explode(" ", $line);
-		// Achtung hierbei ist "0" ok, da wir ansonsten nicht die exit-codes von rsync ausgeben könnten.
-		$backup_state = ($line[1] == 0)? '<b style="color: green; font-size: 0.9em;">Erfolgreich</b>':'<b style="color: red; font-size: 0.9em;">Fehler (Nr: ' .  $line[1] . ')</b>';
-		echo '<span style="font-size: 0.9em;"> Status: '. $backup_state . ' Quelle: ' . $line[0] .'</span><br />';
+	
+	// Quick n dirty -> wenn die zweite Zeile der Datei genau ein Zeichen lang ist,
+	// kann davon ausgegangen werden, dass es sich um die Anzahl der zu sichernden 
+	// Volumes handelt. Dann wird die neue Ausgabe erzeugt.
+	if (strlen(trim($file_backup[1])) == 1) {
+	    // Anzahl der zu sichernden Volumes ermitteln
+	    $buvolcount = intval($file_backup[1]);
+	    // Stefan -- Multiline Results added.
+	    // Jetzt Zeilen 3 bis X in der Status-Datei durchgehen.
+	    $success = 0;
+	    foreach($file_backup as $num => $line) {
+		if ($num > 1) {
+		    $line = explode(" ", $line);
+		    // Achtung hierbei ist "0" ok, da wir ansonsten nicht die exit-codes von rsync ausgeben könnten.
+		    $backup_state = ($line[1] == 0)? '<b style="color: green; font-size: 0.9em;">Erfolgreich</b>':'<b style="color: red; font-size: 0.9em;">Fehler (Nr: ' .  $line[1] . ')</b>';
+		    if ($line[1] == 0) {
+			$success = $success + 1;
+		    }
+		    echo '<span style="font-size: 0.9em;"> Status: '. $backup_state . ' Quelle: ' . $line[0] .'</span><br />';
+		}
+	    }
+	    if ($success == $buvolcount) {
+		echo '<span style="font-size: 0.7em;"> Anzahl erfolgreicher Sicherungen: <b style="color: green;">' . $success . "/" . $buvolcount . '</b></span><br />';
+	    } else {
+		echo '<span style="font-size: 0.7em;"> Anzahl erfolgreicher Sicherungen: <b style="color: red;">' . $success . "/" . $buvolcount . '</b></span><br />';
+	    }
+	} else {
+	    foreach($file_backup as $num => $line) {
+		if ($num > 0) {
+		    $line = explode(" ", $line);
+		    // Achtung hierbei ist "0" ok, da wir ansonsten nicht die exit-codes von rsync ausgeben könnten.
+		    $backup_state = ($line[1] == 0)? '<b style="color: green; font-size: 0.9em;">Erfolgreich</b>':'<b style="color: red; font-size: 0.9em;">Fehler (Nr: ' .  $line[1] . ')</b>';
+		    echo '<span style="font-size: 0.9em;"> Status: '. $backup_state . ' Quelle: ' . $line[0] .'</span><br />';
+		}
 	    }
 	}
+	
 	// Nächstes Backup 
 	if ($diff_days > $STATUS_BACKUP_TIMER) {
 		$overdue = ($diff_days - $STATUS_BACKUP_TIMER);
