@@ -47,7 +47,7 @@ changevalues() {
 }
 
 usage() {
-    echo -e "Bitte geben Sie an, ob Sie Zertifikate für LDAP-Server, Mail-Server, den Externzugriff oder einen VPN-Client\nerzeugen möchten:\n\tlinux:~ # inviscerts ldap\n\tlinux:~ # inviscerts ms\n\tlinux:~ # inviscerts extern\noder\n\tlinux:~ # inviscerts vpn"
+    echo -e "Bitte geben Sie an, ob Sie Zertifikate für interne Zwecke (z.B. LDAP-Server), Mail-Server, den Externzugriff oder einen VPN-Client\nerzeugen möchten:\n\tlinux:~ # inviscerts intern\n\tlinux:~ # inviscerts ms\n\tlinux:~ # inviscerts extern\noder\n\tlinux:~ # inviscerts vpn"
     echo -e "Dabei fasst \"extern\" die Zertifikate von Web- und VPN-Server zusammen." 
     echo -e "Sie benötigen in jedem Fall das Passwort Ihrer Zertifizierungsstelle (CA)."
     exit
@@ -70,10 +70,12 @@ deploycerts() {
 		cp $ersadir/private/$cn.key $openvpndir
 	    fi
 	    ;;
-	"ldap")
+	"intern")
 	    # Dadurch steht kein Klartext mehr im Zertifikat
 	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/ldap-cert.pem
 	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/ldap-key.pem
+	    cp $confdir/certs/ldap-cert.pem /etc/apache2/ssl.crt/invis-sslint.crt
+	    cp $confdir/private/ldap-key.pem /etc/apache2/ssl.key/invis-sslint.key
 	    chown root.root $confdir/private/ldap-key.pem
 	    chmod 0600 $confdir/private/ldap-key.pem
 	    ;;
@@ -97,7 +99,7 @@ case $stype in
 	server="Mail"
 	cn="mail.$domain"
 	;;
-    "ldap")
+    "intern")
 	server="ldap"
 	cn="$(hostname -f)"
 	;;
