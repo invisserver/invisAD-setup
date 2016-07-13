@@ -1365,7 +1365,7 @@ samba_ad() {
     msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
 
-    inviscerts ldap 2>&1| tee -a $setupdir/sine.log
+    inviscerts intern 2>&1| tee -a $setupdir/sine.log
     chown -R :pkeys /etc/invis/private 2>&1| tee -a $setupdir/sine.log
     chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $setupdir/sine.log
 
