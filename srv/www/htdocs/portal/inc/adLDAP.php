@@ -10,6 +10,8 @@
  *   http://adldap.sourceforge.net/
  * 
  * Copyright (c) 2006-2012 Scott Barnett, Richard Hyland
+ * Copyright (c) 2014-2016 Stefan Schaefer (invis-server.org)
+ *
  * 
  * We'd appreciate any improvements or additions to be submitted back
  * to benefit the entire community :)
@@ -884,6 +886,9 @@ class adLDAP {
         if ($attributes["zarafaarchivecouplings"]){ $mod["zarafaArchiveCouplings"][0]=$attributes["zarafaarchivecouplings"]; }    
         if ($attributes["zarafaarchiveserver"]){ $mod["zarafaArchiveServer"][0]=$attributes["zarafaarchiveserver"]; }    
         if ($attributes["zarafauserserver"]){ $mod["zarafaUserServer"][0]=$attributes["zarafauserserver"]; }    
+
+        // invis-server.org - Zusaetzliche Mail-Adresse
+        if ($attributes["othermailbox"]){ $mod["otherMailbox"][0]=$attributes["othermailbox"]; }
 
         //echo ("<pre>"); print_r($mod);
         /*

@@ -347,7 +347,7 @@ function userDetailsResponse(request) {
 	var rows = $H({
 					'uid': false,
 					'rid': false,
-					'mail': false,
+					'email': true,
 					'display_name': true,
 					'firstname': true,
 					'surname': true,
@@ -362,7 +362,7 @@ function userDetailsResponse(request) {
 	var row_names = $H({
 					'uid': 'Login',
 					'rid': 'RID',
-					'mail': 'Email intern',
+					'email': 'Email extern',
 					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
 					'surname': 'Nachname',
@@ -1119,7 +1119,7 @@ function userAdd() {
 	var rows = $H({
 					'uid': true,
 //					'rid': false,
-//					'mail': false,
+					'email': false,
 					'display_name': true,
 					'firstname': true,
 					'surname': true,
@@ -1134,7 +1134,7 @@ function userAdd() {
 	var row_names = $H({
 					'uid': 'Login',
 //					'rid': 'RID',
-//					'mail': 'Email intern',
+					'email': 'Email intern',
 					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
 					'surname': 'Nachname',

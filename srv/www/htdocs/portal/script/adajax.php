@@ -192,7 +192,7 @@ function userDetail($uid) {
 	    'description' => $result->description,
 	    'department' => $result->department,
 	    'office' => $result->physicaldeliveryofficename,
-	    'mail' => $result->mail,
+	    'email' => $result->mail,
 	    'telephone' => $result->telephonenumber,
 	// adtstamp2date($result->accountExpires)."<br>";
 	    'rid' => ridfromsid(bin_to_str_sid($result->objectsid)));
@@ -236,9 +236,16 @@ function userCreate($uid) {
 	}
 	$mdgidnumber = ($collection->gidnumber);
 	
-	// Profilpfad
-	$profilepath = "\\\\$SMB_HOSTNAME\\profiles\\$uid";
-	$smbhomepath = "\\\\$SMB_HOSTNAME\\$uid";
+        // Profil- und Home-Pfad
+        // Ist in der Konfiguration ein externer Fileserver genannt
+        // wird das Home-Verzeichnisse dort angelegt.
+        $profilepath = "\\\\$SMB_HOSTNAME\\profiles\\$uid";
+        
+        if ($SMB_FILESERVER == "NULL") {
+            $smbhomepath = "\\\\$SMB_HOSTNAME\\$uid";
+        } else {
+            $smbhomepath = "\\\\$SMB_FILESERVER\\$uid";
+        }
 
 	// hier mit case weiter, Atribute werden je nach Accounttype gesetzt
 	//$password = $cookie_data['userpassword'];
@@ -258,6 +265,20 @@ function userCreate($uid) {
 	    
 	}
 	
+        // Email-Attribut erzeugen
+        // Wenn beim Anlegen eines Benutzers eine Adresse angegeben wird, wir diese
+        // dem Attribut "mail" zugeordnet und die automatisch generierte interne Adresse
+        // dem Attribut "otherMailbox".
+        // Wird keine Adresse angegeben wird das Attribut "mail" wie bisher mit der internen
+        // Adresse gefuellt.
+        if (empty($cookie_data['email'])) {
+            $emailaddress = $cookie_data['uid']."@".$DOMAIN;
+            $othermailbox = "";
+        } else {
+            $emailaddress = $cookie_data['email'];
+            $othermailbox = $cookie_data['uid']."@".$DOMAIN;
+        }
+
 	// Benutzer anlegen
 	switch ($accounttype) {
 	case 0:
@@ -273,7 +294,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"password"=>$password
@@ -329,7 +351,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"password"=>$password
@@ -402,7 +425,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
@@ -435,7 +459,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
@@ -497,7 +522,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
@@ -558,7 +584,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
@@ -611,7 +638,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
@@ -684,7 +712,8 @@ function userCreate($uid) {
 		"department"=>$cookie_data['department'],
 		"office"=>$cookie_data['office'],
 		"telephone"=>$cookie_data['telephone'],
-		"email"=>$cookie_data['uid']."@".$DOMAIN,
+		"email"=>$emailaddress,
+		"othermailbox"=>$othermailbox,
 		"container"=>array("Users"),
 		"enabled"=>1,
 		"home_drive"=>'u:',
