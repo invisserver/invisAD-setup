@@ -279,27 +279,34 @@ function userCreate($uid) {
             $othermailbox = $cookie_data['uid']."@".$DOMAIN;
         }
 
+	// Ab hier ausmisten, das Array wird zukuenftig hier gebaut.
+	// Es beinhaltet alle gemeinsamen Elemente. In den einzelnen
+	// Faellen wird das Array dann ggf. erweitert. Beispiel:
+	// $attributes[] = array();
+
+	// Standard-Attribute - unabhaengig vom Kontentyp
+	$attributes=array(
+	    "username"=>$uid,
+	    "logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+	    "firstname"=>$cookie_data['firstname'],
+	    "surname"=>$cookie_data['surname'],
+	    "description"=>$cookie_data['description'],
+	    "company"=>"$COMPANY",
+	    "department"=>$cookie_data['department'],
+	    "office"=>$cookie_data['office'],
+	    "telephone"=>$cookie_data['telephone'],
+	    "email"=>$emailaddress,
+	    "othermailbox"=>$othermailbox,
+	    "container"=>array("Users"),
+	    "enabled"=>1,
+	    "password"=>$password
+	    );
+
 	// Benutzer anlegen
 	switch ($accounttype) {
 	case 0:
 	    // Gastbenutzer
 	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"password"=>$password
-	    );
 	    // Benutzer anlegen
 	    try {
 		$result = $adldap->user()->create($attributes);
@@ -340,23 +347,6 @@ function userCreate($uid) {
 	    break;
 	case 1:
 	    // Maildummy Konto
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"password"=>$password
-	    );
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -409,32 +399,11 @@ function userCreate($uid) {
 	case 2:
 	    // reiner Windows User
 
-	//$firstname = iconv("UTF-8","UTF-16",$cookie_data['firstname']);
-
-
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		// Test Charset Konvertierung => klappt nicht mit UCS-4
-//		"firstname"=>$firstname,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"home_drive"=>'u:',
-		"home_directory"=>$smbhomepath,
-		"profile_path"=>$profilepath,
-		"script_path"=>"user.cmd",
-		"password"=>$password
-	    );
+	    // Standard-Attribute - erweitern
+		$attributes[] = array("home_drive"=>'u:');
+		$attributes[] = array("home_directory"=>$smbhomepath);
+		$attributes[] = array("profile_path"=>$profilepath);
+		$attributes[] = array("script_path"=>"user.cmd");
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -448,27 +417,11 @@ function userCreate($uid) {
 	case 3:
 	    // Windows und UNIX Benutzer
 	    // Attribute anpassen
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"home_drive"=>'u:',
-		"home_directory"=>$smbhomepath,
-		"profile_path"=>$profilepath,
-		"script_path"=>"user.cmd",
-		"password"=>$password
-	    );
+	    // Standard-Attribute - erweitern
+		$attributes[] = array("home_drive"=>'u:');
+		$attributes[] = array("home_directory"=>$smbhomepath);
+		$attributes[] = array("profile_path"=>$profilepath);
+		$attributes[] = array("script_path"=>"user.cmd");
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -511,27 +464,11 @@ function userCreate($uid) {
 	case 4:
 	    // Windows und UNIX Benutzer mit Groupware-Nutzung
 	    // Attribute anpassen
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"home_drive"=>'u:',
-		"home_directory"=>$smbhomepath,
-		"profile_path"=>$profilepath,
-		"script_path"=>"user.cmd",
-		"password"=>$password
-	    );
+	    // Standard-Attribute - erweitern
+		$attributes[] = array("home_drive"=>'u:');
+		$attributes[] = array("home_directory"=>$smbhomepath);
+		$attributes[] = array("profile_path"=>$profilepath);
+		$attributes[] = array("script_path"=>"user.cmd");
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -573,27 +510,11 @@ function userCreate($uid) {
 	    break;
 	case 5:
 	    // Windows Admin ohne Zusatz-Attribute
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"home_drive"=>'u:',
-		"home_directory"=>$smbhomepath,
-		"profile_path"=>$profilepath,
-		"script_path"=>"admin.cmd",
-		"password"=>$password
-	    );
+	    // Standard-Attribute - erweitern
+		$attributes[] = array("home_drive"=>'u:');
+		$attributes[] = array("home_directory"=>$smbhomepath);
+		$attributes[] = array("profile_path"=>$profilepath);
+		$attributes[] = array("script_path"=>"admin.cmd");
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -627,27 +548,11 @@ function userCreate($uid) {
 	case 6:
 	    // Windows-Admin mit UNIX-Attributen
 	    // keine UNIX Admin-Befugnisse
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"home_drive"=>'u:',
-		"home_directory"=>$smbhomepath,
-		"profile_path"=>$profilepath,
-		"script_path"=>"admin.cmd",
-		"password"=>$password
-	    );
+	    // Standard-Attribute - erweitern
+		$attributes[] = array("home_drive"=>'u:');
+		$attributes[] = array("home_directory"=>$smbhomepath);
+		$attributes[] = array("profile_path"=>$profilepath);
+		$attributes[] = array("script_path"=>"admin.cmd");
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -701,29 +606,13 @@ function userCreate($uid) {
 	    break;
 	case 7:
 	    // Windows-Admin mit UNIX-Attributen und Groupware-Admin-Rechten
-	    // Standard-Attribute - unabhaengig vom Kontentyp
-	    $attributes=array(
-		"username"=>$uid,
-		"logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-		"firstname"=>$cookie_data['firstname'],
-		"surname"=>$cookie_data['surname'],
-		"description"=>$cookie_data['description'],
-		"company"=>"$COMPANY",
-		"department"=>$cookie_data['department'],
-		"office"=>$cookie_data['office'],
-		"telephone"=>$cookie_data['telephone'],
-		"email"=>$emailaddress,
-		"othermailbox"=>$othermailbox,
-		"container"=>array("Users"),
-		"enabled"=>1,
-		"home_drive"=>'u:',
-		"home_directory"=>$smbhomepath,
-		"profile_path"=>$profilepath,
-		"script_path"=>"admin.cmd",
-		"password"=>$password,
-		"zarafaaccount" => true,
-		"zarafaadmin" => true
-	    );
+	    // Standard-Attribute - erweitern
+		$attributes[] = array("home_drive"=>'u:');
+		$attributes[] = array("home_directory"=>$smbhomepath);
+		$attributes[] = array("profile_path"=>$profilepath);
+		$attributes[] = array("script_path"=>"admin.cmd");
+		$attributes[] = array("zarafaaccount" => true);
+		$attributes[] = array("zarafaadmin" => true);
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
