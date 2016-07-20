@@ -2,7 +2,7 @@
  * js/admintools.js v1.2
  * functions for user/group/host administration
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010,2011,2012,2014,2015 Stefan Schäfer, invis-server.org
+ * (C) 2010,2011,2012,2014,2015,2016 Stefan Schäfer, invis-server.org
  * (C) 2013,2015 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: http://wiki.invis-server.org
@@ -141,6 +141,7 @@ function userListResponse(request) {
 	// add user button
 	var node = new Element('table', {'onclick': 'userAdd();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/user.png" /></td><td style="vertical-align: middle;">Benutzer anlegen</td></tr>');
 	content.insert(node);
+	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><tfoot><tr><td>Alle mit "*" gekennzeichneten Felder sind Pflichtfelder beim Anlegen eines Benutzers.<br>Sie können eine gültige Email-Adresse angeben. Geben Sie keine Email-Adresse an, wird die interne Adresse, bestehend aus "benutzername@lokale.domain" als Email-Adresse gesetzt.</td></tr></tfoot><tbody id="result-body"></tbody></table>');
 }
 
 
@@ -362,7 +363,7 @@ function userDetailsResponse(request) {
 	var row_names = $H({
 					'uid': 'Login',
 					'rid': 'RID',
-					'email': 'Email extern',
+					'email': 'Email',
 					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
 					'surname': 'Nachname',
@@ -1119,7 +1120,7 @@ function userAdd() {
 	var rows = $H({
 					'uid': true,
 //					'rid': false,
-					'email': false,
+					'email': true,
 					'display_name': true,
 					'firstname': true,
 					'surname': true,
@@ -1132,17 +1133,17 @@ function userAdd() {
 	
 	// attribute description
 	var row_names = $H({
-					'uid': 'Login',
+					'uid': 'Login*',
 //					'rid': 'RID',
-					'email': 'Email intern',
-					'display_name': 'Anzeigename',
-					'userpassword': 'Passwort',
-					'surname': 'Nachname',
+					'email': 'Email extern',
+					'display_name': 'Anzeigename*',
+					'userpassword': 'Passwort*',
+					'surname': 'Nachname*',
 					'description': 'Beschreibung',
 					'department': 'Abteilung',
 					'office': 'Büro',
 					'telephone': 'Telefon',
-					'firstname': 'Vorname'
+					'firstname': 'Vorname*'
 				});
 
 	

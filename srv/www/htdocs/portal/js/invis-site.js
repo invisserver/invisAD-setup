@@ -155,7 +155,7 @@ function showProfileResponse(request) {
 	var rows = $H({
 					'uid': false,
 					'rid': false,
-					'mail': false,
+					'email': false,
 					'display_name': true,
 					'firstname': true,
 					'surname': true,
@@ -169,7 +169,7 @@ function showProfileResponse(request) {
 	var row_names = $H({
 					'uid': 'Login',
 					'rid': 'RID',
-					'mail': 'Email intern',
+					'email': 'Email',
 					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort',
 					'surname': 'Nachname',
