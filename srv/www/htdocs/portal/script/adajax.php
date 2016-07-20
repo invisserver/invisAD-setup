@@ -996,6 +996,78 @@ function groupDelete($cn) {
 }
 
 //--------------------
+// HOST HELPERS
+//--------------------
+
+// Macht aus der IP "1.2" (z.B. bei einer /16 Netzmaske) die Zahl 258 (1 * 256) + 2
+function hostIpCombine($ipstring) {
+	if (strpos($ipstring,'.') == true) {
+	    $ip_array = explode('.', $ipstring);
+	    $ip = (intval($ip_array[0]) * 256) + intval($ip_array[1]);
+	} else {
+	    $ip = $ipstring;
+	}
+	return $ip;
+}
+
+// Die Daten aus der Config konvertieren
+$DHCP_RANGE_SERVER[0] = hostIpCombine($DHCP_RANGE_SERVER[0]);
+$DHCP_RANGE_SERVER[1] = hostIpCombine($DHCP_RANGE_SERVER[1]);
+$DHCP_RANGE_IPDEV[0] = hostIpCombine($DHCP_RANGE_IPDEV[0]);
+$DHCP_RANGE_IPDEV[1] = hostIpCombine($DHCP_RANGE_IPDEV[1]);
+$DHCP_RANGE_PRINTER[0] = hostIpCombine($DHCP_RANGE_PRINTER[0]);
+$DHCP_RANGE_PRINTER[1] = hostIpCombine($DHCP_RANGE_PRINTER[1]);
+$DHCP_RANGE_CLIENT[0] = hostIpCombine($DHCP_RANGE_CLIENT[0]);
+$DHCP_RANGE_CLIENT[1] = hostIpCombine($DHCP_RANGE_CLIENT[1]);
+
+// Zum Debuggen, schreibt ins Apache Error Log:
+//error_log("Server from: " . $DHCP_RANGE_SERVER[0] . " Server to: " . $DHCP_RANGE_SERVER[1]);
+//error_log("IPDev from: " . $DHCP_RANGE_IPDEV[0] . " IPDev to: " . $DHCP_RANGE_IPDEV[1]);
+//error_log("Printer from: " . $DHCP_RANGE_PRINTER[0] . " Printer to: " . $DHCP_RANGE_PRINTER[1]);
+//error_log("Client from: " . $DHCP_RANGE_CLIENT[0] . " Client to: " . $DHCP_RANGE_CLIENT[1]);
+
+// Konvertiert "fixed-address 10.255.255.39" in Zahl (255 * 256) + 39
+function hostStatementToNumber($statement) {
+	global $DHCP_IP_MASK;
+	$statement_array = explode(' ', $statement);
+	$ip_array = explode('.', $statement_array[1]);
+	if ($DHCP_IP_MASK == '16') {
+	    $ip = (intval($ip_array[2]) * 256) + intval($ip_array[3]);
+	} else {
+	    $ip = intval($ip_array[3]);
+	}
+	return $ip;
+}
+
+// Zum Debuggen, schreibt ins Apache Error Log:
+//error_log("IP: " . hostStatementToNumber("fixed-address 10.255.255.39"));
+
+// Konvertiert "fixed-address 10.255.255.39" in String "10.255.255.39"
+function hostStatementToFullIp($statement) {
+	$statement_array = explode(' ', $statement);
+	return $statement_array[1];
+}
+
+// Zum Debuggen, schreibt ins Apache Error Log:
+//error_log("IPString: " . hostStatementToFullIp("fixed-address 10.255.255.39"));
+
+// Konvertiert Zahl (255 * 256) + 39 = 65319 in "255.39" 
+function hostNumberToIPString($number) {
+	global $DHCP_IP_MASK;
+	if ($DHCP_IP_MASK == '16') {
+	    $ip_1 = (int)($number / 256);
+	    $ip_2 = $number - ($ip_1 * 256);
+	    $ip_string = "" . $ip_1 . "." . $ip_2;
+	} else {
+	    $ip_string = $number;
+	}
+	return $ip_string;
+}
+
+// Zum Debuggen, schreibt ins Apache Error Log:
+//error_log("IPString from number: " . hostNumberToIPString(65319));
+
+//--------------------
 // HOST STUFF
 //--------------------
 
@@ -1022,8 +1094,7 @@ function hostList($conn) {
 		for ($i=0; $i < $result['count']; $i++) {
 			$entry = cleanup($result[$i]);
 			unset($entry['dn']);
-			$ip = strrchr($entry['iscdhcpstatements'], '.');
-			$ip = intval(substr($ip, 1));
+			$ip = hostStatementToNumber($entry['iscdhcpstatements'], '.');
 			
 			// 0: client, 1: printer, 2: server, 3: ip-device
 			switch(true) {
@@ -1066,8 +1137,7 @@ function hostCreate($conn, $cn) {
 		// build list with all used IPs
 		for ($i=0; $i < $result["count"]; $i++) {
 			$entry = cleanup($result[$i]);
-			$ip = strrchr($entry['iscdhcpstatements'], '.');
-			$ip = intval(substr($ip, 1));
+			$ip = hostStatementToNumber($entry['iscdhcpstatements'], '.');
 			switch(true) {
 				case ($ip >= $DHCP_RANGE_SERVER[0] && $ip <= $DHCP_RANGE_SERVER[1]):
 					array_push($occ_server, $ip); break;
@@ -1109,7 +1179,7 @@ function hostCreate($conn, $cn) {
 				$free = array_values($free_client); break;
 		}
 		
-		$next = $free[0];
+		$next = hostNumberToIPString($free[0]);
 		$mac = $cookie_data['iscdhcphwaddress'];
 		// Location uebernehmen
 		$location = $cookie_data['location'];
@@ -1147,12 +1217,12 @@ function hostModify($conn, $cn) {
 		$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
 		if ($result) {
 			$result = cleanup($result[0]);
-			$ip = strrchr($result['iscdhcpstatements'], '.');
-			$ip = substr($ip, 1);
 			// Workaround!
 			// DNS Eintraege muessen mit "exec samba-tool dns" geloescht werden.
 			// moddnsrecords ist ein bash Frontend fuer samba-tool
-			$fullip = "$DHCP_IP_BASE.$ip";
+			$fullip = hostStatementToFullIp($result['iscdhcpstatements']);
+			// Name kann nicht geaendert werden, geht nur ueber loeschen und neu anlegen
+			// Nur IP koennte geandert werden
 			shell_exec("sudo /usr/bin/moddnsrecords r A $cn $fullip;");
 			shell_exec("sudo /usr/bin/moddnsrecords a A $newcn $fullip;");
 
@@ -1179,14 +1249,12 @@ function hostDelete($conn, $cn) {
 	$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
 	if ($result) {
 		$result = cleanup($result[0]);
-		$ip = strrchr($result['iscdhcpstatements'], '.');
-		$ip = substr($ip, 1);
 		// Workaround
 		// DNS Eintraege muessen mit "exec samba-tool dns" geloescht werden.
 		// moddnsrecords ist ein bash Frontend fuer samba-tool
 		$fqdn = "$cn.$DOMAIN";
-		shell_exec("sudo /usr/bin/moddnsrecords r PTR $ip $fqdn;");
-		$fullip = "$DHCP_IP_BASE.$ip";
+		$fullip = hostStatementToFullIp($result['iscdhcpstatements']);
+		shell_exec("sudo /usr/bin/moddnsrecords r PTR $fullip $fqdn;");
 		shell_exec("sudo /usr/bin/moddnsrecords r A $cn $fullip;");
 		
 		// DHCP entry

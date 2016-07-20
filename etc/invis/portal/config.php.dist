@@ -22,6 +22,7 @@ $HOSTNAME = $DOMAIN_PARTS[0];
 $GROUPWARE = 'usedgroupware';
 
 // DHCP
+$DHCP_IP_MASK = 'ipnetmask';
 $DHCP_IP_BASE = '192.168.220';
 $DHCP_IP_REV = '220.168.192';
 $DHCP_RANGE_SERVER = array(11, 19);

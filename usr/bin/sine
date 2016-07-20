@@ -1919,12 +1919,41 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     netpart1=`echo "$ipaddr" | cut -d "." -f 1`
     netpart2=`echo "$ipaddr" | cut -d "." -f 2`
     netpart3=`echo "$ipaddr" | cut -d "." -f 3`
-    netpart="$netpart1.$netpart2.$netpart3"
-    strings="192.168.220%$netpart"
-    changevalues $path $file "$strings"
+
+    # 24 oder 16 Bit Netzwerkmaske?
+    ipnetmask=`getconfdata "NMask-short" "2"`
+    if [[ $ipnetmask == "24" ]]; then
+	netpart="$netpart1.$netpart2.$netpart3"
+	strings="192.168.220%$netpart"
+	changevalues $path $file "$strings"
     
-    netpart="$netpart3.$netpart2.$netpart1"
-    strings="220.168.192%$netpart"
+	netpart="$netpart3.$netpart2.$netpart1"
+	strings="220.168.192%$netpart"
+	changevalues $path $file "$strings"
+    elif [[ $ipnetmask == "16" ]]; then
+	netpart="$netpart1.$netpart2"
+	strings="192.168.220%$netpart"
+	changevalues $path $file "$strings"
+	netpart="$netpart2.$netpart1"
+	strings="220.168.192%$netpart"
+	changevalues $path $file "$strings"
+    
+	# IP Bereiche an 16 Bit Netzwerkmaske anpassen
+	# Server
+	strings="11, 19%0.1 0.254"
+	changevalues $path $file "$strings"
+	# Drucker
+	strings="20, 50%1.1 1.254"
+	changevalues $path $file "$strings"
+	# IP-Geraete 
+	strings="60, 90%2.1 3.254"
+	changevalues $path $file "$strings"
+	# Client Computer
+	strings="120, 199%4.1 4.254"
+	changevalues $path $file "$strings"
+    fi
+    # Netzwerkmaske in Portalkonfigurationen eintragen. 
+    strings="ipnetmask%$ipnetmask"
     changevalues $path $file "$strings"
 
     # Verwendete Groupware in Portal-Konfiguration eintragen
