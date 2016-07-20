@@ -201,7 +201,7 @@ function userDetail($uid) {
 }
 
 function userCreate($uid) {
-	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SFU_GUID_BASE, $GROUPWARE;
+	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SMB_FILESERVER, $SFU_GUID_BASE, $GROUPWARE;
 	// read user data from cookie
 	//$attributes = $cookie_data;
 
