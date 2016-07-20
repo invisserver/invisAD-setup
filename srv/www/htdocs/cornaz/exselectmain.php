@@ -14,15 +14,15 @@ if ($LDAP_TLS = "yes")
 # Am LDAP per SimpleBind anmelden
 if ($ditcon) {
     // bind mit passendem dn für aktulisierenden Zugriff
-    $dn=("uid=$corusername,$BASE_DN_USER");
-    $r=ldap_bind($ditcon,$dn, "$corpassword");
+    $dn=("cn=$corusername,$COR_LDAP_SUFFIX");
+    $r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
     //$justthese = array("fspLocalMailAddress");
     $sr=ldap_search($ditcon, $dn, $filter);
     $entries = ldap_get_entries($ditcon, $sr);
     if ($entries["count"] == 1) { 
 	// Löschen der alten primär Adresse
-	$dn2 = ("fspLocalMailAddress=$localaccount,$dn");
+	$dn2 = ("cn=$localaccount,$dn");
 	ldap_delete($ditcon, $dn2);
     }
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
@@ -36,7 +36,7 @@ if ($ditcon) {
 	$account2["fspMainMailAddress"]="$mainaccount";
 	$account2["objectclass"]="top";
 	$account2["objectclass"]="fspLocalMailRecipient";
-	$dn3 = ("fspLocalMailAddress=$luser,$dn");
+	$dn3 = ("cn=$luser,$dn");
 	// hinzufügen der neuen primär Adresse
 	$r=ldap_add($ditcon, $dn3, $account2);
     }
