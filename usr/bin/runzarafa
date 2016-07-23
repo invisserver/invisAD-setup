@@ -28,7 +28,7 @@ getconfdata() {
     cat $1 |grep "$2" | cut -d ":" -f $3
 }
 
-services=`getconfdata $conffile "zServices" "2"`
+services=(`getconfdata $conffile "zServices" "2"`)
 
 case "$1" in
     start)

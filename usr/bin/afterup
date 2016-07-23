@@ -65,6 +65,11 @@ libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
 libldb=`basename $libldb`
 ln -s samba/$libldb libldb.so.1 2>/dev/null
 
+libkrb5pac=`find $libdir/samba/ -type f -name "libndr-krb5pac.so*"`
+libkrb5pac=`basename $libkrb5pac`
+ln -s samba/$libkrb5pac libndr-krb5pac.so.0 2>/dev/null
+
+
 systemctl restart sssd.service
 
 sleep 3
