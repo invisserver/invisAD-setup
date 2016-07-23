@@ -987,11 +987,11 @@ sysprep() {
 
     libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
     libtevent=`basename $libtevent`
-    ln -s samba/$libtevent libtevent.so.0 2>/dev/null
+    ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
 
     libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
     libndr=`basename $libndr`
-    ln -s samba/$libndr libndr.so.0 2>/dev/null
+    ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
 
     #libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
     #libndrnbt=`basename $libndrnbt`
@@ -999,11 +999,16 @@ sysprep() {
 
     libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
     libtalloc=`basename $libtalloc`
-    ln -s samba/$libtalloc libtalloc.so.2 2>/dev/null
+    ln -s samba/$libtalloc libtalloc.so.2 2>&1| tee -a $setupdir/sine.log | pgbox
 
     libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
     libldb=`basename $libldb`
     ln -s samba/$libldb libldb.so.1 2>&1| tee -a $setupdir/sine.log | pgbox
+
+    libkrb5pac=`find $libdir/samba/ -type f -name "libndr-krb5pac.so*"`
+    libkrb5pac=`basename $libkrb5pac`
+    ln -s samba/$libkrb5pac libndr-krb5pac.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+
 
     # NFS-Server
     pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
