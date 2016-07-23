@@ -1,0 +1,75 @@
+#!/bin/bash
+# Script zum einfachen konfigurieren der Passwort-Einstellungen eines invis-Servers
+# (c) 2016 Stefan Schaefer -- invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Dieses Script führt alle zur Installation eines invis Servers AD notwendigen 
+# Konfigurationsschritte aus.
+# Das Script sine nutzt /var/lib/sine als Arbeitsverzeichnis, hier sind von sine
+# verwendete Kontroll-, Variablen- und Protokolldateien zu finden.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# Dialog-Variablen
+dialogshorthelp="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
+dialogtitle="Passworteinstellungen"
+
+# Vorgabewerte ermitteln
+clear
+echo "Aktuelle Passwort-Einstellungen werden ermittelt"
+
+complexity=`samba-tool domain passwordsettings show |tr -d " " |grep complexity|cut -d ":" -f2`
+minlength=`samba-tool domain passwordsettings show |tr -d " " |grep Minimumpasswordlength|cut -d ":" -f2`
+maxage=`samba-tool domain passwordsettings show |tr -d " " |grep Maximumpasswordage|cut -d ":" -f2`
+
+pw=($maxage $complexity $minlength)
+
+# Daten abfragen
+    ok=0
+    while (( $ok != "3" ));do
+	dialog --backtitle "$dialogtitle" --title "invis-Server Passwortsicherheit" --form "$dialogshorthelp\n\n
+Für eine ActiveDirectory gestützte Benutzerverwaltung können Einstellungen hinsichtlich der Passwortsicherheit
+getroffen werden.\n\n
+Achtung:
+Denken Sie an die Sicherheit Ihres Server und geben Sie nicht den Beschwerden der Benutzer bezüglich ach so komplizierter Passwörter nach.\n\n
+Legen Sie hier Ihre Einstellungen fest.
+\n\n" 26 70 7 \
+	"PW Laufzeit (0 = unendlich):" 2 1 "${pw[0]}" 2 28 30 0\
+	"PW Komplexität (on/off):" 4 1 "${pw[1]}" 4 28 30 0\
+	"PW Länge (min = 4):" 6 1 "${pw[2]}" 6 28 30 0\
+	2>/tmp/sine_temp
+	pw=(`cat /tmp/sine_temp`)
+
+	# Werte pruefen
+	if [[ ${pw[0]} =~ ^[0-9]{1,}$ ]]; then
+	    ((ok=1))
+	fi
+
+	if [[ ${pw[1]} =~ ^(on|off)$ ]]; then
+	    ((ok=$ok + 1))
+	fi
+
+	if [[ ${pw[2]} =~ ^[0-9]{1,}$ ]]; then
+	    if (( ${pw[2]} >= 4 ));then
+		((ok=$ok + 1))
+	    fi
+	fi
+	echo $ok > /tmp/ok
+    done
+
+# Passwort-Einstellungen uebernehmen
+echo "Passworteinstellungen werden gesetzt."
+samba-tool domain passwordsettings set --max-pwd-age=${pw[0]} --complexity=${pw[1]} --min-pwd-length=${pw[2]}
