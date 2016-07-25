@@ -142,7 +142,7 @@ if [[ $ddnsup == "j" ]]; then
 	    echo "update delete $fqdn A"
 	    echo "update add $fqdn 60 A $ownip"
 	    echo "send"
-	) | nsupdate -k /etc/ssl/ddns/K$fqdn.+157+$keynumber.private
+	) | nsupdate -k /etc/invis/ddns/K$fqdn.+157+$keynumber.private
 	echo $ownip > $directory/lastip
     fi
 fi
