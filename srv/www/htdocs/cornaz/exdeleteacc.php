@@ -55,7 +55,7 @@ if ( $status == "Anwesend" ) {
 		$r=ldap_bind($ditcon,$dn, "$corpassword");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $dn, $filter, $justthese);
+		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 		#	print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);
