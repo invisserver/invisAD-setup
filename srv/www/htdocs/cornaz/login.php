@@ -27,11 +27,10 @@ $_SESSION["corpassword"] = $corpassword;
 
 # Login am IMAP-Server
 if ($GROUPWARE == "zarafa") {
-    $login = imap_open("{localhost:993/imap/ssl/novalidate-cert}INBOX", $corusername, $corpassword);
+    $login = imap_open("{".$COR_LOCAL_IMAP_SERVER.":993/imap/ssl/novalidate-cert}INBOX", $corusername, $corpassword);
 } else {
-    $login = imap_open("{localhost:143/novalidate-cert}INBOX", $corusername, $corpassword);
+    $login = imap_open("{".$COR_LOCAL_IMAP_SERVER.":143/novalidate-cert}INBOX", $corusername, $corpassword);
 }
-//$login = imap_open("{localhost:143/notls}INBOX", $corusername, $corpassword);
 
 if ($login == false) {
 	echo "<p><center><b>$corprogram</b></center><p>";
