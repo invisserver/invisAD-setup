@@ -51,8 +51,8 @@ if ( $status == "Anwesend" ) {
 	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
 		// bind mit passendem dn für aktulisierenden Zugriff
-		$dn=("uid=$corusername,$BASE_DN_USER");
-		$r=ldap_bind($ditcon,$dn, "$corpassword");
+		//$dn=("uid=$corusername,$BASE_DN_USER");
+		$r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
