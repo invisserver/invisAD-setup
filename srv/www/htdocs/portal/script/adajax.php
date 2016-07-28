@@ -1184,6 +1184,9 @@ function hostCreate($conn, $cn) {
 		// Location uebernehmen
 		$location = $cookie_data['location'];
 		
+		if ($location == "")
+		    $location = "-";
+		
 		// create DHCP entry
 		$attributes = array(
 			'iscdhcphwaddress' => $mac,
@@ -1192,13 +1195,18 @@ function hostCreate($conn, $cn) {
 			'objectclass' => array('top', 'iscdhcphost')
 		);
 		$ok1 = add($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
-		// Workaround
-		// DNS Eintraege muessen mit "exec samba-tool dns" erzeugt werden.
-		// moddnsrecords ist ein bash Frontend fuer samba-tool
-		$ipaddress = "$DHCP_IP_BASE.$next";
-		$fqdn = "$cn.$DOMAIN";
-		shell_exec("sudo /usr/bin/moddnsrecords a A $cn $ipaddress;");
-		shell_exec("sudo /usr/bin/moddnsrecords a PTR $ipaddress $fqdn;");
+		if ($ok1)
+		{
+		    // Workaround
+		    // DNS Eintraege muessen mit "exec samba-tool dns" erzeugt werden.
+		    // moddnsrecords ist ein bash Frontend fuer samba-tool
+		    $ipaddress = "$DHCP_IP_BASE.$next";
+		    $fqdn = "$cn.$DOMAIN";
+		    shell_exec("sudo /usr/bin/moddnsrecords a A $cn $ipaddress;");
+		    shell_exec("sudo /usr/bin/moddnsrecords a PTR $ipaddress $fqdn;");
+		}
+		else
+		    return array(ldap_errno($conn) => ldap_error($conn));
 	}
 }
 
