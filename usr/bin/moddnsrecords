@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script zum Anlegen oder Entfernen von A- und PTR Records
 # im AD. Das Script nutzt wiederum samba-tool.
-# (c) 2015 Stefan Schaefer invis-server.org
+# (c) 2015,2016 Stefan Schaefer invis-server.org
 # License: GPLv3
 # Questions: stefan@invis-server.org 
 
@@ -64,13 +64,14 @@ revzone() {
 	echo "$revzone""in-addr.arpa"
 }
 
+# Lustige Funktion, wird aber nicht benoetigt. Haette ich wohl gleich dokumentieren sollen.
+# War sicher fuer Erweiterungen gedacht. 
 netbase() {
 	localip=$(hostname -i)
 	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
 	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
 
 	for wert in ${netbase[*]}; do
-	    #echo "$wert -"
 	    if [[ $wert == 0 ]]; then
 		base=$base
 	    else
@@ -87,13 +88,15 @@ netbase() {
 hostpart() {
 	recordip=$1
 	iparray=($(echo $recordip | tr "." " "))
-
 	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
-	netbase=($(ipcalc -b $recordip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
-	
+	nmarray=($(echo $netmask | tr "." " "))
+	#netbase=($(ipcalc -b $recordip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
 	i=0
+	# Es werden IP-Adresse und Netzwerkmaske in Arrays zerlegt und dann jede Stelle der Netzmaske darauf geprüft, ob er ungleich 255 ist.
+	# Es wird dann jeweils die entsprechende Stelle der IP zur Variable hostpart hinzugefuegt. Ich habs programmiert und begreife es selbst
+	# kaum noch....
 	for wert in ${iparray[*]}; do
-	    if [[ ! $wert == ${netbase[$i]} ]]; then
+	    if [[ ! ${nmarray[$i]} == 255 ]]; then
 		if [[ -z $hostpart ]]; then
 		    hostpart=$wert
 		else
@@ -102,28 +105,28 @@ hostpart() {
 	    fi
 	(( i=$i+1 ))
 	done
-	echo $hostpart
+	echo $hostpart 
 }
 
 if [[ -z $2 ]]; then
     usage
     exit
 else
-    recordtype=$(echo $2| tr [:lower:] [:upper:])
+    recordtype=$(echo $2| tr '[:lower:]' '[:upper:]')
 fi
 
 if [[ -z $3 ]]; then
     usage
     exit
 else
-    recordname=$(echo $3| tr [:upper:] [:lower:])
+    recordname=$(echo $3| tr '[:upper:]' '[:lower:]')
 fi
 
 if [[ -z $4 ]]; then
     usage
     exit
 else
-    recordvalue=$(echo $4| tr [:upper:] [:lower:])
+    recordvalue=$(echo $4| tr '[:upper:]' '[:lower:]')
 fi
 
 # AD Credentials lesen
@@ -200,4 +203,5 @@ case $1 in
 esac
 
 # Samba Tool anwenden
+#echo $starguments
 samba-tool dns $starguments --username $adadmin --password=$adminpw
