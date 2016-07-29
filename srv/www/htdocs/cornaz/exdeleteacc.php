@@ -39,7 +39,7 @@ if ( $status == "Anwesend" ) {
 		fwrite ($fh, "$zeile");
 	}
 	fclose($fh);
-	exec ("sudo $COR_PATH/fetchcopy");
+	exec ("sudo $COR_PATH/bin/fetchcopy");
 	// Verbindung zum LDAP Server aufbauen
 	$ditcon=ldap_connect("$LDAP_SERVER");
 	// LDAP Protokoll auf Version 3 setzen
@@ -50,8 +50,6 @@ if ( $status == "Anwesend" ) {
 
 	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-		// bind mit passendem dn für aktulisierenden Zugriff
-		//$dn=("uid=$corusername,$BASE_DN_USER");
 		$r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
@@ -77,7 +75,7 @@ if ( $status == "Anwesend" ) {
 		fclose($fh);
 		$i++;
 	}
-	exec ("sudo $COR_PATH/fetchcopy");
+	exec ("sudo $COR_PATH/bin/fetchcopy");
 	$ausgabe = "<b>Status:</b> Das regelmäßige Abrufen Ihrer eMails wurde für folgende Adressen aktiviert:<p>";
 	$i=0;
 	foreach ($entries as $zugangsdaten) {
