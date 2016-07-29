@@ -3,18 +3,10 @@
 $mainaccount = $_POST["account"];
 $localaccount = $_REQUEST["localaddress"];
 $luser = "$corusername@$DOMAIN";
-# Verbindung zum LDAP Server aufbauen
-$ditcon=ldap_connect("$LDAP_SERVER");
-# LDAP Protokoll auf Version 3 setzen
-if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-    echo "Kann das Protokoll nicht auf Version 3 setzen";
-if ($LDAP_TLS = "yes")
-    ldap_start_tls($ditcon);
 
 # Am LDAP per SimpleBind anmelden
-if ($ditcon) {
+if ($bind) {
     $dn=("cn=$corusername,$COR_LDAP_SUFFIX");
-    $r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
     $sr=ldap_search($ditcon, $dn, $filter);
     $entries = ldap_get_entries($ditcon, $sr);
@@ -37,8 +29,6 @@ if ($ditcon) {
 	// hinzufügen der neuen primär Adresse
 	$r=ldap_add($ditcon, $dn3, $account2);
     }
-
-    ldap_close($ditcon);
 } else {
     echo "Verbindung zum LDAP Server nicht möglich!";
 }

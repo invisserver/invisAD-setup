@@ -7,20 +7,27 @@
 # License: GPLv3
 
 //Includes einbinden
-include ("./inc/html.inc.php");
-include ("/etc/invis/portal/config.php");
-include ("./inc/classes.inc.php");
+require ("./inc/html.inc.php");
+require ("/etc/invis/portal/config.php");
+require ("./inc/functions.inc.php");
+require ("./inc/classes.inc.php");
 
 //Session
 session_start();
 session_name("cornaz");
 
-#Session und Umgebungsvariablen übernehmen
+// Session und Umgebungsvariablen übernehmen
 $corprogram = $_SESSION["corprogram"];
 
-#Formularvariablen übernehmen
+// Formularvariablen übernehmen
 $corusername = $_SESSION["corusername"];
 $corpassword = $_SESSION["corpassword"];
+
+// Mit LDAP-Server verbinden
+$ditcon = connect();
+if ($ditcon) {
+    $bind = bind($ditcon);
+}
 
 //Inhaltsdatei ermitteln oder festlegen
 if (!isset($_REQUEST['file'])) {
@@ -73,4 +80,6 @@ if(isset($corpassword)) {
 	header("Location: $COR_WEBSERVER" . "cornaz/");
 }
 
+// Verbindung zum LDAP-Server trennen
+ldap_unbind($ditcon);
 ?>

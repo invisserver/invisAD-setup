@@ -4,23 +4,12 @@ $vorgang = "Sie haben sich als <font color=\"#EE4000\"><b>Anwesend</b></font> ei
 if ($status == "Anwesend") {
 	$ausgabe = "<b>Status:</b> Das Abrufen Ihrer Mails ist bereits aktiviert.";
 } else {
-	// Verbindung zum LDAP Server aufbauen
-	$ditcon=ldap_connect("$LDAP_SERVER");
-	// LDAP Protokoll auf Version 3 setzen
-	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-		echo "Kann das Protokoll nicht auf Version 3 setzen";
-	if ($LDAP_TLS = "yes")
-	    ldap_start_tls($ditcon);
-
 	// Am LDAP per SimpleBind anmelden
-	if ($ditcon) {
-		$dn=("$LDAP_BIND_DN");
-		$r=ldap_bind($ditcon, $dn, "$LDAP_BIND_PW");
+	if ($bind) {
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		ldap_close($ditcon);
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";
 	}

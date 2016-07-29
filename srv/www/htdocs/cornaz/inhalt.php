@@ -1,21 +1,12 @@
 <?php
 	// Hauptseite
-	#Info Zeile
+	// Info Zeile
 	$margin = "";
 	$info = "<p><b>Sie befinden sich auf der Haupseite von CorNAz.</b><br>
 	Diese Seite ist die Schaltzentrale für alle Funktionen des Programms.</p>";
 	site_info($margin, $info);
 	// Status ausgeben
-	$ditcon=ldap_connect("$LDAP_SERVER");
-	# LDAP Protokoll auf Version 3 setzen
-	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-		echo "Kann das Protokoll nicht auf Version 3 setzen";
-	if ($LDAP_TLS = "yes")
-	    ldap_start_tls($ditcon);
-	# Am LDAP per SimpleBind anmelden
-	if ($ditcon) {
-		$dn=("$LDAP_BIND_DN");
-		$r=ldap_bind($ditcon,$dn, "$LDAP_BIND_PW");
+	if ($bind) {
 		$filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array("fspMainMailAddress");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
@@ -50,14 +41,11 @@
 	site_info($margin, $info);
 
 	// Am LDAP per SimpleBind anmelden
-	if ($ditcon) {
-		$dn=("$LDAP_BIND_DN");
-    		$r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
+	if ($bind) {
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		ldap_close($ditcon);
 	} else {
     		echo "Verbindung zum LDAP Server nicht möglich!";
 	}

@@ -19,17 +19,12 @@ if ($protokoll == "pop3s" or $protokoll == "imaps") {
 	$fspMailFetchOpts = "here fetchall";
 }
 
-# Verbindung zum LDAP Server aufbauen
-$ditcon=ldap_connect("$LDAP_SERVER");
-# LDAP Protokoll auf Version 3 setzen
-if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-    echo "Kann das Protokoll nicht auf Version 3 setzen";
-if ($LDAP_TLS = "yes")
-    ldap_start_tls($ditcon);
+// Verbindung zum LDAP Server aufbauen
+//$ditcon=ldap_connect("$LDAP_SERVER");
 
-# Am LDAP per SimpleBind anmelden
-if ($ditcon) {
-    $r=ldap_bind($ditcon,$LDAP_BIND_DN,"$LDAP_BIND_PW");
+// Am LDAP per SimpleBind anmelden
+if ($bind) {
+    //$r=ldap_bind($ditcon,$LDAP_BIND_DN,"$LDAP_BIND_PW");
     
     // hier userknoten erstellen
     //if userknoten nicht da, dann
@@ -68,7 +63,6 @@ if ($ditcon) {
     		// hinzufügen der neuen primär Adresse
     		$r=ldap_add($ditcon, $dn2, $account2);
 	}
-	ldap_close($ditcon);
 } else {
     echo "Verbindung zum LDAP Server nicht möglich!";
 }
@@ -91,28 +85,17 @@ if ( $status == "Anwesend" ) {
 	}
 	fclose($fh);
 	exec ("sudo $COR_PATH/bin/fetchcopy");
-	# Verbindung zum LDAP Server aufbauen
-	$ditcon=ldap_connect("$LDAP_SERVER");
-
-	# LDAP Protokoll auf Version 3 setzen
-	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-		echo "Kann das Protokoll nicht auf Version 3 setzen";
-	if ($LDAP_TLS = "yes")
-	    ldap_start_tls($ditcon);
-
-	# Am LDAP per SimpleBind anmelden
-	if ($ditcon) {
-		$r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
+	// Am LDAP per SimpleBind anmelden
+	if ($bind) {
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 		#	print $entries["count"]." Einträge gefunden<p>";
-		ldap_close($ditcon);
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";
 	}
-	# Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
+	// Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
 	array_shift($entries);
 	$i=0;
 	foreach ($entries as $zugangsdaten) {

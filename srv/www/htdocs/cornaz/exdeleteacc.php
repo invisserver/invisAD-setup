@@ -1,22 +1,12 @@
 <?php
 
 $account = $_REQUEST["account"];
-# Verbindung zum LDAP Server aufbauen
-$ditcon=ldap_connect("$LDAP_SERVER");  
 
-// LDAP Protokoll auf Version 3 setzen
-if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-    echo "Kann das Protokoll nicht auf Version 3 setzen";
-if ($LDAP_TLS = "yes")
-    ldap_start_tls($ditcon);
 // Am LDAP per SimpleBind anmelden
-if ($ditcon) {
-    $dn=("$LDAP_BIND_DN");
-    $r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
+if ($bind) {
     // Loeschen eines Mail-Accounts
     $dn2 = ("cn=$account,cn=$corusername,$COR_LDAP_SUFFIX");
     ldap_delete($ditcon, $dn2);
-    ldap_close($ditcon);
 } else {
     echo "Verbindung zum LDAP Server nicht möglich!";
 }
@@ -39,23 +29,12 @@ if ( $status == "Anwesend" ) {
 	}
 	fclose($fh);
 	exec ("sudo $COR_PATH/bin/fetchcopy");
-	// Verbindung zum LDAP Server aufbauen
-	$ditcon=ldap_connect("$LDAP_SERVER");
-	// LDAP Protokoll auf Version 3 setzen
-	if (!ldap_set_option($ditcon, LDAP_OPT_PROTOCOL_VERSION, 3))
-		echo "Kann das Protokoll nicht auf Version 3 setzen";
-	if ($LDAP_TLS = "yes")
-	    ldap_start_tls($ditcon);
-
 	// Am LDAP per SimpleBind anmelden
-	if ($ditcon) {
-		$r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
+	if ($bind) {
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		#	print $entries["count"]." Einträge gefunden<p>";
-		ldap_close($ditcon);
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";
 	}
