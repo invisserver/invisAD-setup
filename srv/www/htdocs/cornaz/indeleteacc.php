@@ -1,8 +1,8 @@
 <?php
-# Script zur Auswahl der primären email-Adresse
-# Dieses Script liest alle fetchmail-Accounts des Users $Username
-# aus dem LDAP Verzeichnis und listet sie auf. Sie koennen
-# dann die gewünschte Adresse auswählen.
+// Script zur Auswahl der primären email-Adresse
+// Dieses Script liest alle fetchmail-Accounts des Users $Username
+// aus dem LDAP Verzeichnis und listet sie auf. Sie koennen
+// dann die gewünschte Adresse auswählen.
 	// Verbindung zum LDAP Server aufbauen
 	$ditcon=ldap_connect("$LDAP_SERVER");
 	// LDAP Protokoll auf Version 3 setzen
@@ -13,15 +13,12 @@
 
 	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-	// bind mit passendem dn für aktulisierenden Zugriff
 		$dn=("$LDAP_BIND_DN");
 		$r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
-		//$filter="(fspLocalMailAddress=$username*)";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		//print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);
 	} else {
     		echo "Verbindung zum LDAP Server nicht möglich!";
@@ -51,6 +48,5 @@
 		//Formular schliessen
 		close_form();
 	}
-
 
 ?>

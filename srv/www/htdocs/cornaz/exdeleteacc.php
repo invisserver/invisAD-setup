@@ -11,7 +11,6 @@ if ($LDAP_TLS = "yes")
     ldap_start_tls($ditcon);
 // Am LDAP per SimpleBind anmelden
 if ($ditcon) {
-    // bind mit passendem dn für aktulisierenden Zugriff
     $dn=("$LDAP_BIND_DN");
     $r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
     // Loeschen eines Mail-Accounts
@@ -86,7 +85,7 @@ if ( $status == "Anwesend" ) {
 
 }
 
-#Info Zeile
+// Info Zeile
 $margin = "Mailkonten";
 $info = "<p><hr size=\"1\" noshade width=\"300\" center></p>
 <p><center>Der Account <b>$account</b> wurde gelöscht.</center></p>

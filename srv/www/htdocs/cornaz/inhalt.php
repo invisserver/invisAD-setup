@@ -14,17 +14,14 @@
 	    ldap_start_tls($ditcon);
 	# Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-		// bind mit passendem dn für aktulisierenden Zugriff
 		$dn=("$LDAP_BIND_DN");
 		$r=ldap_bind($ditcon,$dn, "$LDAP_BIND_PW");
 		$filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array("fspMainMailAddress");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		//print $entries["count"]." Einträge gefunden<p>";
 	}
 	$mainsendaddress = $entries[0]["fspmainmailaddress"][0];
-	//$mainsendaddress = $entries[0]["count"];
 	$margin = "Status";
 	$info = "<font size=\"-1\"><b>Sie sind angemeldet als Benutzer: <font color=\"#EE4000\">$corusername</font><br>Ihre lokale Mail-Adresse lautet: <font color=\"#EE4000\">$corusername@$DOMAIN</font><br>Ihre derzeitige Absendeadresse lautet: <font color=\"#EE4000\">$mainsendaddress</font><br>Ihr aktueller Status ist: <font color=\"#EE4000\">$status</font></b></font><hr>";
 
@@ -36,8 +33,6 @@
 	$val1 = array("Abwesend", "exabsent.php", "lightgrey");
 	$val2 = array("Urlaubsbeginn", "invacationmsg.php", "lightgrey");
 	$val3 = array("Konto hinzufügen", "increateacc.php", "lightgrey");
-	//$val4 = array("Filter anlegen", "infilterstep1.php", "lightgrey");
-	//$val_n = array($val1,$val2,$val3,$val4);
 	$val_n = array($val1,$val2,$val3);
 	button_row_n($val_n,$margin,$script);
 
@@ -47,8 +42,6 @@
 	$val1 = array("Anwesend", "expresent.php", "lightgrey");
 	$val2 = array("Urlaubsende", "exvacend.php", "lightgrey");
 	$val3 = array("Konto entfernen", "indeleteacc.php", "lightgrey");
-	//$val4 = array("Filter löschen", "indeletefilter.php", "lightgrey");
-	//$val_n = array($val1,$val2,$val3,$val4);
 	$val_n = array($val1,$val2,$val3);
 	button_row_n($val_n,$margin,$script);
 
@@ -58,22 +51,19 @@
 
 	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-    	// bind mit passendem dn für aktulisierenden Zugriff
 		$dn=("$LDAP_BIND_DN");
     		$r=ldap_bind($ditcon,$dn,"$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
-		//$filter="(fspLocalMailAddress=$username*)";
 		$justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		//print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);
 	} else {
     		echo "Verbindung zum LDAP Server nicht möglich!";
 	}
 	// Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
 	array_shift($entries);
-#Info Zeile
+// Info Zeile
 $margin = "Mailkonten";
 $info = "<font size=\"-1\">Die folgenden Liste zeigt alle für Sie eingerichteten Mailkonten an. Sie können daraus die Email-Adresse wählen, die für den Mailversand verwendet werden soll.</font>";
 site_info($margin, $info);

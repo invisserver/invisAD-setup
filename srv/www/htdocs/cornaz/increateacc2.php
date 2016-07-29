@@ -1,5 +1,5 @@
 <?php
-//Eingabeformular für neuen Mail-Account
+// Eingabeformular für neuen Mail-Account
 
 $mpvendor = $_REQUEST['mpvendor'];
 
@@ -45,8 +45,7 @@ if ( $mpvendor == "sonstiger" ) {
 	$code = "<input type= \"text\" name=\"protokoll\" value=\"$proto\" size=\"6\">";
 }
 
-
-#Info Zeile
+// Info Zeile
 $margin = "Mail Account";
 $info = "Über diese Seite können Sie Ihren Server veranlassen weitere externe Postfächer abzurufen.<br> Alle darin eingehenden Mails werden Ihrem lokalen Postfach <font color=\"#EE4000\">$corusername@$DOMAIN</font> zugeordnet.<p>
 	<b>Zur Einrichtung benötigen Sie folgende Informationen:</b><br>

@@ -1,8 +1,8 @@
 <?php
 # CorNAz
 # Script zur Manipulation der Fetchmail Steuerdatei .fetchmailrc
-# Author Stefan Schaefer email: st-schaefer@fsproductions.de
-# (c) 2008,2014 Stefan Schaefer - FSP Computer & Netzwerke
+# Author Stefan Schaefer email: stefan@invis-Server.org
+# (c) 2008,2014,2016 Stefan Schaefer - invis-server.org
 # (c) 2012 Ingo Goeppert - invis-server.org
 # License: GPLv3
 
@@ -40,7 +40,6 @@ if(isset($corpassword)) {
 	// Statusüberprüfung
 	foreach ($fetchmailrc_b as $zeile) {
 		$unx = strlen(strstr($zeile, "$corusername"))-1;
-		// echo "$unx<br>";
 		$n = strlen(chop($zeile)) - $unx;
 		if (substr(chop($zeile), $n, $un) == $corusername) {
 		$stat = $stat + 1;
@@ -63,12 +62,11 @@ if(isset($corpassword)) {
 
 	site_head($corprogram, $sitename, $COR_BG_COLOR);
 
-	//Inhalt einfügen
+	// Inhalt einfügen
 	include ("./$inhalt");
 	
 	// Seite schliessen
 	$cormainpage = "<a href=\"$COR_WEBSERVER" . "cornaz/base.php\">Hauptmenü</a>";
-	//$corwebserverlink = "<a href=\"$COR_WEBSERVER\"><div allign=\"right\">invis Portal</div></a>";
 
 	site_end($cormainpage, $PORTAL_FOOTER, "&nbsp;" );
 } else {

@@ -29,8 +29,6 @@ if ($LDAP_TLS = "yes")
 
 # Am LDAP per SimpleBind anmelden
 if ($ditcon) {
-    // bind mit passendem dn für aktulisierenden Zugriff
-    //$dn=("uid=$corusername,$BASE_DN_USER");
     $r=ldap_bind($ditcon,$LDAP_BIND_DN,"$LDAP_BIND_PW");
     
     // hier userknoten erstellen
@@ -104,8 +102,6 @@ if ( $status == "Anwesend" ) {
 
 	# Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-		// bind mit passendem dn für aktulisierenden Zugriff
-		//$dn=("uid=$corusername,$BASE_DN_USER");
 		$r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
@@ -141,7 +137,6 @@ if ( $status == "Anwesend" ) {
 	}
 
 }
-
 
 $margin = "Ihre Mailkonten";
 $info = "<p><hr size=\"1\" noshade width=\"300\" center></p><p><center><b>Ihr neuer Zugang wurde mit folgenden Daten angelegt:</b></center></p><p><center>Mail-Server: $mailserver</center></p><p><center>Protokoll: $protokoll</center></p><p><center>Benutzerkennung: $kennung</center></p><p><center>Passwort: $extpasswd</center></p><p><center>Lokale Adresse: $luser</center></p><p><hr size=\"1\" noshade width=\"300\" center></p>";

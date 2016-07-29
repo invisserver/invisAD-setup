@@ -1,5 +1,5 @@
 <?php
-//Anwesend
+// Anwesend
 $vorgang = "Sie haben sich als <font color=\"#EE4000\"><b>Anwesend</b></font> eingetragen.";
 if ($status == "Anwesend") {
 	$ausgabe = "<b>Status:</b> Das Abrufen Ihrer Mails ist bereits aktiviert.";
@@ -14,14 +14,12 @@ if ($status == "Anwesend") {
 
 	// Am LDAP per SimpleBind anmelden
 	if ($ditcon) {
-		// bind mit passendem dn für aktulisierenden Zugriff
 		$dn=("$LDAP_BIND_DN");
 		$r=ldap_bind($ditcon, $dn, "$LDAP_BIND_PW");
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
-		//	print $entries["count"]." Einträge gefunden<p>";
 		ldap_close($ditcon);
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";
@@ -51,7 +49,7 @@ if ($status == "Anwesend") {
 	}
 }
 
-#Info Zeile
+// Info Zeile
 $margin = "";
 $info = "<p><hr size=\"1\" noshade width=\"300\" center><p>
 <center>$vorgang</center><p><center>$ausgabe</center><p>

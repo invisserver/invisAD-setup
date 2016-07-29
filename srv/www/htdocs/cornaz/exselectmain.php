@@ -13,11 +13,9 @@ if ($LDAP_TLS = "yes")
 
 # Am LDAP per SimpleBind anmelden
 if ($ditcon) {
-    // bind mit passendem dn für aktulisierenden Zugriff
     $dn=("cn=$corusername,$COR_LDAP_SUFFIX");
     $r=ldap_bind($ditcon,$LDAP_BIND_DN, "$LDAP_BIND_PW");
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    //$justthese = array("fspLocalMailAddress");
     $sr=ldap_search($ditcon, $dn, $filter);
     $entries = ldap_get_entries($ditcon, $sr);
     if ($entries["count"] == 1) { 
@@ -26,7 +24,6 @@ if ($ditcon) {
 	ldap_delete($ditcon, $dn2);
     }
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    //$justthese = array("fspLocalMailAddress");
     $sr=ldap_search($ditcon, $dn, $filter);
     $entries = ldap_get_entries($ditcon, $sr);
     if ($entries["count"] == 0) { 
@@ -46,7 +43,7 @@ if ($ditcon) {
     echo "Verbindung zum LDAP Server nicht möglich!";
 }
 
-#Info Zeile
+// Info Zeile
 $margin = "Hauptadresse";
 $info = "<p><hr size=\"1\" noshade width=\"300\" center></p><p><center>Die Adresse <font color=\"#EE4000\"><b>$mainaccount</b></font> wurde als primäre Adresse für den Mailversand gewählt.</center></p><p><hr size=\"1\" noshade width=\"300\" center></p>";
 site_info($margin, $info);

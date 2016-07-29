@@ -1,6 +1,6 @@
 <?php
-//Eingabeformular für neuen Mail-Account
-#Info Zeile
+// Eingabeformular für neuen Mail-Account
+// Info Zeile
 $margin = "Mail Account";
 $info = "Über diese Seite können Sie Ihren Server veranlassen weitere externe Postfächer abzurufen.<br> Alle darin eingehenden Mails werden Ihrem lokalen Postfach <font color=\"#EE4000\">$corusername@$DOMAIN</font> zugeordnet.<p>
 	<b>Im ersten Schritt benötigen Sie lediglich den Namen Ihres Mailproviders.</b><p>
@@ -44,10 +44,10 @@ table_row_n($val_n, $margin);
 
 
 echo "<input type=\"hidden\" name=\"file\" value=\"increateacc2.php\" />\n";
-# Submit und Reset
+//  Submit und Reset
 $val = "Weiter zu Schritt 2";
 submit_row($val);
 
-#Formular schliessen
+// Formular schliessen
 close_form();
 ?>
