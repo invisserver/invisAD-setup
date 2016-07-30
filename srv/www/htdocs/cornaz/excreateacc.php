@@ -68,22 +68,7 @@ if ($bind) {
 
 //Status wechseln um neuen Account aufzunehmen
 if ( $status == "Anwesend" ) {
-		$n = count($fetchmailrc_b);
-	$i = 0;
-	foreach ($fetchmailrc_b as $key){
-		$unx = strlen(strstr($key, "$corusername"))-1;
-		$nx = strlen(chop($key)) - $unx;
-		if (substr(chop($key), $nx, $un) == $corusername) {
-		unset ($fetchmailrc_b[$i]);
-	}
-	$i++;
-	}
-		$fh = fopen("$COR_FETCHMAILRC_BUILD","w+");
-	foreach ($fetchmailrc_b as $zeile) {
-		fwrite ($fh, "$zeile");
-	}
-	fclose($fh);
-	
+	absent($corusername);
 	// fetchcopy ausfuehren
 	sudocmd('fetchcopy');
 	

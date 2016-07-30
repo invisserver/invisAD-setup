@@ -7,28 +7,13 @@ if ($status == "Urlaub") {
 	Um das automatische Abholen Ihrer Mails zu stoppen (Status: \"Abwesend\"), beenden Sie zunächst die aktivierte Urlaubsbenachrichtigung über die Schaltfläche <b>\"Urlaubsende\"</b> auf der CorNAz-Hauptseite.</p><hr size=\"1\" noshade width=\"300\" center>";
 	site_info($margin, $info);
 } else {
-	//Abwesend
-	$vorgang = "Sie haben sich als <font color=\"#EE4000\"><b>\"Abwesend\"</b></font> eingetragen.";
-	$n = count($fetchmailrc_b);
-	$i = 0;
-	foreach ($fetchmailrc_b as $key){
-		$unx = strlen(strstr($key, "$corusername"))-1;
-		$nx = strlen(chop($key)) - $unx;
-		if (substr(chop($key), $nx, $un) == $corusername) {
-		unset ($fetchmailrc_b[$i]);
-	}
-	$i++;
-	}
-	$ausgabe = "<b>Status: </b> Ihre eMails werden vorübergehend nicht abgeholt.";
-	$fh = fopen("$COR_FETCHMAILRC_BUILD","w+");
-	foreach ($fetchmailrc_b as $zeile) {
-		fwrite ($fh, "$zeile");
-	}
-	fclose($fh);
-	
+	//Auf abwesend setzen
+	absent($corusername);
 	// fetchcoppy ausfuehren
 	sudocmd('fetchcopy');
-	
+
+	$vorgang = "Sie haben sich als <font color=\"#EE4000\"><b>\"Abwesend\"</b></font> eingetragen.";
+	$ausgabe = "<b>Status: </b> Ihre eMails werden vorübergehend nicht abgeholt.";
 	//Info Zeile
 	$margin = "";
 	$info = "<p><hr size=\"1\" noshade width=\"300\" center><p>

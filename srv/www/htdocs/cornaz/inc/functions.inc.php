@@ -36,28 +36,51 @@ function bind($conn) {
 
 // fetchmailrc-Datei erzeugen
 function bfmrc($account,$corusername) {
-	global $COR_FETCHMAILRC_BUILD;
-	// Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
-	array_shift($account);
-	$i=0;
-	foreach ($account as $zugangsdaten) {
-		$fh = fopen("$COR_FETCHMAILRC_BUILD","a");
-		$server = $account[$i]["fspextmailserver"][0];
-		$proto = $account[$i]["fspextmailproto"][0];
-		$extuser = $account[$i]["fspextmailusername"][0];
-		$passwd = $account[$i]["fspextmailuserpw"][0];
-		$opts = $account[$i]["fspmailfetchopts"][0];
-		$zeile = ("poll $server proto $proto user $extuser pass $passwd is $corusername $opts\n");
-		fwrite($fh, "$zeile");
-		fclose($fh);
-		$i++;
-	}
+    global $COR_FETCHMAILRC_BUILD;
+    // Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
+    array_shift($account);
+    $i=0;
+    foreach ($account as $zugangsdaten) {
+	$fh = fopen("$COR_FETCHMAILRC_BUILD","a");
+	$server = $account[$i]["fspextmailserver"][0];
+	$proto = $account[$i]["fspextmailproto"][0];
+	$extuser = $account[$i]["fspextmailusername"][0];
+	$passwd = $account[$i]["fspextmailuserpw"][0];
+	$opts = $account[$i]["fspmailfetchopts"][0];
+	$zeile = ("poll $server proto $proto user $extuser pass $passwd is $corusername $opts\n");
+	fwrite($fh, "$zeile");
+	fclose($fh);
+	$i++;
+    }
 }
 
 // Shellkommando mit sudo ausfuehren
 function sudocmd($cmd) {
     global $COR_PATH;
     exec ("sudo $COR_PATH/bin/$cmd");
+}
+
+// Konto auf Abwesend setzen
+// Switch-Funktion macht keinen Sinn, da Anwesenheit ueber 
+// die Funktion bfmrc eingestellt wird.
+function absent($targetstate,$corusername) {
+    global $COR_FETCHMAILRC_BUILD;
+    $fetchmailrc_b = file("$COR_FETCHMAILRC_BUILD");
+    $n = count($fetchmailrc_b);
+    $i = 0;
+    foreach ($fetchmailrc_b as $key){
+	    $unx = strlen(strstr($key, "$corusername"))-1;
+	    $nx = strlen(chop($key)) - $unx;
+	    if (substr(chop($key), $nx, $un) == $corusername) {
+	    unset ($fetchmailrc_b[$i]);
+	}
+	    $i++;
+    }
+	$fh = fopen("$COR_FETCHMAILRC_BUILD","w+");
+	foreach ($fetchmailrc_b as $zeile) {
+	fwrite ($fh, "$zeile");
+    }
+    fclose($fh);
 }
 
 ?>
