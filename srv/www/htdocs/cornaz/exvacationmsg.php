@@ -37,6 +37,7 @@ $fp = fopen ($datei, "w");
 $inhalt = "\\$corusername, \"|/usr/bin/vacation $corusername\"";
 fputs ($fp, "$inhalt");
 fclose($fp);
-exec ("sudo $COR_PATH/bin/holiday");
+
+sudocmd('holiday');
 
 ?>

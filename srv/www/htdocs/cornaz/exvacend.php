@@ -5,7 +5,7 @@
 		$fp = fopen ($datei, "w");
 		fputs ($fp, " ");
 		fclose($fp);
-		exec ("sudo $COR_PATH/bin/backhome");
+		sudocmd('backhome');
 
 #Info Zeile
 $margin = "";

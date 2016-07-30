@@ -25,9 +25,11 @@ if ($status == "Urlaub") {
 		fwrite ($fh, "$zeile");
 	}
 	fclose($fh);
-	exec ("sudo $COR_PATH/bin/fetchcopy");
-
-	#Info Zeile
+	
+	// fetchcoppy ausfuehren
+	sudocmd('fetchcopy');
+	
+	//Info Zeile
 	$margin = "";
 	$info = "<p><hr size=\"1\" noshade width=\"300\" center><p>
 	<center>$vorgang</center><p><center>$ausgabe</center><p>

@@ -56,6 +56,5 @@ class mailprovider {
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";
 	}}
-	
 }
 ?>
