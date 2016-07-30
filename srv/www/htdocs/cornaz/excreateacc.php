@@ -21,9 +21,7 @@ if ($protokoll == "pop3s" or $protokoll == "imaps") {
 
 // Am LDAP per SimpleBind anmelden
 if ($bind) {
-    
     // hier userknoten erstellen
-    //if userknoten nicht da, dann
     $r=ldap_search($ditcon,"cn=$corusername,$COR_LDAP_SUFFIX","(cn=$corusername)") or die;
     if ( $r == false) {
 	$userinfo["cn"]="$corusername";
@@ -49,52 +47,44 @@ if ($bind) {
     $r=ldap_add($ditcon, $dn2, $account);
 
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    $sr=ldap_search($ditcon, "cn=$corusername,$COR_LDAP_SUFFIX", $filter);
-    $entries = ldap_get_entries($ditcon, $sr);
+    $entries=search($ditcon, "cn=$corusername,$COR_LDAP_SUFFIX", $filter);
     if ($entries["count"] == 0) { 
-	// Daten vorbereiten
-	$account2["fspLocalMailAddress"]="$luser";
-	$account2["fspLocalMailHost"]="$COR_LOCAL_IMAP_SERVER";
-	$account2["fspMainMailAddress"]="$extaddress";
-	$account2["objectclass"]="top";
-	$account2["objectclass"]="fspLocalMailRecipient";
-	$dn2 = ("cn=$luser,cn=$corusername,$COR_LDAP_SUFFIX");
-	// hinzufügen der neuen primär Adresse
-	$r=ldap_add($ditcon, $dn2, $account2);
+    // Daten vorbereiten
+    $account2["fspLocalMailAddress"]="$luser";
+    $account2["fspLocalMailHost"]="$COR_LOCAL_IMAP_SERVER";
+    $account2["fspMainMailAddress"]="$extaddress";
+    $account2["objectclass"]="top";
+    $account2["objectclass"]="fspLocalMailRecipient";
+    $dn2 = ("cn=$luser,cn=$corusername,$COR_LDAP_SUFFIX");
+    // hinzufügen der neuen primär Adresse
+    $r=ldap_add($ditcon, $dn2, $account2);
     }
-} else {
-    echo "Verbindung zum LDAP Server nicht möglich!";
-}
 
 //Status wechseln um neuen Account aufzunehmen
 if ( $status == "Anwesend" ) {
-	absent($corusername);
-	// fetchcopy ausfuehren
-	sudocmd('fetchcopy');
-	
-	// Am LDAP per SimpleBind anmelden
-	if ($bind) {
-		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
-		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
-		$entries = ldap_get_entries($ditcon, $sr);
-		#	print $entries["count"]." Einträge gefunden<p>";
-	} else {
-		echo "Verbindung zum LDAP Server nicht möglich!";
-	}
-	// fetchmailrc schreiben.
-	bfmrc($entries,$corusername);
-	// fetchcopy ausfuehren
-	sudocmd('fetchcopy');
-	
-	$ausgabe = "<b>Status:</b> Das regelmäßige Abrufen Ihrer eMails wurde für folgende Adressen aktiviert:<p>";
-	$i=0;
-	foreach ($entries as $zugangsdaten) {
-		$Address = $entries[$i]["fspextmailaddress"][0];
-		$ausgabe = "$ausgabe <b>$Address</b><p>";
-		$i++;
-	}
+    absent($corusername);
+    // fetchcopy ausfuehren
+    sudocmd('fetchcopy');
 
+    $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+    $justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
+    $entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+
+    // fetchmailrc schreiben.
+    bfmrc($entries,$corusername);
+    // fetchcopy ausfuehren
+    sudocmd('fetchcopy');
+
+    $ausgabe = "<b>Status:</b> Das regelmäßige Abrufen Ihrer eMails wurde für folgende Adressen aktiviert:<p>";
+    $i=0;
+    foreach ($entries as $zugangsdaten) {
+	$Address = $entries[$i]["fspextmailaddress"][0];
+	$ausgabe = "$ausgabe <b>$Address</b><p>";
+	$i++;
+    }
+}
+} else {
+    echo "Verbindung zum LDAP Server nicht möglich!";
 }
 
 $margin = "Ihre Mailkonten";

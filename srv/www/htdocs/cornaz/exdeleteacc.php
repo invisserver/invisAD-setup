@@ -7,25 +7,17 @@ if ($bind) {
     // Loeschen eines Mail-Accounts
     $dn2 = ("cn=$account,cn=$corusername,$COR_LDAP_SUFFIX");
     ldap_delete($ditcon, $dn2);
-} else {
-    echo "Verbindung zum LDAP Server nicht möglich!";
-}
 
-//Status wechseln um neuen Account aufzunehmen
-if ( $status == "Anwesend" ) {
+    //Status wechseln um neuen Account aufzunehmen
+    if ( $status == "Anwesend" ) {
 	//voruebergehend auf abwesend setzen
 	absent($corusername);
 	// fetchcopy ausfuehren
 	sudocmd('fetchcopy');
 	// Am LDAP per SimpleBind anmelden
-	if ($bind) {
-		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
-		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
-		$entries = ldap_get_entries($ditcon, $sr);
-	} else {
-		echo "Verbindung zum LDAP Server nicht möglich!";
-	}
+	$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+	$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
+	$entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
 	// fetchmailrc erzeugen.
 	bfmrc($entries,$corusername);
 	// fetchcopy ausfuehren
@@ -34,11 +26,13 @@ if ( $status == "Anwesend" ) {
 	$ausgabe = "<b>Status:</b> Das regelmäßige Abrufen Ihrer eMails wurde für folgende Adressen aktiviert:<p>";
 	$i=0;
 	foreach ($entries as $zugangsdaten) {
-		$Address = $entries[$i]["fspextmailaddress"][0];
-		$ausgabe = "$ausgabe <b>$Address</b><p>";
+		$address = $entries[$i]["fspextmailaddress"][0];
+		$ausgabe = "$ausgabe <b>$address</b><p>";
 		$i++;
 	}
-
+    }
+} else {
+    echo "Verbindung zum LDAP Server nicht möglich!";
 }
 
 // Info Zeile

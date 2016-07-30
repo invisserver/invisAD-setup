@@ -29,10 +29,49 @@ function bind($conn) {
     return ldap_bind($conn, $LDAP_BIND_DN, $LDAP_BIND_PW);
 }
 
+// search LDAP server
+function search($conn, $basedn, $filter, $justthese = array("*")) {
+    if ($search = ldap_search($conn, $basedn, $filter, $justthese)) {
+	return ldap_get_entries($conn, $search);
+    } else {
+	return false;
+    }
+}
 
 //--------------------
 // fetchmailrc FUNCTIONS
 //--------------------
+
+// Status ermitteln
+function getstate($corusername) {
+    global $COR_FETCHMAILRC_BUILD, $COR_PATH;
+    // Aktuellen Status ermitteln
+    $un = strlen($corusername);
+    $unx = 0;
+    // Einlesen der Datei .fetchmailrc in ein Array
+    $fetchmailrc_b = file ("$COR_FETCHMAILRC_BUILD");
+    $stat = 0;
+    // Statusüberprüfung
+    foreach ($fetchmailrc_b as $zeile) {
+	$unx = strlen(strstr($zeile, "$corusername"))-1;
+	$n = strlen(chop($zeile)) - $unx;
+	if (substr(chop($zeile), $n, $un) == $corusername) {
+	    $stat = $stat + 1;
+	}
+    }
+    if ($stat >= 1) {
+	$status="Anwesend";
+    } else {
+	$status="Abwesend";
+    }
+
+    // Anwesend aber trotzdem im Urlaub
+    if ($status == "Anwesend") {
+	if (file_exists ("$COR_PATH/vacation/$corusername.binweg")) {
+	    $status="Urlaub";
+	}}
+    return $status;
+}
 
 // fetchmailrc-Datei erzeugen
 function bfmrc($account,$corusername) {
@@ -63,9 +102,10 @@ function sudocmd($cmd) {
 // Konto auf Abwesend setzen
 // Switch-Funktion macht keinen Sinn, da Anwesenheit ueber 
 // die Funktion bfmrc eingestellt wird.
-function absent($targetstate,$corusername) {
+function absent($corusername) {
     global $COR_FETCHMAILRC_BUILD;
     $fetchmailrc_b = file("$COR_FETCHMAILRC_BUILD");
+    $un = strlen($corusername);
     $n = count($fetchmailrc_b);
     $i = 0;
     foreach ($fetchmailrc_b as $key){

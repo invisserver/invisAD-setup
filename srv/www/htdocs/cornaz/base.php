@@ -37,32 +37,9 @@ if (!isset($_REQUEST['file'])) {
 }
 
 if(isset($corpassword)) {
-	// Aktuellen Status ermitteln
-	$un = strlen($corusername);
-	$unx = 0;
-	// Einlesen der Datei .fetchmailrc in ein Array
-	$fetchmailrc_b = file ("$COR_FETCHMAILRC_BUILD");
-	$stat = 0;
-	// Statusüberprüfung
-	foreach ($fetchmailrc_b as $zeile) {
-		$unx = strlen(strstr($zeile, "$corusername"))-1;
-		$n = strlen(chop($zeile)) - $unx;
-		if (substr(chop($zeile), $n, $un) == $corusername) {
-		    $stat = $stat + 1;
-		}
-	}
-	if ($stat >= 1) {
-		$status="Anwesend";
-	} else {
-		$status="Abwesend";
-	}
-	
-	// Anwesend aber trotzdem im Urlaub
-	if ($status == "Anwesend") {
-		if (file_exists ("$COR_PATH/vacation/$corusername.binweg")) {
-			$status="Urlaub";
-		}}
 
+	// Status ermitteln
+	$status = getstate($corusername);
 	// Oeffnen der neuen Seite
 	$sitename = "eMail Accounts verwalten";
 

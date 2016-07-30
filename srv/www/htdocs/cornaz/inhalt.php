@@ -1,62 +1,57 @@
 <?php
-	// Hauptseite
-	// Info Zeile
-	$margin = "";
-	$info = "<p><b>Sie befinden sich auf der Haupseite von CorNAz.</b><br>
-	Diese Seite ist die Schaltzentrale für alle Funktionen des Programms.</p>";
-	site_info($margin, $info);
-	// Status ausgeben
-	if ($bind) {
-		$filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-		$justthese = array("fspMainMailAddress");
-		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
-		$entries = ldap_get_entries($ditcon, $sr);
-	}
-	$mainsendaddress = $entries[0]["fspmainmailaddress"][0];
-	$margin = "Status";
-	$info = "<font size=\"-1\"><b>Sie sind angemeldet als Benutzer: <font color=\"#EE4000\">$corusername</font><br>Ihre lokale Mail-Adresse lautet: <font color=\"#EE4000\">$corusername@$DOMAIN</font><br>Ihre derzeitige Absendeadresse lautet: <font color=\"#EE4000\">$mainsendaddress</font><br>Ihr aktueller Status ist: <font color=\"#EE4000\">$status</font></b></font><hr>";
-
-	site_info($margin, $info);
-
-	// Schaltflächenleiste 1 für Funktionen
-	$margin = "Funktionen";
-	$script = "base.php";
-	$val1 = array("Abwesend", "exabsent.php", "lightgrey");
-	$val2 = array("Urlaubsbeginn", "invacationmsg.php", "lightgrey");
-	$val3 = array("Konto hinzufügen", "increateacc.php", "lightgrey");
-	$val_n = array($val1,$val2,$val3);
-	button_row_n($val_n,$margin,$script);
-
-	// Schaltflächenleiste 2 für Funktionen
-	$margin = "<font color=\"$COR_BG_COLOR\">Funktionen</font>";
-	$script = "base.php";
-	$val1 = array("Anwesend", "expresent.php", "lightgrey");
-	$val2 = array("Urlaubsende", "exvacend.php", "lightgrey");
-	$val3 = array("Konto entfernen", "indeleteacc.php", "lightgrey");
-	$val_n = array($val1,$val2,$val3);
-	button_row_n($val_n,$margin,$script);
-
-	$margin = "";
-	$info = "<hr>";
-	site_info($margin, $info);
-
-	// Am LDAP per SimpleBind anmelden
-	if ($bind) {
-		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
-		$justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
-		$entries = ldap_get_entries($ditcon, $sr);
-	} else {
-    		echo "Verbindung zum LDAP Server nicht möglich!";
-	}
-	// Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
-	array_shift($entries);
+// Hauptseite
 // Info Zeile
-$margin = "Mailkonten";
-$info = "<font size=\"-1\">Die folgenden Liste zeigt alle für Sie eingerichteten Mailkonten an. Sie können daraus die Email-Adresse wählen, die für den Mailversand verwendet werden soll.</font>";
+$margin = "";
+$info = "<p><b>Sie befinden sich auf der Haupseite von CorNAz.</b><br>
+Diese Seite ist die Schaltzentrale für alle Funktionen des Programms.</p>";
 site_info($margin, $info);
-$i=0;
-foreach ($entries as $val) {
+// Status ausgeben
+if ($bind) {
+    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
+    $justthese = array("fspMainMailAddress");
+    $entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+
+    $mainsendaddress = $entries[0]["fspmainmailaddress"][0];
+    $margin = "Status";
+    $info = "<font size=\"-1\"><b>Sie sind angemeldet als Benutzer: <font color=\"#EE4000\">$corusername</font><br>Ihre lokale Mail-Adresse lautet: <font color=\"#EE4000\">$corusername@$DOMAIN</font><br>Ihre derzeitige Absendeadresse lautet: <font color=\"#EE4000\">$mainsendaddress</font><br>Ihr aktueller Status ist: <font color=\"#EE4000\">$status</font></b></font><hr>";
+
+    site_info($margin, $info);
+
+    // Schaltflächenleiste 1 für Funktionen
+    $margin = "Funktionen";
+    $script = "base.php";
+    $val1 = array("Abwesend", "exabsent.php", "lightgrey");
+    $val2 = array("Urlaubsbeginn", "invacationmsg.php", "lightgrey");
+    $val3 = array("Konto hinzufügen", "increateacc.php", "lightgrey");
+    $val_n = array($val1,$val2,$val3);
+    button_row_n($val_n,$margin,$script);
+
+    // Schaltflächenleiste 2 für Funktionen
+    $margin = "<font color=\"$COR_BG_COLOR\">Funktionen</font>";
+    $script = "base.php";
+    $val1 = array("Anwesend", "expresent.php", "lightgrey");
+    $val2 = array("Urlaubsende", "exvacend.php", "lightgrey");
+    $val3 = array("Konto entfernen", "indeleteacc.php", "lightgrey");
+    $val_n = array($val1,$val2,$val3);
+    button_row_n($val_n,$margin,$script);
+
+    $margin = "";
+    $info = "<hr>";
+
+    site_info($margin, $info);
+    $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+    $justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
+    $entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+
+    // Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
+    array_shift($entries);
+
+    // Info Zeile
+    $margin = "Mailkonten";
+    $info = "<font size=\"-1\">Die folgenden Liste zeigt alle für Sie eingerichteten Mailkonten an. Sie können daraus die Email-Adresse wählen, die für den Mailversand verwendet werden soll.</font>";
+    site_info($margin, $info);
+    $i=0;
+    foreach ($entries as $val) {
 	//Formular oeffnen
 	$script = "./base.php";
 	open_form($script);
@@ -74,6 +69,9 @@ foreach ($entries as $val) {
 	$i++;
 	//Formular schliessen
 	close_form();
-}
+    }
 
+} else {
+    echo "Verbindung zum LDAP Server nicht möglich!";
+}
 ?>

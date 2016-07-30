@@ -8,16 +8,14 @@ $luser = "$corusername@$DOMAIN";
 if ($bind) {
     $dn=("cn=$corusername,$COR_LDAP_SUFFIX");
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    $sr=ldap_search($ditcon, $dn, $filter);
-    $entries = ldap_get_entries($ditcon, $sr);
+    $entries=search($ditcon, $dn, $filter);
     if ($entries["count"] == 1) { 
 	// Löschen der alten primär Adresse
 	$dn2 = ("cn=$localaccount,$dn");
 	ldap_delete($ditcon, $dn2);
     }
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    $sr=ldap_search($ditcon, $dn, $filter);
-    $entries = ldap_get_entries($ditcon, $sr);
+    $entries=search($ditcon, $dn, $filter);
     if ($entries["count"] == 0) { 
 	// Daten vorbereiten
 	$account2["fspLocalMailAddress"]="$luser";
