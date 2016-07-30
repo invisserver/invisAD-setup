@@ -40,7 +40,6 @@ if(isset($corpassword)) {
 	// Aktuellen Status ermitteln
 	$un = strlen($corusername);
 	$unx = 0;
-	// echo "$un<br>";
 	// Einlesen der Datei .fetchmailrc in ein Array
 	$fetchmailrc_b = file ("$COR_FETCHMAILRC_BUILD");
 	$stat = 0;
@@ -49,7 +48,7 @@ if(isset($corpassword)) {
 		$unx = strlen(strstr($zeile, "$corusername"))-1;
 		$n = strlen(chop($zeile)) - $unx;
 		if (substr(chop($zeile), $n, $un) == $corusername) {
-		$stat = $stat + 1;
+		    $stat = $stat + 1;
 		}
 	}
 	if ($stat >= 1) {

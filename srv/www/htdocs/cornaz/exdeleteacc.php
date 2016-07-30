@@ -38,22 +38,8 @@ if ( $status == "Anwesend" ) {
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";
 	}
-	// Warum auch immer, ich musste das erste Element des entries-Arrays loeschen.
-	array_shift($entries);
-	$i=0;
-	foreach ($entries as $zugangsdaten) {
-		$fh = fopen("$COR_FETCHMAILRC_BUILD","a");
-		$Server = $entries[$i]["fspextmailserver"][0];
-		$Proto = $entries[$i]["fspextmailproto"][0];
-		$Extuser = $entries[$i]["fspextmailusername"][0];
-		$Passwd = $entries[$i]["fspextmailuserpw"][0];
-		$Opts = $entries[$i]["fspmailfetchopts"][0];
-		$zeile = ("poll $Server proto $Proto user $Extuser pass $Passwd is $corusername $Opts\n");
-		fwrite($fh, "$zeile");
-		fclose($fh);
-		$i++;
-	}
-    
+	// fetchmailrc erzeugen.
+	bfmrc($entries,$corusername);
 	// fetchcopy ausfuehren
 	sudocmd('fetchcopy');
 
