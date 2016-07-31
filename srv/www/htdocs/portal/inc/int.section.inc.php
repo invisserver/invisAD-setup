@@ -129,7 +129,7 @@ function linksModResponse(request) {
 </script>
 
 <?php
-	require_once('ldap.php');
+	require_once('ldap.inc.php');
 	$conn = connect();
 	$bind = bind($conn);
 	

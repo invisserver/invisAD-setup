@@ -11,7 +11,7 @@
  */
 
 // Alte LDAP Klasse von Daniel einbinden, wird fuer die DHCP Geschichten benötigt
-require_once('../ldap.php');
+require_once('../inc/ldap.inc.php');
 // Hinzugefügt nach Erweiterung der config.php (SMB_HOSTNAME) 21.07.2009 -- Stefan
 require_once('../config.php');
 // adLDAP Klasse einbinden und Objekt erzeugen
@@ -797,7 +797,7 @@ function groupDetail($conn, $cn) {
 	//hier muss noch gearbeitet werden. $collection->member liefert 
 	// vollstaendige DNs zurueck, fuer die Anzeige sollte es aber das
 	// Attribut sAMAccountName sein. adLDAP verfuegt so wie es aus-
-	// sieht bietet adLDAP dafuer keine Funktion, unser eigenes ldap.php
+	// sieht bietet adLDAP dafuer keine Funktion, unser eigenes ldap.inc.php
 	// aber vermutlich schon.
 	$member = array();
 	

@@ -1,6 +1,6 @@
 <?php
 
-/* ldap.php v1.1
+/* ldap.inc.php v1.1
  * LDAP utility functions and ldap_xxx wrapper
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2011 Stefan Schaefer, invis-server.org

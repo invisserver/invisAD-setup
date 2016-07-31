@@ -10,7 +10,7 @@
  */
 
 // include important ldap and stuff
-require_once('../ldap.php');
+require_once('../inc/ldap.inc.php');
 require_once('../inc/adLDAP.php');
 require_once('../inc/adfunctions.inc.php');
 require_once('../config.php');

@@ -8,7 +8,7 @@
  */
  
 if (!isset($CONF)) die;
-require_once('ldap.php');
+require_once('ldap.inc.php');
 
 echo <<<TEST
 <div style="text-align: justify; font-size: 0.9em;">Dieses Portal gewährt Ihnen auf einfache Weise Zugriff auf die Funktionen Ihres <b><i>invis Servers</b></i>. Wenn Sie sich über die Schaltfläche <font color="red">"Anmelden"</font> oben rechts am Portal anmelden werden, Ihre Möglichkeiten auf Funktionen des Servers zuzugreifen entsprechend Ihrem Benutzerstatus erweitert. <br>Hinter den Registern oben verbergen sich verschiedene Gruppen von Funktionen und Verknüpfungen:</div>

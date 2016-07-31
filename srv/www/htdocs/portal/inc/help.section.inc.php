@@ -10,7 +10,7 @@
 
 if (!isset($CONF)) die;
 
-require_once('ldap.php');
+require_once('ldap.inc.php');
 
 // 0:guest, 1:user, 2:admin
 $usertype = 0;

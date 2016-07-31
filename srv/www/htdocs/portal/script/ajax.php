@@ -10,7 +10,7 @@
  * Questions: stefan@invis-server.org
  */
 
-require_once('../ldap.php');
+require_once('../inc/ldap.inc.php');
 
 // Hinzugefügt nach Erweiterung der config.php (SMB_HOSTNAME) 21.07.2009 -- Stefan
 require_once('../config.php');

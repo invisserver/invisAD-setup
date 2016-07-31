@@ -10,7 +10,7 @@
  */
 
 	if (!isset($CONF)) die;
-	require_once('ldap.php');
+	require_once('ldap.inc.php');
 ?>
 
 <table id='admin-table' cellpadding='0' cellspacing='0'>
