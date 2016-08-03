@@ -11,7 +11,7 @@ include ("/etc/invis/portal/config.php");
 session_start();
 session_name("cornaz");
 
-$version = "0.10.3";
+$version = "0.10.5";
 $corprogram = "+++ CorNAz $version +++";
 $_SESSION["corprogram"] = $corprogram;
 $sitename = "CorNAz";

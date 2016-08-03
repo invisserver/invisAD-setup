@@ -1,7 +1,7 @@
 <?php
 # Dieses Script erzeugt einen neuen fetchmail-Account für den Zugriff auf ein externes
 # Postfach. Alle Daten des Accounts werden im lokalem LDAP Verzeichnis unterhalb des
-# zugehörigen Users abgelegt.
+# zugehörigen Knotens additionalUserInformation abgelegt.
 
 #Formularvariablen übernehmen
 $mailserver=$_POST["mailserver"];
@@ -22,14 +22,14 @@ if ($protokoll == "pop3s" or $protokoll == "imaps") {
 // Am LDAP per SimpleBind anmelden
 if ($bind) {
     // hier userknoten erstellen
-    $r=ldap_search($ditcon,"cn=$corusername,$COR_LDAP_SUFFIX","(cn=$corusername)") or die;
+    $r=ldap_search($ditcon,"cn=$corusername,$COR_LDAP_SUFFIX","(cn=$corusername)");
     if ( $r == false) {
 	$userinfo["cn"]="$corusername";
 	$userinfo["name"]="$corusername";
 	$userinfo["description"]="Email-Konten von $corusername";
 	$userinfo["objectclass"]="top";
 	$userinfo["objectclass"]="container";
-	ldap_add($ditcon,"cn=$corusername,$COR_LDAP_SUFFIX",$userinfo);
+	ldap_add($ditcon,"$coruserdn",$userinfo);
     }
 
     // Daten vorbereiten
@@ -42,24 +42,41 @@ if ($bind) {
     $account["fspLocalMailAddress"]="$luser";
     $account["objectclass"]="top";
     $account["objectclass"]="fspFetchMailAccount";
-    $dn2 = ("cn=$extaddress,cn=$corusername,$COR_LDAP_SUFFIX");
+    $dn2 = ("cn=$extaddress,$coruserdn");
     // hinzufügen der Daten zum Verzeichnis
     $r=ldap_add($ditcon, $dn2, $account);
 
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    $entries=search($ditcon, "cn=$corusername,$COR_LDAP_SUFFIX", $filter);
+    $entries=search($ditcon, "$coruserdn", $filter);
     if ($entries["count"] == 0) { 
-    // Daten vorbereiten
-    $account2["fspLocalMailAddress"]="$luser";
-    $account2["fspLocalMailHost"]="$COR_LOCAL_IMAP_SERVER";
-    $account2["fspMainMailAddress"]="$extaddress";
-    $account2["objectclass"]="top";
-    $account2["objectclass"]="fspLocalMailRecipient";
-    $dn2 = ("cn=$luser,cn=$corusername,$COR_LDAP_SUFFIX");
-    // hinzufügen der neuen primär Adresse
-    $r=ldap_add($ditcon, $dn2, $account2);
+	// Daten vorbereiten
+	$account2["fspLocalMailAddress"]="$luser";
+	$account2["fspLocalMailHost"]="$COR_LOCAL_IMAP_SERVER";
+	$account2["fspMainMailAddress"]="$extaddress";
+	$account2["objectclass"]="top";
+	$account2["objectclass"]="fspLocalMailRecipient";
+	$dn2 = ("cn=$luser,$coruserdn");
+	// hinzufügen der neuen primär Adresse
+	$r=ldap_add($ditcon, $dn2, $account2);
     }
 
+    // Mail Attribut im Benutzerkonto anpassen
+    $filter = "(samAccountName=$corusername)";
+    $justthese = array("mail");
+    $entries = search($ditcon,$BASE_DN_USER,$filter,$justthese);
+    $mail = $entries[0]['mail'][0];
+    // nur, wenn das Attribut bisher die interne Adresse enthaelt
+    // oder leer ist.
+    if ( "$mail" == "$luser" || empty("$mail") ) {
+	$mailattr = array( 'mail' => "$extaddress" );
+	$r = modify($ditcon, $aduserdn, $mailattr);
+	$othermb = array('othermailbox' => "$luser");
+	$r = ldap_mod_add($ditcon, $aduserdn, $othermb);
+    } else {
+	$othermb = array('othermailbox' => "$extaddress");
+	$r = ldap_mod_add($ditcon, $aduserdn, $othermb);
+    }
+    
 //Status wechseln um neuen Account aufzunehmen
 if ( $status == "Anwesend" ) {
     absent($corusername);

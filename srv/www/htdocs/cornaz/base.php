@@ -37,6 +37,19 @@ if (!isset($_REQUEST['file'])) {
 }
 
 if(isset($corpassword)) {
+	// Benutzer-DNs und Knotennamen erzeugen
+	// CorNAz-Knoten = lokale Email-Adresse
+	$luser = "$corusername@$DOMAIN";
+
+	// AD-Benutzer-DN
+	$filter = "(samAccountName=$corusername)";
+	$justthese = array("cn", "mail");
+	$entries = search($ditcon,$BASE_DN_USER,$filter,$justthese);
+	$adusercn = $entries[0]['cn'][0];
+	$aduserdn = "CN=$adusercn,$BASE_DN_USER";
+
+	// CorNAz Benutzerdn
+	$coruserdn = "cn=$corusername,$COR_LDAP_SUFFIX";
 
 	// Status ermitteln
 	$status = getstate($corusername);

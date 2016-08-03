@@ -38,6 +38,26 @@ function search($conn, $basedn, $filter, $justthese = array("*")) {
     }
 }
 
+// modify an entry in the LDAP server
+function modify($conn, $basedn, $entry_array) {
+    return ldap_modify($conn, $basedn, $entry_array);
+}
+
+
+//--------------------
+// CorNAz FUNCTIONS
+//--------------------
+
+// "mainMailAddress" mit "mail" synchronisieren
+function syncmailattr($mainmaliaddr) {
+    global $BASE_DN_USER;
+}
+
+// verbleibende Adressen in othermailbox einfuegen
+function setothermailbox($otheraddresses) {
+    global $BASE_DN_USER;
+}
+
 //--------------------
 // fetchmailrc FUNCTIONS
 //--------------------
