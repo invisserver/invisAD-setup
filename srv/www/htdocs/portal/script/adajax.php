@@ -1311,6 +1311,21 @@ function fileUploadProgress($conn, $id) {
 }
 
 //--------------------
+// other stuff
+//--------------------
+
+// links listing for user
+function linksList($conn, $uid) {
+	global $LDAP_SUFFIX_AUI;
+	$result = search($conn, $LDAP_SUFFIX_AUI, "CN=$uid", array('labeledURI'));
+	if ($result) {
+		$result = cleanup($result[0]);
+		unset($result['dn']);
+		return $result;
+	}
+}
+
+//--------------------
 // main functionality
 //--------------------
 
