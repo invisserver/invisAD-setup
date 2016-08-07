@@ -56,6 +56,7 @@ require_once(dirname(__FILE__) . '/classes/adLDAPUtils.php');
 require_once(dirname(__FILE__) . '/classes/adLDAPContacts.php');
 require_once(dirname(__FILE__) . '/classes/adLDAPExchange.php');
 require_once(dirname(__FILE__) . '/classes/adLDAPComputers.php');
+require_once '/etc/invis/portal/config.php';
 
 class adLDAP {
     

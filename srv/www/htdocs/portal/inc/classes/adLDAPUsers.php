@@ -77,6 +77,7 @@ class adLDAPUsers {
     */
     public function create($attributes)
     {
+        global $GROUPWARE;
         // Check for compulsory fields
         if (!array_key_exists("username", $attributes)){ return "Missing compulsory field [username]"; }
         if (!array_key_exists("firstname", $attributes)){ return "Missing compulsory field [firstname]"; }
@@ -113,7 +114,8 @@ class adLDAPUsers {
         //$add["msSFU30Name"] = $attributes["mssfu30name"];
 
 	// Groupware Objektklasse
-        if (array_key_exists("zarafaaccount",$attributes)) {
+        //if (array_key_exists("zarafaaccount",$attributes)) {
+	if ( $GROUPWARE == "zarafa" ) {
 	    $add["objectclass"][4] = "zarafaUser";
 	}
 
