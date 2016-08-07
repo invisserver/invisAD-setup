@@ -77,7 +77,7 @@ class adLDAPUsers {
     */
     public function create($attributes)
     {
-        global $GROUPWARE;
+        global $GROUPWARE, $AD_CN_ATTRIBUTE;
         // Check for compulsory fields
         if (!array_key_exists("username", $attributes)){ return "Missing compulsory field [username]"; }
         if (!array_key_exists("firstname", $attributes)){ return "Missing compulsory field [firstname]"; }
@@ -94,7 +94,9 @@ class adLDAPUsers {
             throw new adLDAPException('SSL must be configured on your webserver and enabled in the class to set passwords.');
         }
 
-        if (!array_key_exists("display_name", $attributes)) { 
+	// Erweitern, da der displayName auch ein "-" enthalten kann.
+	// => ist ein Problem des invis-Portals
+        if (!array_key_exists("display_name", $attributes) || $attributes["display_name"] == '-' ) { 
             $attributes["display_name"] = $attributes["firstname"] . " " . $attributes["surname"]; 
         }
 
@@ -102,7 +104,22 @@ class adLDAPUsers {
         $add = $this->adldap->adldap_schema($attributes);
 
         // Additional stuff only used for adding accounts
-        $add["cn"][0] = $attributes["display_name"];
+        // Den Anzeigenamen (displayName) als kennzeichnendes Attribut 
+        // zu nutzen ist problematisch, hier Doppelungen nicht 
+        // ausgeschlossen werden koennen.
+
+	switch ($AD_CN_ATTRIBUTE) {
+	case "userPrincipalName":
+	    $add["cn"][0] = $attributes["logon_name"];
+	    break;
+	case "samAccountName":
+	    $add["cn"][0] = $attributes["username"];
+	    break;
+	case "displayName":
+	    $add["cn"][0] = $attributes["display_name"];
+	    break;
+	}
+
         $add["samaccountname"][0] = $attributes["username"];
         $add["objectclass"][0] = "top";
         $add["objectclass"][1] = "person";

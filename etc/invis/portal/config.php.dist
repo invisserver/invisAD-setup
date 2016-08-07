@@ -51,6 +51,11 @@ $LDAP_ADMIN = "ldap.admin";
 $LDAP_BIND_DN = "$LDAP_ADMIN@$DOMAIN";
 $LDAP_BIND_PW = 'admin-secret';
 
+// RDN Attribut fuer Benutzer festlegen
+// erlaubt sind "samAccountName", "userPrincipalName" und "displayName"
+// Es ist unbedingt auf die korrekte Schreibweise zu achten!
+$AD_CN_ATTRIBUTE = "userPrincipalName";
+
 $BASE_DN_USER = "cn=Users,$LDAP_SUFFIX";
 $BASE_DN_GROUP = "cn=Groups,$LDAP_SUFFIX";
 $BASE_DN_DHCP = "cn=DHCP Config,cn=DHCP-Server,$LDAP_INVIS_SUFFIX";

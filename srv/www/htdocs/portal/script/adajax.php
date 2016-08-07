@@ -288,6 +288,7 @@ function userCreate($uid) {
 	$attributes=array(
 	    "username"=>$uid,
 	    "logon_name"=>$cookie_data['uid']."@".$DOMAIN,
+	    "display_name"=>$cookie_data['display_name'],
 	    "firstname"=>$cookie_data['firstname'],
 	    "surname"=>$cookie_data['surname'],
 	    "description"=>$cookie_data['description'],
