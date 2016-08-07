@@ -16,7 +16,7 @@ require_once('../ldap.php');
 require_once('../config.php');
 // adLDAP Klasse einbinden und Objekt erzeugen
 require_once('../inc/adLDAP.php');
-require_once('../inc/adfunctions.inc.php');
+require_once('../inc/functions.inc.php');
 
 // Array mit Globalvariablen bilden
 $options = array(

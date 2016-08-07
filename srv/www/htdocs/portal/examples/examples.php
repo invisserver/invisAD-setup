@@ -6,7 +6,7 @@ To test any of the functions, just change the 0 to a 1.
 */
 require_once('../config.php');
 require_once('../ldap.php');
-require_once('../inc/adfunctions.inc.php');
+require_once('../inc/functions.inc.php');
 
 // Array mit Globalvariablen bilden
 $options = array(
