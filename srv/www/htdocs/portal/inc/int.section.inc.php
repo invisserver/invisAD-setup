@@ -99,7 +99,7 @@ function linksEdit(request) {
 		);
 		invis.setCookie('invis-request', $H({labeleduri: liste}).toJSON());
 		var tmp = invis.getCookie('invis').evalJSON();
-		invis.request('script/ajax.php', linksModResponse, {c: 'user_mod', u: tmp['uid']});
+		invis.request('script/adajax.php', linksModResponse, {c: 'user_mod', u: tmp['uid']});
 	});
 	lightbox.addButton(button_save);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
@@ -175,7 +175,7 @@ function linksModResponse(request) {
 		if ($name == '') $name = $data -> uid;
 		echo "<h3>Links für $name</h3>";
 		
-		$result = search($conn, $BASE_DN_USER, "uid=" . $data -> uid, array('labeledURI'));
+		$result = search($conn, $BASE_DN_USER, "cn=" . $data -> uid, array('labeledURI'));
 		if ($result) {
 			$result = cleanup($result[0]);
 			echo '<ul id="lokal-links">';
@@ -189,7 +189,7 @@ function linksModResponse(request) {
 			echo '</ul>';
 		}
 		
-		echo '<a onclick="invis.request(\'script/ajax.php\', linksEdit, {c: \'links_list\', u: \'' . $data -> uid . '\'});" style="cursor: pointer;"><img src="images/edit_img.png" /></a>';
+		echo '<a onclick="invis.request(\'script/adajax.php\', linksEdit, {c: \'links_list\', u: \'' . $data -> uid . '\'});" style="cursor: pointer;"><img src="images/edit_img.png" /></a>';
 	}
 	
 	unbind($conn);
