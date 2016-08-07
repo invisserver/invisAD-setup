@@ -22,7 +22,7 @@ if ($protokoll == "pop3s" or $protokoll == "imaps") {
 // Am LDAP per SimpleBind anmelden
 if ($bind) {
     // hier userknoten erstellen
-    $r=ldap_search($ditcon,"cn=$corusername,$COR_LDAP_SUFFIX","(cn=$corusername)");
+    $r=ldap_search($ditcon,"cn=$corusername,$LDAP_SUFFIX_AUI","(cn=$corusername)");
     if ( $r == false) {
 	$userinfo["cn"]="$corusername";
 	$userinfo["name"]="$corusername";
@@ -85,7 +85,7 @@ if ( $status == "Anwesend" ) {
 
     $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
     $justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-    $entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+    $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 
     // fetchmailrc schreiben.
     bfmrc($entries,$corusername);

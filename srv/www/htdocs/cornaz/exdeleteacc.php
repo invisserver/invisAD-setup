@@ -13,7 +13,7 @@ if ($bind) {
     // Versandadresse ermitteln
     $filter = "(cn=$luser)";
     $justthese = array("fspMainMailAddress");
-    $entries = search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+    $entries = search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
     // lokalen Adress-Translation Eintrag loeschen, wenn die Hauptadresse dem zu
     // loeschenden Konto entspricht....
     // Das kann nur eintreten, wenn zuvor alle anderen Konten geloescht wurden.
@@ -42,7 +42,7 @@ if ($bind) {
 	// Am LDAP per SimpleBind anmelden
 	$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 	$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-	$entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+	$entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 	// fetchmailrc erzeugen.
 	bfmrc($entries,$corusername);
 	// fetchcopy ausfuehren

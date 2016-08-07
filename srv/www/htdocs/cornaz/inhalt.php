@@ -9,7 +9,7 @@ site_info($margin, $info);
 if ($bind) {
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
     $justthese = array("fspMainMailAddress");
-    $entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+    $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 
     $mainsendaddress = $entries[0]["fspmainmailaddress"][0];
     $margin = "Status";
@@ -41,7 +41,7 @@ if ($bind) {
     site_info($margin, $info);
     $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
     $justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-    $entries=search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+    $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 
     // Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
     array_shift($entries);

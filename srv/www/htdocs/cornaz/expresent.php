@@ -8,7 +8,7 @@ if ($status == "Anwesend") {
 	if ($bind) {
 		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
-		$sr=ldap_search($ditcon, $COR_LDAP_SUFFIX, $filter, $justthese);
+		$sr=ldap_search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
 	} else {
 		echo "Verbindung zum LDAP Server nicht möglich!";

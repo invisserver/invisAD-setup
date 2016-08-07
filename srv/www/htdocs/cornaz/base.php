@@ -49,7 +49,7 @@ if(isset($corpassword)) {
 	$aduserdn = "CN=$adusercn,$BASE_DN_USER";
 
 	// CorNAz Benutzerdn
-	$coruserdn = "cn=$corusername,$COR_LDAP_SUFFIX";
+	$coruserdn = "cn=$corusername,$LDAP_SUFFIX_AUI";
 
 	// Status ermitteln
 	$status = getstate($corusername);
