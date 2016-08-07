@@ -271,7 +271,7 @@ function userCreate($uid) {
         // dem Attribut "otherMailbox".
         // Wird keine Adresse angegeben wird das Attribut "mail" wie bisher mit der internen
         // Adresse gefuellt.
-        if (empty($cookie_data['email'])) {
+        if (empty($cookie_data['email']) || $cookie_data['email'] == "-") {
             $emailaddress = $cookie_data['uid']."@".$DOMAIN;
             $othermailbox = "";
         } else {
