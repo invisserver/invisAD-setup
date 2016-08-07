@@ -206,6 +206,7 @@ class adLDAPGroups {
     */
     public function create($attributes)
     {
+	global $GROUPWARE;
         if (!is_array($attributes)){ return "Attributes must be an array"; }
         if (!array_key_exists("group_name", $attributes)){ return "Missing compulsory field [group_name]"; }
         if (!array_key_exists("container", $attributes)){ return "Missing compulsory field [container]"; }
@@ -229,11 +230,9 @@ class adLDAPGroups {
         $add["msSFU30NisDomain"] = $attributes["mssfu30nisdomain"];
         $add["msSFU30Name"] = $attributes["mssfu30name"];
 
-        //$add["member"] = $member_array; UNTESTED
-
-	// Groupware Objektklasse - UNTESTED
-        if (array_key_exists("zarafaaccount",$attributes)) {
-	    $add["objectclass"][1] = "zarafaGroup";
+	// Groupware Objektklasse
+	if ( $GROUPWARE == "zarafa" ) {
+	    $add["objectClass"][1] = "zarafaGroup";
 	}
 
         //$container = "OU=" . implode(",OU=", $attributes["container"]);

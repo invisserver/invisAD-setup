@@ -109,12 +109,7 @@ class adLDAPUsers {
         $add["objectclass"][2] = "organizationalPerson";
         $add["objectclass"][3] = "user"; //person?
 
-        // POSIX Attribute
-        //$add["msSFU30NisDomain"] = $attributes["mssfu30nisdomain"];
-        //$add["msSFU30Name"] = $attributes["mssfu30name"];
-
 	// Groupware Objektklasse
-        //if (array_key_exists("zarafaaccount",$attributes)) {
 	if ( $GROUPWARE == "zarafa" ) {
 	    $add["objectclass"][4] = "zarafaUser";
 	}
