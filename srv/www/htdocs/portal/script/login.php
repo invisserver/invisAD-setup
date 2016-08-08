@@ -12,7 +12,7 @@
 // include important ldap and stuff
 require_once('../inc/ldap.inc.php');
 require_once('../inc/adLDAP.php');
-require_once('../inc/functions.inc.php');
+require_once('../inc/adfunctions.inc.php');
 require_once('../config.php');
 
 // Array mit Globalvariablen bilden
@@ -54,7 +54,9 @@ if (!isset($_COOKIE['invis-login'])) {
 	$pwdrlz = intval(($pwdexpiry['expiryts'] - time()) / ( 60 * 60 * 24 ));
 	
 	// check if request comes from internal address
-	$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
+	//$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
+	// quick and dirty check if client ip address is inside th local net. We need a better solution!
+	$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strlen($DHCP_IP_BASE)) != $DHCP_IP_BASE);
 	$USER_IS_ALLOWED = true;
 	// Ermitteln, ob der User Mitglied der Gruppe mobiluser ist und sich somit auch von extern anmelden darf.
 	if ($EXTERNAL_ACCESS == true) {
