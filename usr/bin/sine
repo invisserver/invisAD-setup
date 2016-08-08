@@ -829,7 +829,7 @@ sysprep() {
 
     # Internes Interface auch offline hochfahren erzwingen
     grep LINK_REQUIRED /etc/sysconfig/network/ifcfg-intern 2>&1| tee -a $setupdir/sine.log | pgbox
-    if [[ "$PIPESTATUS[0]" -ne "0" ]]; then
+    if [[ "${PIPESTATUS[0]}" -ne "0" ]]; then
         echo "LINK_REQUIRED='no'" >> /etc/sysconfig/network/ifcfg-intern
         echo "LINK_REQUIRED der Netzwerkkonfiguration hinzugefügt!" 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
@@ -2156,7 +2156,7 @@ postgresqlserver() {
     clear
     windowtitle="PostgreSQL Server"
     #Frage nach Version von PostgreSQL
-    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/postgresql.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle" --yesno "Soll eine aktuelle Version von PostgreSQL installiert werden?" 0 0
+    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/postgresql.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle" --yesno "Soll die openSUSE-Version von PostgreSQL installiert werden?" 0 0
     cont=${?}
 
     # Weitermachen?

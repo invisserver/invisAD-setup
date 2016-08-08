@@ -1,6 +1,8 @@
-PostgreSQL kann als Datenbank-Backend einerseits exclusive für Kivitendo oder 1C:Enterprise benutzt werden,
-andererseits als Alternative zu MySQL/MariaDB für SOGo, Zabbix oder ownClowd dienen.   
+PostgreSQL wird als Datenbank-Backend für Kivitendo oder 1C:Enterprise verwendet.
+Die kommerzielle Software 1C:Enterprise benötigt eine angepasste Version von
+PostgrSQL. Diese kann alternativ zur openSUSE-Version installiert werden.
+
+Vorgabe ist die Installation der unveränderten openSUSE Version. "Ja" in der nachfolgenden
+Auswahl installiert die openSUSE-Version, "Nein" die an 1C angepasste Version.
 
 Nach der Installation wird PostgreSQL erst dann aktiviert, wenn das Datenbank-System zum Einsatz kommt.
-
-Normalerweise wird eine aktuelle Version aus dem openSUSE-Repository installiert. 
