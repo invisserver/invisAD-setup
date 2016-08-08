@@ -1,6 +1,6 @@
 #!/bin/bash
 # Kleines Script welches potentielle Probleme nach einem Update behebt.
-# (C) 2009,2011,2012,2014 Stefan Schaefer -- invis-server.org
+# (C) 2009,2011,2012,2014,2016 Stefan Schaefer -- invis-server.org
 # Questions: stefan@invis-server.org
 # V 1.2
 
@@ -125,8 +125,9 @@ chmod 0600 $privatekeydir/ldap-key.pem
 systemctl restart named.service
 
 # Wenn vorhanden Rechte auf nagios check_icmp bereinigen
-if [[ -f /usr/lib/nagios/plugins/check-icmp ]]; then
-    chmod u+s /usr/lib/nagios/plugins/check-icmp
+plugindir="/usr/lib/nagios/plugins/"
+if [[ -f $plugindir/check-icmp ]]; then
+    chmod u+s $plugindir/check-icmp
 fi
 
 # Den Benutzer "wwwrun" in die Gruppe "pkeys" aufnehmen, wenn noch nicht geschehen.
