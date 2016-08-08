@@ -1944,16 +1944,16 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     
 	# IP Bereiche an 16 Bit Netzwerkmaske anpassen
 	# Server
-	strings="11, 19%0.1 0.254"
+	strings="11, 19%0.1, 0.254"
 	changevalues $path $file "$strings"
 	# Drucker
-	strings="20, 50%1.1 1.254"
+	strings="20, 50%1.1, 1.254"
 	changevalues $path $file "$strings"
 	# IP-Geraete 
-	strings="60, 90%2.1 3.254"
+	strings="60, 90%2.1, 3.254"
 	changevalues $path $file "$strings"
 	# Client Computer
-	strings="120, 199%4.1 4.254"
+	strings="120, 199%4.1, 4.254"
 	changevalues $path $file "$strings"
     fi
     # Netzwerkmaske in Portalkonfigurationen eintragen. 
