@@ -41,8 +41,7 @@ catch (adLDAPException $e) {
 }
 
 // check if request comes from internal address
-$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
-//$EXTERNAL_ACCESS = false;
+$EXTERNAL_ACCESS = !(ipinnet(ip2bin($_SERVER['REMOTE_ADDR']),ip2bin($IP_NETBASE_ADDRESS), $DHCP_IP_MASK));
 
 // load configuration xml-file
 $CONF = new InvisConfig();

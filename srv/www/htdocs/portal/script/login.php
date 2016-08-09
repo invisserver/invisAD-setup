@@ -12,7 +12,7 @@
 // include important ldap and stuff
 require_once('../inc/ldap.inc.php');
 require_once('../inc/adLDAP.php');
-require_once('../inc/adfunctions.inc.php');
+require_once('../inc/functions.inc.php');
 require_once('../config.php');
 
 // Array mit Globalvariablen bilden
@@ -54,13 +54,10 @@ if (!isset($_COOKIE['invis-login'])) {
 	$pwdrlz = intval(($pwdexpiry['expiryts'] - time()) / ( 60 * 60 * 24 ));
 	
 	// check if request comes from internal address
-	//$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
-	// quick and dirty check if client ip address is inside th local net. We need a better solution!
-	$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strlen($DHCP_IP_BASE)) != $DHCP_IP_BASE);
+	$INTERNAL_ACCESS = ipinnet(ip2bin($_SERVER['REMOTE_ADDR']),ip2bin($IP_NETBASE_ADDRESS), $DHCP_IP_MASK);
 	$USER_IS_ALLOWED = true;
 	// Ermitteln, ob der User Mitglied der Gruppe mobiluser ist und sich somit auch von extern anmelden darf.
-	if ($EXTERNAL_ACCESS == true) {
-	    //$USER_IS_ALLOWED = array_search($data['uid'], mobilUsers($conn)); //Anpassen auf adLDAP
+	if ($INTERNAL_ACCESS == false) {
 	    $USER_IS_ALLOWED = $adldap->user()->inGroup($data['uid'],"mobilusers");
 
 	    if ($USER_IS_ALLOWED === false){

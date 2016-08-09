@@ -3,14 +3,18 @@
 /* script/status.php v1.0
  * AJAX script, displaying several server status messages/numbers
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010,2015 Stefan Schäfer, invis-server.org
+ * (C) 2010,2015,2016 Stefan Schäfer, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
-	require_once('../config.php');
+
+require_once('../inc/functions.inc.php');
+require_once('../config.php');
 
 // check if request comes from internal address
-$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
+//$EXTERNAL_ACCESS = (substr($_SERVER['REMOTE_ADDR'], 0, strripos($_SERVER['REMOTE_ADDR'], '.')) != $DHCP_IP_BASE);
+$EXTERNAL_ACCESS = !(ipinnet(ip2bin($_SERVER['REMOTE_ADDR']),ip2bin($IP_NETBASE_ADDRESS), $DHCP_IP_MASK));
+
 
 // Script not allowed from external without login!
 if ($EXTERNAL_ACCESS && !isset($_COOKIE['invis'])) die();

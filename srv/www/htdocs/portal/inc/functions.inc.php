@@ -49,6 +49,49 @@ function ridfromsid($sid) {
     return $rid;
 }
 
+//----------------------
+// other stuff
+//----------------------
+
+// IP Adresse in Binaerformat umwandeln
+function ip2bin($ip) {
+    
+    $binip = decbin(ip2long($ip));
+    return $binip;
+}
+
+// pruefen, ob eine IP-Adresse in einem gegebenen Netz ist. IP-Adressen muessen in Dualschreibweise vorliegen
+function ipinnet($binip, $binipnet, $shortmask) {
+    return ( substr($binip, 0 ,$shortnetmask) ==  substr($binipnet, 0 ,$shortnetmask) );
+}
+
+// Netzwerkmaske umwandeln cidr -> dottet
+function cidr2netmask($cidr) {
+        for( $i = 1; $i <= 32; $i++ )
+        $bin .= $cidr >= $i ? '1' : '0';
+
+        $netmask = long2ip(bindec($bin));
+
+        if ( $netmask == "0.0.0.0")
+        return false;
+
+    return $netmask;
+}
+
+// pruefen, ob eine IP-Adresse in einem gegebenen Netz ist.
+function isIPIn($ip, $net, $mask) {
+    //doesn't check for the return value of ip2long
+    $ip = ip2long($_POST['ip']);
+    $rede = ip2long($_POST['net']);
+    $mask = ip2long($_POST['mask']);
+   
+    //AND
+    $res = $ip & $mask;
+   
+    return ($res == $rede);
+}
+
+
 //-----------------------
 // fetchmailrc FUNCTIONS
 //-----------------------
