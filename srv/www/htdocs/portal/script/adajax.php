@@ -401,10 +401,10 @@ function userCreate($uid) {
 	    // reiner Windows User
 
 	    // Standard-Attribute - erweitern
-		$attributes[] = array("home_drive"=>'u:');
-		$attributes[] = array("home_directory"=>$smbhomepath);
-		$attributes[] = array("profile_path"=>$profilepath);
-		$attributes[] = array("script_path"=>"user.cmd");
+		$attributes += ["home_drive"=>'u:'];
+		$attributes += ["home_directory"=>"$smbhomepath"];
+		$attributes += ["profile_path"=>"$profilepath"];
+		$attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -419,10 +419,10 @@ function userCreate($uid) {
 	    // Windows und UNIX Benutzer
 	    // Attribute anpassen
 	    // Standard-Attribute - erweitern
-		$attributes[] = array("home_drive"=>'u:');
-		$attributes[] = array("home_directory"=>$smbhomepath);
-		$attributes[] = array("profile_path"=>$profilepath);
-		$attributes[] = array("script_path"=>"user.cmd");
+		$attributes += ["home_drive"=>'u:'];
+		$attributes += ["home_directory"=>"$smbhomepath"];
+		$attributes += ["profile_path"=>"$profilepath"];
+		$attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -466,10 +466,10 @@ function userCreate($uid) {
 	    // Windows und UNIX Benutzer mit Groupware-Nutzung
 	    // Attribute anpassen
 	    // Standard-Attribute - erweitern
-		$attributes[] = array("home_drive"=>'u:');
-		$attributes[] = array("home_directory"=>$smbhomepath);
-		$attributes[] = array("profile_path"=>$profilepath);
-		$attributes[] = array("script_path"=>"user.cmd");
+		$attributes += ["home_drive"=>'u:'];
+		$attributes += ["home_directory"=>"$smbhomepath"];
+		$attributes += ["profile_path"=>"$profilepath"];
+		$attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -512,10 +512,10 @@ function userCreate($uid) {
 	case 5:
 	    // Windows Admin ohne Zusatz-Attribute
 	    // Standard-Attribute - erweitern
-		$attributes[] = array("home_drive"=>'u:');
-		$attributes[] = array("home_directory"=>$smbhomepath);
-		$attributes[] = array("profile_path"=>$profilepath);
-		$attributes[] = array("script_path"=>"admin.cmd");
+		$attributes += ["home_drive"=>'u:'];
+		$attributes += ["home_directory"=>"$smbhomepath"];
+		$attributes += ["profile_path"=>"$profilepath"];
+		$attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -550,10 +550,10 @@ function userCreate($uid) {
 	    // Windows-Admin mit UNIX-Attributen
 	    // keine UNIX Admin-Befugnisse
 	    // Standard-Attribute - erweitern
-		$attributes[] = array("home_drive"=>'u:');
-		$attributes[] = array("home_directory"=>$smbhomepath);
-		$attributes[] = array("profile_path"=>$profilepath);
-		$attributes[] = array("script_path"=>"admin.cmd");
+		$attributes += ["home_drive"=>'u:'];
+		$attributes += ["home_directory"=>"$smbhomepath"];
+		$attributes += ["profile_path"=>"$profilepath"];
+		$attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -608,12 +608,12 @@ function userCreate($uid) {
 	case 7:
 	    // Windows-Admin mit UNIX-Attributen und Groupware-Admin-Rechten
 	    // Standard-Attribute - erweitern
-		$attributes[] = array("home_drive"=>'u:');
-		$attributes[] = array("home_directory"=>$smbhomepath);
-		$attributes[] = array("profile_path"=>$profilepath);
-		$attributes[] = array("script_path"=>"admin.cmd");
-		$attributes[] = array("zarafaaccount" => true);
-		$attributes[] = array("zarafaadmin" => true);
+		$attributes += ["home_drive"=>'u:'];
+		$attributes += ["home_directory"=>"$smbhomepath"];
+		$attributes += ["profile_path"=>"$profilepath"];
+		$attributes += ["script_path"=>"user.cmd"];
+		$attributes += ["zarafaaccount" => true];
+		$attributes += ["zarafaadmin" => true];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);

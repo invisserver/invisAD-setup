@@ -829,7 +829,7 @@ class adLDAP {
         if ($attributes["manager"]){ $mod["manager"][0]=$attributes["manager"]; }  //UNTESTED ***Use DistinguishedName***
         if ($attributes["office"]){ $mod["physicalDeliveryOfficeName"][0]=$attributes["office"]; }
         if ($attributes["password"]){ $mod["unicodePwd"][0]=$this->user()->encodePassword($attributes["password"]); }
-        if ($attributes["profile_path"]){ $mod["profilepath"][0]=$attributes["profile_path"]; }
+        if ($attributes["profile_path"]){ $mod["profilePath"][0]=$attributes["profile_path"]; }
         if ($attributes["script_path"]){ $mod["scriptPath"][0]=$attributes["script_path"]; }
         if ($attributes["surname"]){ $mod["sn"][0]=$attributes["surname"]; }
         if ($attributes["title"]){ $mod["title"][0]=$attributes["title"]; }
@@ -840,7 +840,7 @@ class adLDAP {
         if ($attributes["web_page"]){ $mod["wWWHomePage"][0]=$attributes["web_page"]; }
         if ($attributes["fax"]){ $mod["facsimileTelephoneNumber"][0]=$attributes["fax"]; }
         if ($attributes["enabled"]){ $mod["userAccountControl"][0]=$attributes["enabled"]; }
-        if ($attributes["homephone"]){ $mod["homephone"][0]=$attributes["homephone"]; }
+        if ($attributes["homephone"]){ $mod["homePhone"][0]=$attributes["homephone"]; }
         
         // Distribution List specific schema
         if ($attributes["group_sendpermission"]){ $mod["dlMemSubmitPerms"][0]=$attributes["group_sendpermission"]; }
