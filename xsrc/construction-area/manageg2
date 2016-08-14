@@ -1,0 +1,36 @@
+#!/bin/bash
+# Grub 2 Management fuer invis-Server
+# Sorry openSUSE, but your way didn't work for us.
+
+
+# Pfad zu grub2_installdevice
+g2id="/etc/default/grub_installdevice"
+
+# Device des /boot-Verzeichnisses ermitteln
+bootvol=`cat /etc/fstab |tr "\t" " "| tr -s " "| grep "/boot " |cut -d " " -f1`
+
+if [[ `echo $bootvol |grep "/dev/md"` ]]; then
+    # YaST generiert Datei grub2_installdevice umbenennen 
+    if [[ ! -f $g2id.ori ]]; then
+	mv $g2id $g2id.ori
+    fi
+    rm -f $g2id
+    # Beteiligte Festplatten ermitteln
+    harddisks=(`mdadm -D $bootvol |grep "/dev" | grep -v "/dev/m" |tr -s " " | cut -d " " -f 8 | tr -d [:digit:]`)
+    for disk in ${harddisks[*]}; do
+	echo $disk >> $g2id
+    done
+    echo -e "activate\ngeneric_mbr" >> $g2id
+    
+    # Grub2 Konfiguration erstellen
+    grub2-mkconfig -o /boot/grub2/grub.cfg
+    
+    # Grub in die MBRs schreiben
+    for disk in ${harddisks[*]}; do
+        grub2-install $disk
+    done
+else
+    # Grub2 Konfiguration erstellen
+    grub2-mkconfig -o /boot/grub2/grub.cfg
+    echo "Nothing to do."
+fi
