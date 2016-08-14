@@ -9,7 +9,7 @@ GRUB_DEFAULT=saved
 GRUB_HIDDEN_TIMEOUT=0
 GRUB_HIDDEN_TIMEOUT_QUIET=true
 GRUB_TIMEOUT=8
-GRUB_CMDLINE_LINUX_DEFAULT=" noresume splash=silent quiet showopts"
+GRUB_CMDLINE_LINUX_DEFAULT="noresume splash=silent quiet showopts"
 # kernel command line options for failsafe mode
 GRUB_CMDLINE_LINUX_RECOVERY="showopts apm=off noresume edd=off powersaved=off nohz=off highres=off processor.max_cstate=1 nomodeset x11failsafe"
 GRUB_CMDLINE_LINUX=""
@@ -24,7 +24,7 @@ GRUB_TERMINAL=gfxterm
 # you can see them in real GRUB with the command `vbeinfo'
 GRUB_GFXMODE=auto
 # Uncomment if you don't want GRUB to pass "root=UUID=xxx" parameter to Linux
-#GRUB_DISABLE_LINUX_UUID=true
+GRUB_DISABLE_LINUX_UUID=true
 # Uncomment to disable generation of recovery mode menu entries
 #GRUB_DISABLE_LINUX_RECOVERY=true
 # Uncomment to get a beep at grub start
