@@ -2346,12 +2346,15 @@ case "$whichgroupware" in
 	    tinedbpw=`mkdbsilent tine20 tine20 a`
 	    
 	    # Mini-Konfiguration erstellen und anpassen
-	    path="/usr/share/tine20"
+	    path="/var/lib/tine20/webroot"
 	    cp $cfilesdir/tine20/config.inc.php $path
-	    file="config.ing.php"
+	    file="config.inc.php"
 	    strings="tinedbpw%$tinedbpw"
 	    changevalues $confdir $file "$strings"
 
+	    # Zugriffsrechte auf Config-Datei so aendern, dass Apache sie schreiben darf
+	    chown wwwrun $path/$file
+	    
 	    # Tine 2.0 im Portal aktivieren
 	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	    a2enflag TINE20
