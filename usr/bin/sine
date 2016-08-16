@@ -517,8 +517,8 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
 	zarafa "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
 	roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
-	tine20 "tine2.0 in Kombination mit Dovecot IMAP (comming soon)" off\
-	sogo "SOGo in Kombination mit Dovecot (not yet with AD)" off\
+	tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
+	sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
 	2>$setupdir/sine_temp
 	whichgroupware=`cat $setupdir/sine_temp`
 
