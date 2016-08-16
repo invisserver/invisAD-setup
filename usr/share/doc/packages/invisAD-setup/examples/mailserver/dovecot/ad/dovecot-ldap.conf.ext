@@ -43,9 +43,9 @@ dnpass = admin-secret
 #sasl_authz_id =
 
 # Use TLS to connect to the LDAP server.
-#tls = no
+tls = yes
 # TLS options, currently supported only with OpenLDAP:
-#tls_ca_cert_file =
+tls_ca_cert_file = /etc/invis/certs/ca.crt
 #tls_ca_cert_dir =
 #tls_cipher_suite =
 # TLS cert/key is used only if LDAP server requires a client certificate.
