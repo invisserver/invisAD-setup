@@ -13,11 +13,11 @@ return array (
   'setupuser' =>
   array (
     'username' => 'tine20setup',
-    'password' => 'setup',
+    'password' => 't20setuppw',
   ),
   'logger' =>
   array (
-    'active' => false,
+    'active' => true,
     'filename' => '/var/log/apache2/tine20.log',
     'priority' => 6,
   ),
