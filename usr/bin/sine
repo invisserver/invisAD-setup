@@ -1589,6 +1589,10 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    strings="admin-secret%$ldapadminpw"
 	    changevalues $path $file "$strings"
 
+	    ldaphost=`hostname -f`
+	    strings="ldaphostname%$ldaphost"
+	    changevalues $path $file "$strings"
+
 	    # Benutzerkonto fuer das Mailhandling anlegen
 	    groupadd -r -g 399 vmail| tee -a $setupdir/sine.log
 	    useradd -r -u 399 -d /var/spool/mail -c "Benutzerkonto fuer Dovecot Mailhandling" -s /bin/false -g vmail vmail| tee -a $setupdir/sine.log
@@ -2366,7 +2370,10 @@ case "$whichgroupware" in
 	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	    a2enflag TINE20
 	    chkservice "apache2"
-	
+
+	    # Gruppe fuer Tine 2.0 anlegen
+	    samba-tool group add --description="Gruppe zur Beschränkung der Tine 2.0 Nutzer" tine20 2>&1| tee -a $setupdir/sine.log | pgbox
+
 	    writeprepstat "erp"
 	    waitbox "groupware" "erp"
 	else
@@ -2976,9 +2983,9 @@ dokuwiki() {
     changevalues $path $file "$strings"
     
     # Gruppen fuer Dokuwiki anlegen
-    samba-tool group add --description="Mitlieder dürfen im Wiki lesen" wiki-nutzer 2>&1 |pgbox
-    samba-tool group add --description="Mitglieder dürfen im Wiki schreiben" wiki-redakteure 2>&1 |pgbox
-    samba-tool group add --description="Mitglieder dürfen im Wiki löschen" wiki-chefredakteure 2>&1 |pgbox
+    samba-tool group add --description="Mitlieder dürfen im Wiki lesen" wiki-nutzer 2>&1| tee -a $setupdir/sine.log  |pgbox
+    samba-tool group add --description="Mitglieder dürfen im Wiki schreiben" wiki-redakteure 2>&1| tee -a $setupdir/sine.log  |pgbox
+    samba-tool group add --description="Mitglieder dürfen im Wiki löschen" wiki-chefredakteure 2>&1| tee -a $setupdir/sine.log  |pgbox
     
     # ACL-Datei kopieren
     cp $cfilesdir/dokuwiki/acl.auth.php /srv/www/htdocs/dokuwiki/conf/
