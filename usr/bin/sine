@@ -1166,6 +1166,9 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     systemctl disable apparmor.service
     systemctl stop apparmor.service
     
+    # Workaround, da apparmor scheinbar nichts von Systemd haelt
+    chkconfig -d boot.apparmor
+    
     writeprepstat "samba_ad"
     waitbox "sysprep" "samba_ad"
 }
@@ -1962,6 +1965,11 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     fi
     # Netzwerkmaske in Portalkonfigurationen eintragen. 
     strings="ipnetmask%$ipnetmask"
+    changevalues $path $file "$strings"
+
+    ipnetbase=`getconfdata "Networkbase" "2"`
+    # Netzwerkmaske in Portalkonfigurationen eintragen. 
+    strings="ipnetbase%$ipnetbase"
     changevalues $path $file "$strings"
 
     # Verwendete Groupware in Portal-Konfiguration eintragen
