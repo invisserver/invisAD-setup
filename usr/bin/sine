@@ -3264,6 +3264,8 @@ else
     done
 fi
 
+# Zertifikate fuers Portal pruefen
+getcertinfo
 # Und Tschuess
 textbox "$setupdir/infofiles/aftersetup.txt" "Installation abgeschlossen" "Beenden"
 
