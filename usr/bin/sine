@@ -2516,9 +2516,11 @@ case "$whichgroupware" in
 
 	path="/etc/zarafa/webapp"
 	file="config.php"
+
+	strings="/var/run/zarafa%/var/run/zarafad/server.sock"
+	changevalues $path $file "$strings"
     
 	strings="London%Berlin"
-	changevalues $path $file "$strings"
 
 	strings="en_GB%de_DE.UTF-8"
 	changevalues $path $file "$strings"
