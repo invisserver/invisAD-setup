@@ -51,6 +51,10 @@ Legen Sie hier Ihre Einstellungen fest.
 	"PW Komplexität (on/off):" 4 1 "${pw[1]}" 4 28 30 0\
 	"PW Länge (min = 4):" 6 1 "${pw[2]}" 6 28 30 0\
 	2>/tmp/sine_temp
+	if [[ "$?" -ne "0" ]]; then
+	    echo "Eingabe wurde abgebrochen. Passworteinstellungen wurden nicht verändert."
+	    exit
+	fi
 	pw=(`cat /tmp/sine_temp`)
 
 	# Werte pruefen
