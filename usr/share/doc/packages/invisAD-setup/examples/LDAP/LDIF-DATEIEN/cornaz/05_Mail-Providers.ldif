@@ -13,10 +13,10 @@ objectClass: top
 objectClass: fspMailProvider
 cn: fsp
 fspMailProviderVendor: FSP Computer und Netzwerke
-fspMailProviderPOP: mail2.fspisp.de
-fspMailProviderSMTP: mail2.fspisp.de
+fspMailProviderPOP: mail1.fspisp.de
+fspMailProviderSMTP: mail1.fspisp.de
 fspMailProviderPOPSSL: TRUE
-fspMailProviderSMTPPort: 25
+fspMailProviderSMTPPort: 587
 fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: Email-Adresse
 fspMailProviderDescription: SMTP-Auth, Versand und Empfang nur verschlüsselt
