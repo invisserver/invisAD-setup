@@ -76,4 +76,5 @@ Legen Sie hier Ihre Einstellungen fest.
 
 # Passwort-Einstellungen uebernehmen
 echo "Passworteinstellungen werden gesetzt."
+sed -i "s/^\$USER_PW_MIN_LENGTH.*/\$USER_PW_MIN_LENGTH = \'${pw[2]}\';/g" /etc/invis/portal/config.php
 samba-tool domain passwordsettings set --max-pwd-age=${pw[0]} --complexity=${pw[1]} --min-pwd-length=${pw[2]}
