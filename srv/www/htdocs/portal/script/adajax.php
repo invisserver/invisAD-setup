@@ -1215,12 +1215,11 @@ function hostCreate($conn, $cn) {
 function hostModify($conn, $cn) {
 	global $BASE_DN_DHCP, $cookie_data, $DOMAIN, $DHCP_IP_BASE;
 	$attributes = $cookie_data;
-	
+
 	// if cn has changed, rename DHCP&DNS-forward, change DNS-reverse
 	if (isset($attributes['cn'])) {
 		$newcn = $attributes['cn'];
 		unset($attributes['cn']);
-		echo $attributes['location'];
 
 		// DNS-Eintraege aendern
 		$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
@@ -1242,11 +1241,16 @@ function hostModify($conn, $cn) {
 		// rename DHCP
 		rename_ldap($conn, "cn=$cn,$BASE_DN_DHCP", "cn=$newcn");
 	}
+
 	// modify DHCP Location
-	if (isset($newcn)) {
-	    $ok1 = modify($conn, "cn=$newcn,$BASE_DN_DHCP", $attributes);
+	if (empty($attributes)) {
+	    $ok1 = 1;
 	} else {
-	    $ok1 = modify($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
+	    if (isset($newcn)) {
+		$ok1 = modify($conn, "cn=$newcn,$BASE_DN_DHCP", $attributes);
+	    } else {
+		$ok1 = modify($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
+	    }
 	}
 	return ($ok1)?0:array(ldap_errno($conn) => ldap_error($conn));
 }
