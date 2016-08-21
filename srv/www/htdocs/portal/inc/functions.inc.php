@@ -62,7 +62,7 @@ function ip2bin($ip) {
 
 // pruefen, ob eine IP-Adresse in einem gegebenen Netz ist. IP-Adressen muessen in Dualschreibweise vorliegen
 function ipinnet($binip, $binipnet, $shortmask) {
-    return ( substr($binip, 0 ,$shortnetmask) ==  substr($binipnet, 0 ,$shortnetmask) );
+    return ( substr($binip, 0 ,$shortmask) ==  substr($binipnet, 0 ,$shortmask) );
 }
 
 // Netzwerkmaske umwandeln cidr -> dottet
