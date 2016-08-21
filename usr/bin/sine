@@ -3085,7 +3085,7 @@ owncloud() {
 	changevalues $path $file "$strings"
 
 	# Original owncloud-Konfig ueberschreiben
-	echo "# invis-Server Dummy File -> to prevent updates" > "/etc/apache2/conf.d/onwncloud.conf"
+	echo "# invis-Server Dummy File -> to prevent updates" > "/etc/apache2/conf.d/owncloud.conf"
 
 	msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
 	chkservice apache2 r
