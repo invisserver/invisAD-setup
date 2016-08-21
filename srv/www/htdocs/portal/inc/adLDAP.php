@@ -890,6 +890,8 @@ class adLDAP {
 
         // invis-server.org - Zusaetzliche Mail-Adresse
         if ($attributes["othermailbox"]){ $mod["otherMailbox"][0]=$attributes["othermailbox"]; }
+        // invis-server.org - Benannte Links
+	if ($attributes["labeleduri"]){ $mod["labeleduri"][0]=$attributes["labeledUri"]; }
 
         //echo ("<pre>"); print_r($mod);
         /*
