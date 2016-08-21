@@ -206,21 +206,20 @@ Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzei
     samba-tool user setpassword $1 --newpassword="$newpw"
 }
 
-revzone() {
-	localip=$(hostname -i)
-	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
-	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
-	for wert in ${netbase[*]}; do
-	    #echo "$wert -"
-	    if [[ $wert == 0 ]]; then
-		revzone=$revzone
-	    else
-		revzone=$wert.$revzone
-	    fi
-	done
-	echo "$revzone""in-addr.arpa"
-}
-
+#revzone() {
+#	localip=$(hostname -i)
+#	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+#	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+#	for wert in ${netbase[*]}; do
+#	    #echo "$wert -"
+#	    if [[ $wert == 0 ]]; then
+#		revzone=$revzone
+#	    else
+#		revzone=$wert.$revzone
+#	    fi
+#	done
+#	echo "$revzone""in-addr.arpa"
+#}
 
 # Installationsvoraussetzungen prüfen
 check() {
@@ -1461,11 +1460,12 @@ dns() {
     chkservice "named"
     
     # Reverse-Zone anlegen
-    zone=$(revzone)
+    #zone=$(revzone)
     samba-tool dns zonecreate 127.0.0.1 $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
 
     ## DNS PTR Eintrag fuer den Server selbst anlegen
-    samba-tool dns add 127.0.0.1 $zone $hostaddr PTR "$fqdn." -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
+    moddnsrecord a PTR $ipaddr $fqdn
+    #samba-tool dns add 127.0.0.1 $zone $hostaddr PTR "$fqdn." -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
     
     ## DNS Eintraege fuer Mailserver in Zone eintragen
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
