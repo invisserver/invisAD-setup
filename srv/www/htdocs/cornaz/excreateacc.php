@@ -67,12 +67,12 @@ if ($bind) {
     $mail = $entries[0]['mail'][0];
     // nur, wenn das Attribut bisher die interne Adresse enthaelt
     // oder leer ist.
-    if ( "$mail" == "$luser" || empty("$mail") ) {
+    if ( "$mail" == "$luser" || empty("$mail") || "$mail" == "-" ) {
 	$mailattr = array( 'mail' => "$extaddress" );
 	$r = modify($ditcon, $aduserdn, $mailattr);
 	$othermb = array('othermailbox' => "$luser");
 	$r = ldap_mod_add($ditcon, $aduserdn, $othermb);
-    } else {
+    } elseif ( "$mail" != "$extaddress" ) {
 	$othermb = array('othermailbox' => "$extaddress");
 	$r = ldap_mod_add($ditcon, $aduserdn, $othermb);
     }
