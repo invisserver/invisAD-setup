@@ -1972,7 +1972,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     
 	# IP Bereiche an 16 Bit Netzwerkmaske anpassen
 	# Server
-	strings="11, 19%0.1, 0.254"
+	strings="11, 19%0.11, 0.253"
 	changevalues $path $file "$strings"
 	# Drucker
 	strings="20, 50%1.1, 1.254"
