@@ -2400,11 +2400,15 @@ case "$whichgroupware" in
 	    # Tine 2.0 im Portal aktivieren
 	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	    a2enflag TINE20
+
+	    # Original Tine20 Apache Konfiguration mit Dummy-Text ueberschreiben
+	    echo "invis-server.org: Tine20 Dummy Datei. Diese Datei verhindert Update-Probleme." > /etc/apache2/conf.d/tine20.conf
+	    # Apache neu starten
 	    chkservice "apache2"
 
 	    # Gruppe fuer Tine 2.0 anlegen
 	    samba-tool group add --description="Gruppe zur Beschränkung der Tine 2.0 Nutzer" tine20 2>&1| tee -a $setupdir/sine.log | pgbox
-
+	
 	    writeprepstat "erp"
 	    waitbox "groupware" "erp"
 	else
