@@ -31,7 +31,7 @@
 setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
-invisversion="11.0"
+invisversion="11.1"
 
 # Setup-Dialog Titel
 dialogtitle="invis AD Server $invisversion Setup"
@@ -521,35 +521,39 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 	2>$setupdir/sine_temp
 	whichgroupware=`cat $setupdir/sine_temp`
 
-#---# Samba Pakete - Es muessen zwingend die Sernet-Pakete verwendet werden
+#---# Samba Pakete - Es werden ab 11.1 unsere eigenen Samba-Pakete in V. 4.5 inkl. AD installiert
 #---# Zugangsdaten fuer Sernet-Repo abfragen
-    whichsamba="sernet"
-    ok=0
-    if [[ $whichsamba == "sernet" ]]; then
-	while (( $ok != "2" ));do
-	    dialog --backtitle "$dialogtitle" --title "Enterprise Samba Zugangsdaten" --form "$dialogshorthelp\n\n
-Geben Sie bitte Ihre Zugangsdaten für das Enterprise-Samba Repository ein." 18 74 5 \
-	    "Benutzername:" 2 2 "$esusername" 2 20 45 0\
-	    "Accesskey:" 4 2 "$esaccesskey" 4 20 45 0\
-	    2>$setupdir/sine_temp
-	    exitcode=${?}
-	    enterprisesambavalues=(`cat $setupdir/sine_temp`)
+    whichsamba="invis"
+## Stefan
+# Der nachfolgende Block wurde lediglich auskommentiert, koennte ja moeglich sein,
+# dass wir die Installation kostenpflichtiger Sernet-Pakete ermoeglichen wollen.
 
-	    if [[ -n ${enterprisesambavalues[0]} ]] ;then
-		esusername="${enterprisesambavalues[0]}"
-		(( ok=$ok + 1 ))
-	    else
-		ok=0
-	    fi
-	
-	    if (( ${#enterprisesambavalues[1]} >= 10 ));then
-		esaccesskey=${enterprisesambavalues[1]}
-		(( ok=$ok + 1 ))
-	    else
-		ok=0
-	    fi
-	done
-    fi
+#    ok=0
+#    if [[ $whichsamba == "sernet" ]]; then
+#	while (( $ok != "2" ));do
+#	    dialog --backtitle "$dialogtitle" --title "Enterprise Samba Zugangsdaten" --form "$dialogshorthelp\n\n
+#Geben Sie bitte Ihre Zugangsdaten für das Enterprise-Samba Repository ein." 18 74 5 \
+#	    "Benutzername:" 2 2 "$esusername" 2 20 45 0\
+#	    "Accesskey:" 4 2 "$esaccesskey" 4 20 45 0\
+#	    2>$setupdir/sine_temp
+#	    exitcode=${?}
+#	    enterprisesambavalues=(`cat $setupdir/sine_temp`)
+#
+#	    if [[ -n ${enterprisesambavalues[0]} ]] ;then
+#		esusername="${enterprisesambavalues[0]}"
+#		(( ok=$ok + 1 ))
+#	    else
+#		ok=0
+#	    fi
+#	
+#	    if (( ${#enterprisesambavalues[1]} >= 10 ));then
+#		esaccesskey=${enterprisesambavalues[1]}
+#		(( ok=$ok + 1 ))
+#	    else
+#		ok=0
+#	    fi
+#	done
+#    fi
     
 #---# ERP-Software
     # Es kann zwischen Kivitendo, Wawisoon oder keiner ERP-Software entschieden werden
@@ -870,36 +874,38 @@ sysprep() {
 	zypper -n remove -n `cat $setupdir/zypper-package-lists/smbpacktoremove` 2>&1| tee -a $setupdir/sine.log | pgbox
 
     else
-	zypper -n install -n `cat $setupdir/zypper-package-lists/opensuse_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
+	zypper -n install --force-resolution -n `cat $setupdir/zypper-package-lists/invis_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
 
-    # Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
-    cd $libdir
+    # Nachfolgenden Block erhalten, aber an die sernet-Pakete gekoppelt
+    if [[ $sambapackages == "sernet" ]]; then
+	# Links fuer sssd anlegen, startet ansonsten nicht mit den Sernet-Samba Paketen
+	cd $libdir
+	libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
+	libtevent=`basename $libtevent`
+	ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
-    libtevent=`basename $libtevent`
-    ln -s samba/$libtevent libtevent.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+	libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
+	libndr=`basename $libndr`
+	ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
-    libndr=`basename $libndr`
-    ln -s samba/$libndr libndr.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+	#libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
+	#libndrnbt=`basename $libndrnbt`
+	#ln -s samba/$libndrnbt libndr-nbt.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    #libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
-    #libndrnbt=`basename $libndrnbt`
-    #ln -s samba/$libndrnbt libndr-nbt.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+	libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
+	libtalloc=`basename $libtalloc`
+	ln -s samba/$libtalloc libtalloc.so.2 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
-    libtalloc=`basename $libtalloc`
-    ln -s samba/$libtalloc libtalloc.so.2 2>&1| tee -a $setupdir/sine.log | pgbox
+	libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
+	libldb=`basename $libldb`
+	ln -s samba/$libldb libldb.so.1 2>&1| tee -a $setupdir/sine.log | pgbox
 
-    libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
-    libldb=`basename $libldb`
-    ln -s samba/$libldb libldb.so.1 2>&1| tee -a $setupdir/sine.log | pgbox
-
-    libkrb5pac=`find $libdir/samba/ -type f -name "libndr-krb5pac.so*"`
-    libkrb5pac=`basename $libkrb5pac`
-    ln -s samba/$libkrb5pac libndr-krb5pac.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
-
+	libkrb5pac=`find $libdir/samba/ -type f -name "libndr-krb5pac.so*"`
+	libkrb5pac=`basename $libkrb5pac`
+	ln -s samba/$libkrb5pac libndr-krb5pac.so.0 2>&1| tee -a $setupdir/sine.log | pgbox
+    fi
+    
     # NFS-Server
     pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
     zypper -n install -n `cat $setupdir/zypper-package-lists/fileserver_additional` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
@@ -1212,16 +1218,22 @@ samba_ad() {
     # Neue config kopieren
     cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
 
-    # AD aktivieren
-    path="/etc/default"
-    file="sernet-samba"
-    strings="none%ad"
-    changevalues $path $file "$strings"
-    chkservice "sernet-samba-nmbd" "d"
-    chkservice "sernet-samba-smbd" "d"
-    chkservice "sernet-samba-winbindd" "d"
-    chkservice "sernet-samba-ad"
+    # Verwendete Samba-Pakete ermitteln
+    sambapackages=`getconfdata "SambaPakete" "2"`
 
+    if [[ $sambapackages == "sernet" ]]; then
+	# AD aktivieren
+	path="/etc/default"
+	file="sernet-samba"
+	strings="none%ad"
+	changevalues $path $file "$strings"
+	chkservice "sernet-samba-nmbd" "d"
+	chkservice "sernet-samba-smbd" "d"
+	chkservice "sernet-samba-winbindd" "d"
+	chkservice "sernet-samba-ad"
+    else
+	chkservice "samba"
+    fi
     # Gruppen anlegen
     samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1230,22 +1242,26 @@ samba_ad() {
 
     # User fuer LDAP-Lese-Zugang anlegen
     ldappw=`getconfdata "LDAPAdminPW" "2"`
-    samba-tool user add ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool user create ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $setupdir/sine.log | pgbox
     ## Passwort darf nicht ablaufen
     samba-tool user setexpiry --noexpiry ldap.admin
     samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $setupdir/sine.log | pgbox
 
     # User fuer Junk-Postfach anlegen
     junkpw=`getconfdata "JunkPW" "2"`
-    samba-tool user add junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
+    samba-tool user create junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool user setexpiry --noexpiry junk
     samba-tool group addmembers "maildummies" junk 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $setupdir/sine.log | pgbox
 
     msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
 
-    # Sernet-Samba AD stoppen
-    systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    if [[ $sambapackages == "sernet" ]]; then
+	# Sernet-Samba AD stoppen
+	systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    else
+	systemctl stop samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    fi
 
     # Samba Konfiguration anpassen
     smbworkingfile="$setupdir/smb.conf"
@@ -1375,7 +1391,12 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     chown -R :pkeys /etc/invis/private 2>&1| tee -a $setupdir/sine.log
     chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $setupdir/sine.log
 
-    systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    if [[ $sambapackages == "sernet" ]]; then
+	# Sernet-Samba AD stoppen
+	systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    else
+	systemctl start samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    fi
     
     ## sssd einrichten
     # hostname ermitteln
