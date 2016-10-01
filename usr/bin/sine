@@ -2387,12 +2387,11 @@ case "$whichgroupware" in
 	    strings="tinedbpw%$tinedbpw"
 	    changevalues $confdir $file "$strings"
 
-	    msgbox "Es wurde ein Passwort für den Benutzer tine20setup erstellt.\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
-
-	    # Zufallspasswort fuer Tine20 Setup-Zugang erstellen nd einsetzen
+	    # Zufallspasswort fuer Tine20 Setup-Zugang erstellen, einsetzen und anzeigen
 	    t20setuppw=`pwgen -sn 10 1`
 	    strings="t20setuppw%$t20setuppw"
 	    changevalues $confdir $file "$strings"
+	    msgbox "Es wurde ein Passwort für den Benutzer tine20setup erstellt.\nPasswort: $t20setuppw\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
 
 	    # Zugriffsrechte auf Config-Datei so aendern, dass Apache sie schreiben darf
 	    chown wwwrun $path/$file
