@@ -2401,7 +2401,7 @@ case "$whichgroupware" in
 	    a2enflag TINE20
 
 	    # Original Tine20 Apache Konfiguration mit Dummy-Text ueberschreiben
-	    echo "invis-server.org: Tine20 Dummy Datei. Diese Datei verhindert Update-Probleme." > /etc/apache2/conf.d/tine20.conf
+	    echo "# invis-server.org: Tine20 Dummy Datei. Diese Datei verhindert Update-Probleme." > /etc/apache2/conf.d/tine20.conf
 	    # Apache neu starten
 	    chkservice "apache2"
 
