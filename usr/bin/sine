@@ -2385,13 +2385,13 @@ case "$whichgroupware" in
 	    cp $cfilesdir/tine20/config.inc.php $path
 	    file="config.inc.php"
 	    strings="tinedbpw%$tinedbpw"
-	    changevalues $confdir $file "$strings"
+	    changevalues $path $file "$strings"
 
 	    # Zufallspasswort fuer Tine20 Setup-Zugang erstellen, einsetzen und anzeigen
 	    t20setuppw=`pwgen -sn 10 1`
 	    strings="t20setuppw%$t20setuppw"
-	    changevalues $confdir $file "$strings"
-	    msgbox "Es wurde ein Passwort für den Benutzer tine20setup erstellt.\nPasswort: $t20setuppw\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
+	    changevalues $path $file "$strings"
+	    msgbox "Es wurde ein Passwort für den Benutzer \"tine20setup\" erstellt.\nPasswort: $t20setuppw\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
 
 	    # Zugriffsrechte auf Config-Datei so aendern, dass Apache sie schreiben darf
 	    chown wwwrun $path/$file
