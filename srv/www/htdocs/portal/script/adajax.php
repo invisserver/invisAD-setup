@@ -279,16 +279,18 @@ function userCreate($uid) {
             $othermailbox = $cookie_data['uid']."@".$DOMAIN;
         }
 
-	// Ab hier ausmisten, das Array wird zukuenftig hier gebaut.
-	// Es beinhaltet alle gemeinsamen Elemente. In den einzelnen
-	// Faellen wird das Array dann ggf. erweitert. Beispiel:
-	// $attributes[] = array();
+	// Anzeigename generieren, wenn nicht angegeben
+	if (empty($cookie_data['display_name'])) {
+	    $displayname = $cookie_data['firstname'] . " " . $cookie_data['surname'];
+	} else {
+	    $displayname = $cookie_data['display_name'];
+	}
 
 	// Standard-Attribute - unabhaengig vom Kontentyp
 	$attributes=array(
 	    "username"=>$uid,
 	    "logon_name"=>$cookie_data['uid']."@".$DOMAIN,
-	    "display_name"=>$cookie_data['display_name'],
+	    "display_name"=>"$displayname",
 	    "firstname"=>$cookie_data['firstname'],
 	    "surname"=>$cookie_data['surname'],
 	    "description"=>$cookie_data['description'],
@@ -490,6 +492,8 @@ function userCreate($uid) {
 	    }
 	    $userrid = ridfromsid(bin_to_str_sid($collection->objectsid));
 	    // Attribute anpassen
+	    // hier muss das nachfolgende Array in abhaengigkeit der Grouware
+	    // definiert werden.
 	    $attrmod=array(
 		"mssfu30nisdomain" => "$NISDOMAIN",
 		"mssfu30name" => $cookie_data['uid'],

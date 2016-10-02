@@ -1136,7 +1136,7 @@ function userAdd() {
 					'uid': 'Login*',
 //					'rid': 'RID',
 					'email': 'Email extern',
-					'display_name': 'Anzeigename*',
+					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort*',
 					'surname': 'Nachname*',
 					'description': 'Beschreibung',
