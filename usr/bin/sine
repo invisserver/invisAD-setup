@@ -1,6 +1,6 @@
 #!/bin/bash
-# invis AD 11.0 Server Setup Script
-# Version 11.0
+# invis AD 11 Server Setup Script
+# Version 11.1
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2016 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -874,6 +874,7 @@ sysprep() {
 	zypper -n remove -n `cat $setupdir/zypper-package-lists/smbpacktoremove` 2>&1| tee -a $setupdir/sine.log | pgbox
 
     else
+	# Installation der invis-eigenen Samba-Pakete
 	zypper -n install --force-resolution -n `cat $setupdir/zypper-package-lists/invis_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
 
@@ -2288,12 +2289,13 @@ monitoring() {
     clear
     whichmonitoring=`getconfdata "MonitoringSoftware" "2"`
     windowtitle="Vorbereitung für Server Monitoring"
-    dialog --backtitle "$dialogtitle" --title "Vorbereitung für Server Monitoring" --exit-label "Weiter" --textbox "$setupdir/infofiles/monitoring.txt" 24 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Planen Sie den Server via $whichmonitoring zu überwachen?" 0 0
-    cont=${?}
-    if [[ $cont == "0" ]]; then
+    #dialog --backtitle "$dialogtitle" --title "Vorbereitung für Server Monitoring" --exit-label "Weiter" --textbox "$setupdir/infofiles/monitoring.txt" 24 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Planen Sie den Server via $whichmonitoring zu überwachen?" 0 0
+    #cont=${?}
+    #if [[ $cont == "0" ]]; then
 
     case $whichmonitoring in
     "nagios" )
+	pgsubtitle="Nagios Monitoring Plugins werden installiert."
         # Vorbereitung zur Ueberwachung des Servers via Icinga oder Nagios
 	zypper -n install -n `cat $setupdir/zypper-package-lists/nagios_plugins` 2>&1 | tee -a $setupdir/sine.log | pgbox
 	groupadd -g 9000 nagios 2>&1 | tee -a $setupdir/sine.log | pgbox
@@ -2305,6 +2307,7 @@ monitoring() {
 	
 	;;
     "zabbix" )
+	pgsubtitle="Zabbix Monitoring-Tools werden installiert."
         # Vorbereitung zur Ueberwachung des Servers via Zabbix-Agent mit Zabbix-Proxy
 	zypper -n install -n zabbix-agent zabbix-proxy zabbix-proxy-mysql fping 2>&1 | tee -a $setupdir/sine.log | pgbox
         chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $setupdir/sine.log
@@ -2319,8 +2322,11 @@ monitoring() {
         chkservice "zabbix-proxy"
         chkservice "zabbix-agentd"
 	;;
+    "keine")
+	break
+	;;
     esac
-    fi
+    #fi
     writeprepstat "groupware"
     waitbox "monitoring" "groupware"
 }
@@ -3274,7 +3280,7 @@ if [[ -z `which dialog 2>/dev/null` ]]; then
     zyppercheck ${PIPESTATUS[0]}
 fi
 
-if [[ $prepstat == "ready" ]] && [[ $1 == "monitoring" || $1 == "groupware" || $1 == "erp" || $1 == "faxgate" || $1 == "webcdwriter" || $1 == "openvpn" || $1 == "dokuwiki" || $1 == "etherpad" || $1 == "owncloud" || $1 == "virtualbox" ]]; then
+if [[ $prepstat == "ready" ]] && [[ $1 == "groupware" || $1 == "erp" || $1 == "faxgate" || $1 == "webcdwriter" || $1 == "openvpn" || $1 == "dokuwiki" || $1 == "etherpad" || $1 == "owncloud" || $1 == "virtualbox" ]]; then
 	echo $1
 	sleep 1
 	$1
