@@ -1352,27 +1352,51 @@ samba_ad() {
 	ipaddr=`getconfdata "IP" "2"`
 	strings="192.168.220.10%$ipaddr"
 	changevalues $path $file "$strings"
-	
+
+	## IP-Adresse zerlegen
 	netpart1=`echo "$ipaddr" | cut -d "." -f 1`
 	netpart2=`echo "$ipaddr" | cut -d "." -f 2`
 	netpart3=`echo "$ipaddr" | cut -d "." -f 3`
-	netpart="$netpart1.$netpart2.$netpart3."
-	strings="192.168.220.%$netpart"
-	changevalues $path $file "$strings"
+	# ungetestet
+	# 24 oder 16 Bit Netzwerkmaske?
+	ipnetmask=`getconfdata "NMask-short" "2"`
+	if [[ $ipnetmask == "24" ]]; then
+	    netpart="$netpart1.$netpart2.$netpart3"
+	    strings="192.168.220%$netpart"
+	    changevalues $path $file "$strings"
+	elif [[ $ipnetmask == "16" ]]; then
+	    netpart="$netpart1.$netpart2"
+	    # DHCP Range aendern
+	    strings="192.168.220.200 192.168.220.220%$netpart.200.1 $netpart.200.254"
+	    changevalues $path $file "$strings"
+	    # hier wird die Null automatisch eingefuegt, da von dieser Anpassung lediglich
+	    # Server-Adressen betroffen sind, die immer zwischen. 172.x.0.1 und 172.x.0.10 liegen
+	    strings="192.168.220%$netpart.0"
+	    changevalues $path $file "$strings"
+	    # Netzwerkmaske und Broadcast aendern
+	    strings="255.255.255.0%255.255.0.0"
+	    changevalues $path $file "$strings"
+	    strings="192.168.220.255%$netpart.255.255"
+	    changevalues $path $file "$strings"
+	    # Short-NM fuer 16Bit Subnet-Definition aendern
+	    strings="iscDhcpNetMask: 24%iscDhcpNetMask: 16"
+	fi
+	# Kommt nicht mehr vor, kann also weg
+	#rd=`getconfdata "ReverseDom" "2"`
+	#strings="220.168.192%$rd"
+	#changevalues $path $file "$strings"
 	
-	rd=`getconfdata "ReverseDom" "2"`
-	strings="220.168.192%$rd"
-	changevalues $path $file "$strings"
+	## FALSCH
+	# Kommt nicht mehr vor, kann also weg
+	#hostpart=`echo "$ipaddr" | cut -d "." -f 4`
+	#strings="relativeDomainName:10%relativeDomainName:$hostpart"
+	#changevalues $path $file "$strings"
 	
-	hostpart=`echo "$ipaddr" | cut -d "." -f 4`
-	strings="relativeDomainName:10%relativeDomainName:$hostpart"
-	changevalues $path $file "$strings"
+	#strings="relativeDomainName=10,%relativeDomainName=$hostpart,"
+	#changevalues $path $file "$strings"
 	
-	strings="relativeDomainName=10,%relativeDomainName=$hostpart,"
-	changevalues $path $file "$strings"
-	
-	strings="dhcpNetMask:24%dhcpNetMask:$shortnmask"
-	changevalues $path $file "$strings"
+	#strings="dhcpNetMask:24%dhcpNetMask:$shortnmask"
+	#changevalues $path $file "$strings"
 	
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
