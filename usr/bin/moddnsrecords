@@ -53,15 +53,21 @@ revzone() {
 	netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
 	netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
 
-	for wert in ${netbase[*]}; do
-	    #echo "$wert -"
-	    if [[ $wert == 0 ]]; then
-		revzone=$revzone
-	    else
-		revzone=$wert.$revzone
-	    fi
-	done
-	echo "$revzone""in-addr.arpa"
+    # Neue QnD Loesung zum Bau der Reverse-Zone
+    # funktioniert zumindest bei glatten Netzwerkmasken zuverlaessig.
+    case $netmask in
+	"255.255.255.0"|"24")
+		revzone="${netbase[2]}.${netbase[1]}.${netbase[0]}"
+		;;
+	"255.255.0.0"|"16")
+		revzone="${netbase[1]}.${netbase[0]}"
+		;;
+	"255.0.0.0"|"8")
+		revzone="${netbase[0]}"
+		;;
+    esac
+
+	echo "$revzone.in-addr.arpa"
 }
 
 # Lustige Funktion, wird aber nicht benoetigt. Haette ich wohl gleich dokumentieren sollen.
