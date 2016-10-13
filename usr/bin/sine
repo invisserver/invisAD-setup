@@ -31,7 +31,7 @@
 setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
-invisversion="11.1"
+invisversion="11.0"
 
 # Setup-Dialog Titel
 dialogtitle="invis AD Server $invisversion Setup"
