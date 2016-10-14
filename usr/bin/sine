@@ -1696,10 +1696,25 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    # Zarafa AD Schema-Erweiterungen einpflegen
 	    basedn=`getconfdata "baseDN" "2"`
 	    pgsubtitle="Zarafa AD Schema-Erweiterungen werden installiert - das dauert..."
-	    systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    #Ermitteln, welche Samba-Pakete zum Einsatz kommen
+	    sambapackages=`getconfdata "SambaPakete" "2"`
+	    if [[ $sambapackages == "sernet" ]]; then
+		# Sernet-Samba AD stoppen
+		systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    else
+		# Eigene Samba-Pakete stoppen
+		systemctl stop samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    fi
+
 	    adbackup 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zarafa_schema_add.sh $basedn $setupdir/zarafa-ads/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $setupdir/sine.log
-	    systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    if [[ $sambapackages == "sernet" ]]; then
+		# Sernet-Samba AD stoppen
+		systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    else
+		# Eigene Samba-Pakete stoppen
+		systemctl start samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    fi
 	    ;;
 esac
     pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"
@@ -1936,7 +1951,15 @@ Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt
     - & Media: Freigabe für Multimedia-Dateien.\n\n
 Es wurde die Gruppen Verwaltung, Archiv, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
 
-    systemctl restart sernet-samba-ad.service
+    #Ermitteln, welche Samba-Pakete zum Einsatz kommen
+    sambapackages=`getconfdata "SambaPakete" "2"`
+    if [[ $sambapackages == "sernet" ]]; then
+	# Sernet-Samba AD neu starten 
+	systemctl restart sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    else
+	# Eigene Samba-Pakete neu starten
+	systemctl restart samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
+    fi
 
     # NFSv4 Server vorbereiten -- aber nicht starten
     cp $cfilesdir/fileserver/nfs/exports_nfs4 /etc/exports  2>&1| tee -a $setupdir/sine.log
