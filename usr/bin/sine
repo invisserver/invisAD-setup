@@ -1173,12 +1173,6 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     strings="mysql-rootpw%$mysqlpw"
     changevalues $confdir $file "$strings"
     
-    # Apparmor deaktivieren -> muss mit eigenen Samba Paketen wieder aktiviert werden
-    systemctl disable apparmor.service
-    systemctl stop apparmor.service
-    
-    # Workaround, da apparmor scheinbar nichts von Systemd haelt
-    chkconfig -d boot.apparmor
     
     writeprepstat "samba_ad"
     waitbox "sysprep" "samba_ad"
@@ -2341,9 +2335,6 @@ monitoring() {
     clear
     whichmonitoring=`getconfdata "MonitoringSoftware" "2"`
     windowtitle="Vorbereitung für Server Monitoring"
-    #dialog --backtitle "$dialogtitle" --title "Vorbereitung für Server Monitoring" --exit-label "Weiter" --textbox "$setupdir/infofiles/monitoring.txt" 24 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Planen Sie den Server via $whichmonitoring zu überwachen?" 0 0
-    #cont=${?}
-    #if [[ $cont == "0" ]]; then
 
     case $whichmonitoring in
     "nagios" )
@@ -2378,7 +2369,14 @@ monitoring() {
 	break
 	;;
     esac
-    #fi
+
+    # Apparmor deaktivieren -> muss mit eigenen Samba Paketen wieder aktiviert werden
+    systemctl disable apparmor.service
+    systemctl stop apparmor.service
+    
+    # nur zur Sicherheit ;-)
+    chkconfig -d boot.apparmor
+    
     writeprepstat "groupware"
     waitbox "monitoring" "groupware"
 }
