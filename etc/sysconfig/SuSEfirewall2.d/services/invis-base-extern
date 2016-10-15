@@ -1,0 +1,30 @@
+# Only the variables TCP, UDP, RPC, IP and BROADCAST are allowed.
+# More may be supported in the future.
+#
+# For a more detailed description of the individual variables see
+# the comments for FW_SERVICES_*_EXT in /etc/sysconfig/SuSEfirewall2
+#
+
+## Name: basic Firewal Rules for invis-Servers
+## Zone: extern
+## Description: Open ports for the bind DNS server
+
+# Port 1194 = openVPN
+# Port sshport = verschobener SSH-Port
+# Port httpsport = verschobener Port fuer verschluesselten Zugriff auf das invis-Portal
+# Port ocport = verschobener Port fuer verschluesselten Zugriff auf ownCloud
+# space separated list of allowed TCP ports
+TCP="443 1194 sshport httpsport ocport"
+
+# Port 1194 = openVPN
+# space separated list of allowed UDP ports
+UDP="1194"
+
+# space separated list of allowed RPC services
+RPC=""
+
+# space separated list of allowed IP protocols
+IP=""
+
+# space separated list of allowed UDP broadcast ports
+BROADCAST=""
