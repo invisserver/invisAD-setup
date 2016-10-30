@@ -28,7 +28,7 @@ workingdir="/var/lib/sine/updater"
 updlist="$workingdir/updates.lst"
 
 # Arrays fuer kritische Updates erzeugen
-criticalstatic=("kernel" "VirtualBox")
+criticalstatic=("kernel" "VirtualBox" "grub2" "owncloud" "zarafa" "kopano")
 criticalmariadb=(`zypper search mariadb|grep ^i|tr -d " "|cut -d "|" -f2 |tr "\n" " "`)
 criticalpostgres=(`zypper search postgres|grep ^i|tr -d " "|cut -d "|" -f2|tr "\n" " "`)
 # Einzel-Arrays zusammen fuehren
@@ -71,7 +71,7 @@ for command in ${commands[@]}; do
     fi
 
     if [[ $command =~ (smbd|winbindd|samba) ]]; then
-	echo "sernet-samba-ad" >> $workingdir/daemons
+	echo "samba" >> $workingdir/daemons
     fi
 
     if [[ $command =~ (httpd2-[a-zA-Z]*) ]]; then
