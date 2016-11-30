@@ -1,6 +1,6 @@
 #!/bin/bash
-# invis AD 11 Server Setup Script
-# Version 11.1
+# invis AD 12 Server Setup Script
+# Version 12.0
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2016 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -516,15 +516,18 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
     ntoppw="${ntopsecrets[0]}"
 
 #---# MAIL & Groupware Server
-    ## Dovecot oder Zarafa?
+    ## Dovecot oder Kopano?
     dialog --backtitle "$dialogtitle" --title "MAIL & Groupware Server" --radiolist "$dialogshorthelp\n\n
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
-	zarafa "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
+	kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
 	roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
 	tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
 	sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
 	2>$setupdir/sine_temp
 	whichgroupware=`cat $setupdir/sine_temp`
+
+# Welche Kopano Version
+
 
 #---# Samba Pakete - Es werden ab 11.1 unsere eigenen Samba-Pakete in V. 4.5 inkl. AD installiert
 #---# Zugangsdaten fuer Sernet-Repo abfragen
@@ -1124,8 +1127,8 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     groupware=`getconfdata "Groupware" "2"`
     ## verwendete Groupware in Konfigurationsdatei schreiben
     case $groupware in
-	"zarafa" ) 
-	    strings="usedgroupware%zarafa"
+	"kopano" ) 
+	    strings="usedgroupware%kopano"
 	    changevalues $confdir $file "$strings"
 	    ;;
 	"tine20" )
@@ -1672,14 +1675,15 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    echo "$domain	dovecot:" >> /etc/postfix/relay 2>&1| tee -a $setupdir/sine.log
 	    postmap /etc/postfix/relay 2> /dev/null
 	    ;;
-	"zarafa" )
-	    pgsubtitle="Zarafa Groupware und Mailserver wird installiert und eingerichtet"
+	"kopano" )
+	    pgsubtitle="Kopano Groupware und Mailserver wird installiert und eingerichtet"
 	    zyppercheck ${PIPESTATUS[0]}
 	    zypper -n install -n `cat $setupdir/zypper-package-lists/zarafa` 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
-	    # Zarafa konfigurieren hier, Starten der Dienste erfolgt im Groupware Abschnitt
+	    # Kopano konfigurieren hier, Starten der Dienste erfolgt im Groupware Abschnitt
+	    ## aufraeumen - Stefan - Webaccess fliegt raus
 	    # Apache Confs fuer Webaccess kopieren
-	    cp $cfilesdir/webserver/zarafa-wa/*.conf /etc/apache2/conf.d/ 2>&1| tee -a $setupdir/sine.log
+	    #cp $cfilesdir/webserver/zarafa-wa/*.conf /etc/apache2/conf.d/ 2>&1| tee -a $setupdir/sine.log
 	    
 	    # Symbolischen Link auf das z-push2 Verzeichnis anlegen
 	    ln -s /srv/www/htdocs/z-push2 /srv/www/htdocs/z-push
@@ -2192,7 +2196,7 @@ mysqlserver() {
     pgsubtitle="MariaDB einrichten, bitte haben Sie etwas Geduld."
 
     waitinfobox "Für MariaDB werden Einstellungen zur Speichernutzung getroffen
-die sich am verfügbaren RAM des Servers und den Empfehlungen von Zarafa orientieren. 
+die sich am verfügbaren RAM des Servers und den Empfehlungen von Kopano orientieren. 
 Bei weniger als 2GB RAM werden ca. 30%, bei 2-4GB
 RAM ca. 40% und bei mehr als 4GB RAM ca 50% des RAMs reserviert.
 Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Speicherreservierung für MariaDB"
@@ -2503,46 +2507,49 @@ case "$whichgroupware" in
 	writeprepstat "erp"
 	waitbox "groupware" "erp"
 	;;
-    "zarafa" )
-	## Zarafa
+    "kopano" )
+	## Kopano
 	cd $setupdir
 	clear
-	windowtitle="Zarafa Konfiguration"
+	windowtitle="Kopano Konfiguration"
 	dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/zarafa.txt" 38 90
 
+	## aufraeumen - Stefan - Webaccess fliegt raus
 	## Fix Zarafa Package-Bugs
 	# Spaeter wieder entfernen
-	mkdir -p /var/lib/zarafa-webaccess/tmp
-	mkdir -p /var/lib/zarafa-webaccess/plugins
-	chmod a+rwx /var/lib/zarafa-webaccess/tmp
+	#mkdir -p /var/lib/zarafa-webaccess/tmp
+	#mkdir -p /var/lib/zarafa-webaccess/plugins
+	#chmod a+rwx /var/lib/zarafa-webaccess/tmp
 
 	# htaccess-Dateien entfernen, wenn Apache Worker MPM aktiv ist
-	isworker=`ps ax |grep httpd2-worker |grep -v grep|wc -l`
-	if (( $isworker > 0 )); then
-	    rm -f /usr/share/zarafa-webaccess/.htaccess
-	    rm -f /usr/share/zarafa-webapp/.htaccess
-	    chkservice "apache2"
-	fi
+	#isworker=`ps ax |grep httpd2-worker |grep -v grep|wc -l`
+	#if (( $isworker > 0 )); then
+	#    rm -f /usr/share/zarafa-webaccess/.htaccess
+	#    rm -f /usr/share/zarafa-webapp/.htaccess
+	#    chkservice "apache2"
+	#fi
 
-	## Leere Zarafa-Datenbank anlegen
-	zarafadbuserpw=`mkdbsilent zarafa zarafa a`
+	## Leere Kopano-Datenbank anlegen
+	kopanodbuserpw=`mkdbsilent kopano kopano a`
 
+	## hier gehts weiter....
         # Locales-Vorlage kopieren
-	cp $cfilesdir/zarafa/zarafa /etc/sysconfig/
+	cp $cfilesdir/kopano/kopano /etc/sysconfig/
 
 	# Konfigurationsvorlagen kopieren
-	cp $cfilesdir/zarafa/*.cfg /etc/zarafa/
-	chmod go+r /etc/zarafa/*.cfg
+	cp $cfilesdir/kopano/*.cfg /etc/kopano/
+	chown -R .kopano /etc/kopano/
+	chmod g+r /etc/kopano/*.cfg
 	
 	# Konfigurationsdaten einlesen
 	domain=`getconfdata "Domain" "2"`
 	basedn=`getconfdata "baseDN" "2"`
 	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
 
-	# Datenbank Zugang in Zarafa Konfiguration einfuegen usw.
-	path="/etc/zarafa"
+	# Datenbank Zugang in Kopano Konfiguration einfuegen usw.
+	path="/etc/kopano"
 	file="server.cfg"
-	strings="dbuserpass%$zarafadbuserpw"
+	strings="dbuserpass%$kopanodbuserpw"
 	changevalues $path $file "$strings"
 
 	strings="postmaster@localhost%administrator@$domain"
@@ -2557,7 +2564,7 @@ case "$whichgroupware" in
 	
 	## Plugin-Path bei Bedarf anpassen
 	if [[ $libdir == "/usr/lib64" ]]; then
-	    strings="/usr/lib/zarafa%$libdir/zarafa"
+	    strings="/usr/lib/kopano%$libdir/kopano"
 	    changevalues $path $file "$strings"
 	fi
 
@@ -2566,7 +2573,7 @@ case "$whichgroupware" in
 	strings="admin-secret%$ldapmasterpw"
 	changevalues $path $file "$strings"
 
-	strings="dc=zarafa,dc=com%$basedn"
+	strings="dc=kopano,dc=com%$basedn"
 	changevalues $path $file "$strings"
     
 	strings="dc=invis-net,dc=loc%$basedn"
@@ -2576,7 +2583,7 @@ case "$whichgroupware" in
 	changevalues $path $file "$strings"
     
 	## Locales anpassen
-	path="/etc/zarafa/userscripts"
+	path="/etc/kopano/userscripts"
 	strings="en_US%de_DE.UTF-8"
 	file="companies_common.sh"
 	changevalues $path $file "$strings"
@@ -2586,19 +2593,19 @@ case "$whichgroupware" in
 
 	file="users_common.sh"
 	changevalues $path $file "$strings"
+	## aufraeumen - Stefan - Webaccess fliegt raus
+	#path="/etc/zarafa/webaccess-ajax"
+	#file="config.php"
+	#strings="London%Berlin"
+	#changevalues $path $file "$strings"
 
-	path="/etc/zarafa/webaccess-ajax"
+	#strings="en_GB%de_DE.UTF-8"
+	#changevalues $path $file "$strings"
+
+	path="/etc/kopano/webapp"
 	file="config.php"
-    
-	strings="London%Berlin"
-	changevalues $path $file "$strings"
 
-	strings="en_GB%de_DE.UTF-8"
-	changevalues $path $file "$strings"
-
-	path="/etc/zarafa/webapp"
-	file="config.php"
-
+	## Stefan - passt das noch?
 	strings="/var/run/zarafa%/var/run/zarafad/server.sock"
 	changevalues $path $file "$strings"
     
@@ -2607,15 +2614,16 @@ case "$whichgroupware" in
 	strings="en_GB%de_DE.UTF-8"
 	changevalues $path $file "$strings"
     
-	# Zarafa-Schluessel erzeugen
+	# Kopano-Schluessel erzeugen
 	mkzarafakey
     
 	# Rechte am Zarafa Attachement-Verzeichnis anpassen
-	mkdir /srv/zarafa
-	chown -R zarafa.zarafa /srv/zarafa
+	mkdir /srv/kopano
+	chown -R kopano.kopano /srv/kopano
     
+	## Stefan - Systemd? Was macht zinit?
 	# Dienste ins Runlevel-Konzept eintragen
-	for zinit in /etc/init.d/zarafa-* ; do
+	for zinit in /etc/init.d/kopano-* ; do
 	    zinit=`basename $zinit`
 	    chkservice $zinit
 	done
@@ -2633,8 +2641,9 @@ case "$whichgroupware" in
 	chkservice apache2 r
     
 	# Oeffentlichen Speicher anlegen
-	zarafa-admin -s
+	kopano-admin -s
 
+	## Stefan - LDIF anpassen
 	# Webapp im Portal aktivieren
 	swpestat ZarafaApp TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
     
