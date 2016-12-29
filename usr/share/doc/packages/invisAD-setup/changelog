@@ -1,3 +1,5 @@
+Neuere Changelogs sind auf unser Github-Seite zu finden.
+
 invis 9.x-dev
 - Script "netsetup" hinzugefuegt. Es erzeugt UDEV-Regeln zur Bennenung der Netzwerk-Devices
 - afterup-Script abgespeckt.
