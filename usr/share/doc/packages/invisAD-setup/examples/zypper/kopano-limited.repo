@@ -1,5 +1,5 @@
-[Kopano-openSUSE-42.1_limited]
-name=Kopano-openSUSE-42.1_limited
+[Kopano-openSUSE-42.2_limited]
+name=Kopano-openSUSE-42.2_limited
 enabled=1
 autorefresh=1
 baseurl=https://download.kopano.io/limited/core:/final/openSUSE_42.1
