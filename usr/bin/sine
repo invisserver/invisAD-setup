@@ -1392,6 +1392,7 @@ samba_ad() {
 	    changevalues $path $file "$strings"
 	    # Short-NM fuer 16Bit Subnet-Definition aendern
 	    strings="iscDhcpNetMask: 24%iscDhcpNetMask: 16"
+	    changevalues $path $file "$strings"
 	fi
 	# Kommt nicht mehr vor, kann also weg
 	#rd=`getconfdata "ReverseDom" "2"`
