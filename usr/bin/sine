@@ -526,8 +526,15 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 	2>$setupdir/sine_temp
 	whichgroupware=`cat $setupdir/sine_temp`
 
-# Welche Kopano Version
-
+if [[ $whichgroupware == "kopano" ]]; then
+    # Welche Kopano Version
+    dialog --backtitle "$dialogtitle" --title "Kopano Repository" --radiolist "$dialogshorthelp\n\n
+Wählen Sie das zu verwendenden Kopano Repositoriy aus." 16 80 7 \
+	limited "Pakete von Kopano selbst mit limitiertem Support. Erfordern Zugangsdaten" on\
+	opensuse "Pakete aus dem openSUSE Build-Service, ohne Support." off\
+	2>$setupdir/sine_temp
+	whichkopanorep=`cat $setupdir/sine_temp`
+fi
 
 #---# Samba Pakete - Es werden ab 11.1 unsere eigenen Samba-Pakete in V. 4.5 inkl. AD installiert
 #---# Zugangsdaten fuer Sernet-Repo abfragen
@@ -771,6 +778,9 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
     echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
     echo "Groupware:$whichgroupware"  >> $setupdir/invis_confdata
+    if [[ $whichgroupware == "kopano" ]]; then
+	echo "KopanoRepo:$whichkopanorep"  >> $setupdir/invis_confdata
+    fi
     echo "SambaPakete:$whichsamba" >> $setupdir/invis_confdata
     echo "EnterpriseSambaUsername:$esusername" >> $setupdir/invis_confdata
     echo "EnterpriseSambaAccesskey:$esaccesskey" >> $setupdir/invis_confdata
