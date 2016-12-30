@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script zum Zusammenbau des Zarafa-SSL-Keys
+# Script zum Zusammenbau des Kopano-SSL-Keys
 # (c) 2013 Stefan Schaefer - stefan@invis-server.org
 
 # License: GPLv3
@@ -20,5 +20,5 @@ keypath="/etc/invis/private"
 certpath="/etc/invis/certs"
 
 # Standardschluessel kopieren
-cp $keypath/mail-key.pem $keypath/zarafa.pem
-cat $certpath/mail-cert.pem >> $keypath/zarafa.pem
+cp $keypath/mail-key.pem $keypath/kopano.pem
+cat $certpath/mail-cert.pem >> $keypath/kopano.pem

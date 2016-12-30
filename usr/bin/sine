@@ -2618,13 +2618,12 @@ case "$whichgroupware" in
 	changevalues $path $file "$strings"
     
 	# Kopano-Schluessel erzeugen
-	mkzarafakey
+	mkkopanokey
     
 	# Rechte am Zarafa Attachement-Verzeichnis anpassen
 	mkdir /srv/kopano
 	chown -R kopano.kopano /srv/kopano
 
-	## Stefan: muss dass noch sein?
 	# Dienste ins Runlevel-Konzept eintragen
 	for kinit in /etc/init.d/kopano-* ; do
 	    kinit=`basename $kinit`
