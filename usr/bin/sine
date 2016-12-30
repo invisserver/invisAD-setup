@@ -2542,14 +2542,6 @@ case "$whichgroupware" in
 	windowtitle="Kopano Konfiguration"
 	dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/kopano.txt" 38 90
 
-	# htaccess-Dateien entfernen, wenn Apache Worker MPM aktiv ist
-	#isworker=`ps ax |grep httpd2-worker |grep -v grep|wc -l`
-	#if (( $isworker > 0 )); then
-	#    rm -f /usr/share/zarafa-webaccess/.htaccess
-	#    rm -f /usr/share/zarafa-webapp/.htaccess
-	#    chkservice "apache2"
-	#fi
-
 	## Leere Kopano-Datenbank anlegen
 	kopanodbuserpw=`mkdbsilent kopano kopano a`
 
@@ -2615,14 +2607,12 @@ case "$whichgroupware" in
 	file="users_common.sh"
 	changevalues $path $file "$strings"
 
+	# Webapp
 	path="/etc/kopano/webapp"
 	file="config.php"
 
-	## Stefan - passt das noch?
-	strings="/var/run/zarafa%/var/run/zarafad/server.sock"
-	changevalues $path $file "$strings"
-    
 	strings="London%Berlin"
+	changevalues $path $file "$strings"
 
 	strings="en_GB%de_DE.UTF-8"
 	changevalues $path $file "$strings"
@@ -2633,12 +2623,12 @@ case "$whichgroupware" in
 	# Rechte am Zarafa Attachement-Verzeichnis anpassen
 	mkdir /srv/kopano
 	chown -R kopano.kopano /srv/kopano
-    
-	## Stefan - Systemd? Was macht zinit?
+
+	## Stefan: muss dass noch sein?
 	# Dienste ins Runlevel-Konzept eintragen
-	for zinit in /etc/init.d/kopano-* ; do
-	    zinit=`basename $zinit`
-	    chkservice $zinit
+	for kinit in /etc/init.d/kopano-* ; do
+	    kinit=`basename $kinit`
+	    chkservice $kinit
 	done
     
 	# z-push als vHost anlegen & apache reload

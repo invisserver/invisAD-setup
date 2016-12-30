@@ -16,43 +16,49 @@
 	define("CONFIG_CHECK_COOKIES_HTTP", FALSE);
 	define("CONFIG_CHECK_COOKIES_SSL", FALSE);
 
-	// Default Zarafa server to connect to.
-	#define("DEFAULT_SERVER","file://\\\\.\\pipe\\zarafa");
-	#define("DEFAULT_SERVER","http://localhost:236/zarafa");
-	define("DEFAULT_SERVER","file:///var/run/zarafad/server.sock");
+	// Depending on your setup, it might be advisable to change the lines below to one defined with your
+	// default socket location. 
+	// Normally "default:" points to the default setting ("file:///var/run/kopano/server.sock")
+	// Examples: define("DEFAULT_SERVER", "default:");
+	//           define("DEFAULT_SERVER", "http://localhost:236/kopano");
+	//           define("DEFAULT_SERVER", "https://localhost:237/kopano");
+	//           define("DEFAULT_SERVER", "file:///var/run/kopano/server.sock");
+	define("DEFAULT_SERVER", "default:");
 
-	// When using a single-signon system on your webserver, but Zarafa is on another server
-	// you can use https to access the zarafa server, and authenticate using an SSL certificate.
+	// When using a single-signon system on your webserver, but Kopano Core is on another server
+	// you can use https to access the Kopano server, and authenticate using an SSL certificate.
 	define("SSLCERT_FILE", NULL);
 	define("SSLCERT_PASS", NULL);
 
-	// set to 'true' to strip domain from login name found from Single Signon webservers
+	// set to 'true' to strip domain from login name found from Single Sign-On webservers
 	define("LOGINNAME_STRIP_DOMAIN", false);
 
 	// Name of the cookie that is used for the session
-	define("COOKIE_NAME", "ZARAFA_WEBAPP");
+	define("COOKIE_NAME", "KOPANO_WEBAPP");
 
 	// The timeout (in seconds) for the session. User will be logged out of WebApp
 	// when he has not actively used the WebApp for this time.
 	// Set to 0 (or remove) for no timeout during browser session.
 	define('CLIENT_TIMEOUT', 0);
+	
+	// Defines the domains from which cross domain authentication requests
+	// are allowed. E.g. if WebMeetings runs under a different domain than
+	// the WebApp then add this domain here. Add http(s):// to the domains
+	// and separate domains with spaces.
+	// Set to empty string (default) to only allow authentication requests
+	// from within the same domain.
+	// Set to "*" to allow authentication requests from any domain. (not
+	// recommended)
+	define('CROSS_DOMAIN_AUTHENTICATION_ALLOWED_DOMAINS', "");
 
 	// Defines the base url and end with a slash.
 	$base_url = dirname($_SERVER["PHP_SELF"]);
 	if(substr($base_url,-1)!="/") $base_url .="/";
 	define("BASE_URL", $base_url);
 
-	// Defines the base path on the server, terminated by a slash
-	define('BASE_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . "/");
-
 	// Defines the temp path (absolute). Here uploaded attachments will be saved.
 	// The web client doesn't work without this directory.
-	define("TMP_PATH", "/var/lib/zarafa-webapp/tmp");
-
-	// Define the server paths
-	set_include_path(BASE_PATH. PATH_SEPARATOR .
-	                 BASE_PATH."server/PEAR/" .  PATH_SEPARATOR .
-	                 "/usr/share/php/");
+	define("TMP_PATH", "/var/lib/kopano-webapp/tmp");
 
 	// Define the path to the plugin directory (No slash at the end)
 	define("PATH_PLUGIN_DIR", "plugins");
@@ -62,6 +68,14 @@
 
 	// Define list of disabled plugins separated by semicolon
 	define("DISABLED_PLUGINS_LIST", '');
+	
+	// General WebApp theme. This will be loaded by default for every user
+	// (if the theme is installed as a plugin)
+	// Users can override the 'logged-in' theme in the settings.
+	define("THEME", '');
+	
+	// The title that will be shown in the title bar of the browser
+	define("WEBAPP_TITLE", 'Kopano WebApp');
 
 	// Set addressbook for GAB not to show any users unless searching for a specific user
 	define("DISABLE_FULL_GAB", false);
@@ -99,12 +113,6 @@
 	// Maximum eml files to be included in a single ZIP archive
 	define('MAX_EML_FILES_IN_ZIP', 50);
 
-	// Standard password key for session password. We recommend to change the default value for security reasons 
-	// and a length of 16 characters. Passwords are only encrypted when the openssl module is installed
-	// IV vector should be 8 bits long
-	define('PASSWORD_KEY','a75356b0d1b81b7');
-	define('PASSWORD_IV','b3f5a483');
-	
 	// Additional color schemes for the calendars can be added by uncommenting and editing the following define.
 	// The format is the same as the format of COLOR_SCHEMES which is defined in default.php
 	// To change the default colors, COLOR_SCHEMES can also be defined here.
@@ -172,21 +180,19 @@
 	// using <languagecode>_<regioncode>[.UTF-8], and separated with
 	// semicolon.  A list of available languages can be found in
 	// the manual or by looking at the list of directories in
-	// /usr/share/zarafa-webapp/server/language .
+	// /usr/share/kopano-webapp/server/language .
 	define("ENABLED_LANGUAGES", "de_DE;en_EN;en_US;fr_FR;he_IL;it_IT;nl_NL;ru_RU;zh_CN;nb_NO");
 
 	// Defines the default time zone, change e.g. to "Europe/London" when needed
-	if(function_exists("date_default_timezone_set")) {
-		if(!ini_get('date.timezone')) {
-			date_default_timezone_set('Europe/Berlin');
-		}
+	if(!ini_get('date.timezone')) {
+		date_default_timezone_set('Europe/Berlin');
 	}
 
 	/**************************************\
 	* Powerpaste                           *
 	\**************************************/
 
-	// Options for TinyMCE's powerpaste plugin, see http://docs.ephox.com/display/tinyMCEPlugins/Configuration+Options
+	// Options for TinyMCE's powerpaste plugin, see https://www.tinymce.com/docs/enterprise/paste-from-word/#configurationoptions
 	// for more details.
 	define('POWERPASTE_WORD_IMPORT', 'merge');
 	define('POWERPASTE_HTML_IMPORT', 'merge');
@@ -196,11 +202,14 @@
 	* Debugging                            *
 	\**************************************/
 
+	// Do not log errors into stdout, since this generates faulty JSON responses.
 	ini_set("display_errors", false);
-	error_reporting(0);
 
-	if (file_exists("debug.php")){
-		include("debug.php");
+	ini_set("log_errors", true);
+	error_reporting(E_ERROR);
+
+	if (file_exists('debug.php')){
+		include_once('debug.php');
 	}else{
 		// define empty dump function in case we still use it somewhere
 		function dump(){}
