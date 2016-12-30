@@ -2406,8 +2406,8 @@ monitoring() {
     # nur zur Sicherheit ;-)
     chkconfig -d boot.apparmor
     
-    writeprepstat "groupware"
-    waitbox "monitoring" "groupware"
+    writeprepstat "apcupsd"
+    waitbox "monitoring" "apcupsd"
 }
 
 apcupsd() {

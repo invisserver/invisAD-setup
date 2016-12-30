@@ -46,38 +46,38 @@ fi
 #libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
 #libtevent=`basename $libtevent`
 
-cd $libdir
-libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
-libtevent=`basename $libtevent`
-if [[ ! -L samba/$libtevent ]]; then
-    ln -s samba/$libtevent libtevent.so.0 2>/dev/null
-fi
+#cd $libdir
+#libtevent=`find $libdir/samba/ -type f -name "libtevent.so*"`
+#libtevent=`basename $libtevent`
+#if [[ ! -L samba/$libtevent ]]; then
+#    ln -s samba/$libtevent libtevent.so.0 2>/dev/null
+#fi
 
-libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
-libndr=`basename $libndr`
-if [[ ! -L samba/$libndr ]]; then
-    ln -s samba/$libndr libndr.so.0 2>/dev/null
-fi
+#libndr=`find $libdir/samba/ -type f -name "libndr.so*"`
+#libndr=`basename $libndr`
+#if [[ ! -L samba/$libndr ]]; then
+#    ln -s samba/$libndr libndr.so.0 2>/dev/null
+#fi
 #libndrnbt=`find $libdir/samba/ -type f -name "libndr-nbt.so*"`
 #libndrnbt=`basename $libndrnbt`
 #ln -s samba/$libndrnbt libndr-nbt.so.0 2>/dev/null
 
-libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
-libtalloc=`basename $libtalloc`
-if [[ ! -L samba/$libtalloc ]]; then
-    ln -s samba/$libtalloc libtalloc.so.2 2>/dev/null
-fi
-libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
-libldb=`basename $libldb`
-if [[ ! -L samba/$libldb ]]; then
-    ln -s samba/$libldb libldb.so.1 2>/dev/null
-fi
+#libtalloc=`find $libdir/samba/ -type f -name "libtalloc.so*"`
+#libtalloc=`basename $libtalloc`
+#if [[ ! -L samba/$libtalloc ]]; then
+#    ln -s samba/$libtalloc libtalloc.so.2 2>/dev/null
+#fi
+#libldb=`find $libdir/samba/ -type f -name "libldb.so*"`
+#libldb=`basename $libldb`
+#if [[ ! -L samba/$libldb ]]; then
+#    ln -s samba/$libldb libldb.so.1 2>/dev/null
+#fi
 
-libkrb5pac=`find $libdir/samba/ -type f -name "libndr-krb5pac.so*"`
-libkrb5pac=`basename $libkrb5pac`
-ln -s samba/$libkrb5pac libndr-krb5pac.so.0 2>/dev/null
+#libkrb5pac=`find $libdir/samba/ -type f -name "libndr-krb5pac.so*"`
+#libkrb5pac=`basename $libkrb5pac`
+#ln -s samba/$libkrb5pac libndr-krb5pac.so.0 2>/dev/null
 
-systemctl restart sssd.service
+#systemctl restart sssd.service
 
 sleep 3
 
