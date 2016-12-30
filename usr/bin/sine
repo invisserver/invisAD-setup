@@ -2434,7 +2434,10 @@ apcupsd() {
 	strings="DEVICE /dev/ttyS0%DEVICE"
 	changevalues $confdir $file "$strings"
 	chkservice "apcupsd"
-	
+
+	# Apache Dummy Konfiguration installieren
+	cp $cfilesdir/usv/apcuspd.conf /etc/apache2/conf.d/
+	systemctl reload apache2.service 2>&1 | tee -a $setupdir/sine.log | pgbox
     else
 	msgbox "apcupsd Installation übersprungen" "$windowtitle"
     fi
