@@ -451,7 +451,7 @@ Routers, DNS Server des Internet Zugangs Providers oder unabhängige DNS-Server 
 Achtung:
 Prüfen Sie bitte, ob die angegebenen DNS-Server auf Anfragen antworten, da ansonsten sowohl die weitere
 Installation, als auch der Betrieb des invis-Servers beeinträchtigt wird.\n\n
-Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
+Geben Sie midestens eine IP-Adresse ein.\n\n" 26 70 6 \
 	"DNS 1:" 2 2 "${fdns[0]}" 2 10 30 0\
 	"DNS 2:" 4 2 "${fdns[1]}" 4 10 30 0\
 	"DNS 3:" 6 2 "${fdns[2]}" 6 10 30 0\
@@ -486,7 +486,7 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 28 70 7 \
     while (( $ok != "1" ));do
 	dialog --backtitle "$dialogtitle" --title "MySQL-Root Passwort" --insecure --passwordform "$dialogshorthelp\n\n
 Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
 	"MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
 	"Kontrolle:" 2 36 "" 2 47 10 0\
 	2>$setupdir/sine_temp
@@ -503,7 +503,7 @@ Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
     while (( $ok != "1" ));do
 	dialog --backtitle "$dialogtitle" --title "ntop-Admin Passwort" --insecure --passwordform "$dialogshorthelp\n\n
 Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 17 64 2 \
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
 	"ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
 	"Kontrolle:" 2 36 "" 2 47 10 0\
 	2>$setupdir/sine_temp
@@ -529,8 +529,8 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 if [[ $whichgroupware == "kopano" ]]; then
     # Welche Kopano Version
     dialog --backtitle "$dialogtitle" --title "Kopano Repository" --radiolist "$dialogshorthelp\n\n
-Wählen Sie das zu verwendenden Kopano Repositoriy aus." 16 80 7 \
-	limited "Pakete von Kopano selbst mit limitiertem Support. Erfordern Zugangsdaten" on\
+Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
+	limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
 	opensuse "Pakete aus dem openSUSE Build-Service, ohne Support." off\
 	2>$setupdir/sine_temp
 	whichkopanorep=`cat $setupdir/sine_temp`
@@ -573,7 +573,7 @@ fi
 #---# ERP-Software
     # Es kann zwischen Kivitendo, Wawisoon oder keiner ERP-Software entschieden werden
     dialog --backtitle "$dialogtitle" --title "Enterprise Ressource Planning Software" --radiolist "$dialogshorthelp\n\n
-Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 14 85 5 \
+Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 14 100 6 \
 	Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
 	waWision "Moderne ERP Lösung für Handel und Dienstleistung inkl. Webshop-Schnittstelle." on\
 	Keine "Sie verwenden ein eigenes System" off\
@@ -582,16 +582,19 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
 	whicherp=`tolower $whicherp`
 	
 #---# Virenscanner Radiobutton
-    dialog --backtitle "$dialogtitle" --title "Virenscanner" --radiolist "$dialogshorthelp\n\n
-Wählen Sie den von Ihnen bevorzugten Virenscanner aus. Er wird zum regelmäßen Scannen der Filerserver-Freigaben sowie
-aller ein- und ausgehenden emails verwendet.\n\n
-Wenn Sie Antivir von Avira auswählen, wird im weiteren Verlauf der Installation eine kostenfreie Lizenz zur privaten
-Nutzung von Antivir installiert. Bei gewerblicher Nutzung des Servers muss eine entsprechende Lizenz käuflich erworben
-werden.\nClamav hingegen ist zu 100% Open-Source-Software, d.h. dessen Nutzung ist auch im gewerblichen Umfeld kostenfrei." 22 80 8 \
-	clamav "Open-Source Virenscanner" on\
-	antivir "Kommerzieller Virenscanner von Avira" off\
-	2>$setupdir/sine_temp
-	av=`cat $setupdir/sine_temp`
+#    dialog --backtitle "$dialogtitle" --title "Virenscanner" --radiolist "$dialogshorthelp\n\n
+#Wählen Sie den von Ihnen bevorzugten Virenscanner aus. Er wird zum regelmäßen Scannen der Filerserver-Freigaben sowie
+#aller ein- und ausgehenden emails verwendet.\n\n
+#Wenn Sie Antivir von Avira auswählen, wird im weiteren Verlauf der Installation eine kostenfreie Lizenz zur privaten
+#Nutzung von Antivir installiert. Bei gewerblicher Nutzung des Servers muss eine entsprechende Lizenz käuflich erworben
+#werden.\nClamav hingegen ist zu 100% Open-Source-Software, d.h. dessen Nutzung ist auch im gewerblichen Umfeld kostenfrei." 22 80 8 \
+#	clamav "Open-Source Virenscanner" on\
+#	antivir "Kommerzieller Virenscanner von Avira" off\
+#	2>$setupdir/sine_temp
+#	av=`cat $setupdir/sine_temp`
+
+# Da derzeit lediglich Clamav zur Verfuegung steht, wird auf die Abfrage verzichtet.
+av=clamav
 
 #---# Monitoring
 
@@ -599,7 +602,7 @@ werden.\nClamav hingegen ist zu 100% Open-Source-Software, d.h. dessen Nutzung i
 Planen Sie Ihren Server durch eine Monitoring Lösung zu überwachen?
 Für die Lösungen Icinga, Nagios oder Zabbix können im Verlauf des Setups Vorbereitungen getroffen werden.
 \n\n
-Welche Lösung möchten Sie einsetzen?\n\n" 18 80 8 \
+Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
 	nagios "Nagios-Plugins (Icinga & Nagios)" on\
 	zabbix "Zabbix-Agent" off\
 	keine  "Keine Überwachung" off\
@@ -639,7 +642,7 @@ Welche Lösung möchten Sie einsetzen?\n\n" 18 80 8 \
     if [[ $bekannt == "0" ]]; then
     while (( $ok != "4" ));do
 	dialog --backtitle "$dialogtitle" --title "SMTP Zugangsdaten" --form "$dialogshorthelp\n\n
-Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres SMTP-Relays, sowie den zuhehörigen Benutzernamen und das Passwort ein." 18 74 9 \
+Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres SMTP-Relays, sowie den zuhehörigen Benutzernamen und das Passwort ein." 20 74 9 \
 	"Hostname/IP:" 2 2 "$mailserver" 2 20 45 0\
 	"Port [25/587]:" 4 2 "$smtpport" 4 20 45 0\
 	"Benutzername:" 6 2 "$smtpun" 6 20 45 0\
@@ -709,7 +712,7 @@ Sollen alte Dateien und Verzeichnisse automatisch aus der Transfer-Freigabe gel�
 	trdays=`cat $setupdir/sine_temp|cut -d " " -f1`
     fi
 
-#---# CleanTransfer
+#---# CleanDasi
     yesno "Auf Ihrem invis-Server werden regelmäßig Sicherung vorhandener Datenbanken und des Wiki-Datenbestandes angelegt.\n\n
 Dabei fallen schnell große Datenmengen schnell an. Da jeweils Vollsicherungen angelegt werden, können problemlos ältere 
 Sicherungen gelöscht werden.\n\n
@@ -729,6 +732,7 @@ Sollen alte Datesicherungen automatisch gelöscht werden?" "Datensicherungen auf
     yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
     avcron=${?}
 
+#   Ports fuer SSH, HTTPS-Portal und HTTPs-OwnCloud ermitteln.
     sshport=`freeports`
     httpsport=`freeports`
     ocport=`freeports`
@@ -1691,9 +1695,13 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    # Festlegen, welche Pakete installiert werden sollen.
 	    kopanorepo=`getconfdata "KopanoRepo" "2"`
 	    if [[ $kopanorepo == "limited" ]]; then
-		zypper ar -f $cfilesdir/zypper/kopano-limited.repo
+		zypper ar -f $cfilesdir/zypper/kopano-limited.repo 2>&1| tee -a $setupdir/sine.log
 		msgbox "Das Kopano Limited Repository benötigt Zugangsdaten, diese werden nachfolgend abgefragt." "Kopano Repository"
-		zypper ref --repo Kopano-openSUSE-42.1_limited
+		zypper ref --repo Kopano-openSUSE-42.2_limited
+		if [[ $? != 0 ]]; then
+		    msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
+		    exit 1
+		fi
 		zypper -n install -n `cat $setupdir/zypper-package-lists/kopanolimited` 2>&1| tee -a $setupdir/sine.log | pgbox
 		zyppercheck ${PIPESTATUS[0]}
 	    else
@@ -1708,10 +1716,10 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    rm -f `ls /etc/postfix/ |grep "main.[dovecot|cyrus]"` 2>&1| tee -a $setupdir/sine.log
 	    mv /etc/postfix/main.zarafa /etc/postfix/main.cf 2>&1| tee -a $setupdir/sine.log
 	    
-	    # Zarafa AD Schema-Erweiterungen einpflegen
+	    # Zarafa/Kopano AD Schema-Erweiterungen einpflegen
 	    basedn=`getconfdata "baseDN" "2"`
-	    pgsubtitle="Zarafa AD Schema-Erweiterungen werden installiert - das dauert..."
-	    #Ermitteln, welche Samba-Pakete zum Einsatz kommen
+	    pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
+	    # Ermitteln, welche Samba-Pakete zum Einsatz kommen
 	    sambapackages=`getconfdata "SambaPakete" "2"`
 	    if [[ $sambapackages == "sernet" ]]; then
 		# Sernet-Samba AD stoppen
@@ -1720,14 +1728,14 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 		# Eigene Samba-Pakete stoppen
 		systemctl stop samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
 	    fi
-
+	    # AD sichern
 	    adbackup 2>&1| tee -a $setupdir/sine.log | pgbox
 	    zarafa_schema_add.sh $basedn $setupdir/zarafa-ads/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $setupdir/sine.log
 	    if [[ $sambapackages == "sernet" ]]; then
-		# Sernet-Samba AD stoppen
+		# Sernet-Samba AD starten
 		systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
 	    else
-		# Eigene Samba-Pakete stoppen
+		# Eigene Samba-Pakete starten
 		systemctl start samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
 	    fi
 	    ;;
