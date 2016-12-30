@@ -2540,14 +2540,7 @@ case "$whichgroupware" in
 	cd $setupdir
 	clear
 	windowtitle="Kopano Konfiguration"
-	dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/zarafa.txt" 38 90
-
-	## aufraeumen - Stefan - Webaccess fliegt raus
-	## Fix Zarafa Package-Bugs
-	# Spaeter wieder entfernen
-	#mkdir -p /var/lib/zarafa-webaccess/tmp
-	#mkdir -p /var/lib/zarafa-webaccess/plugins
-	#chmod a+rwx /var/lib/zarafa-webaccess/tmp
+	dialog --backtitle "$dialogtitle" --title "$windowtitle"  --exit-label "Weiter" --textbox "$setupdir/infofiles/kopano.txt" 38 90
 
 	# htaccess-Dateien entfernen, wenn Apache Worker MPM aktiv ist
 	#isworker=`ps ax |grep httpd2-worker |grep -v grep|wc -l`
@@ -2621,14 +2614,6 @@ case "$whichgroupware" in
 
 	file="users_common.sh"
 	changevalues $path $file "$strings"
-	## aufraeumen - Stefan - Webaccess fliegt raus
-	#path="/etc/zarafa/webaccess-ajax"
-	#file="config.php"
-	#strings="London%Berlin"
-	#changevalues $path $file "$strings"
-
-	#strings="en_GB%de_DE.UTF-8"
-	#changevalues $path $file "$strings"
 
 	path="/etc/kopano/webapp"
 	file="config.php"
