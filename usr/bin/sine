@@ -1158,6 +1158,23 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 	    changevalues $confdir $file "$strings"
 	    ;;
     esac
+
+    erp=`getconfdata "ERPSoftware" "2"`
+    ## verwendete ERP in Konfigurationsdatei schreiben
+    case $erp in
+	"wawision" ) 
+	    strings="usederp%wawision"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"kivitendo" )
+	    strings="usederp%kivitendo"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"keine" )
+	    strings="usederp%none"
+	    changevalues $confdir $file "$strings"
+	    ;;
+    esac
     
     # NTP-Dienst fuer AD anpassen
     ntpconf="/etc/ntp.conf"

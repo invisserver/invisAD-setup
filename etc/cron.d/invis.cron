@@ -54,11 +54,6 @@ MAILTO=/dev/null
 30 */6 * * 1-5 root /usr/bin/addaddress
 40 */6 * * 1-5 root /usr/bin/buildpostaladdress.pl
 
-# Erweitern aller LDAP Gruppeneintraege um die Group-e Attribute
-# bzw. Zarafa Attribute
-# Alle 10 Minuten 
-#*/10 * * * * root /usr/bin/manipgroups
-
 # Saeubern der Transfer-Freigabe
 # Einmal taeglich um 5:00 Uhr
 0 5 * * * root /usr/bin/clean_transfer
@@ -70,3 +65,7 @@ MAILTO=/dev/null
 # Verzeichnisse geloeschter Benutzer und Gruppen archivieren
 # Einmal taeglich um 2:00 Uhr
 0 2 * * * root /usr/bin/invisarchiver
+
+# WaWision Prozesstarter laufen lassen
+# jede Minute. Das Script selbst prueft, ob WaWision installiert ist.
+* * * * * root /usr/bin/wawips
