@@ -369,6 +369,16 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
+
+	    // RID ermitteln, wird zur Festlegung der uidNumber benoetigt.
+	    try {
+		$collection = $adldap->user()->infoCollection("$uid",array('*'));
+	    } catch (adLDAPException $e) {
+		if (! empty($e)) {
+		    return $e;
+		    exit();
+		}
+	    }
 	    $userrid = ridfromsid(bin_to_str_sid($collection->objectsid));
 
 	    // Attribute anpassen
