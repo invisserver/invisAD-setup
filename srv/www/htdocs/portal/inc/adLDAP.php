@@ -10,8 +10,10 @@
  *   http://adldap.sourceforge.net/
  * 
  * Copyright (c) 2006-2012 Scott Barnett, Richard Hyland
- * Copyright (c) 2014-2016 Stefan Schaefer (invis-server.org)
  *
+ * Modified for invis-Server.org by Stefan Schaefer
+ * email: stefan@invis-server.org
+ * Copyright (c) 2013-2017 Stefan Schaefer
  * 
  * We'd appreciate any improvements or additions to be submitted back
  * to benefit the entire community :)

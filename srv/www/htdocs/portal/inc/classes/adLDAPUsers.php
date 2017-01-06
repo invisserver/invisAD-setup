@@ -12,7 +12,9 @@
  * 
  * Copyright (c) 2006-2012 Scott Barnett, Richard Hyland
  * 
- * Copyright (c) 2014,2015 Stefan Schaefer stefan@invis-server.org
+ * Modified for invis-Server.org by Stefan Schaefer
+ * email: stefan@invis-server.org
+ * Copyright (c) 2013-2017 Stefan Schaefer
  *
  * We'd appreciate any improvements or additions to be submitted back
  * to benefit the entire community :)
@@ -127,7 +129,7 @@ class adLDAPUsers {
         $add["objectclass"][3] = "user"; //person?
 
 	// Groupware Objektklasse
-	if ( $GROUPWARE == "zarafa" ) {
+	if ( $GROUPWARE == "zarafa" or "kopano" ) {
 	    $add["objectclass"][4] = "zarafaUser";
 	}
 
