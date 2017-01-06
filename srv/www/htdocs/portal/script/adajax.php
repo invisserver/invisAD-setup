@@ -73,6 +73,10 @@ setcookie('invis-request', '', time() - 3600, '/');
 //--------------------
 // USER STUFF
 //--------------------
+
+
+
+
 function userList() {
 	global $cookie_data, $adldap;
 	// Raw data array returned
@@ -668,7 +672,9 @@ function userCreate($uid) {
 		"loginshell" => '/bin/bash',
 		"unixhomedirectory" => "/home/".$cookie_data['uid'],
 		"gidnumber" => $dugidnumber,
-		"uidnumber" => ( $userrid + $SFU_GUID_BASE )
+		"uidnumber" => ( $userrid + $SFU_GUID_BASE ),
+		"zarafaaccount" => true,
+		"zarafaadmin" => true
 		);
 	    try {
 		$result = $adldap->user()->modify("$uid",$attrmod);
