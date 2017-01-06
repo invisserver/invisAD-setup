@@ -1722,11 +1722,13 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 		zypper -n install -n `cat $setupdir/zypper-package-lists/kopanolimited` 2>&1| tee -a $setupdir/sine.log | pgbox
 		zyppercheck ${PIPESTATUS[0]}
 	    else
+		zypper ar -f $cfilesdir/zypper/kopano-obs.repo 2>&1| tee -a $setupdir/sine.log
+		zypper ref --repo Kopano-openSUSE-42.2_limited
 		zypper -n install -n `cat $setupdir/zypper-package-lists/kopanoobs` 2>&1| tee -a $setupdir/sine.log | pgbox
 		zyppercheck ${PIPESTATUS[0]}
 	    fi
 
-	    # Kopano konfigurieren hier, Starten der Dienste erfolgt im Groupware Abschnitt
+	    # Kopano nur installieren, Konfigurieren und Starten der Dienste erfolgt im Groupware Abschnitt
 	    # Symbolischen Link auf das z-push2 Verzeichnis anlegen
 	    ln -s /srv/www/htdocs/z-push2 /srv/www/htdocs/z-push
 	    
