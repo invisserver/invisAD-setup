@@ -4,6 +4,8 @@
 # For a more detailed description of the individual variables see
 # the comments for FW_SERVICES_*_EXT in /etc/sysconfig/SuSEfirewall2
 #
+# (c) 2013 Ingo Goeppert - invis-server.org
+# (c) 2017 Stefan Schaefer - invis-server.org
 
 ## Name: Samba 4 ADDC
 ## Description: opens ports for Samba 4 as ActiveDirectory DomainController
@@ -12,15 +14,15 @@
 
 # space separated list of allowed TCP ports
 # With Samba-DNS:
-# TCP="53 88 135 139 389 445 464 636 1024:5000 3268 3269 5353"
+# TCP="42 53 88 135 139 389 445 464 636 1024:5000 3268 3269 5353"
 # With DNS in separate config (BIND):
-TCP="88 135 139 389 445 464 636 1024:5000 3268 3269 5353"
+TCP="42 88 135 139 389 445 464 636 1024:5000 3268 3269 5353"
 
 # space separated list of allowed UDP ports
 # With Samba-DNS:
 # UDP="53 88 137 138 389 464 5353"
 # With DNS in separate config (BIND):
-UDP="88 137 138 389 464 5353"
+UDP="88 137 138 389 445 464 5353"
 
 # space separated list of allowed RPC services
 RPC=""
