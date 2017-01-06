@@ -1858,9 +1858,11 @@ cups() {
     changevalues $path $file $strings
 
     net=`getconfdata "Networkbase" "2"`
-    path="/etc/cups"
-    file="cupsd.conf"
     strings="192.168.220.0%$net"
+    changevalues $path $file $strings
+
+    mask=`getconfdata "NMask-short" "2"`
+    strings="/24%/$mask"
     changevalues $path $file $strings
 
     chkservice "cups"
