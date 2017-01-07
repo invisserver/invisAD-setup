@@ -942,7 +942,7 @@ sysprep() {
     strings="avCheck:j%avCheck:$avcron"
     changevalues $confdir "invis.conf" "$strings"
 
-    pgsubtitle="Der ausgewählte Virenscanner wird installiert.\nAls globales Quarantäneverzeichnis wurde /var/spool/infected angelegt."
+    pgsubtitle="Der Virenscanner ClamAV wird installiert, aktualisiert und aktiviert.\nAls globales Quarantäneverzeichnis wurde /var/spool/infected angelegt."
     if [[ $av == "clamav" ]]; then 
 	zypper -n install -n clamav 2>&1| tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
@@ -1714,7 +1714,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    if [[ $kopanorepo == "limited" ]]; then
 		zypper ar -f $cfilesdir/zypper/kopano-limited.repo 2>&1| tee -a $setupdir/sine.log
 		msgbox "Das Kopano Limited Repository benötigt Zugangsdaten, diese werden nachfolgend abgefragt." "Kopano Repository"
-		zypper ref --repo Kopano-openSUSE-42.2_limited
+		zypper --gpg-auto-import-keys ref --repo Kopano-openSUSE-42.2_limited
 		if [[ $? != 0 ]]; then
 		    msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
 		    exit 1
@@ -1723,8 +1723,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 		zyppercheck ${PIPESTATUS[0]}
 	    else
 		zypper ar -f $cfilesdir/zypper/kopano-obs.repo 2>&1| tee -a $setupdir/sine.log
-		zypper ref --repo 'Kopano Core (openSUSE_Leap_42.2)'
-		rpmkeyimporter
+		zypper --gpg-auto-import-keys ref --repo 'Kopano Core (openSUSE_Leap_42.2)' 2>&1| tee -a $setupdir/sine.log
 		zypper -n install -n `cat $setupdir/zypper-package-lists/kopanoobs` 2>&1| tee -a $setupdir/sine.log | pgbox
 		zyppercheck ${PIPESTATUS[0]}
 		# Wenn Kopano aus dem OBS installiert wurde liegt die Propmap Datei in /usr/share/kopano
@@ -2897,16 +2896,19 @@ Für den Multi-User-Betrieb sollten Sie über einen ISDN Anlagenanschluss verfü
 am Faxgate Client anmelden und der alle eingehenden Faxe per email erhält.
 Geben Sie ein zugehöriges Passwort ein." "$windowtitle"
 
-	smbldap-useradd -m fax
-	smbldappw fax
+
+	faxpw=`pwgen -snc 8 1`
+	## Passwort darf nicht ablaufen
+	samba-tool user setexpiry --noexpiry ldap.admin
+	samba-tool user create fax "$faxpw" --surname="CAPI" --given-name="Fax" --description="Beutzer für Fax-System" 2>&1| tee -a $setupdir/sine.log | pgbox
+	msgbox "Es wurde ein Benutzer \"fax\" angelegt. Dieser Benutzer wird für den Zugang zum Fax-System benötigt.\nSein Passwort lautet: $faxpw"
+
 	echo "Fax-Benutzer erfolgreich eingerichtet"|mailx -s "Init-Mail" fax@localhost
 
-	chkservice "nmb"
-	chkservice "smb"
+	chkservice "samba"
     else
 	cat $cfilesdir/fileserver/samba/smb.faxgate.mu >> /etc/samba/smb.shares.conf
-	chkservice "nmb"
-	chkservice "smb"
+	chkservice "samba"
     fi
 	# sudoers Erweiterung wird eingefügt
 	cp $cfilesdir/CapiSuite/faxgate/sudoers-expansion $setupdir
