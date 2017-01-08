@@ -139,6 +139,9 @@ function userList() {
 		case 88:
 		    $type = 1;
 		    break;
+		case 344:
+		    $type = 1;
+		    break;
 		case 2:
 		    $type = 2;
 		    break;
@@ -393,7 +396,9 @@ function userCreate($uid) {
 		'gidnumber' => $mdgidnumber,
 		'loginshell' => '/bin/false',
 		'unixhomedirectory' => "/home/".$cookie_data['uid'],
-		'uidnumber' => ( $userrid + $SFU_GUID_BASE )
+		'uidnumber' => ( $userrid + $SFU_GUID_BASE ),
+		"zarafaaccount" => true,
+		"zarafasharedstoreonly" => true
 	    );
 	    try {
 		$result = $adldap->user()->modify("$uid",$attrmod);
