@@ -1842,6 +1842,7 @@ esac
 
     # Postfix neustarten und in Runlevel aufnehmen
     chkservice "postfix"
+    chkconfig "saslauthd"
 
     writeprepstat "cups"
     waitbox "mailserver" "cups"
