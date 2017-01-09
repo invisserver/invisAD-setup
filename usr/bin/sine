@@ -2935,13 +2935,13 @@ Geben Sie ein zugehöriges Passwort ein." "$windowtitle"
 	# Faxgate im Portal aktivieren
 	swpestat FaxClient TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 
-	writeprepstat "webcdwriter"
-	waitbox "lxerp" "webcdwriter"
+	writeprepstat "openvpn"
+	waitbox "faxgate" "openvpn"
 	
 	
     else
 	msgbox "Fax-Server-Installation übersprungenen." "$windowtitle"
-	writeprepstat "webcdwriter"
+	writeprepstat "openvpn"
     fi 
 }
 
