@@ -344,7 +344,7 @@ iPortEntryPosition: Dokumentation
 iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
 
-# invis Server Adminisrationshandbuch
+# invis Server Administrationshandbuch
 dn: cn=invisAdminManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
@@ -367,7 +367,7 @@ cn: FGCManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/manuals/fgc/Help.html
 iPortEntryDescription: Zugriff auf das Faxgate Client Anwenderhandbuch für invis-Server.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Dokumentation
 iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
@@ -381,7 +381,7 @@ cn: openSUSEManual
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/handbuch
 iPortEntryDescription: Zugriff auf das openSUSE Linux Handbuch.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Dokumentation
 iPortEntryButton: openSUSE Handbuch
 iPortEntryPriv:	user
