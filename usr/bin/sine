@@ -3081,7 +3081,7 @@ dokuwiki() {
 
     # Display Wiki Page Plugin herunterladen
     # Voruebergehender Link fuer Monobook Template
-    wget http://cloud.github.com/downloads/tatewake/dokuwiki-template-monobook/monobook-stable.tar.gz 2>&1 | tee -a $setupdir/sine.log | pgbox
+    wget -O monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $setupdir/sine.log | pgbox
     getpath=`find $setupdir -name "monobook*.tar.gz"`
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $setupdir/sine.log | pgbox
 
