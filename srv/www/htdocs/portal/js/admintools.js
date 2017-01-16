@@ -700,7 +700,7 @@ function hostListResponse(request) {
 	populateHostList(null, 0);
 
 	// add host button
-	var node = new Element('table', {'onclick': 'hostAdd();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/host.png" /></td><td style="vertical-align: middle;">PC hinzufügen</td></tr>');
+	var node = new Element('table', {'onclick': 'hostAdd();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/host.png" /></td><td style="vertical-align: middle;">Gerät hinzufügen</td></tr>');
 	content.insert(node);
 	
 	// discover hosts button
@@ -1374,7 +1374,7 @@ function hostAdd() {
 	
 	lightbox.show(500, true);
 	
-	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('PC hinzufügen'));
+	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('Gerät hinzufügen'));
 	
 	var box = new Element('table', {'id': 'groupbox', 'cellpadding': '0', 'cellspacing': '0'});
 	lightbox.getContent().insert(box);

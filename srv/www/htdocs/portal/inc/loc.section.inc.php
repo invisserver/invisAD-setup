@@ -11,10 +11,10 @@ if (!isset($CONF)) die;
 require_once('ldap.inc.php');
 
 echo <<<TEST
-<div style="text-align: justify; font-size: 0.9em;">Dieses Portal gewährt Ihnen auf einfache Weise Zugriff auf die Funktionen Ihres <b><i>invis Servers</b></i>. Wenn Sie sich über die Schaltfläche <font color="red">"Anmelden"</font> oben rechts am Portal anmelden werden, Ihre Möglichkeiten auf Funktionen des Servers zuzugreifen entsprechend Ihrem Benutzerstatus erweitert. <br>Hinter den Registern oben verbergen sich verschiedene Gruppen von Funktionen und Verknüpfungen:</div>
+<div style="text-align: justify; font-size: 0.9em;">Dieses Portal gewährt Ihnen auf einfache Weise Zugriff auf die Funktionen Ihres <b><i>invis Servers</b></i>. Wenn Sie sich über die Schaltfläche <font color="red">"Anmelden"</font> oben rechts am Portal anmelden, werden Ihre Möglichkeiten auf Funktionen des Servers zuzugreifen, entsprechend Ihrem Benutzerstatus erweitert. <br>Hinter den Registern oben verbergen sich verschiedene Gruppen von Funktionen und Verknüpfungen:</div>
 <hr>
 <ul>
-<li><div style="text-align: justify; font-size: 0.9em;"><b>Lokal</b> - Dienste die Ihr <b><i>invis Server</i></b> selbst anbietet.</div></li>
+<li><div style="text-align: justify; font-size: 0.9em;"><b>Lokal</b> - Funktionen und Programme die Ihr <b><i>invis Server</i></b> selbst anbietet.</div></li>
 <li><div style="text-align: justify; font-size: 0.9em;"><b>Internet</b> - Nützliche Links ins Internet. Am Portal angemeldet können Sie hier eigene Links hinzufügen.</div></li>
 <li><div style="text-align: justify; font-size: 0.9em;"><b>Status</b> - Überblick über den Status Ihres <b><i>invis Server</i></b>.</div></li>
 <li><div style="text-align: justify; font-size: 0.9em;"><b>? (Helpdesk)</b> - Support-Formular und Dokumentationen zur Handhabung des Servers.</div></li>
