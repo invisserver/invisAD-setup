@@ -704,7 +704,7 @@ function hostListResponse(request) {
 	content.insert(node);
 	
 	// discover hosts button
-	var node2 = new Element('table', {'onclick': 'hostDiscover();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/host.png" /></td><td style="vertical-align: middle;">PCs suchen</td></tr>');
+	var node2 = new Element('table', {'onclick': 'hostDiscover();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/host.png" /></td><td style="vertical-align: middle;">Geräte suchen</td></tr>');
 	content.insert(node2);
 }
 
@@ -1508,7 +1508,7 @@ function hostDiscoverResponse(request) {
 	
 	lightbox.setTitle(new Element('div', {
 		'class': 'section-title'
-	}).update('PCs suchen'));
+	}).update('Geräte suchen'));
 	
 	var box = new Element('table', {
 		'id': 'host_discover',

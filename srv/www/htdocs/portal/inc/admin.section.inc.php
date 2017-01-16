@@ -20,7 +20,7 @@
 			<ul>
 				<li onclick="invis.request('script/adajax.php', userListResponse, {c: 'user_list'});" title="Benutzer, juhu!!">Benutzer</li>
 				<li onclick="invis.request('script/adajax.php', groupListResponse, {c: 'group_list'});" title="Gruppen ... naja">Gruppen</li>
-				<li onclick="invis.request('script/adajax.php', hostListResponse, {c: 'host_list'});" title="PCs ... ach hör doch auf ...!!">PCs</li>
+				<li onclick="invis.request('script/adajax.php', hostListResponse, {c: 'host_list'});" title="Netzwerk ... ach hör doch auf ...!!">Netzwerk</li>
 				<li onclick="invis.request('script/adajax.php', serviceListResponse, {c: 'service_list'});" title="Dienste ... was es nicht alles gibt ;-)">Dienste</li>
 			</ul>
 			<br /><b style="color: #b0b0b0;">externe Tools</b><br />
