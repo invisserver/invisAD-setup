@@ -1,6 +1,6 @@
 #!/bin/bash
-# Script zur regelmaessigen Sicherung der Zarafa-Stores
-# (c) 2011 Stefan Schäfer -- invis-server.org
+# Script zur regelmaessigen Sicherung der Kopano-Stores
+# (c) 2011,2017 Stefan Schäfer -- invis-server.org
 # License: GPLv3
 # Questions: stefan@invis-server.org
 
@@ -22,8 +22,8 @@
 conffile="/etc/invis/invis.conf"
 #passfile="/etc/invis/invis-pws.conf"
 
-if [[ ! `which zarafa-backup-plus` ]]; then
-    echo "Installieren Sie bitte zarafa-backup-plus aus den unterstützten Zarafa-Paketen."
+if [[ ! `which kopano-backup` ]]; then
+    echo "Installieren Sie bitte \"kopano-backup\" aus den unterstützten Kopano-Paketen."
     exit
 fi
 
@@ -52,4 +52,4 @@ if [[ ! -d $dasipath ]]; then
 fi
 
 # Datensicherung der Stores durchführen
-zarafa-backup-plus -O $dasipath -w 4 > /var/log/zbu.log 2>&1
+kopano-backup -O $dasipath -w 4 > /var/log/kopanobu.log 2>&1

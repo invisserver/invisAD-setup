@@ -2254,7 +2254,7 @@ Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Spe
     # MySQL Config schreiben, Speichereinstellungen anpassen
     # und in Runlevel integrieren und starten.
     cp $cfilesdir/sql/mysql/my.cnf /etc/
-    memsizes=($(zmemcalc))
+    memsizes=($(kmemcalc))
     path="/etc/"
     file="my.cnf"
     strings="innodbbps%${memsizes[0]}M"
