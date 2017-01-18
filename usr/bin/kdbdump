@@ -44,7 +44,7 @@ dbtarget=$(getconfdata $conffile "DBTarget" "2")
 DEST="$dasidir/vollsicherungen/$dbtarget"
 
 # mysqldump parameters
-DUMP_OPTS="-Q --single-transaction"
+DUMP_OPTS="-Q --skip-lock-tables --single-transaction"
 
 # Send Result EMail
 SEND_EMAIL=1
