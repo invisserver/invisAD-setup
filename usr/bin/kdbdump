@@ -90,11 +90,11 @@ function gen_email {
 }
 
 # Main directory where backup will be stored
-if [ ! -d $DEST ]; then 
-  mkdir -p $DEST
+if [ ! -d "$DEST" ]; then 
+  mkdir -p "$DEST"
   # Only $OWNER.$GROUP can access it!
-  $CHOWN $OWNER:$GROUP -R $DEST
-  $CHMOD 0750 $DEST
+  $CHOWN "$OWNER":"$GROUP" -R "$DEST"
+  $CHMOD 0750 "$DEST"
 fi
 
 # Create backup directory
@@ -102,8 +102,8 @@ MBD="$DEST/$NOW"
 if [ ! -d "$MBD" ]; then
   mkdir "$MBD"
   # Only $OWNER.$GROUP can access it!
-  $CHOWN $OWNER:$GROUP -R $MBD
-  $CHMOD 0750 $MBD
+  $CHOWN "$OWNER":"$GROUP" -R "$MBD"
+  $CHMOD 0750 "$MBD"
 fi
 
 # Temp Message file
