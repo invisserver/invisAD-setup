@@ -3126,6 +3126,11 @@ dokuwiki() {
     cp $cfilesdir/dokuwiki/acl.auth.php /srv/www/htdocs/dokuwiki/conf/
     chown wwwrun:www /srv/www/htdocs/dokuwiki/conf/acl.auth.php
 
+    # Monobook Konfiguration installieren
+    cp $cfilesdir/webserver/monobook/monobook.conf /etc/apache2/conf.d
+    find /srv/www/htdocs/dokuwiki/lib/tpl/monobook -name ".htaccess" -exec rm {} \;
+    chkservice apache2 r
+
     # Dokuwiki im Portal aktivieren
     swpestat Dokuwiki TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 
