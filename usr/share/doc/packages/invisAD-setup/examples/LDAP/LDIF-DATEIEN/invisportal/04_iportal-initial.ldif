@@ -309,7 +309,7 @@ objectClass: iPortEntry
 iPortEntryName: ntop
 cn: ntop
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/ntop
+iPortEntryURL: [servername]:3000
 iPortEntryDescription: Das Programm ntop dient der Analyse des Datenverkehrs in Ihrem Netzwerk, nützlich etwa bei der Suche nach Fehlern. ntop ist im Normalbetrieb Ihres invis-Servers deaktiviert, da es diesen ansonsten unnötig belastet.
 iPortEntryActive: TRUE
 iPortEntryPosition: Administration
