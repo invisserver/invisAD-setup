@@ -49,15 +49,15 @@ iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
-# Groupware ZarafaApp
-dn: cn=ZarafaApp,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+# Groupware KopanoApp
+dn: cn=KopanoApp,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: iPortEntry
-iPortEntryName: ZarafaApp
-cn: ZarafaApp
+iPortEntryName: KopanoApp
+cn: KopanoApp
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/webapp
-iPortEntryDescription: Die moderne Webapp der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen in frischem "Look & Feel". 
+iPortEntryDescription: Die moderne Webapp der Groupware "Kopano" bietet Zugriff auf E-Mails, Terminkalender, Augabenverwaltung und Notizen in frischem "Look & Feel". 
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
