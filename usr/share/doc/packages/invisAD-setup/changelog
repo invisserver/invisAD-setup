@@ -1,5 +1,22 @@
 Neuere Changelogs sind auf unser Github-Seite zu finden.
 
+invis 12.x
+- Umstieg auf eigene Samba-Pakete mit AD-Unterstützung.
+- Wechsel von Zarafa auf Kopano
+- Basis: openSUSE Leap 42.2
+
+invis 11.0
+- Neugestaltung der SSL Schlüssel- und Zertifikatsverwaltung. Zum Einsatz kommt jetzt easy-rsa 3.x und es wird nur noch eine CA (Server-Zertifikate und VPN-Zertifikate) verwendet.
+
+invis 10.4
+- Wechsel auf openSUSE Leap (42.1) als Basis des invis-Servers
+
+invis 10.x
+- Umstellung auf ActiveDirectory. Samba3 und OpenLDAP werden durch Samba4 ersetzt
+
+################################################################################################################################
+Mit Version 9.3 endet invis-Server Classic.
+
 invis 9.x-dev
 - Script "netsetup" hinzugefuegt. Es erzeugt UDEV-Regeln zur Bennenung der Netzwerk-Devices
 - afterup-Script abgespeckt.
