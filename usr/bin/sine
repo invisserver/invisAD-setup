@@ -238,7 +238,7 @@ check() {
 	rpmkeyimporter
         ## zypper repo-Cache aktualisieren und Update fahren
         pgsubtitle="Repository-Cache wird aktualisiert"
-        zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
+        zypper --gpg-auto-import-keys ref 2>&1| tee -a $setupdir/sine.log | pgbox
         zyppercheck ${PIPESTATUS[0]}
         pgsubtitle="Online Update wird durchgeführt" 
         zypper -n up --type package 2>&1| tee -a $setupdir/sine.log | pgbox
