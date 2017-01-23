@@ -901,7 +901,7 @@ sysprep() {
 	# Samba Repo ermitteln
 	sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
 	# Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
-	zypper -n dup --from "$sambarepo" --allow-vendor-change
+	zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $setupdir/sine.log | pgbox
     fi
 
     # Nachfolgenden Block erhalten, aber an die sernet-Pakete gekoppelt
