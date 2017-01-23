@@ -2676,7 +2676,7 @@ case "$whichgroupware" in
 
 	## Stefan - LDIF anpassen
 	# Webapp im Portal aktivieren
-	swpestat ZarafaApp TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+	swpestat KopanoApp TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
     
 	writeprepstat "erp"
 	waitbox "groupware" "erp"
