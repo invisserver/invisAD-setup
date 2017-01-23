@@ -28,10 +28,5 @@ Für die Installation eines invis Servers 12.0 AD müssen folgende Voraussetzung
       Server nicht auf Anfragen, beeinträchtig dies sowohl die Installation Ihres invis-Servers
       als auch den späteren Betrieb.
       
-    - Für invis-Server 11.0 AD benötigen Sie zwingend die Samba4 Pakete des Anbieters Sernet GmbH.
-      Version 4.2 der Pakete erhalten Sie ohne persönliche Registrierung. Den öffentlichen
-      Username und Accesskey finden Sie auf: https://portal.enterprisesamba.com.
-      Das invis-Setup-Script "sine" wird Sie nach "Username" und "Accesskey" fragen. 
-      
     - Für den Fall, dass Sie ownCloud nutzen möchten, benötigen Sie zwingend einen funktionierenden 
       DDNS Namen oder eine feste IP Adresse über den bzw. die Sie Ihren Server erreichen können.
