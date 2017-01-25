@@ -9,9 +9,9 @@ werden konnten.
 Bitte wiederholen Sie den letzten Installationsschritt und achten Sie auf
 Fehlermeldungen.
 
-Notieren Sie sich etwaige Fehlermeldungen und teilen Sie sie uns im invis-
-Forum mit.
+Notieren Sie sich etwaige Fehlermeldungen und teilen Sie sie uns über die
+invis-Server User-Mailingliste mit.
 
-http://forum.invis-server.org
+http://www.invis-server.org/index.php?page=forum
 
 Ihr invis-Team.
