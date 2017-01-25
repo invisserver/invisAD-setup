@@ -12,9 +12,9 @@ Gelegentlich werden in den openSUSE Repositories einzelne Pakete umbenannt
 oder speziell nach einem Release-Wechsel entfernt, was zum gleichen Fehler 
 führt.
 
-Sollten Sie diese Fehlermeldung zu Gesicht bekommen, sprechen Sie uns im
-invis Server Forum darauf an.
+Sollten Sie diese Fehlermeldung zu Gesicht bekommen, sprechen Sie uns in
+der invis-Server User-Mailingliste darauf an.
 
-http://forum.invis-server.org
+http://www.invis-server.org/index.php?page=forum
 
 Ihr invis-Team.
