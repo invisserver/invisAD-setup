@@ -42,4 +42,4 @@ if [[ ! -d $backupdir ]]; then
     mkdir -p $backupdir
 fi
 
-tar -czf $backupdir/Samba_$datum.tar.gz --exclude=profiles --exclude=msg.* --exclude=ldapi --exclude=pipe --exclude=socket --exclude=ldapi -C / var/cache/samba var/lib/samba
+tar -czf $backupdir/Samba_$datum.tar.gz --exclude=profiles --exclude=msg.* --exclude=ldapi --exclude=pipe --exclude=socket --exclude=ldapi -C / var/lib/samba
