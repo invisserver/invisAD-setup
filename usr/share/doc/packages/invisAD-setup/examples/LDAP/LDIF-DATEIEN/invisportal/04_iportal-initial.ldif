@@ -77,6 +77,20 @@ iPortEntryPosition: Lokal
 iPortEntryButton: Groupware
 iPortEntryPriv:	user
 
+# AZE Kimai
+dn: cn=Kimai,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Kimai
+cn: Kivitendo
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/kimai
+iPortEntryDescription: Kimai ist eine Open-Source Zeiterfassung. Sie können Arbeitszeiten stoppen oder manuell eingeben. Arbeitszeiten können auf Kunden oder Projekte gebucht werden. Es können Abrechnungen über variable Zeiträume erstellt und Daten exportiert werden.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Zeiterfassung
+iPortEntryPriv:	user
+
 # ERP Kivitendo
 dn: cn=Kivitendo,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top

@@ -1,0 +1,20 @@
+Überblick über Kimai Arbeitszeiterfassung
+
+Kimai ist eine kostenlose Open Source Zeiterfassung, die über einen großen 
+Anwenderkreis und eine aktive Community verfügt. Kimai verwaltet beliebig 
+viele Benutzer, Kunden, Projekte und Aufgaben.
+
+Mit Kimai können Sie und Ihr Team spielend leicht Ihre Kunden und Projekten 
+tracken, Zeiten buchen, Stundenlöhne hinterlegen und Rechnungen erstellen. 
+Kimai ist eine Software, die komplett im Browser läuft und daher eine Server 
+Umgebung mit PHP und MySQL zur Nutzung voraussetzt.
+
+Kimai ist eine Multi-Benutzer Software, die es Ihnen ermöglicht, Ihre 
+Zeiterfassung unternehmensweit für alle Standorte an einer Stelle zu verwalten. 
+Aber auch für Einzelpersonen, Freelancer und kleine Teams ist Kimai 
+hervorragend geeignet.
+Die Funktionsvielfalt wird abgerundet durch eine einfach zu bedienende mobile 
+Oberfläche, so dass Sie auch beim Kunden vor Ort Ihre Arbeitszeiten aufzeichnen 
+können.
+
+Kimai verfügt über umfangreiche Möglichkeiten des Datenexports.

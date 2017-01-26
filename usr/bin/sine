@@ -1065,11 +1065,6 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     chmod go+r /etc/invis/certs/ca.crt
     
     # DH-Parameterdatei erzeugen
-    # easyrsa nutzt die Vorgabe der allgemeinen Schluessellaenge
-    # auch fuer die DH Parameter Datei. Daraus resultiert eine
-    # sehr laaaaaaaange dauernde Berechnung.
-    #easyrsa gen-dh 2>&1| tee -a $setupdir/sine.log | pgbox
-    
     # 2048 und 512 Bit DH-Parameter direkt mit openssl 
     openssl gendh -out $path/$domain/dh.pem -2 2048 2>&1| tee -a $setupdir/sine.log | pgbox
     openssl gendh -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -3229,9 +3224,45 @@ owncloud() {
     else
 	msgbox "ownCloud Installation übersprungen" "$windowtitle"
     fi
-    writeprepstat "virtualbox"
-    waitbox "owncloud" "virtualbox"
+    writeprepstat "kimai"
+    waitbox "owncloud" "kimai"
 }
+
+kimai() {
+    cd $setupdir
+    clear
+    windowtitle="Kimai Arbeitszeiterfassung einrichten"
+
+    dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/kimai.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kimai installieren?" 0 0
+    cont=${?}
+
+    if [[ $cont == "0" ]]; then
+	pgsubtitle="Software wird installiert"
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zypper -n install kimai 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+	# Hier Datenbank installation einfügen
+	kimaipass=`mkdbsilent kimai kimai a`
+
+	msgbox "Datenbank für Kimai wurde angelegt.\n\nDatenbank: kimai\nBenutzer: kimai\nPasswort: $kimaipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf Kimai benötigt." "$windowtitle"
+
+	# Apache Konfiguration aktivieren
+	# Flag KIMAI setzen
+	a2enflag KIMAI
+	chkservice apache2 r
+
+	# ownCloud im Portal aktivieren
+	swpestat Kimai TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
+
+    else
+	msgbox "Kimai Installation übersprungen" "$windowtitle"
+    fi
+    
+
+    writeprepstat "virtualbox"
+    waitbox "kimai" "virtualbox"
+}
+
 
 virtualbox() {
     cd $setupdir
@@ -3294,6 +3325,7 @@ virtualbox() {
     #waitbox "virtualbox" "xfce"
 
 }
+
 
 #xfce() {
 #    cd $setupdir
