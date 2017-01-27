@@ -35,10 +35,52 @@ changevalues() {
     mv $1/$2.new $1/$2
 }
 
+# Scan mit ESET durchführen, Log beim ersten Durchgang immer neu beginnen
+CLEAR_LOG="1"
+doesetscan() {
+    SCANPATH=$1
+    if [[ $CLEAR_LOG == "1" ]]; then
+        CLEAR_LOG="0"
+        "$ESET_BIN" $ESET_PARA --log-rewrite "$SCANPATH" >> /dev/null 2>&1
+    else
+        "$ESET_BIN" $ESET_PARA "$SCANPATH" >> /dev/null 2>&1
+    fi
+    SCAN_STATE=$?
+    case $SCAN_STATE in
+	0)
+	  # Still sein wenn alles Ok ist
+	  ;;
+	  
+	1)
+	  echo "Virus in $SCANPATH gefunden und bereinigt! Mehr siehe $AVLOG"
+	  ;;
+	
+	10)
+	  echo "Nicht alle Dateien in $SCANPATH gescannt! Mehr siehe $AVLOG"
+	  ;;
+	
+	50)
+	  echo "Virus in $SCANPATH gefunden! Mehr siehe $AVLOG"
+	  ;;
+	
+	100)
+	  echo "Fehler beim Scannen von $SCANPATH aufgetreten! Mehr siehe $AVLOG"
+	  ;;
+	
+	*)
+	  echo "Status $SCAN_STATE beim Scannen von $SCANPATH aufgetreten! Mehr siehe $AVLOG"
+	  ;;
+    esac
+}
+
 # Basis-Variablen
 doavrun=`getconfdata $conffile "avCheck" "2"`
+doclean=`getconfdata $conffile "avClean" "2"`
 scanner=`getconfdata $conffile "AV" "2"`
 quardir=`getconfdata $conffile "quarDir" "2"`
+AVLOG="/var/log/avrun.log"
+ESET_BIN="/opt/eset/esets/sbin/esets_scan"
+ESET_PARA="-f $AVLOG --unsafe --unwanted --adv-heur --quarantine --quar-dir $quardir"
 
 if [[ $doavrun == "j" ]]; then
     if [[ $scanner == "antivir" ]]; then
@@ -46,8 +88,21 @@ if [[ $doavrun == "j" ]]; then
 	avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /srv/shares
 	avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /home
     else
-	clamscan -r -i --log=/var/log/clamscan --move=$quardir /var/lib/samba/profiles/
-	clamscan -r -i --log=/var/log/clamscan --move=$quardir /srv/shares
-	clamscan -r -i --log=/var/log/clamscan --move=$quardir /home
+	if [[ $scanner == "eset" ]]; then
+	    if [[ $doclean == "j" ]]; then
+		ESET_PARA="$ESET_PARA --clean-mode=standard"
+	    else
+		ESET_PARA="$ESET_PARA --clean-mode=none"
+	    fi
+	    
+	    # Die verschiedenen Verzeichnisse scannen
+	    doesetscan "/var/lib/samba/profiles"
+	    doesetscan "/srv/shares"
+	    doesetscan "/home"
+	else
+	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /var/lib/samba/profiles/
+	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /srv/shares
+	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /home
+	fi
     fi
 fi
