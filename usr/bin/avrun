@@ -79,8 +79,9 @@ doclean=`getconfdata $conffile "avClean" "2"`
 scanner=`getconfdata $conffile "AV" "2"`
 quardir=`getconfdata $conffile "quarDir" "2"`
 AVLOG="/var/log/avrun.log"
+AVFUNDE="/var/log/avfunde.log"
 ESET_BIN="/opt/eset/esets/sbin/esets_scan"
-ESET_PARA="-f $AVLOG --unsafe --unwanted --adv-heur --quarantine --quar-dir $quardir"
+ESET_PARA="-f $AVLOG --unsafe --unwanted --adv-heur --ext-exclude iso --quarantine --quar-dir $quardir"
 
 if [[ $doavrun == "j" ]]; then
     if [[ $scanner == "antivir" ]]; then
@@ -99,6 +100,13 @@ if [[ $doavrun == "j" ]]; then
 	    doesetscan "/var/lib/samba/profiles"
 	    doesetscan "/srv/shares"
 	    doesetscan "/home"
+	    
+	    # Ausgabe der Zeilen mit Funden
+	    grep -v 'threat="is OK"' "$AVLOG" | grep -E 'threat="[^"]+"' > "$AVFUNDE"
+	    if [[ $? == "0" ]]; then
+		echo "Funde:"
+		cat "$AVFUNDE"
+	    fi
 	else
 	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /var/lib/samba/profiles/
 	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /srv/shares
