@@ -1552,6 +1552,18 @@ dns() {
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
     samba-tool dns add 127.0.0.1 $domain mail A $ipaddr -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
 
+    ## externe IP falls vorhanden aus DNS entfernen
+    ips=(`dig $fqdn +short`)
+    if (( ${#ips[*]} == 2 )); then
+	## Sicherheitshalber Lokalisierung auf POSIX setzen, damit ifconfig berechenbar funktioniert
+	## Sollte eigentlich generell auf POSIX gesetzt sein....
+	oldlang=$LANG
+	LANG=POSIX
+	extip=`ifconfig extern | grep "inet addr" | cut -d ":" -f 2 |cut -d " " -f 1`
+	samba-tool dns delete 127.0.0.1 $domain $fqdn A $extip -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
+	LANG=$oldlang
+    fi
+
     writeprepstat "dhcp"
     waitbox "dns" "dhcp"
 }
