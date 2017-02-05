@@ -2001,9 +2001,11 @@ fileserver() {
 
     msgbox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
 Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt über die Freigaben:\n\n
+    - Gruppen: Mitglieder der jeweiligen Gruppe haben Zugriff auf das gleichnamige Verzeichnis.\n
+    - Portal: Freigabe für den Dateiaustausch über das invis-Portal.\n
     - Verwaltung: Freigabe für Mitglieder der gleichnamigen Gruppe.\n
     - Archiv: Ablageort für nicht mehr aktuelle Dateien.\n
-    - Projekte: Ablageort für aktuelle Dateien und das Group-e Projektmanagement.\n
+    - Aktuell: Ablageort für aktuelle Dateien.\n
     - Service: Dateien für den Domänen-Administrator, wie Software, Treiber und Patches.\n
     - Transfer: Freigabe für Dateiaustausch.\n
     - & Media: Freigabe für Multimedia-Dateien.\n\n
