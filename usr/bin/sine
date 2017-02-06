@@ -716,7 +716,7 @@ Sollen alte Dateien und Verzeichnisse automatisch aus der Transfer-Freigabe gel�
     yesno "Auf Ihrem invis-Server werden regelmäßig Sicherung vorhandener Datenbanken und des Wiki-Datenbestandes angelegt.\n\n
 Dabei fallen schnell große Datenmengen schnell an. Da jeweils Vollsicherungen angelegt werden, können problemlos ältere 
 Sicherungen gelöscht werden.\n\n
-Sollen alte Datesicherungen automatisch gelöscht werden?" "Datensicherungen aufräumen"
+Sollen alte Datensicherungen automatisch gelöscht werden?" "Datensicherungen aufräumen"
     cleandasi=${?}
     
     if [[ $cleandasi == "0" ]]; then
