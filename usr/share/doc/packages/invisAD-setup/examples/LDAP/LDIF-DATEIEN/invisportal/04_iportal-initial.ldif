@@ -82,7 +82,7 @@ dn: cn=Kimai,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=lo
 objectClass: top
 objectClass: iPortEntry
 iPortEntryName: Kimai
-cn: Kivitendo
+cn: Kimai
 iPortEntrySSL: FALSE
 iPortEntryURL: [servername]/kimai
 iPortEntryDescription: Kimai ist eine Open-Source Zeiterfassung. Sie können Arbeitszeiten stoppen oder manuell eingeben. Arbeitszeiten können auf Kunden oder Projekte gebucht werden. Es können Abrechnungen über variable Zeiträume erstellt und Daten exportiert werden.
