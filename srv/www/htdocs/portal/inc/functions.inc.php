@@ -53,44 +53,21 @@ function ridfromsid($sid) {
 // other stuff
 //----------------------
 
-// IP Adresse in Binaerformat umwandeln
-function ip2bin($ip) {
-    
-    $binip = decbin(ip2long($ip));
-    return $binip;
+// Pruefen, ob eine IP-Adresse in einem gegebenen Netz ist.
+// IP-Adressen muessen in Dezimalpunkschreibweise vorliegen
+// Netzmask = Anzahl der Bits fuer den Netzanteil
+function ipinnet($ip, $net, $shortmask) {
+    $bIp = ip2long($ip);                       // Zu pruefende IP in int wandeln
+    $bNet = ip2long($net);                     // Eigenes Netz in int wandeln 
+    $bMask = 0xffffffff << (32 - $shortmask);  // (32 - $shortmaks) Bits nach links schieben (von rechts mit 0-Bits fuer Hostanteil auffuellen)
+    $bNetOfIp = $bIp & $bMask;                 // Netz der gelieferten IP-Adresse bestimmen
+
+    // Debug-Output ins error-log
+    //error_log("bIp: ".long2ip($bIp)." bNet: ".long2ip($bNet)." bNetOfIp: ".long2ip($bNetOfIp)." bMask: ".long2ip($bMask));
+
+    // Wenn die Netz-IP identisch ist, sind wir im selben Netz
+    return ( $bNet == $bNetOfIp );
 }
-
-// pruefen, ob eine IP-Adresse in einem gegebenen Netz ist. IP-Adressen muessen in Dualschreibweise vorliegen
-function ipinnet($binip, $binipnet, $shortmask) {
-    return ( substr($binip, 0 ,$shortmask) ==  substr($binipnet, 0 ,$shortmask) );
-}
-
-// Netzwerkmaske umwandeln cidr -> dottet
-function cidr2netmask($cidr) {
-        for( $i = 1; $i <= 32; $i++ )
-        $bin .= $cidr >= $i ? '1' : '0';
-
-        $netmask = long2ip(bindec($bin));
-
-        if ( $netmask == "0.0.0.0")
-        return false;
-
-    return $netmask;
-}
-
-// pruefen, ob eine IP-Adresse in einem gegebenen Netz ist.
-function isIPIn($ip, $net, $mask) {
-    //doesn't check for the return value of ip2long
-    $ip = ip2long($_POST['ip']);
-    $rede = ip2long($_POST['net']);
-    $mask = ip2long($_POST['mask']);
-   
-    //AND
-    $res = $ip & $mask;
-   
-    return ($res == $rede);
-}
-
 
 //-----------------------
 // fetchmailrc FUNCTIONS
