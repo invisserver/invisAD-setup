@@ -54,7 +54,7 @@ if (!isset($_COOKIE['invis-login'])) {
 	$pwdrlz = intval(($pwdexpiry['expiryts'] - time()) / ( 60 * 60 * 24 ));
 	
 	// check if request comes from internal address
-	$INTERNAL_ACCESS = ipinnet(ip2bin($_SERVER['REMOTE_ADDR']),ip2bin($IP_NETBASE_ADDRESS), $DHCP_IP_MASK);
+	$INTERNAL_ACCESS = ipinnet($_SERVER['REMOTE_ADDR'], $IP_NETBASE_ADDRESS, $DHCP_IP_MASK);
 	$USER_IS_ALLOWED = true;
 	// Ermitteln, ob der User Mitglied der Gruppe mobiluser ist und sich somit auch von extern anmelden darf.
 	if ($INTERNAL_ACCESS == false) {
