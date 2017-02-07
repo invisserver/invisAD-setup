@@ -1,10 +1,10 @@
 #!/bin/bash
 # invis AD 12 Server Setup Script
-# Version 12.0
+# Version 12.1
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
-# (c) 2013-2015 Ingo Göppert / invis-server.org / ingo@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
 # License: GPLv3
 # Questions: info@invis-server.org
@@ -31,7 +31,7 @@
 setupdir="/var/lib/sine"
 cfilesdir="/usr/share/doc/packages/invisAD-setup/examples"
 
-invisversion="12.0"
+invisversion="12.1"
 
 # Setup-Dialog Titel
 dialogtitle="invis AD Server $invisversion Setup"
