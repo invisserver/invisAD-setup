@@ -57,11 +57,12 @@ fi
 chown -R root:"Domain Users" /srv/shares/aktuell
 chown -R root:"Archiv" /srv/shares/archiv
 chown root:"Domain Users" /srv/shares/gruppen
-chown -R root:"Domain Users" /srv/shares/projekte
+#chown -R root:"Domain Users" /srv/shares/projekte
 chown root:"Domain Users" /srv/shares/profiles
 chown -R root:"Domain Users" /srv/shares/media
 chown -R root:"Domain Admins" /srv/shares/service
 chown -R root:"Domain Guests" /srv/shares/transfer
+chmod -R o+w /srv/shares/transfer
 chown -R root:"Verwaltung" /srv/shares/verwaltung
 chown root:"Domain Users" /srv/shares/portal/uploads
 chown root:"Domain Users" /srv/shares/portal/downloads
