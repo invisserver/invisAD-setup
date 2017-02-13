@@ -75,24 +75,24 @@ setcookie('invis-request', '', time() - 3600, '/');
 //--------------------
 
 // Namen für die einzelnen Eigenschaften
-define ( GAST_FLAG,    0b0000001);
-define ( MAIL_FLAG,    0b0000010);
-define ( WINDOWS_FLAG, 0b0000100);
-define ( UNIX_FLAG,    0b0001000);
-define ( GW_FLAG,      0b0010000);
-define ( ADMIN_FLAG,   0b0100000);
-define ( MASTER_FLAG,  0b1000000);
+define ( "GAST_FLAG",    0b0000001);
+define ( "MAIL_FLAG",    0b0000010);
+define ( "WINDOWS_FLAG", 0b0000100);
+define ( "UNIX_FLAG",    0b0001000);
+define ( "GW_FLAG",      0b0010000);
+define ( "ADMIN_FLAG",   0b0100000);
+define ( "MASTER_FLAG",  0b1000000);
 
 // Namen für die verschiedenen Typen
-define ( GAST_TYP,              0);
-define ( MAIL_TYP,              1);
-define ( WIN_TYP,               2);
-define ( WIN_UNIX_TYP,          3);
-define ( WIN_UNIX_GW_TYP,       4);
-define ( WIN_ADMIN_TYP,         5);
-define ( WIN_ADMIN_UNIX_TYP,    6);
-define ( WIN_ADMIN_UNIX_GW_TYP, 7);
-define ( MASTER_ADMIN_TYP,      8);
+define ( "GAST_TYP",              0);
+define ( "MAIL_TYP",              1);
+define ( "WIN_TYP",               2);
+define ( "WIN_UNIX_TYP",          3);
+define ( "WIN_UNIX_GW_TYP",       4);
+define ( "WIN_ADMIN_TYP",         5);
+define ( "WIN_ADMIN_UNIX_TYP",    6);
+define ( "WIN_ADMIN_UNIX_GW_TYP", 7);
+define ( "MASTER_ADMIN_TYP",      8);
 
 function userList() {
 	global $cookie_data, $adldap;
