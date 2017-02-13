@@ -1380,7 +1380,6 @@ $bind = bind($conn);
 $mdgroup = "maildummies";
 $collection = $adldap->group()->infoCollection($mdgroup,array('*'));
 $mdrid = ridfromsid(bin_to_str_sid($collection->objectsid));
-//echo $mdrid;
 
 if (empty($collection->mssfu30nisdomain)) {
 
@@ -1398,14 +1397,11 @@ if (empty($collection->mssfu30nisdomain)) {
 	    "mssfu30name" => $mdgroup,
 	    "gidnumber" => 9500
 	);
-    
     }
-
 
     try {
-	    $result = $adldap->group()->modify($mdgroup,$attributes);
+	$result = $adldap->group()->modify($mdgroup,$attributes);
     }
-
     catch (adLDAPException $e) {
 	echo $e;
 	exit();   
@@ -1424,16 +1420,14 @@ foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
 	    "gidnumber" => ( $grouprid + $SFU_GUID_BASE )
 	);
 
-    try {
+        try {
 	    $result = $adldap->group()->modify($extgroup,$attributes);
+	}
+	catch (adLDAPException $e) {
+	    echo $e;
+	    exit();   
+	}
     }
-
-    catch (adLDAPException $e) {
-	echo $e;
-	exit();   
-    }
-}
-
 }
 
 
