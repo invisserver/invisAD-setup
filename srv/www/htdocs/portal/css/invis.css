@@ -338,11 +338,10 @@ hr {
 #profile-table input {
 	margin: 2px;
 	padding: 3px;
-	width: auto;
+	width: 95%;
 	border: 1px solid #b0b0b0;
 }
 
 #profile-table .input-description {
 	font-size: 0.6em;
 }
-

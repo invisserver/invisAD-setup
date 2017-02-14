@@ -74,14 +74,31 @@ setcookie('invis-request', '', time() - 3600, '/');
 // USER STUFF
 //--------------------
 
+// Namen für die einzelnen Eigenschaften
+define ( "GAST_FLAG",    0b0000001);
+define ( "MAIL_FLAG",    0b0000010);
+define ( "WINDOWS_FLAG", 0b0000100);
+define ( "UNIX_FLAG",    0b0001000);
+define ( "GW_FLAG",      0b0010000);
+define ( "ADMIN_FLAG",   0b0100000);
+define ( "MASTER_FLAG",  0b1000000);
 
-
+// Namen für die verschiedenen Typen
+define ( "GAST_TYP",              0);
+define ( "MAIL_TYP",              1);
+define ( "WIN_TYP",               2);
+define ( "WIN_UNIX_TYP",          3);
+define ( "WIN_UNIX_GW_TYP",       4);
+define ( "WIN_ADMIN_TYP",         5);
+define ( "WIN_ADMIN_UNIX_TYP",    6);
+define ( "WIN_ADMIN_UNIX_GW_TYP", 7);
+define ( "MASTER_ADMIN_TYP",      8);
 
 function userList() {
 	global $cookie_data, $adldap;
+
 	// Raw data array returned
 	$result = $adldap->user()->all();
-	//var_dump($result);
 	$json = array();
 	foreach ($result as $i => $value) {
 	    $collection = $adldap->user()->infoCollection("$result[$i]", array("*") );
@@ -93,83 +110,79 @@ function userList() {
 	    $admin = $adldap->user()->inGroup("$result[$i]","Domain Admins");
 	    $maildummy = $adldap->user()->inGroup("$result[$i]","maildummies");
 	    $enterpriseadmin = $adldap->user()->inGroup("$result[$i]","Enterprise Admins");
-	    
+
 	    // Benutzertyp ermitteln
-	    $utval = array();
 	    $typevalue = 0;
-	    
+
 	    if ( $pgid == "514" ) {
-		$utval[0] = 1; 
+		$typevalue |= GAST_FLAG; 
 	    }
 	    if ( $pgid == "513" ) {
-		$utval[1] = 2; 
+		$typevalue |= WINDOWS_FLAG; 
 	    }
-	    if ( $pgid == "512" ) {
-		$utval[1] = 4; 
+	    if (( $pgid == "512" ) || ( $admin == true )) {
+		$typevalue |= ADMIN_FLAG; 
 	    }
-	    if ( $gidnr == "9500" ) {
-		$utval[1] = 8; 
-	    }
-	    if ( $shell == "/bin/false" ) {
-		$utval[2] = 16; 
+	    if (( $gidnr == "9500" ) || ( $gidnr == "600" ) || ( $maildummy == "1"))  {
+		$typevalue |= MAIL_FLAG; 
 	    }
 	    if ( $shell == "/bin/bash" ) {
-		$utval[3] = 32; 
-	    }
-	    if ( $maildummy == "1" ) {
-		$utval[4] = 64; 
-	    }
-	    if ( $admin == true ) {
-		$utval[5] = 128; 
+		$typevalue |= UNIX_FLAG; 
 	    }
 	    if ( $gwaccount == true ) {
-		$utval[6] = 256; 
+		$typevalue |= GW_FLAG; 
 	    }
 	    if ( $enterpriseadmin == "1" ) {
-		$utval[7] = 512;
+		$typevalue |= MASTER_FLAG;
 	    }
-	    foreach ($utval as $val => $value) {
-		$typevalue = $typevalue + $value;
-	    }
-	    
+
 	    switch ($typevalue) {
-		case 1:
-		    $type = 0;
+		case GAST_FLAG:
+		    $type = GAST_TYP;
 		    break;
-		case 88:
-		    $type = 1;
+		case MAIL_FLAG:
+		case (MAIL_FLAG | GW_FLAG):
+		case (WINDOWS_FLAG | GW_FLAG):
+		    $type = MAIL_TYP;
 		    break;
-		case 344:
-		    $type = 1;
+		case WINDOWS_FLAG:
+		    $type = WIN_TYP;
 		    break;
-		case 2:
-		    $type = 2;
+		case (WINDOWS_FLAG | UNIX_FLAG):
+		    $type = WIN_UNIX_TYP;
 		    break;
-		case 34:
-		    $type = 3;
+		case (WINDOWS_FLAG | UNIX_FLAG | GW_FLAG):
+		    $type = WIN_UNIX_GW_TYP;
 		    break;
-		case 290:
-		    $type = 4;
+		case (WINDOWS_FLAG | ADMIN_FLAG):
+		    $type = WIN_ADMIN_TYP;
 		    break;
-		case 132:
-		    $type = 5;
+		case (WINDOWS_FLAG | ADMIN_FLAG | UNIX_FLAG):
+		    $type = WIN_ADMIN_UNIX_TYP;
 		    break;
-		case 164:
-		    $type = 6;
+		case (WINDOWS_FLAG | ADMIN_FLAG | UNIX_FLAG | GW_FLAG):
+		    $type = WIN_ADMIN_UNIX_GW_TYP;
 		    break;
-		case 420:
-		    $type = 7;
+		case MASTER_FLAG:
+		case (MASTER_FLAG | GW_FLAG):
+		case (MASTER_FLAG | ADMIN_FLAG): 
+		case (MASTER_FLAG | ADMIN_FLAG | GW_FLAG): 
+		case (MASTER_FLAG | ADMIN_FLAG | WINDOWS_FLAG): 
+		case (MASTER_FLAG | ADMIN_FLAG | WINDOWS_FLAG | GW_FLAG): 
+		    $type = MASTER_ADMIN_TYP;
 		    break;
-		case 642:
-		case 674:
-		    $type = 8;
-		}
+		default: // Neuer, noch unbekannte Kombination
+		    $type = GAST_TYP;
+	    }
+
+	    // Debug Ausgabe ins Apache Error Log
+	    //error_log("Name: ".$collection->samaccountname.", Value: ".decbin($typevalue).", Type: ".$type.", Shell: ".$shell);
+
 	    $entry = array("uidnumber" => "$rid","uid" => "$result[$i]", "TYPE" => "$type" );
 	    // create JSON response
 	    array_push($json, $entry);
 	}
 	return $json;
-
 }
 
 function userListShort() {
@@ -1367,7 +1380,6 @@ $bind = bind($conn);
 $mdgroup = "maildummies";
 $collection = $adldap->group()->infoCollection($mdgroup,array('*'));
 $mdrid = ridfromsid(bin_to_str_sid($collection->objectsid));
-//echo $mdrid;
 
 if (empty($collection->mssfu30nisdomain)) {
 
@@ -1385,14 +1397,11 @@ if (empty($collection->mssfu30nisdomain)) {
 	    "mssfu30name" => $mdgroup,
 	    "gidnumber" => 9500
 	);
-    
     }
-
 
     try {
-	    $result = $adldap->group()->modify($mdgroup,$attributes);
+	$result = $adldap->group()->modify($mdgroup,$attributes);
     }
-
     catch (adLDAPException $e) {
 	echo $e;
 	exit();   
@@ -1411,16 +1420,14 @@ foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
 	    "gidnumber" => ( $grouprid + $SFU_GUID_BASE )
 	);
 
-    try {
+        try {
 	    $result = $adldap->group()->modify($extgroup,$attributes);
+	}
+	catch (adLDAPException $e) {
+	    echo $e;
+	    exit();   
+	}
     }
-
-    catch (adLDAPException $e) {
-	echo $e;
-	exit();   
-    }
-}
-
 }
 
 

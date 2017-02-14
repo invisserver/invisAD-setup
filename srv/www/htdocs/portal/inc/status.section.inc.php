@@ -48,7 +48,7 @@ new Ajax.PeriodicalUpdater(
 if (isset($STATUS_BACKUP_TIMER))
 	echo "new Ajax.PeriodicalUpdater('backup_info', 'script/status.php', { method: 'post', frequency: 60, parameters: {c: 'backup_info'}});";
 
-if (isset($STATUS_APCUPSD))
+if ($STATUS_APCUPSD == true)
 	echo "new Ajax.PeriodicalUpdater('usv_status', 'script/status.php', { method: 'post', frequency: 60, parameters: {c: 'usv_status'}});";
 ?>
 
