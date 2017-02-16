@@ -157,9 +157,11 @@ function userList() {
 		case (WINDOWS_FLAG | ADMIN_FLAG):
 		    $type = WIN_ADMIN_TYP;
 		    break;
+		case (ADMIN_FLAG | UNIX_FLAG):
 		case (WINDOWS_FLAG | ADMIN_FLAG | UNIX_FLAG):
 		    $type = WIN_ADMIN_UNIX_TYP;
 		    break;
+		case (ADMIN_FLAG | UNIX_FLAG | GW_FLAG):
 		case (WINDOWS_FLAG | ADMIN_FLAG | UNIX_FLAG | GW_FLAG):
 		    $type = WIN_ADMIN_UNIX_GW_TYP;
 		    break;
@@ -224,6 +226,7 @@ function userCreate($uid) {
 	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SMB_FILESERVER, $SFU_GUID_BASE, $GROUPWARE;
 	// read user data from cookie
 	//$attributes = $cookie_data;
+	$ok = false;
 
 	// account type, fetch from POST var
 	// (default 0) 0: user, 1: admin, 2: guest, 3: mail, 4: zarafa-user
@@ -327,7 +330,7 @@ function userCreate($uid) {
 
 	// Benutzer anlegen
 	switch ($accounttype) {
-	case 0:
+	case GAST_TYP:
 	    // Gastbenutzer
 	    // Standard-Attribute - unabhaengig vom Kontentyp
 	    // Benutzer anlegen
@@ -339,7 +342,11 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
-		// Benutzer der Gruppe "Domain Guests" hinzufuegen
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
+	    // Benutzer der Gruppe "Domain Guests" hinzufuegen
 	    try {
 		$result = $adldap->group()->addUser("Domain Guests", "$uid");
 	    } catch (adLDAPException $e) {
@@ -348,6 +355,10 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
 	    // Primaergruppe auf "Domain Guests" setzen
 	    $attrmod=array("primarygroupid"=>"514");
 	    try {
@@ -358,6 +369,10 @@ function userCreate($uid) {
     		    exit();
     		}
 	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
 	    // Benutzer aus Gruppe "Domain Users" entfernen
 	    try {
 		$result = $adldap->group()->removeUser("Domain Users", "$uid");
@@ -367,8 +382,12 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
 	    break;
-	case 1:
+
+	case MAIL_TYP:
 	    // Maildummy Konto
 	    // Benutzer anlegen
 	    try {
@@ -379,7 +398,10 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
-	
+	    if ($ok !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
 	    // Benutzer der Gruppe "maildummies" hinzufuegen
 	    try {
 		$result = $adldap->group()->addUser("$mdgroup", "$uid");
@@ -388,6 +410,9 @@ function userCreate($uid) {
 		    return $e;
 		    exit();
 		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 
 	    // RID ermitteln, wird zur Festlegung der uidNumber benoetigt.
@@ -417,10 +442,14 @@ function userCreate($uid) {
 		$result = $adldap->user()->modify("$uid",$attrmod);
 	    } catch (adLDAPException $e) {
 		if (! empty($e)) {
-    		    return $e;
-    		    exit();
-    		}
+		    return $e;
+		    exit();
+		}
 	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
 	    // Benutzer aus Gruppe "Domain Users" entfernen
 	    try {
 		$result = $adldap->group()->removeUser("Domain Users", "$uid");
@@ -430,33 +459,24 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
-	    break;
-	case 2:
-	    // reiner Windows User
-
-	    // Standard-Attribute - erweitern
-		$attributes += ["home_drive"=>'u:'];
-		$attributes += ["home_directory"=>"$smbhomepath"];
-		$attributes += ["profile_path"=>"$profilepath"];
-		$attributes += ["script_path"=>"user.cmd"];
-	    // Benutzer anlegen
-	    try {
-		$ok = $adldap->user()->create($attributes);
-	    } catch (adLDAPException $e) {
-		if (! empty($e)) {
-		    return $e;
-		    exit();
-		}
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
-		break;
-	case 3:
+	    break;
+
+	case WIN_TYP:
+	    // reiner Windows User
+	    return "Reiner Windows-User wird nicht l&auml;nger unterst&uuml;zt!";
+	    break;
+
+	case WIN_UNIX_TYP:
 	    // Windows und UNIX Benutzer
 	    // Attribute anpassen
 	    // Standard-Attribute - erweitern
-		$attributes += ["home_drive"=>'u:'];
-		$attributes += ["home_directory"=>"$smbhomepath"];
-		$attributes += ["profile_path"=>"$profilepath"];
-		$attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["home_drive"=>'u:'];
+	    $attributes += ["home_directory"=>"$smbhomepath"];
+	    $attributes += ["profile_path"=>"$profilepath"];
+	    $attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -466,6 +486,10 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
+	    if ($ok !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
 	    // RID ermitteln, wird zur Festlegung der uidNumber benoetigt.
 	    try {
 		$collection = $adldap->user()->infoCollection("$uid",array('*'));
@@ -491,19 +515,23 @@ function userCreate($uid) {
 		$result = $adldap->user()->modify("$uid",$attrmod);
 	    } catch (adLDAPException $e) {
 		if (! empty($e)) {
-    		    return $e;
-    		    exit();
-    		}
+		    return $e;
+		    exit();
+		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 	    break;
-	case 4:
+
+	case WIN_UNIX_GW_TYP:
 	    // Windows und UNIX Benutzer mit Groupware-Nutzung
 	    // Attribute anpassen
 	    // Standard-Attribute - erweitern
-		$attributes += ["home_drive"=>'u:'];
-		$attributes += ["home_directory"=>"$smbhomepath"];
-		$attributes += ["profile_path"=>"$profilepath"];
-		$attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["home_drive"=>'u:'];
+	    $attributes += ["home_directory"=>"$smbhomepath"];
+	    $attributes += ["profile_path"=>"$profilepath"];
+	    $attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -513,6 +541,10 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
+	    if ($ok !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
 	    // RID ermitteln, wird zur Festlegung der uidNumber benoetigt.
 	    try {
 		$collection = $adldap->user()->infoCollection("$uid",array('*'));
@@ -540,56 +572,28 @@ function userCreate($uid) {
 		$result = $adldap->user()->modify("$uid",$attrmod);
 	    } catch (adLDAPException $e) {
 		if (! empty($e)) {
-    		    return $e;
-    		    exit();
-    		}
+		    return $e;
+		    exit();
+		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 	    break;
-	case 5:
+	    
+	case WIN_ADMIN_TYP:
 	    // Windows Admin ohne Zusatz-Attribute
-	    // Standard-Attribute - erweitern
-		$attributes += ["home_drive"=>'u:'];
-		$attributes += ["home_directory"=>"$smbhomepath"];
-		$attributes += ["profile_path"=>"$profilepath"];
-		$attributes += ["script_path"=>"user.cmd"];
-	    // Benutzer anlegen
-	    try {
-		$ok = $adldap->user()->create($attributes);
-	    } catch (adLDAPException $e) {
-		if (! empty($e)) {
-		    return $e;
-		    exit();
-		}
-	    }
-		// Benutzer der Gruppe "Domain Guests" hinzufuegen
-	    try {
-		$result = $adldap->group()->addUser("Domain Admins", "$uid");
-	    } catch (adLDAPException $e) {
-		if (! empty($e)) {
-		    return $e;
-		    exit();
-		}
-	    }
-	    // Primaergruppe auf "Domain Admins" setzen
-	    // ist vermutlich nicht notwendig.
-	    $attrmod=array("primarygroupid"=>"512");
-	    try {
-		$result = $adldap->user()->modify("$uid",$attrmod);
-	    } catch (adLDAPException $e) {
-		if (! empty($e)) {
-    		    return $e;
-    		    exit();
-    		}
-	    }
-		break;
-	case 6:
+	    return "Reiner Windows-Admin nicht l&auml;nger unterst&uuml;zt!";
+	    break;
+
+	case WIN_ADMIN_UNIX_TYP:
 	    // Windows-Admin mit UNIX-Attributen
 	    // keine UNIX Admin-Befugnisse
 	    // Standard-Attribute - erweitern
-		$attributes += ["home_drive"=>'u:'];
-		$attributes += ["home_directory"=>"$smbhomepath"];
-		$attributes += ["profile_path"=>"$profilepath"];
-		$attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["home_drive"=>'u:'];
+	    $attributes += ["home_directory"=>"$smbhomepath"];
+	    $attributes += ["profile_path"=>"$profilepath"];
+	    $attributes += ["script_path"=>"user.cmd"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -599,7 +603,11 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
-		// Benutzer der Gruppe "Domain Guests" hinzufuegen
+	    if ($ok !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
+	    // Benutzer der Gruppe "Domain Guests" hinzufuegen
 	    try {
 		$result = $adldap->group()->addUser("Domain Admins", "$uid");
 	    } catch (adLDAPException $e) {
@@ -607,6 +615,9 @@ function userCreate($uid) {
 		    return $e;
 		    exit();
 		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 
 	    // RID ermitteln, wird zur Festlegung der uidNumber benoetigt.
@@ -636,20 +647,24 @@ function userCreate($uid) {
 		$result = $adldap->user()->modify("$uid",$attrmod);
 	    } catch (adLDAPException $e) {
 		if (! empty($e)) {
-    		    return $e;
-    		    exit();
-    		}
+		    return $e;
+		    exit();
+		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 	    break;
-	case 7:
+
+	case WIN_ADMIN_UNIX_GW_TYP:
 	    // Windows-Admin mit UNIX-Attributen und Groupware-Admin-Rechten
 	    // Standard-Attribute - erweitern
-		$attributes += ["home_drive"=>'u:'];
-		$attributes += ["home_directory"=>"$smbhomepath"];
-		$attributes += ["profile_path"=>"$profilepath"];
-		$attributes += ["script_path"=>"user.cmd"];
-		$attributes += ["zarafaaccount" => true];
-		$attributes += ["zarafaadmin" => true];
+	    $attributes += ["home_drive"=>'u:'];
+	    $attributes += ["home_directory"=>"$smbhomepath"];
+	    $attributes += ["profile_path"=>"$profilepath"];
+	    $attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["zarafaaccount" => true];
+	    $attributes += ["zarafaadmin" => true];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -659,7 +674,11 @@ function userCreate($uid) {
 		    exit();
 		}
 	    }
-		// Benutzer der Gruppe "Domain Guests" hinzufuegen
+	    if ($ok !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
+	    }
+
+	    // Benutzer der Gruppe "Domain Guests" hinzufuegen
 	    try {
 		$result = $adldap->group()->addUser("Domain Admins", "$uid");
 	    } catch (adLDAPException $e) {
@@ -667,6 +686,9 @@ function userCreate($uid) {
 		    return $e;
 		    exit();
 		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 
 	    // RID ermitteln, wird zur Festlegung der uidNumber benoetigt.
@@ -698,19 +720,25 @@ function userCreate($uid) {
 		$result = $adldap->user()->modify("$uid",$attrmod);
 	    } catch (adLDAPException $e) {
 		if (! empty($e)) {
-    		    return $e;
-    		    exit();
-    		}
+		    return $e;
+		    exit();
+		}
+	    }
+	    if ($result !=  true) {
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 	    break;
 	}
-	
-	if ($ok) {
+
+	if ($ok == true) {
 	    $val = shell_exec("sudo /usr/bin/createhome $uid;");
 	}
-	
+
 	if (empty($e)) {
 	    return 0;
+	}
+	else {
+	    return $e;
 	}
 }
 
@@ -1399,6 +1427,7 @@ if (empty($collection->mssfu30nisdomain)) {
 	);
     }
 
+
     try {
 	$result = $adldap->group()->modify($mdgroup,$attributes);
     }
@@ -1420,13 +1449,13 @@ foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
 	    "gidnumber" => ( $grouprid + $SFU_GUID_BASE )
 	);
 
-        try {
+	try {
 	    $result = $adldap->group()->modify($extgroup,$attributes);
 	}
 	catch (adLDAPException $e) {
 	    echo $e;
 	    exit();   
-	}
+        }
     }
 }
 
