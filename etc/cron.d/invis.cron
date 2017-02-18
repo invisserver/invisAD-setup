@@ -69,3 +69,6 @@ MAILTO=/dev/null
 # WaWision Prozesstarter laufen lassen
 # jede Minute. Das Script selbst prueft, ob WaWision installiert ist.
 * * * * * root /usr/bin/wawips
+
+# ICS Importer
+5 * * * * root /usr/bin/importics

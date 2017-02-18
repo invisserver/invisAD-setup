@@ -1,0 +1,79 @@
+#!/bin/bash
+# Script zum automatischen Import von ICS Kalender Dateien in Kopano
+# Primaer sollen ICS-Dateien in persoenliche Kalender von Benutzern 
+# importiert werden. Weiterhin soll es moeglich sein ICS Dateien in
+# oeffentliche Kalender zu importieren.
+# (c) 2017 Stefan Schaefer - invis-Server.org
+# Version 0.1
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+confdir="/etc/invis"
+passfile="/etc/invis/invis-pws.conf"
+
+defaultgroup="20513"
+workingdir="/var/spool/ics"
+
+# Arbeitsverzeichnis anlegen, wenn nicht vorhanden
+if [[ ! -d $workingdir ]]; then
+    mkdir -p $workingdir
+fi
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# iCal Import aktiv?
+icalsync=`getconfdata $conffile "iCalImport" "2"`
+if [[ $icalsync != "j" ]]; then
+    exit
+fi
+# Kopano Admin und URL des ical Dienstes ermitteln
+admin=`getconfdata $conffile "kAdmin" "2"`
+adminpw=`getconfdata $passfile "kAdminPass" "2"`
+icalurl=`getconfdata $conffile "iCalUrl" "2-"`
+
+
+# Es muessen alle Benutzerverzeichnisse durchlaufen werden. In den 
+# Benutzerverzeichnissen wird nach einem Unterverzeichnis "ics" und
+# darin liegenden ICS Dateien gesucht.
+
+for homedir in `getent passwd | grep "$defaultgroup:" | cut -d ":" -f6`; do
+    # Existiert ein ics Verzeichnis?
+    username=`basename $homedir`
+    # Sicherung des Zielkalenders erstellen
+    icsdir="$homedir/ics"
+    if [[ -d "$icsdir" ]]; then
+	ls $icsdir/*ics > /dev/null 2>&1
+	exitcode=$?
+	#echo $exitcode
+	if [[ $exitcode == 0 ]]; then
+	    importfile="$workingdir/$username.ics"
+	    curl -u $admin:$adminpw $icalurl/$username/Kalender |grep -v "END:VCALENDAR" > $importfile
+	    for icalfile in `find $icsdir -iname "*.ics"`; do
+		#echo $icalfile
+		cat $icalfile |grep -v "BEGIN:VCALENDAR" |grep -v "END:VCALENDAR" >> $importfile
+		rm $icalfile
+	    done
+	    echo "END:VCALENDAR" >> $importfile
+	    curl -u $admin:$adminpw -T $importfile $icalurl/$username/Kalender
+	    #rm $importfile
+	fi
+    fi
+done

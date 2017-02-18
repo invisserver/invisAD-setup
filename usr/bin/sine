@@ -865,6 +865,7 @@ sysprep() {
     mkdir /etc/skel/Bilder
     mkdir /etc/skel/Musik
     mkdir /etc/skel/Videos
+    mkdir /etc/skel/ics
 
     ## Virenscanner einrichten
 
