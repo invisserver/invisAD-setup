@@ -28,7 +28,7 @@ objectClass: iPortEntry
 cn: SOGo
 iPortEntryName: SOGo
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/sogo
+iPortEntryURL: [servername]/SOGo
 iPortEntryDescription: Die Groupware "SOGo" bietet unter anderem Zugriff auf E-Mails,Terminkalender und Kontakterwaltung. 
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal

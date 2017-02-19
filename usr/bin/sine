@@ -522,7 +522,7 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 	kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
 	roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
 	tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
-	sogo "SOGo in Kombination mit Dovecot (Experimentell)" off\
+	sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
 	2>$setupdir/sine_temp
 	whichgroupware=`cat $setupdir/sine_temp`
 
@@ -2556,9 +2556,9 @@ case "$whichgroupware" in
 
 	# Konfigurationsvorlagen kopieren
 	cp $cfilesdir/sogo/SOGo /etc/sysconfig/SOGo
+	cp $cfilesdir/sogo/SOGo.conf /etc/apache2/conf.d/
 	mkdir /etc/sogo
-	cp $cfilesdir/sogo/sogo.conf /etc/sogo/
-	chown :sogo /etc/sogo/sogo.conf
+	cp $cfilesdir/sogo/sogo.conf /etc/sogo/	
 	
 	# Konfigurationsdaten einlesen
 	domain=`getconfdata "Domain" "2"`
@@ -2572,15 +2572,21 @@ case "$whichgroupware" in
 	strings="dc=i5-net,dc=loc%$basedn"
 	changevalues $confdir $file "$strings"
 
+	# Das funktioniert nicht. Warum?
 	strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
 
 	strings="admin-secret%$ldapmasterpw"
 	changevalues $confdir $file "$strings"
 
+	# Nach den Aenderungen Rechte setzen
+	chown :sogo /etc/sogo/sogo.conf
+
 	# Datenbank-Konfiguration anpassen
 	strings="dbuserpw%$sogodbuserpw"
 	changevalues $confdir $file "$strings"
+
+	# SOGo starten
 	chkservice "sogod"
 
 	# SoGo im Portal aktivieren
