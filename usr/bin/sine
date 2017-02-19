@@ -1574,6 +1574,7 @@ dhcp() {
     cd $setupdir
     clear
     windowtitle="DHCP Server"
+    pgsubtitle="DHCP Server wird eingerichtet"
 
     cp $cfilesdir/dhcp-dns/dhcpd.conf /etc
 
