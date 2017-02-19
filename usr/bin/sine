@@ -2566,25 +2566,24 @@ case "$whichgroupware" in
 	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
 
 	# LDAP-Konfiguration anpassen
-	confdir="/etc/sogo"
+	path="/etc/sogo"
 	file="sogo.conf"
 
 	strings="dc=i5-net,dc=loc%$basedn"
-	changevalues $confdir $file "$strings"
+	changevalues $path $file "$strings"
 
-	# Das funktioniert nicht. Warum?
 	strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
 
 	strings="admin-secret%$ldapmasterpw"
-	changevalues $confdir $file "$strings"
+	changevalues $path $file "$strings"
 
 	# Nach den Aenderungen Rechte setzen
 	chown :sogo /etc/sogo/sogo.conf
 
 	# Datenbank-Konfiguration anpassen
 	strings="dbuserpw%$sogodbuserpw"
-	changevalues $confdir $file "$strings"
+	changevalues $path $file "$strings"
 
 	# SOGo starten
 	chkservice "sogod"
