@@ -522,7 +522,7 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 	kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
 	roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
 	tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
-	sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
+	sogo "SOGo in Kombination mit Dovecot (Experimentell)" off\
 	2>$setupdir/sine_temp
 	whichgroupware=`cat $setupdir/sine_temp`
 
@@ -2549,21 +2549,37 @@ case "$whichgroupware" in
 
 	zypper -n install -n `cat $setupdir/zypper-package-lists/sogo` 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
+	
+	## Leere sogo-Datenbank anlegen
+	sogodbuserpw=`mkdbsilent sogo sogo a`
+
+	# Konfigurationsvorlagen kopieren
 	cp $cfilesdir/sogo/SOGo /etc/sysconfig/SOGo
 	mkdir /etc/sogo
 	cp $cfilesdir/sogo/sogo.conf /etc/sogo/
+	chown :sogo /etc/sogo/sogo.conf
+	
+	# Konfigurationsdaten einlesen
+	domain=`getconfdata "Domain" "2"`
+	basedn=`getconfdata "baseDN" "2"`
+	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
+
+	# LDAP-Konfiguration anpassen
 	confdir="/etc/sogo"
 	file="sogo.conf"
-	basedn=`getconfdata "baseDN" "2"`
+
 	strings="dc=i5-net,dc=loc%$basedn"
 	changevalues $confdir $file "$strings"
-	adminpw=`getconfdata "AdminPW" "2"`
-	strings="admin-secret%$adminpw"
+
+	strings="invis-net.loc%$domain"
+	changevalues $path $file "$strings"
+
+	strings="admin-secret%$ldapmasterpw"
 	changevalues $confdir $file "$strings"
-	sogodbuserpw=`mkdbsilent sogo sogo a`
+
+	# Datenbank-Konfiguration anpassen
 	strings="dbuserpw%$sogodbuserpw"
 	changevalues $confdir $file "$strings"
-	chown :sogo /etc/sogo/sogo.conf
 	chkservice "sogod"
 
 	# SoGo im Portal aktivieren
