@@ -73,7 +73,7 @@ set_var EASYRSA_PKI		"$EASYRSA/localdomain"
 #   cn_only  - use just a CN value
 #   org      - use the "traditional" Country/Province/City/Org/OU/email/CN format
 
-#set_var EASYRSA_DN	"cn_only"
+set_var EASYRSA_DN	"org"
 
 # Organizational fields (used with 'org' mode and ignored in 'cn_only' mode.)
 # These are the default values for fields which will be placed in the

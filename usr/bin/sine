@@ -1053,7 +1053,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     changevalues $path $file "$strings"
 
     admail=`getconfdata "Admail" "2"`
-    strings="domadmin@invis-net.loc%$admail"
+    strings="me@example.net%$admail"
     changevalues $path $file "$strings"
 
     # PKI initialisieren
