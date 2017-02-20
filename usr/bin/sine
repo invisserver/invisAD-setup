@@ -2628,9 +2628,9 @@ case "$whichgroupware" in
 	changevalues $path $file "$strings"
 
 	# cache_cell_size anpassen, wenn zmemcalc mehr als 512M berechnet
-	zarafamem=($(zmemcalc))
-	if (( ${zarafamem[2]} > 512 ));then
-	    strings="512M%${zarafamem[2]}M"
+	karafamem=($(kmemcalc))
+	if (( ${karafamem[2]} > 512 ));then
+	    strings="512M%${karafamem[2]}M"
 	    changevalues $path $file "$strings"
 	fi
 	
