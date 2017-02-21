@@ -1,0 +1,12 @@
+Nutzungsvoraussetzunge für Let's Encrypt auf invis-Servern
+
+1.) Der Server muss an seinem Bestimmungsort in Betrieb genommen sein.
+
+2.) Der Server muss über einen im Internet gültigen Namen (DDNS) erreichbar 
+    sein.
+
+3.) Es muss am vorgeschalteten Router eine Portweiterleitung auf Port 80/TCP
+    eingerichtet sein.
+
+Führen Sie dieses Script nur dann weiter aus, wenn alle Voraussetzungen
+erfüllt sind!

@@ -1,0 +1,67 @@
+#!/bin/bash
+# Script zur Erstaktivierung des dehydrated Letsencrypt Clients
+# Version 0.1
+# (c) 2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Dieses Script führt alle zur Installation eines invis Servers AD notwendigen 
+# Konfigurationsschritte aus.
+# Das Script sine nutzt /var/lib/sine als Arbeitsverzeichnis, hier sind von sine
+# verwendete Kontroll-, Variablen- und Protokolldateien zu finden.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+getconfdata() {
+    cat $setupdir/invis_confdata |grep "$1:" | cut -d ":" -f $2
+}
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+yesno() {
+    # Argument $1 = Fragetext $2 = Dialogtitel
+    dialog --backtitle "$dialogtitle" --title "$2" --yesno "$1" 0 0
+}
+
+
+dialogtitle="Let's Encrypt Client dehydrated aktivieren"
+# Sind alle Voraussetzungen erfuellt?
+dialog --backtitle "$dialogtitle" --title "Nutzungsvoraussetzungen" --exit-label "Weiter" --textbox "$setupdir/infofiles/letsencryptrequires.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "Nutzungsvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
+prepok=${?}
+
+
+if [[ $prepok == "0" ]]; then
+    # Dehydrated aktivieren
+    # Externe IP ermitteln und in vHosts Datei eintragen
+    LANG=POSIX
+    extip=`ifconfig extern| grep "inet addr" | cut -d ":" -f 2 |cut -d " " -f1`
+    path="/etc/apache2/vhosts.d"
+    file="dehydrated.conf"
+    strings="10.10.10.10%$extip"
+    changevalues $path $file "$strings"
+    # Apache reload
+    systemctl reload apache2.service
+else
+    echo "Programm wird abgebrochen. Schaffen Sie zunächst alle Voraussetzungen"
+    exit
+fi
+

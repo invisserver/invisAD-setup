@@ -635,6 +635,19 @@ Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
 	ddnshn="none"
     fi
 
+#---# Let's Encrypt
+    if [[ $ddnshn != "none" ]]; then
+	yesno "Sollen für den Zugriff auf Ihren invis-Server Zertifikate von Let's Encrypt erzeugt werden?\n\n.Let's Encrypt Zertifikate werden von gängigen Browsern und Betriebssystemen ohne lästige Warnung akzeptiert. Deren Verwendung ist spätestens wenn ownCloud zum Einsatz kommt empfehlenswert." "Let's Encrypt Zertifikate"
+	letsencrypt=${?}
+    
+	if [[ $letsencrypt == "0" ]]; then
+	    extcerts="letsencrypt"
+	else
+	    extcerts="owncerts"
+	fi
+    
+    fi 
+
 #---#SMTP Daten
     yesno "Um Emails zuverlässig versenden zu können werden die Zugangsdaten zum SMTP-Server (Server für ausgehende Mails) Ihres Providers benötigt.\n\nSind Ihnen diese Daten bekannt?\n(Wenn nicht, müssen Sie dies zu einem späteren Zeitpunkt von Hand in den Dateien /etc/postfix/main.cf & sasl_passwd eintragen.)" "SMTP Zugangsdaten"
     bekannt=${?}
@@ -804,6 +817,8 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 	echo "AVCRON:n" >> $setupdir/invis_confdata
     fi
     echo "DDNS:$ddnshn" >> $setupdir/invis_confdata
+    echo "extCerts:$extcerts" >> $setupdir/invis_confdata
+    
     if [[ $mailrelay == "none" ]]; then
 	echo "SMTPRELAY:$mailrelay" >> $setupdir/invis_confdata 
     else
@@ -885,7 +900,7 @@ sysprep() {
 	file=sernet-samba4.repo
 	strings="USERNAME:ACCESSKEY%$esusername:$esaccesskey"
 	#echo $strings
-	changevalues $path $file $strings
+	changevalues $path $file "$strings"
 	rpmkeyimporter
         pgsubtitle="Repository-Cache wird aktualisiert"
         zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -2168,9 +2183,35 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     ## Externer Zugriff via HTTPS?
     ddnshn=`getconfdata "DDNS" "2"`
     if [[ $ddnshn != "none" ]]; then
-
+	extcerts=`getconfdata "extCerts" "2"`
 	msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
-	inviscerts extern
+	if [[ extcerts == "letsencrypt" ]]; then
+	    # Challenge Verzeichnis anlegen
+	    mkdir -p "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
+
+	    # dehydrated Konfiguration sichern und anpassen
+	    path="/etc/dehydrated/"
+	    adminmail=`getconfdata "Admail" "2"`
+	    mv $path/config $path/config.ori
+	    cp $cfilesdir/dehydrated/config $path
+	    file="config"
+	    strings="adminmail%$adminmail"
+	    changevalues $path $file "$strings"
+	    
+	    ## DDNS Namen in Domain-Datei eintragen
+	    echo $ddnshn > $path/domain.txt
+
+	    # Neue vHost Datei kopieren und anpassen
+	    path="/etc/apache2/vhosts.d"
+	    cp $cfilesdir/dehydrated/dehydrated.conf $path
+	    file="dehydrated.conf"
+	    strings="your.ddns-domain.net%$ddnshn"
+	    a2enflag LETSENCRYPT
+	
+	else 
+	    inviscerts extern
+	    ae2nflag OWNCERTS
+	fi
 	
         # Kopieren und anpassend der Konfigurationsdateien
         cd $setupdir
