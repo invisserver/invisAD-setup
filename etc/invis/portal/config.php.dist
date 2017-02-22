@@ -83,6 +83,7 @@ $SERVER_SERVICES = array(
 	array('clamd', 'Virenscanner'),
 	array('cups', 'Druckserver'),
 	array('dhcpd','IP Adressvergabe'),
+	array('dovecot','IMAP/POP3-Mailserver'),
 	array('fetchmail','Emails abholen'),
 	array('freshclam', 'Virenscanner Updater'),
 	array('mysql', 'MariaDB Datenbank'),
@@ -99,7 +100,8 @@ $SERVER_SERVICES = array(
 	array('kopano-search', 'Kopano Suche'),
 	array('kopano-server', 'Kopano Server'),
 	array('kopano-spooler', 'Kopano Versand'),
-	array('kopano-presence', 'Kopano Anwesenheitsprüfung')
+	array('kopano-presence', 'Kopano Anwesenheitsprüfung'),
+	array('sogod', 'SOGo-Groupwareserver')
 	);
 
 // WEBSITE SPECIFIC
