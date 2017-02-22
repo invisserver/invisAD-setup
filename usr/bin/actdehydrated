@@ -58,8 +58,12 @@ if [[ $prepok == "0" ]]; then
     file="dehydrated.conf"
     strings="10.10.10.10%$extip"
     changevalues $path $file "$strings"
-    # Apache reload
-    systemctl reload apache2.service
+
+    a2enflag -d OWNCERTS
+    a2enflag LETSENCRYPT
+
+    # Apache restart
+    systemctl restart apache2.service
     
     # Lets Encrypt Account aktivieren
     dehydrated --register --accept-terms
