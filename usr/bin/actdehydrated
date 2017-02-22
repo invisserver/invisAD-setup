@@ -60,6 +60,13 @@ if [[ $prepok == "0" ]]; then
     changevalues $path $file "$strings"
     # Apache reload
     systemctl reload apache2.service
+    
+    # Lets Encrypt Account aktivieren
+    dehydrated --register --accept-terms
+    
+    # Zertifikat generieren
+    dehydrated -c
+    
 else
     echo "Programm wird abgebrochen. Schaffen Sie zunächst alle Voraussetzungen"
     exit
