@@ -2220,7 +2220,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 	
 	#else 
 	inviscerts extern
-	ae2nflag OWNCERTS
+	a2enflag OWNCERTS
 	#fi
 	
         # Kopieren und anpassend der Konfigurationsdateien
