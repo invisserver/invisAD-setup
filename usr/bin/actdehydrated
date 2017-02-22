@@ -24,6 +24,8 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
+setupdir="/var/lib/sine"
+
 # Funktionen
 # Werte aus Konfigurationsdatendatei extrahieren
 getconfdata() {
@@ -61,9 +63,6 @@ if [[ $prepok == "0" ]]; then
 
     a2enflag -d OWNCERTS
     a2enflag LETSENCRYPT
-
-    # Apache restart
-    systemctl restart apache2.service
     
     # Lets Encrypt Account aktivieren
     dehydrated --register --accept-terms
@@ -71,6 +70,8 @@ if [[ $prepok == "0" ]]; then
     # Zertifikat generieren
     dehydrated -c
     
+    # Apache restart
+    systemctl restart apache2.service
 else
     echo "Programm wird abgebrochen. Schaffen Sie zunächst alle Voraussetzungen"
     exit

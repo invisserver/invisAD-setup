@@ -1,4 +1,5 @@
-Nutzungsvoraussetzunge für Let's Encrypt auf invis-Servern
+Nutzungsvoraussetzungen für Let's Encrypt auf invis-Servern
+=============================================================================
 
 1.) Der Server muss an seinem Bestimmungsort in Betrieb genommen sein.
 
