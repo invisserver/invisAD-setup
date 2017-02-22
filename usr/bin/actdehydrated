@@ -67,11 +67,22 @@ if [[ $prepok == "0" ]]; then
     # Lets Encrypt Account aktivieren
     dehydrated --register --accept-terms
     
-    # Zertifikat generieren
-    dehydrated -c
+    # Zertifikate nur erstellen, wenn Account-Anlegen erfolgreich.
+    if [[ $? == 0 ]]; then
+	# Zertifikat generieren
+	dehydrated -c
+	ecode=$?
+    else
+	echo "Programm wurde abgebrochen, da der Let's Encrypt Account nicht angelegt werden konnte"
+    fi
     
-    # Apache restart
-    systemctl restart apache2.service
+    # Apache Flags nur neu setzen, wenn Zertifikate erfolgreich erstellt wurden
+    if [[ $ecode == 0 ]]; then
+        # Apache restart
+	systemctl restart apache2.service
+    else
+	echo "Programm wurde abgebrochen, da keine Zertifikate erzeugt wurden."
+    fi
 else
     echo "Programm wird abgebrochen. Schaffen Sie zunächst alle Voraussetzungen"
     exit
