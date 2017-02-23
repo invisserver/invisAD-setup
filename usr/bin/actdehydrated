@@ -60,9 +60,6 @@ if [[ $prepok == "0" ]]; then
     file="dehydrated.conf"
     strings="10.10.10.10%$extip"
     changevalues $path $file "$strings"
-
-    a2enflag -d OWNCERTS
-    a2enflag LETSENCRYPT
     
     # Lets Encrypt Account aktivieren
     dehydrated --register --accept-terms
@@ -74,17 +71,20 @@ if [[ $prepok == "0" ]]; then
 	ecode=$?
     else
 	echo "Programm wurde abgebrochen, da der Let's Encrypt Account nicht angelegt werden konnte"
+	exit
     fi
     
     # Apache Flags nur neu setzen, wenn Zertifikate erfolgreich erstellt wurden
     if [[ $ecode == 0 ]]; then
+	a2enflag -d OWNCERTS
+	a2enflag LETSENCRYPT
         # Apache restart
 	systemctl restart apache2.service
     else
 	echo "Programm wurde abgebrochen, da keine Zertifikate erzeugt wurden."
+	exit
     fi
 else
     echo "Programm wird abgebrochen. Schaffen Sie zunächst alle Voraussetzungen"
     exit
 fi
-
