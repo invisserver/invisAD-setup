@@ -60,7 +60,7 @@ function supportMail() {
 	data.set('subject', $('form_subject').value);
 	
 	invis.setCookie('invis-request', data.toJSON());
-	invis.request('script/ajax.php', supportMailResponse, {c: 'support_mail', u: from});
+	invis.request('script/adajax.php', supportMailResponse, {c: 'support_mail', u: from});
 }
 
 function supportMailResponse(request) {
