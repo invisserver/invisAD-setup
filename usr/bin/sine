@@ -635,19 +635,6 @@ Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
 	ddnshn="none"
     fi
 
-#---# Let's Encrypt
-#    if [[ $ddnshn != "none" ]]; then
-#	yesno "Sollen für den Zugriff auf Ihren invis-Server Zertifikate von Let's Encrypt erzeugt werden?\n\n.Let's Encrypt Zertifikate werden von gängigen Browsern und Betriebssystemen ohne lästige Warnung akzeptiert. Deren Verwendung ist spätestens wenn ownCloud zum Einsatz kommt empfehlenswert." "Let's Encrypt Zertifikate"
-#	letsencrypt=${?}
-#    
-#	if [[ $letsencrypt == "0" ]]; then
-#	    extcerts="letsencrypt"
-#	else
-#	    extcerts="owncerts"
-#	fi
-#    
-#    fi 
-
 #---#SMTP Daten
     yesno "Um Emails zuverlässig versenden zu können werden die Zugangsdaten zum SMTP-Server (Server für ausgehende Mails) Ihres Providers benötigt.\n\nSind Ihnen diese Daten bekannt?\n(Wenn nicht, müssen Sie dies zu einem späteren Zeitpunkt von Hand in den Dateien /etc/postfix/main.cf & sasl_passwd eintragen.)" "SMTP Zugangsdaten"
     bekannt=${?}
@@ -817,7 +804,6 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
 	echo "AVCRON:n" >> $setupdir/invis_confdata
     fi
     echo "DDNS:$ddnshn" >> $setupdir/invis_confdata
-    #echo "extCerts:$extcerts" >> $setupdir/invis_confdata
     
     if [[ $mailrelay == "none" ]]; then
 	echo "SMTPRELAY:$mailrelay" >> $setupdir/invis_confdata 
@@ -913,11 +899,14 @@ sysprep() {
 
     else
 	# Installation der invis-eigenen Samba-Pakete
+        zypper refresh 2>&1| tee -a $setupdir/sine.log | pgbox
 	zypper -n install --force-resolution -n `cat $setupdir/zypper-package-lists/invis_samba` 2>&1| tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
 	# Samba Repo ermitteln
 	sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
 	# Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
 	zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $setupdir/sine.log | pgbox
+        zyppercheck ${PIPESTATUS[0]}
     fi
 
     # Nachfolgenden Block erhalten, aber an die sernet-Pakete gekoppelt
@@ -1095,7 +1084,6 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 
     # Zeitzoneneinstellung des Servers ermitteln
     # php versteht CEST nicht mehr
-    #timezone=`date +%Z`
     timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
     # PHP ini-Dateien anpassen
@@ -1203,8 +1191,6 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     chown .ntp $sockdir
     chmod 0750 $sockdir
 
-    # Pfade gehen fest von CHROOTED yes aus, deshalb:
-    #sed -i /NTPD_RUN_CHROOTED/s/no/yes/ /etc/sysconfig/ntp
     # ntp muss chrooted laufen
     sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
     sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
@@ -1252,7 +1238,7 @@ samba_ad() {
 
     # Domain Function level
     # --function-level="2003"
-    # Default: 2003, moeglich 2008, 2008_r2. Wir verwenden den aktuellen Default und lassen es weg
+    # Default: 2008_r2, moeglich 2008, 2008_r2, 2012 und 2012_r2. Wir verwenden den aktuellen Default und lassen es weg
 
     # Fuer UNIX UID/GID RFC2307 aktiv
     # --use-rfc2307
@@ -1430,22 +1416,6 @@ samba_ad() {
 	    strings="iscDhcpNetMask: 24%iscDhcpNetMask: 16"
 	    changevalues $path $file "$strings"
 	fi
-	# Kommt nicht mehr vor, kann also weg
-	#rd=`getconfdata "ReverseDom" "2"`
-	#strings="220.168.192%$rd"
-	#changevalues $path $file "$strings"
-	
-	## FALSCH
-	# Kommt nicht mehr vor, kann also weg
-	#hostpart=`echo "$ipaddr" | cut -d "." -f 4`
-	#strings="relativeDomainName:10%relativeDomainName:$hostpart"
-	#changevalues $path $file "$strings"
-	
-	#strings="relativeDomainName=10,%relativeDomainName=$hostpart,"
-	#changevalues $path $file "$strings"
-	
-	#strings="dhcpNetMask:24%dhcpNetMask:$shortnmask"
-	#changevalues $path $file "$strings"
 	
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
@@ -1524,10 +1494,6 @@ dns() {
     ipaddr=`getconfdata "IP" "2"`
     ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
     
-    # $hostaddr wird nicht mehr benoetigt, da jetzt das Script moddnsrecors zum Anlegen des 
-    # Server PTRs verwendet wird.
-    #hostaddr=`echo $ipaddr|cut -d "." -f4`
-    
     cp $cfilesdir/dhcp-dns/named.conf /etc 2>&1| tee -a $setupdir/sine.log
     cp $cfilesdir/dhcp-dns/s4.named.conf $s4workingdir/named.conf 2>&1| tee -a $setupdir/sine.log
 
@@ -1562,7 +1528,6 @@ dns() {
 
     ## DNS PTR Eintrag fuer den Server selbst anlegen
     moddnsrecords a PTR $ipaddr $fqdn
-    #samba-tool dns add 127.0.0.1 $zone $hostaddr PTR "$fqdn." -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
     
     ## DNS Eintraege fuer Mailserver in Zone eintragen
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -2190,13 +2155,8 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     if [[ $ddnshn != "none" ]]; then
 	extcerts=`getconfdata "extCerts" "2"`
 	msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
-	#if [[ extcerts == "letsencrypt" ]]; then
 	
-	#    zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
-	#    zypper -n install dehydrated 2>&1 | tee -a $setupdir/sine.log | pgbox
-	#    zyppercheck ${PIPESTATUS[0]}
-
-	    # Challenge Verzeichnis anlegen
+	# Challenge Verzeichnis anlegen
 	mkdir -p "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
 
 	# dehydrated Konfiguration sichern und anpassen
@@ -2217,10 +2177,8 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 	file="dehydrated.conf"
 	strings="your.ddns-domain.net%$ddnshn"
 	
-	#else 
 	inviscerts extern
 	a2enflag OWNCERTS
-	#fi
 	
         # Kopieren und anpassend der Konfigurationsdateien
         cd $setupdir
@@ -2362,15 +2320,17 @@ postgresqlserver() {
     # Weitermachen?
     if [[ $cont == "0" ]]; then
         pgsubtitle="Aktuelle Version wird installiert"
+	zypper ref 2>&1|tee -a $setupdir/sine.log |pgbox
         zypper -n install -n `cat $setupdir/zypper-package-lists/postgresql` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110
+	zyppercheck ${PIPESTATUS[0]}
     else
         pgsubtitle="Spezielle Version wird installiert"
+	zypper ref 2>&1|tee -a $setupdir/sine.log |pgbox
         zypper -n install -D -n `cat $setupdir/zypper-package-lists/postgresql` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110
+	zyppercheck ${PIPESTATUS[0]}
+
     fi
 
-    zyppercheck ${PIPESTATUS[0]}
-
-    #cp /srv/www/htdocs/phpPgAdmin/conf/config.inc.php-dist /srv/www/htdocs/phpPgAdmin/conf/config.inc.php
     pgsubtitle="PostgreSQL \"vorübergehend\" starten."
     systemctl start postgresql.service 2>&1|tee -a $setupdir/sine.log |pgbox
 
@@ -2382,7 +2342,6 @@ postgresqlserver() {
     yesno "Soll PostgreSQL automatisch gestartet werden? (Ist nur notwendig, wenn Kivitendo installiert wird.)" "Runlevel Eintrag für PostgreSQL wird konfiguriert."
     pgsqlrl=${?}
     if [[ $pgsqlrl == "1" ]]; then
-#       /etc/init.d/postgresql stop 2>&1 |tee -a $setupdir/sine.log |pgbox
         chkservice "postgresql" disable
     else
         chkservice "postgresql"
@@ -2458,7 +2417,9 @@ monitoring() {
     "nagios" )
 	pgsubtitle="Nagios Monitoring Plugins werden installiert."
         # Vorbereitung zur Ueberwachung des Servers via Icinga oder Nagios
+	zypper ref 2>&1|tee -a $setupdir/sine.log |pgbox
 	zypper -n install -n `cat $setupdir/zypper-package-lists/nagios_plugins` 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
 	groupadd -g 9000 nagios 2>&1 | tee -a $setupdir/sine.log | pgbox
 	useradd -u 9000 -g nagios -d /home/nagios -m -c "Nagios Admin" nagios 2>&1 | tee -a $setupdir/sine.log | pgbox
 	usermod -a -G mysql nagios 2>&1| tee -a $setupdir/sine.log
@@ -2470,7 +2431,9 @@ monitoring() {
     "zabbix" )
 	pgsubtitle="Zabbix Monitoring-Tools werden installiert."
         # Vorbereitung zur Ueberwachung des Servers via Zabbix-Agent mit Zabbix-Proxy
+	zypper ref 2>&1|tee -a $setupdir/sine.log |pgbox
 	zypper -n install -n zabbix-agent zabbix-proxy zabbix-proxy-mysql fping 2>&1 | tee -a $setupdir/sine.log | pgbox
+	zyppercheck ${PIPESTATUS[0]}
         chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $setupdir/sine.log
         zabbixdbpw=`mkdbsilent zabbix zabbix a`
         mysql -u zabbix -p$zabbixdbpw zabbix < $cfilesdir/monitoring/zabbix/schema.sql
@@ -2597,7 +2560,7 @@ case "$whichgroupware" in
 	clear
 	windowtitle="SOGo Installation"
 	dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/sogo.txt" 38 90
-
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zypper -n install -n `cat $setupdir/zypper-package-lists/sogo` 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	
@@ -2767,6 +2730,7 @@ case "$whichgroupware" in
 	clear
 	windowtitle="Roundcube Installation"
 	dialog --backtitle "$dialogtitle" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/roundcube.txt" 38 90
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zypper -n install -n roundcubemail 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	
@@ -2894,7 +2858,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
-	    zypper refresh 2>&1 |pgbox
+	    zypper refresh 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	    zypper -n install -n `cat $setupdir/zypper-package-lists/wawision` 2>&1 |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Hier Datenbank installation einfügen
@@ -2906,8 +2870,6 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 
 	    writeprepstat "faxgate"
 	    waitbox "erp" "faxgate"
-	    
-	    
 	else
 	    msgbox "waWision Installation übersprungenen" "$windowtitle"
 	    writeprepstat "faxgate"
@@ -2946,6 +2908,7 @@ faxgate() {
 	#cp /usr/bin/fcinst /usr/sbin
 	fcinst 2>&1 | tee -a $setupdir/sine.log | pgbox
 	pgsubtitle="Zusätzliche Software wird installiert"
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	zypper -n install -n `cat $setupdir/zypper-package-lists/faxgate`  2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	
@@ -3041,6 +3004,7 @@ webcdwriter() {
     # Weitermachen?
     if [[ $cont == "0" ]]; then
 	pgsubtitle="Software wird installiert"
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	zypper -n install -n webcdwriter sox 2>&1 | tee -a $setupdir/sine.log |pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	# wodim verfügbar machen
@@ -3088,6 +3052,7 @@ openvpn() {
 
     if [[ $cont == "0" ]]; then
 	pgsubtitle="openvpn wird installiert" 
+	zypper refresh 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	zypper -n install -n openvpn 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 
@@ -3154,6 +3119,7 @@ dokuwiki() {
     cd $setupdir
 
     pgsubtitle="Dokuwiki wird installiert" 
+    zypper refresh 2>&1 | tee -a $setupdir/sine.log  |pgbox
     zypper -n install -n dokuwiki 2>&1 | tee -a $setupdir/sine.log | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
