@@ -3090,7 +3090,7 @@ openvpn() {
 	cp /etc/easy-rsa/$domain/private/$ddns.key $keydir
 	cp /etc/easy-rsa/$domain/issued/$ddns.crt $keydir
 
-	msgbox "Beispiel Client-Konfigurationsdateien finden Sie im cfiles Unterverzeichnis.
+	msgbox "Beispiel Client-Konfigurationsdateien finden Sie in der Service-Freigabe des Fileservers.
 Um Schlüssel für einen Client zu erzeugen führen Sie inviscerts vpn aus. Weitere Infos unter wiki.invis-server.de." "openVPN Clients einrichten"
     # openvpn ins Runlevel-Konzept integrieren und starten
 	# Seit openSUSE 13.1 bekommt jede openvpn-Konfiguration ein eigenes systemd Service-File
