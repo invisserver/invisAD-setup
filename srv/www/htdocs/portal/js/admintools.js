@@ -2,7 +2,7 @@
  * js/admintools.js v1.2
  * functions for user/group/host administration
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010,2011,2012,2014,2015,2016 Stefan Schäfer, invis-server.org
+ * (C) 2010-2017 Stefan Schäfer, invis-server.org
  * (C) 2013,2015 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: http://wiki.invis-server.org
@@ -20,7 +20,7 @@ var PAGED_DATA_UNSORTED = null;
 var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Windows+Unix+Groupware', 'WinAdmin', ' WinAdmin+Unix', 'WinAdmin+Unix+Groupware', 'MasterAdmin' );
 var GROUP_TYPE = new Array('Windows+Unix', 'Windows+Unix+Groupware', 'Mail-Verteiler', 'Sonstige');
 var USERLIST_FLAG = new Array (true,true,true,true,true,true,true,true,true);
-var GROUPLIST_BI_FLAG = true;
+var GROUPLIST_BI_FLAG = false;
 var PINGER_FLAG = false;
 var PINGER_REQUEST = [];
 
