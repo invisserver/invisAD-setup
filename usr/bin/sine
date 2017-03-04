@@ -1446,7 +1446,7 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     # hostname ermitteln
     hn=`hostname`
     # keytab erzeugen
-    samba-tool domain exportkeytab /etc/krb5.keytab --principal="$hn\$"
+    samba-tool domain exportkeytab /etc/krb5.keytab --principal="$hn\$" 2>&1| tee -a $setupdir/sine.log | pgbox
     chmod 0600 /etc/krb5.keytab
     cp $cfilesdir/System/sssd/sssd.conf /etc/sssd/
     cp $cfilesdir/System/nsswitch.conf /etc/
@@ -1527,7 +1527,7 @@ dns() {
     samba-tool dns zonecreate 127.0.0.1 $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
 
     ## DNS PTR Eintrag fuer den Server selbst anlegen
-    moddnsrecords a PTR $ipaddr $fqdn
+    moddnsrecords a PTR $ipaddr $fqdn 2>&1| tee -a $setupdir/sine.log | pgbox
     
     ## DNS Eintraege fuer Mailserver in Zone eintragen
     samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $setupdir/sine.log | pgbox
