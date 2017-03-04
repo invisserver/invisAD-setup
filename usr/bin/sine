@@ -2101,19 +2101,18 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     # Putty bereitstellen
     cp $cfilesdir/putty/putty.exe /srv/www/htdocs/portal/
     
-    # Testen, ob php5 Modul aktiviert ist, wenn nicht aktivieren
-    if [[ ! `a2enmod -l |grep php5` ]]; then
-	a2enmod php5
-    fi
     
-    # Proxy-Module einrichten
-    a2enmod headers
-    #a2enmod xml2enc
-    a2enmod proxy
-    a2enmod proxy_http
-    a2enmod proxy_html
-    a2enmod socache_shmcb
-    a2enmod version
+    # Erforderliche Apache Module aktivieren
+    a2enmod php5 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod headers 2>&1| tee -a $setupdir/sine.log | pgbox
+    #a2enmod xml2enc 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod proxy 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod proxy_http 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod proxy_html 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod socache_shmcb 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod version 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod fcgid 2>&1| tee -a $setupdir/sine.log | pgbox
+    a2enmod rewrite 2>&1| tee -a $setupdir/sine.log | pgbox
     
     # Stammzertifikat der Server-CA bereitstellen
     cp /etc/invis/certs/ca.crt /srv/www/htdocs/portal/inc/
@@ -2240,9 +2239,6 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
     chmod 0700 /var/lib/cornaz/inuse/.fetchmailrc		2>&1|tee -a $setupdir/sine.log |pgbox
     chown fetchmail /var/lib/cornaz/inuse/.fetchmailrc	2>&1|tee -a $setupdir/sine.log |pgbox
 
-    # Webserver fuer prefork-MPM konfigurieren
-    a2enmod fcgid
-    a2enmod rewrite
     path="/etc/sysconfig/"
     file="apache2"
     strings="APACHE_MPM=\"\"%APACHE_MPM=\"prefork\""
@@ -2780,12 +2776,6 @@ case $whicherp in
 	    zypper -n install -n `cat $setupdir/zypper-package-lists/kivitendo` 2>&1 | tee -a $setupdir/sine.log  |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	
-	    # Apache FCGID-Modul aktivieren, wenn nicht bereits geschehen
-	    if [[ -z `a2enmod -l | grep fcgid` ]]; then
-		a2enmod fcgid
-		/etc/init.d/apache2 reload 2>&1 | tee -a $setupdir/sine.log  |pgbox
-	    fi
-
 	    # Kivitendo Konfiguration vorbereiten
 	    cp $cfilesdir/kivitendo-erp/kivitendo.conf /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf
 
