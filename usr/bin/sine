@@ -92,6 +92,11 @@ yesno() {
     dialog --backtitle "$dialogtitle" --title "$2" --yesno "$1" 0 0
 }
 
+yesnono() {
+    # Argument $1 = Fragetext $2 = Dialogtitel
+    dialog --backtitle "$dialogtitle" --title "$2" --defaultno --yesno "$1" 0 0
+}
+
 textbox() {
     # Argument $1 = Ausgabedatei $2 = Dialogtitel $3 = Exit-Label
     if [[ -z $3 ]]; then
@@ -2335,7 +2340,7 @@ postgresqlserver() {
     chown -R postgres:postgres /var/lib/pgsql/ 2>&1 |tee -a $setupdir/sine.log
     # Postgresql neu starten
 
-    yesno "Soll PostgreSQL automatisch gestartet werden? (Ist nur notwendig, wenn Kivitendo installiert wird.)" "Runlevel Eintrag für PostgreSQL wird konfiguriert."
+    yesnono "Soll PostgreSQL automatisch gestartet werden? (Ist nur notwendig, wenn Kivitendo installiert wird.)" "Runlevel Eintrag für PostgreSQL wird konfiguriert."
     pgsqlrl=${?}
     if [[ $pgsqlrl == "1" ]]; then
         chkservice "postgresql" disable
