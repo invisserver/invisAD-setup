@@ -174,7 +174,14 @@ elseif ($CMD == 'backup_info') {
 
 	echo '<b>Datensicherung:</b><br>';
 	echo '<span style="font-size: 0.7em;"> Zeit: ' . date('d.m.Y, H:i', $last) . '</span><br />';
-	
+
+	// Anzeigen, wenn Dasi laeuft
+	$file_buactive = file('/var/spool/results/backup/buactive');
+	$active = intval($file_buactive[0]);
+	if ( $active == 1 ) {
+	    echo '<span style="font-size: 0.7em; color: blue;"><b>Datensicherung läuft</b></span><br />';
+	}
+
 	// Quick n dirty -> wenn die zweite Zeile der Datei genau ein Zeichen lang ist,
 	// kann davon ausgegangen werden, dass es sich um die Anzahl der zu sichernden 
 	// Volumes handelt. Dann wird die neue Ausgabe erzeugt.
