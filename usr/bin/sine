@@ -342,8 +342,8 @@ Alle Eingaben werden auf Plausibilität geprüft, fehlerhaft ausgefüllte Felder
 	"Bundesland:" 2 24 "$region" 2 38 33 0\
 	"Stadt:" 4 2 "$city" 4 16 55 0\
 	"Organisation:" 6 2 "$organisation" 6 16 55 0\
-	"email:" 8 2 "$admail" 8 16 55 0\
-	"Name:" 10 2 "$admin" 10 16 55 0\
+	"email:" 8 2 "$certmail" 8 16 55 0\
+	"Name:" 10 2 "$certowner" 10 16 55 0\
 	2>$setupdir/sine_temp
 	opensslvalues=(`cat "$setupdir/sine_temp"`)
 	# Werte prüfen und zuordnen
@@ -368,17 +368,36 @@ Alle Eingaben werden auf Plausibilität geprüft, fehlerhaft ausgefüllte Felder
 	fi
 	
 	if [[ ${opensslvalues[4]} =~ ^[a-zA-Z0-9-]+([._a-zA-Z0-9.-]+)*@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4}) ]];then
-	    admail="${opensslvalues[4]}"
+	    certmail="${opensslvalues[4]}"
 	    (( ok=$ok + 1 ))
 	fi
 
 	if (( ${#opensslvalues[5]} >= 5 ));then
-	    admin="${opensslvalues[5]}"
+	    certowner="${opensslvalues[5]}"
 	    (( ok=$ok + 1 ))
 	fi
 	
     done
 
+    ok=0
+    while (( $ok != "2" ));do
+	dialog --backtitle "$dialogtitle" --title "IT Dienstleister" --form "$dialogshorthelp\n\n
+Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Administrators ein." 18 74 5 \
+	"email:" 2 2 "$admail" 2 20 45 0\
+	"Name:" 4 2 "$admin" 4 20 45 0\
+	2>$setupdir/sine_temp
+	exitcode=${?}
+	admincontact=(`cat $setupdir/sine_temp`)
+	if [[ ${admincontact[0]} =~ ^[a-zA-Z0-9-]+([._a-zA-Z0-9.-]+)*@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4}) ]];then
+	    admail="${admincontact[0]}"
+	    (( ok=$ok + 1 ))
+	fi
+
+	if (( ${#admincontact[1]} >= 5 ));then
+	    admin="${admincontact[1]}"
+	    (( ok=$ok + 1 ))
+	fi
+    done
 
 #---# Netzwerk
     ok=1
@@ -766,6 +785,9 @@ Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "S
     echo "Region:$region" >> $setupdir/invis_confdata
     echo "City:$city" >> $setupdir/invis_confdata
     echo "Organisation:$organisation" >> $setupdir/invis_confdata
+    echo "certMail:$certmail" >> $setupdir/invis_confdata
+    echo "certOwner:$certowner" >> $setupdir/invis_confdata
+
     echo "Admail:$admail" >> $setupdir/invis_confdata
     echo "Admin:$admin" >> $setupdir/invis_confdata
 
@@ -989,19 +1011,96 @@ sysprep() {
     fi
 
     ## invis-Konfigurationsdatei anpassen
-    domain=`getconfdata "Domain" "2"`
-    adminmail=`getconfdata "Admail" "2"`
-    revdomain=`getconfdata "ReverseDom" "2"`
-    revdomain="$revdomain.in-addr.arpa"
-
     path="/etc/invis"
     file="invis.conf"
+    adminmail=`getconfdata "Admail" "2"`
     strings="administrator@invis-net.loc%$adminmail"
     changevalues $path $file "$strings"
-    
+
+    admin=`getconfdata "Admin" "2"`
+    strings="Heinz Becker%$admin"
+    changevalues $path $file "$strings"
+
+    certmail=`getconfdata "certMail" "2"`
+    strings="certmail@invis-net.loc%$certmail"
+    changevalues $path $file "$strings"
+
+    mailsender=`getconfdata "certOwner" "2"`
+    strings="certowner%$admin"
+    changevalues $path $file "$strings"
+
+    domain=`getconfdata "Domain" "2"`
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
 
+    basedn=`getconfdata "baseDN" "2"`
+    strings="dc=invis-net,dc=loc%$basedn"
+    changevalues $confdir $file "$strings"
+
+    cleantr=`getconfdata "cleanTR" "2"`
+    if [[ $cleantr == "j" ]]; then
+	strings="cleanTrOn:n%cleanTrOn:$cleantr"
+	changevalues $confdir $file "$strings"
+	maxdays=`getconfdata "TRmaxDays" "2"`
+	strings="trMaxDays:21%trMaxDays:$maxdays"
+	changevalues $confdir $file "$strings"
+    fi
+
+    cleandasi=`getconfdata "cleanDasi" "2"`
+    if [[ $cleandasi == "j" ]]; then
+	strings="cleanDasi:n%cleanDasi:$cleandasi"
+	changevalues $confdir $file "$strings"
+	maxdays=`getconfdata "DasimaxDays" "2"`
+	strings="DasiMaxDays:21%DasiMaxDays:$maxdays"
+	changevalues $confdir $file "$strings"
+    fi
+
+    ddnshn=`getconfdata "DDNS" "2"`
+    if [[ $ddnshn != "none" ]]; then
+	strings="hostname.ihredomain.de%$ddnshn"
+	changevalues $confdir $file "$strings"
+    fi
+
+    groupware=`getconfdata "Groupware" "2"`
+    ## verwendete Groupware in Konfigurationsdatei schreiben
+    case $groupware in
+	"kopano" ) 
+	    strings="usedgroupware%kopano"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"tine20" )
+	    strings="usedgroupware%tine20"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"sogo" )
+	    strings="usedgroupware%sogo"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"roundcube" )
+	    strings="usedgroupware%roundcube"
+	    changevalues $confdir $file "$strings"
+	    ;;
+    esac
+
+    erp=`getconfdata "ERPSoftware" "2"`
+    ## verwendete ERP in Konfigurationsdatei schreiben
+    case $erp in
+	"wawision" ) 
+	    strings="usederp%wawision"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"kivitendo" )
+	    strings="usederp%kivitendo"
+	    changevalues $confdir $file "$strings"
+	    ;;
+	"keine" )
+	    strings="usederp%none"
+	    changevalues $confdir $file "$strings"
+	    ;;
+    esac
+
+    revdomain=`getconfdata "ReverseDom" "2"`
+    revdomain="$revdomain.in-addr.arpa"
     strings="220.168.192.in-addr.arpa%$revdomain"
     changevalues $path $file "$strings"
 
@@ -1061,8 +1160,8 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     strings="invis-server.org%$organisation"
     changevalues $path $file "$strings"
 
-    admail=`getconfdata "Admail" "2"`
-    strings="me@example.net%$admail"
+    certmail=`getconfdata "certMail" "2"`
+    strings="me@example.net%$certmail"
     changevalues $path $file "$strings"
 
     # PKI initialisieren
@@ -1112,77 +1211,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
     # Workaround fuer fastcgi php.ini Bug
     ln -s /etc/php5/fastcgi /etc/php5/fpm
 
-    # invis Konfigurationsdatei anpassen
-    file="invis.conf"
 
-    strings="domadmin@invis-net.loc%$admail"
-    changevalues $confdir $file "$strings"
-
-    basedn=`getconfdata "baseDN" "2"`
-    strings="dc=invis-net,dc=loc%$basedn"
-    changevalues $confdir $file "$strings"
-
-    cleantr=`getconfdata "cleanTR" "2"`
-    if [[ $cleantr == "j" ]]; then
-	strings="cleanTrOn:n%cleanTrOn:$cleantr"
-	changevalues $confdir $file "$strings"
-	maxdays=`getconfdata "TRmaxDays" "2"`
-	strings="trMaxDays:21%trMaxDays:$maxdays"
-	changevalues $confdir $file "$strings"
-    fi
-
-    cleandasi=`getconfdata "cleanDasi" "2"`
-    if [[ $cleantr == "j" ]]; then
-	strings="cleanDasi:n%cleanDasi:$cleandasi"
-	changevalues $confdir $file "$strings"
-	maxdays=`getconfdata "DasimaxDays" "2"`
-	strings="DasiMaxDays:21%DasiMaxDays:$maxdays"
-	changevalues $confdir $file "$strings"
-    fi
-
-    ddnshn=`getconfdata "DDNS" "2"`
-    if [[ $ddnshn != "none" ]]; then
-	strings="hostname.ihredomain.de%$ddnshn"
-	changevalues $confdir $file "$strings"
-    fi
-
-    groupware=`getconfdata "Groupware" "2"`
-    ## verwendete Groupware in Konfigurationsdatei schreiben
-    case $groupware in
-	"kopano" ) 
-	    strings="usedgroupware%kopano"
-	    changevalues $confdir $file "$strings"
-	    ;;
-	"tine20" )
-	    strings="usedgroupware%tine20"
-	    changevalues $confdir $file "$strings"
-	    ;;
-	"sogo" )
-	    strings="usedgroupware%sogo"
-	    changevalues $confdir $file "$strings"
-	    ;;
-	"roundcube" )
-	    strings="usedgroupware%roundcube"
-	    changevalues $confdir $file "$strings"
-	    ;;
-    esac
-
-    erp=`getconfdata "ERPSoftware" "2"`
-    ## verwendete ERP in Konfigurationsdatei schreiben
-    case $erp in
-	"wawision" ) 
-	    strings="usederp%wawision"
-	    changevalues $confdir $file "$strings"
-	    ;;
-	"kivitendo" )
-	    strings="usederp%kivitendo"
-	    changevalues $confdir $file "$strings"
-	    ;;
-	"keine" )
-	    strings="usederp%none"
-	    changevalues $confdir $file "$strings"
-	    ;;
-    esac
     
     # NTP-Dienst fuer AD anpassen
     ntpconf="/etc/ntp.conf"
@@ -2165,11 +2194,11 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 
 	# dehydrated Konfiguration sichern und anpassen
 	path="/etc/dehydrated/"
-	adminmail=`getconfdata "Admail" "2"`
+	certmail=`getconfdata "certMail" "2"`
 	mv $path/config $path/config.ori
 	cp $cfilesdir/dehydrated/config $path
 	file="config"
-	strings="adminmail%$adminmail"
+	strings="adminmail%$certmail"
 	changevalues $path $file "$strings"
 	    
 	## DDNS Namen in Domain-Datei eintragen
