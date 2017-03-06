@@ -21,7 +21,7 @@
 resultdir="/var/spool/results/certs"
 # Zertifikate
 cacert="/etc/invis/certs/ca.crt"
-certs=("/etc/invis/certs/ldap-cert.pem" "/etc/invis/certs/mail-cert.pem" "/etc/apache2/ssl.crt/invis-server.crt")
+certs=("/etc/invis/certs/ca.crt" "/etc/invis/certs/ldap-cert.pem" "/etc/invis/certs/mail-cert.pem" "/etc/apache2/ssl.crt/invis-server.crt")
 
 # Ergebnisverzeichnis anlegen, wenn nicht vorhanden
 if [[ ! -d $resultdir ]]; then
@@ -40,6 +40,9 @@ for cert in ${certs[*]}; do
 	certpath=`echo $verify| tr -d " " |cut -d ":" -f 1`
 	certname=`basename $certpath`
 	certstate=`echo $verify| tr -d " " |cut -d ":" -f 2`
+	if [[ `echo $certname | grep "^ca"` ]]; then
+	    certtype="Stamzertifikat"
+	fi
 	if [[ `echo $certname | grep "^ldap"` ]]; then
 	    certtype="LDAP-Server"
 	fi
