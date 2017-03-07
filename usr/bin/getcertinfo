@@ -67,7 +67,7 @@ for cert in ${certs[*]}; do
 	    certtype="Web- &amp; VPN-Server"
 	fi
 	echo "$certtype:$datum:$certstate" >> $resultdir/certstatus
-	if (( $daysleft <= 800 )); then
+	if (( $daysleft <= 7 )); then
 	    echo "Das $certtype Zertifikat läuft am $datum aus. Bitte erneuern!" >> $resultdir/alarm
 	fi
 done
