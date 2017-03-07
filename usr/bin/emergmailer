@@ -26,11 +26,11 @@ conffile="/etc/invis/invis.conf"
 # Werte aus Konfigurationsdatendatei extrahieren
 # $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
 getconfdata() {
-    cat $1 |grep "$2" | cut -d ":" -f $3
+    cat $1 |grep "$2:" | cut -d ":" -f $3
 }
 
 # $1 muss das Result-Verzeichnis des Alarm-meldenden Scripts enthalten.
-if [[ -z $1 ]]; then
+if [[ ! -z $1 ]]; then
     directory=$1
 else
     exit 1

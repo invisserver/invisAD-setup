@@ -50,10 +50,6 @@ rm -f $directory/alarm
 
 # Servernamen ermitteln
 server=`hostname -f`
-sender=info@`hostname -d`
-
-# Empfänger der Warnmails
-adminmail=`getconfdata $conffile "adMail" "2"`
 
 # aktuelles Datum ermitteln
 datum=`date +%d.%m.%Y" "%R`
@@ -84,6 +80,8 @@ for x in /sys/block/*; do
 		    temp=`smartctl -A /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
 		    echo "$x nOK $temp" >> $directory/status
 		    echo "Festplatte $x auf Server $server meldet Fehler: $selftest" >> $directory/alarm 
+		    # Alarm per Email versenden
+		    emergmailer $directory
 		fi
 	    fi
 	fi
@@ -98,28 +96,11 @@ for x in /sys/block/*; do
 		echo "$x nOK $status" >> $directory/status
 		echo -e "RAID Verbund \"$x\" auf Server $server ist ausgefallen. \n mdadm-Ausgabe:" >> $directory/alarm
 		mdadm -D /dev/$x >> $directory/alarm
+		# Alarm per email versenden
+		emergmailer $directory
 	    fi
 	fi
 done 
-
-# Testen ob innerhalb der letzten drei Tage bereits ein Alarm gesendet wurde
-oldsent=`find $directory/sent -ctime +3 2> /dev/null`
-
-# Wenn ein Alarm vor ueber drei Tagen oder noch gar nicht gesendet wurde $sent auf 1 setzen 
-if [[ $oldsent != "" || ! -f $directory/sent ]]; then
-    sent=1
-fi
-
-# email senden, wenn Alarm v
-if [[ -f $directory/alarm && $sent == 1 ]]; then
-    cat $directory/alarm|mailx -s "Alarm!" -r $sender $adminmail 
-    echo $datum > $directory/sent
-fi
-
-# Wenn kein Alarm vorliegt, alte sent Datei löschen
-if [[ ! -f $directory/alarm ]]; then
-    rm $directory/sent 2> /dev/null
-fi
 
 # Freien Platz auf evtl. vorhandenen PVs finden
 
@@ -127,5 +108,3 @@ if [[ ! `pvscan -v 2>&1 |grep "No matching physical volumes found"` ]]; then
     freespace=`pvscan -v 2>&1 |grep PV|tr -s " "|cut -d "[" -f2 | cut -d "/" -f2|cut -d " " -f2-3`
     echo "pvfree $freespace" >> $directory/status
 fi
-
-
