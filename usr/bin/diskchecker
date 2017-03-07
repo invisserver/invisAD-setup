@@ -80,8 +80,6 @@ for x in /sys/block/*; do
 		    temp=`smartctl -A /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
 		    echo "$x nOK $temp" >> $directory/status
 		    echo "Festplatte $x auf Server $server meldet Fehler: $selftest" >> $directory/alarm 
-		    # Alarm per Email versenden
-		    emergmailer $directory
 		fi
 	    fi
 	fi
@@ -96,11 +94,14 @@ for x in /sys/block/*; do
 		echo "$x nOK $status" >> $directory/status
 		echo -e "RAID Verbund \"$x\" auf Server $server ist ausgefallen. \n mdadm-Ausgabe:" >> $directory/alarm
 		mdadm -D /dev/$x >> $directory/alarm
-		# Alarm per email versenden
-		emergmailer $directory
 	    fi
 	fi
 done 
+
+# Bei Bedarf Alarm per email versenden
+if [[ -f $directory/alarm ]]; then
+	emergmailer $directory
+fi
 
 # Freien Platz auf evtl. vorhandenen PVs finden
 

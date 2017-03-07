@@ -41,6 +41,10 @@ adminmail=`getconfdata $conffile "adMail" "2"`
 # Absender der Warnmails
 sender=`getconfdata $conffile "mailSender" "2"`
 
+echo $adminmail
+echo $sender
+
+
 # aktuelles Datum ermitteln
 datum=`date +%d.%m.%Y" "%R`
 
