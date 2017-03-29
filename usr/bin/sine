@@ -2202,7 +2202,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 	changevalues $path $file "$strings"
 	    
 	## DDNS Namen in Domain-Datei eintragen
-	echo $ddnshn > $path/domain.txt
+	echo $ddnshn > $path/domains.txt
 
 	# Neue vHost Datei kopieren und anpassen
 	path="/etc/apache2/vhosts.d"
