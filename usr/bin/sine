@@ -2175,6 +2175,7 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 	cp $cfilesdir/dehydrated/dehydrated.conf $path
 	file="dehydrated.conf"
 	strings="your.ddns-domain.net%$ddnshn"
+        changevalues $path $file "$strings"
 	
 	inviscerts extern
 	a2enflag OWNCERTS
