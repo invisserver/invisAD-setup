@@ -70,7 +70,7 @@ objectClass: iPortEntry
 iPortEntryName: Roundcube
 cn: Roundcube
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/roundcube
+iPortEntryURL: [servername]/roundcubemail
 iPortEntryDescription: Der moderne Webmailer Roundcubemail ist ein potenter Mail-Client mit angenehmem "Look & Feel". 
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
