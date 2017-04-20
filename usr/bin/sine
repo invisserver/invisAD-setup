@@ -3063,6 +3063,10 @@ openvpn() {
         strings="192.168.220.0%$net"
         changevalues $path $file "$strings"
 
+	netmask=`getconfdata "NMask-long" "2"`
+	strings="255.255.255.0%$netmask"
+        changevalues $path $file "$strings"
+
 	ddns=`getconfdata "DDNS" "2"`
         strings="openvpn_server%$ddns"
         changevalues $path $file "$strings"
