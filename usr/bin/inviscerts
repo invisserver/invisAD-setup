@@ -55,7 +55,7 @@ usage() {
 
 out() {
     echo -e "\nSie müssen jetzt gegebenenfalls betroffene Dienste neu starten."
-    echo -e "\nDanke, dass Sie \"inviscerts\" verwendet haben.\nSie haben ein einfaches Script sehr glücklich gemacht.\nAuf wiedersehn."
+    echo -e "\nDanke, dass Sie \"inviscerts\" verwendet haben.\nSie haben ein einfaches Script sehr glücklich gemacht.\nAuf Wiedersehn."
     exit
 }
 
