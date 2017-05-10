@@ -1,0 +1,6 @@
+perl-File-Copy-Recursive
+perl-IO-Tee
+perl-Mail-IMAPClient
+perl-Readonly
+kopano-migration-imap
+kopano-migration-pst
