@@ -22,22 +22,22 @@ function renamefolder($store, $entryid, $name)
         print("Renamed " . bin2hex($entryid) . " to '$name'\n");
 }
 
-include('/usr/share/php/mapi/mapi.util.php');
-include('/usr/share/php/mapi/mapidefs.php');
-include('/usr/share/php/mapi/mapicode.php');
-include('/usr/share/php/mapi/mapitags.php');
-include('/usr/share/php/mapi/mapiguid.php');
+include('/usr/share/kopano/php/mapi/mapi.util.php');
+include('/usr/share/kopano/php/mapi/mapidefs.php');
+include('/usr/share/kopano/php/mapi/mapicode.php');
+include('/usr/share/kopano/php/mapi/mapitags.php');
+include('/usr/share/kopano/php/mapi/mapiguid.php');
 
 
 function translate($lang, $test=0) 
 {
   global $LOCALE_PATH;
   putenv("LANGUAGE=$lang");
-  bindtextdomain("zarafa", "$LOCALE_PATH");
+  bindtextdomain("kopano", "$LOCALE_PATH");
   if ($test == 0) {
-    bind_textdomain_codeset('zarafa', "utf-8");
+    bind_textdomain_codeset('kopano', "utf-8");
   }
-  textdomain('zarafa');
+  textdomain('kopano');
   setlocale(LC_ALL,$lang);
   $trans_array["Sent Items"] = _("Sent Items");
   $trans_array["Outbox"] = _("Outbox");
@@ -74,7 +74,7 @@ if($argv[1] == "-t") {
   exit(0);
 }
 
-$session = mapi_logon_zarafa("SYSTEM", "", "file:///var/run/zarafa");
+$session = mapi_logon_zarafa("SYSTEM", "", "file:///var/run/kopano/server.sock");
 $msgstorestable = mapi_getmsgstorestable($session);
 $msgstores = mapi_table_queryallrows($msgstorestable, array(PR_DEFAULT_STORE, PR_ENTRYID));
 
