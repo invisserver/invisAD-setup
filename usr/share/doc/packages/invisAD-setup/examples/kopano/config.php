@@ -30,9 +30,12 @@
 	define("SSLCERT_FILE", NULL);
 	define("SSLCERT_PASS", NULL);
 
+	// Set to true to disable login with Single Sign-On (SSO) on SSO environments.
+	define('DISABLE_REMOTE_USER_LOGIN', false);
+
 	// set to 'true' to strip domain from login name found from Single Sign-On webservers
 	define("LOGINNAME_STRIP_DOMAIN", false);
-
+	
 	// Name of the cookie that is used for the session
 	define("COOKIE_NAME", "KOPANO_WEBAPP");
 
@@ -68,6 +71,11 @@
 
 	// Define list of disabled plugins separated by semicolon
 	define("DISABLED_PLUGINS_LIST", '');
+
+	// Define a list of plugins that cannot be disabled by users.
+	// Plugins should be seperated by a semicolon (;). A wildcard (*)
+	// can be used to identify multiple plugins.
+	define("ALWAYS_ENABLED_PLUGINS_LIST", '');
 	
 	// General WebApp theme. This will be loaded by default for every user
 	// (if the theme is installed as a plugin)
@@ -82,15 +90,14 @@
 
 	// Set true to hide public contact folders in address-book folder list,
 	// false will show public contact folders in address-book folder list.
-	define("DISABLE_PUBLIC_CONTACT_FOLDERS", true);
-
-	// Set the threshold for the addressnook to only show a full contactlist when the number of rows
-	// do not exeed this threshold. Otherwise the user can only use the search. Enter any number above
-	// zero to set the threshold or -1 to always show the list or 0 to always hide the full list.
-	define("DISABLE_FULL_CONTACTLIST_THRESHOLD", -1);
+	define("DISABLE_PUBLIC_CONTACT_FOLDERS", false);
 
 	// Set true to show public folders in hierarchy, false will disable public folders in hierarchy.
 	define('ENABLE_PUBLIC_FOLDERS', true);
+
+	// Set true to hide shared contact folders in address-book folder list,
+	// false will show shared contact folders in address-book folder list.
+	define("DISABLE_SHARED_CONTACT_FOLDERS", false);
 
 	// Booking method (true = direct booking, false = send meeting request)
 	define('ENABLE_DIRECT_BOOKING', true);
@@ -102,7 +109,7 @@
 	define('DISABLE_WELCOME_SCREEN', false);
 
 	// When set to false it will disable showing of advanced settings.
-	define('ENABLE_ADVANCED_SETTINGS', false);
+	define('ENABLE_ADVANCED_SETTINGS', true);
 
 	// Freebusy start offset that will be used to load freebusy data in appointments, number is subtracted from current time
 	define('FREEBUSY_LOAD_START_OFFSET', 7);
@@ -168,7 +175,6 @@
 	define("LANGUAGE_DIR", "server/language/");
 
 	// Defines the default interface language. This can be overriden by the user.
-	// This language is also used on the login page
 	if (isset($_ENV['LANG']) && $_ENV['LANG']!="C"){
 		define('LANG', $_ENV["LANG"]); // This means the server environment language determines the web client language.
 	}else{
@@ -181,7 +187,7 @@
 	// semicolon.  A list of available languages can be found in
 	// the manual or by looking at the list of directories in
 	// /usr/share/kopano-webapp/server/language .
-	define("ENABLED_LANGUAGES", "de_DE;en_EN;en_US;fr_FR;he_IL;it_IT;nl_NL;ru_RU;zh_CN;nb_NO");
+	define("ENABLED_LANGUAGES", "de_DE;en_GB;en_US;fr_FR;he_IL;it_IT;nl_NL;ru_RU;zh_CN;nb_NO;hu_HU");
 
 	// Defines the default time zone, change e.g. to "Europe/London" when needed
 	if(!ini_get('date.timezone')) {
