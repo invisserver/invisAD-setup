@@ -1370,6 +1370,29 @@ samba_ad() {
 	ldbadd -v -H /var/lib/samba/private/sam.ldb $objcfile --option="dsdb:schema update allowed"=true
     done } 2>&1| tee -a $setupdir/sine.log | pgbox
 
+    # Daten fuer LDIF-Anpassungen abfragen
+    basedn=`getconfdata "baseDN" "2"`
+    organization=`getconfdata "Organisation" "2"`
+    hname=`getconfdata "Hostname" "2"`
+    fqdn=`getconfdata "FQDN" "2"`
+    ddnsname=`getconfdata "DDNS" "2"`
+    ocport=`getconfdata "OCPORT" "2"`
+    domain=`getconfdata "Domain" "2"`
+    dompart1=`echo $domain|cut -d "." -f 1`
+    ipaddr=`getconfdata "IP" "2"`
+    ## IP-Adresse zerlegen
+    netpart1=`echo "$ipaddr" | cut -d "." -f 1`
+    netpart2=`echo "$ipaddr" | cut -d "." -f 2`
+    netpart3=`echo "$ipaddr" | cut -d "." -f 3`
+    ipnetmask=`getconfdata "NMask-short" "2"`
+    
+    ## Kopano-Schema Erweiterungen installieren
+    # Zarafa/Kopano AD Schema-Erweiterungen einpflegen
+    pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
+    # AD sichern
+    adbackup 2>&1| tee -a $setupdir/sine.log | pgbox
+    zarafa_schema_add.sh $basedn $setupdir/zarafa-ads/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $setupdir/sine.log
+
     ## LDIF-Dateien vorbereiten
     pgsubtitle="Ergänzende LDAP Daten werden vorbereitet"
     mkdir $setupdir/ldif 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -1382,52 +1405,37 @@ samba_ad() {
     { for x in $path/*; do
 	file=`basename $x`
 	echo "Bereite Datei $file vor."
-	basedn=`getconfdata "baseDN" "2"`
 	strings="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $file "$strings"
 
 	strings="DC=invis-net,DC=loc%$basedn"
 	changevalues $path $file "$strings"
         
-	organization=`getconfdata "Organisation" "2"`
 	strings="targetOrganization%$organization"
 	changevalues $path $file "$strings"
 
 	strings="descriptionText%Basisknoten des LDAP-Verzeichnisses von $organization"
         changevalues $path $file "$strings"
 	
-	hname=`getconfdata "Hostname" "2"`
 	strings="invis5%$hname"
 	changevalues $path $file "$strings"
 	
-	fqdn=`getconfdata "FQDN" "2"`
 	strings="invisfqdn%$fqdn"
 	changevalues $path $file "$strings"
 
-	ddnsname=`getconfdata "DDNS" "2"`
-	ocport=`getconfdata "OCPORT" "2"`
 	strings="server-fqdn-ocport%$ddnsname:$ocport"
 	changevalues $path $file "$strings"
 	
-	domain=`getconfdata "Domain" "2"`
         strings="invis-net.loc%$domain"
 	changevalues $path $file "$strings"
 	
-	dompart1=`echo $domain|cut -d "." -f 1`
 	strings="invis-net%$dompart1"
 	changevalues $path $file "$strings"
 	
-	ipaddr=`getconfdata "IP" "2"`
 	strings="192.168.220.10%$ipaddr"
 	changevalues $path $file "$strings"
 
-	## IP-Adresse zerlegen
-	netpart1=`echo "$ipaddr" | cut -d "." -f 1`
-	netpart2=`echo "$ipaddr" | cut -d "." -f 2`
-	netpart3=`echo "$ipaddr" | cut -d "." -f 3`
-	# ungetestet
 	# 24 oder 16 Bit Netzwerkmaske?
-	ipnetmask=`getconfdata "NMask-short" "2"`
 	if [[ $ipnetmask == "24" ]]; then
 	    netpart="$netpart1.$netpart2.$netpart3"
 	    strings="192.168.220%$netpart"
@@ -1764,28 +1772,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    rm -f `ls /etc/postfix/ |grep "main.[dovecot|cyrus]"` 2>&1| tee -a $setupdir/sine.log
 	    mv /etc/postfix/main.zarafa /etc/postfix/main.cf 2>&1| tee -a $setupdir/sine.log
 	    
-	    # Zarafa/Kopano AD Schema-Erweiterungen einpflegen
-	    basedn=`getconfdata "baseDN" "2"`
-	    pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
-	    # Ermitteln, welche Samba-Pakete zum Einsatz kommen
-	    sambapackages=`getconfdata "SambaPakete" "2"`
-	    if [[ $sambapackages == "sernet" ]]; then
-		# Sernet-Samba AD stoppen
-		systemctl stop sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
-	    else
-		# Eigene Samba-Pakete stoppen
-		systemctl stop samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
-	    fi
-	    # AD sichern
-	    adbackup 2>&1| tee -a $setupdir/sine.log | pgbox
-	    zarafa_schema_add.sh $basedn $setupdir/zarafa-ads/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $setupdir/sine.log
-	    if [[ $sambapackages == "sernet" ]]; then
-		# Sernet-Samba AD starten
-		systemctl start sernet-samba-ad.service 2>&1| tee -a $setupdir/sine.log | pgbox
-	    else
-		# Eigene Samba-Pakete starten
-		systemctl start samba.service 2>&1| tee -a $setupdir/sine.log | pgbox
-	    fi
 	    ;;
 esac
     pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"
