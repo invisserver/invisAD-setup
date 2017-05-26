@@ -28,7 +28,7 @@ rendir() {
 
 USR=$1
 # Zu durchsuchende Verzeichnisse
-folders=("/home/$USR" "/var/lib/samba/profiles/$USR" "/srv/shares/portal/downloads/$USR" "/srv/shares/portal/uploads/$USR" "/srv/shares/gruppen/$USR")
+folders=("/home/$USR" "/srv/shares/profiles/$USR" "/srv/shares/portal/downloads/$USR" "/srv/shares/portal/uploads/$USR" "/srv/shares/gruppen/$USR")
 
 if [ $# -eq 1 ]; then
 	#Verzeichnis sichern
