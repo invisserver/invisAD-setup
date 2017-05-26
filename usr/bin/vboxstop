@@ -18,13 +18,11 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
-systemctl stop vboxweb-service.service
-systemctl stop vboxautostart-service.service
-systemctl stop vboxballoonctrl-service.service
-systemctl stop vboxdrv.service
-
 if [[ -f /etc/init.d/vboxinit ]]; then
     systemctl stop vboxinit.service
 fi
 
-kill `pgrep vboxwebsrv`
+systemctl stop vboxweb-service.service
+systemctl stop vboxautostart-service.service
+systemctl stop vboxballoonctrl-service.service
+systemctl stop vboxdrv.service
