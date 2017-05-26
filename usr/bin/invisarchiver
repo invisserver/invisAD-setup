@@ -33,7 +33,7 @@ getconfdata() {
 archdate=$(date "+%Y%m%d")
 
 # Zu durchsuchende Verzeichnisse
-folders=("/home" "/var/lib/samba/profiles" "/srv/shares/portal/downloads" "/srv/shares/portal/uploads" "/srv/shares/gruppen")
+folders=("/home" "/srv/shares/profiles" "/srv/shares/portal/downloads" "/srv/shares/portal/uploads" "/srv/shares/gruppen")
 
 # Archivierungsziele
 grouparchive="/srv/shares/archiv/gruppen"
