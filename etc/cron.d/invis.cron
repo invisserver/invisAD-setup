@@ -49,11 +49,6 @@ MAILTO=/dev/null
 # Einmal taeglich um 5:10 Uhr
 10 5 * * * root /usr/bin/clean_dasi
 
-# Aktualisieren des internen LDAP-Adressbuchs
-# Alle 6 Stunden an den Tagen Montag - Freitag jeweils um X:30 Uhr
-30 */6 * * 1-5 root /usr/bin/addaddress
-40 */6 * * 1-5 root /usr/bin/buildpostaladdress.pl
-
 # Saeubern der Transfer-Freigabe
 # Einmal taeglich um 5:00 Uhr
 0 5 * * * root /usr/bin/clean_transfer
