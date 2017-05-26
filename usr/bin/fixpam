@@ -1,5 +1,0 @@
-#!/bin/bash
-
-pamfilesdir="/usr/share/doc/packages/invisAD-setup/examples/System/pam.d"
-cp $pamfilesdir/* /etc/pam.d/
-
