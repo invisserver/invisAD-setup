@@ -37,7 +37,7 @@ $USER_ADD_MAIL_SUB = 'Neuer Benutzer';
 $USER_ADD_MAIL_TXT = 'Hallo!';
 $USER_UMASK = 'umask=002';
 $USER_PW_MIN_LENGTH = '7'; // 0 = Check disabled
-$USER_PW_MIN_STRENGTH = '80'; // 0 = Check disabled, 100 = Max
+$USER_PW_COMPLEX = 'on';
 $SFU_GUID_BASE = '20000';
 
 // LDAP

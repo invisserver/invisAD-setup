@@ -10,7 +10,7 @@
 
 // Global
 var minPwdLength = 0; // disabled, enable in config
-var minPwdStrength = 0; // disabled, enable in config, 0 - 100%
+var pwdComplex = "off"; // disabled, enable in config
  
 // initial setup
 
@@ -19,7 +19,7 @@ function init () {
 	window.onresize = lightbox.update;
 	initUserblock();
 	minPwdLength = $('user_pw_min_length').value;
-	minPwdStrength = $('user_pw_min_strength').value;
+	pwdComplex = $('user_pw_complex').value;
 }
 
 //
@@ -250,6 +250,7 @@ function profileRequestPasswordChange(event) {
 		function (event) {
 			var secret = $('input_change_pw').value;
 			var confirm = $('input_change_pw_confirm').value;
+			var displayname = invis.getCookie('invis').evalJSON().displayname;
 			var uid = invis.getCookie('invis').evalJSON().uid;
 			
 			if (secret != confirm) {
@@ -264,13 +265,13 @@ function profileRequestPasswordChange(event) {
 				return;
 			}
 			
-			if ((minPwdStrength > 0) && (uid == secret)) {
+			if ((pwdComplex == "on") && (uid == secret)) {
 				lightbox.setStatus("<span class='red'>Passwort darf nicht dem Benutzernamen entsprechen!</span>");
 				lightbox.update();
 				return;
 			}
 			
-			if (chkPass(secret, minPwdLength) < minPwdStrength) {
+			if (chkPass2(secret, uid, displayname, minPwdLength, pwdComplex) < 1) {
 				lightbox.setStatus("<span class='red'>Passwort ist zu einfach! Bitte Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen verwenden!</span>");
 				lightbox.update();
 				return;

@@ -207,7 +207,7 @@ echo "<div id='userblock'></div>";
 
 // settings
 echo "<div style=\"display: none;\"><input id=\"user_pw_min_length\" type=\"hidden\" value=\"" . $USER_PW_MIN_LENGTH . "\" />
-      <input id=\"user_pw_min_strength\" type=\"hidden\" value=\"" . $USER_PW_MIN_STRENGTH . "\" /></div>";
+      <input id=\"user_pw_complex\" type=\"hidden\" value=\"" . $USER_PW_COMPLEX . "\" /></div>";
 
 // html footer
 echo '<div style="display: none;">Icon-pack: <a href="http://iconeden.com/icon/milky-a-free-vector-iconset.html">Milky</a></div>';
