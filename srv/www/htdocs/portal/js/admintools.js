@@ -1043,15 +1043,12 @@ function userMod(uid) {
 function userModResponse(request) {
 	invis.deleteCookie('invis-request');
 	if (request.responseText == '"Success"' ) { 
-	    // irgendwie bekomme ich keine Verzoegerung hin, hide greift sofort
-	    lightbox.setStatus('Änderungen wurden gespeichert!');
-	    //lightbox.hide();
+	    lightbox.setStatus('Änderungen wurden gespeichert!',3,true);
 	
 	} else {
-		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
+		lightbox.setStatus("Änderungen konnten nicht gespeichert werden!<br>" + request.responseText);
 	}
 }
-
 
 
 function groupMod(cn) {
@@ -1061,12 +1058,11 @@ function groupMod(cn) {
 }
 
 
-
 function groupModResponse(request) {
 	invis.deleteCookie('invis-request');
-	if (request.responseText == '0') lightbox.setStatus('Änderungen wurden gespeichert!');
+	if (request.responseText == '0') lightbox.setStatus('Änderungen wurden gespeichert!',3,true);
 	else {
-		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
+		lightbox.setStatus("Änderungen konnten nicht gespeichert werden!<br>" + request.responseText);
 	}
 }
 
@@ -1084,7 +1080,7 @@ function hostModResponse(request) {
 		window.setTimeout("invis.request('script/adajax.php', hostListResponse, {c: 'host_list'}); lightbox.hide();", 1000);
 	}
 	else {
-		lightbox.setStatus("Änderungen konnte nicht gespeichert werden!<br>" + request.responseText);
+		lightbox.setStatus("Änderungen konnten nicht gespeichert werden!<br>" + request.responseText);
 	}
 }
 //

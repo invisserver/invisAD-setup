@@ -756,8 +756,7 @@ function userModify($uid) {
 		//var_dump($result);
 	    }
 	    catch (adLDAPException $e) {
-		return $e; 
-		//exit();   
+		return "Fehlermeldung: ".$adldap->getLastError();
 	    }
 	unset($attributes->adpassword);
 	unset($attributes->userpassword);

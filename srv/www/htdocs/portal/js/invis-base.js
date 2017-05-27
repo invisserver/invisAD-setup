@@ -357,12 +357,15 @@ var Lightbox = Class.create({
 		$('lightbox-title').update(title);
 	},
 	
-	setStatus : function (text, timeout) {
+	setStatus : function (text, timeout, hide) {
 		if (!timeout) timeout = 5;
 		this.clear_flags.push(true);
 		$('lightbox-status').update(text);
 		this.update();
-		window.setTimeout(this.clearStatus, timeout * 1000);
+		if (hide)
+		    window.setTimeout(this.hide, timeout * 1000);
+		else
+		    window.setTimeout(this.clearStatus, timeout * 1000);
 	},
 	
 	setWaitStatus : function (flag, txt) {
