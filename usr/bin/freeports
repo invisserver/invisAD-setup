@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: setup
 # Script zur zufälligen Bestimmung eines freien Ports
 # Etwa für die Verschiebung des SSH oder HTTPS Ports
 # Ziel ist, dass nicht aus Gewohnheit immer die gleichen 

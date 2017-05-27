@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script zur Erweiterung der posixAccount-Objekte im LDAP-DIT um Zarafa Attribute
 # und Objektklassen
 # (C) 2009,2011 invis-server.org

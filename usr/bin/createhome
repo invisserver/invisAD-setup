@@ -1,5 +1,6 @@
 #!/bin/bash
-#Mini Script zum automatischen Anlegen eines Home-Verzeichnisses
+# Kategorie: portal
+# Mini Script zum automatischen Anlegen eines Home-Verzeichnisses
 # (c) 2009 Daniel T. Bender invis-server.org
 # (c) 2010 Stefan Schaefer invis-server.org
 # Questions: stefan@invis-server.org 

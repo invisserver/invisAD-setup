@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: setup
 # Script zur Erstellung von UDEV Regeln zur Benennung der Netzwerkschnittstellen
 # (c) 2013 Stefan Schaefer -- stefan@invis-server.org
 

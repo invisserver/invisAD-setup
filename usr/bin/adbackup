@@ -1,4 +1,6 @@
 #!/bin/bash
+# Kategorie: server
+# Datensicherungsscript fuer Active-Directory
 # (c) 2014 Ingo Goeppert - invis-server.org
 # (c) 2014 Stefan Schaefer - invis-server.org
 

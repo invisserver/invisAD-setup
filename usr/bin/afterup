@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Kleines Script welches potentielle Probleme nach einem Update behebt.
 # (C) 2009-2017 Stefan Schaefer -- invis-server.org
 # Questions: stefan@invis-server.org

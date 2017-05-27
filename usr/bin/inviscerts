@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zur Erzeugung von Zertifikaten und Schluesseln
 # fuer Web-, Mail- und LDAP-Dienst bzw. VPN-Clients auf
 # invis-Servern 

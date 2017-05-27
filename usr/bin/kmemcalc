@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: setup
 # Berechnung der verschiedenen Speichereinstellungen in
 # MariaDB und Zarfa Konfiguration
 # Beruecksichtigt wird der gesamte zur Verfuegung stehende

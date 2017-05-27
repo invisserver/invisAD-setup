@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+# Kategorie: setup
 # Prepare and apply Zarafa AD schema extensions to Samba 4 AD
 # Working with LDIFs from Zarafa ADS 7.1
 #

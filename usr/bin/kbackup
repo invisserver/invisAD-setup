@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script zur regelmaessigen Sicherung der Kopano-Stores
 # (c) 2011,2017 Stefan Schäfer -- invis-server.org
 # License: GPLv3

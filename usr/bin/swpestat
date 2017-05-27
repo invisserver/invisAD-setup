@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Script zur Aktivierung/Deaktivierung von invis Portaleintraegen
 # (C) 2009,2013 invis-server.org
 # Author: Stefan Schäfer <stefan@invis-server.org>

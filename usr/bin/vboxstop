@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Stoppt VirtualBox-Dienste
 # 
 # (C) 2015 Dimitri Asarowski -- dimitri@invis-server.org

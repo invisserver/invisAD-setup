@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script zum Zusammenbau des Kopano-SSL-Keys
 # (c) 2013 Stefan Schaefer - stefan@invis-server.org
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script zum Start des Wawision Prozessstarters
 # Version 1.0
 # (c) 2016 Stefan Schäfer / invis-server.org / stefan@invis-server.org

@@ -1,6 +1,7 @@
 #!/bin/bash
-# emergmailer V. 0.1
+# Kategorie: portal
 # Kleines Tool zum Versenden von Warn-Mails aller Art
+# emergmailer V. 0.1
 # (C) 2017 Stefan Schaefer -- invis-server.org
 # Qustions: stefan@invis-server.org
 

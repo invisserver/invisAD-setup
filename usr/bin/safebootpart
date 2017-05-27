@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # bootpartition sichern, soweit vorhanden
 # (c) 2013 Stefan Schaefer -- invis-server.org
 # Mail: stefan@invis-server.org

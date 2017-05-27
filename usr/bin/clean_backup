@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Alle Datensicherungen aelter als X Tage aus dem Sicherungsverzeichnis loeschen
 # Ordner loeschen, wenn sie leer sind.
 # (c) 2009 Stefan Schaefer invis-server.org

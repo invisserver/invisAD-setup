@@ -1,4 +1,6 @@
 #!/usr/bin/php
+# Kategorie: apps
+# Tool zum Uebersetzen von Verzeichnisnamen in Kopano
 <?php
 $LOCALE_PATH = '/usr/share/locale';
 

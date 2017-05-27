@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zum Anlegen vieler Gruppen anhand einer Liste
 # (c) 2016 Stefan Schaefer - invis-server.org
 

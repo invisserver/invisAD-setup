@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zum Anlegen von MySQL-Datenbanken
 # Das Script gibt lediglich das fuer den Datenbank-Benutzer erzeugte Passwort zurueck
 # Version: 0.1

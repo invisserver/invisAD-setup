@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zum Erweitern eines Maschinenkontos um RFC2307 Attribute.
 # (c) 2016 Stefan Schaefer - FSP Computer & Netzwerke
 

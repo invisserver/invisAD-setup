@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Erstellt einen Snapshot des Dokuwiki Datenverzeichnisses
 # (c) 2011 Stefan Schäfer -- invis-server.org
 # Questions: stefan@invis-server.org

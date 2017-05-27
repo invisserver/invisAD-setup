@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Shellscript zum Sichern aller Datenbanken eines invis Servers.
 # (C) 2009 invis-server.org
 # Author: Stefan Schaefer / stefan@invis-server.org

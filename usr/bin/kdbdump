@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script zur Erstellung eines Dumps der Kopano Datenbank
 # Source: Zarafa-Wiki
 # Edited by: Stefan Schaefer stefan@invis-server.org

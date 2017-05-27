@@ -1,0 +1,76 @@
+#!/bin/bash
+# invis-server	info	Invis-Server Commans
+
+# Copyright (C) 2017 Dimitri Asarowski
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+usage(){
+echo "invis-server v10.4 help
+Copyright (C) 2017 Dimitri Asarowski
+
+Usage: invis-server [OPTION]
+
+Options:
+    all		all commands
+    info	information commands
+    console	terminal commands
+    portal	portal commands
+    setup	setup commands
+    kopano	kopano commands
+    help        display this help and exit
+
+Report bugs to <dimitri@invis-server.org>."
+}
+
+printline(){
+#set -x
+
+/bin/rpm -ql $VER | grep $PATH >/tmp/invis-server.lst
+
+while read line
+do
+#    echo $1
+    Name=`echo $line | cut -d'/' -f4`
+    Group=`head -n 2 $line | tail -n 1 | cut -d' ' -f3`
+    Description=`head -n 3 $line | tail -n 1 | cut -c3-`
+    if [[ $1 = "all" ]]; then
+        echo $Name [$Group] - $Description
+    fi
+    if [[ $1 = $Group ]]; then
+        echo $Name - $Description
+    fi
+#
+done </tmp/invis-server.lst
+
+}
+
+#set -x
+VER='invisAD-setup-12'
+PATH='/usr/bin'
+
+
+if test $# -eq 0; then
+  usage
+  exit 1
+fi
+
+case $1 in
+help)  usage;;
+all)   printline $1 ;;
+server) printline $1;;
+portal) printline $1;;
+apps) printline $1;;
+setup) printline $1;;
+esac

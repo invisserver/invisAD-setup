@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Mini Script zur Vorbereitung der aumatischen Archivierung
 # von Verzeichnissen geloeschter Benutzer oder Gruppen
 # (c) 2009 Daniel T. Bender invis-server.org

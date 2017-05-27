@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Script zum Anlegen oder Entfernen von A- und PTR Records
 # im AD. Das Script nutzt wiederum samba-tool.
 # (c) 2015,2016 Stefan Schaefer invis-server.org

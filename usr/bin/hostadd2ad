@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zum Einfuegen vieler DNS Eintraege anhand einer Liste
 # (c) 2016 Stefan Schaefer - invis-server.org
 

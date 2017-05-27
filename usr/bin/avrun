@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zur zyklischen Virenprüfung der Fileserver-Freigaben
 # (C) 2009 invis-server.org
 # Author: Stefan Schäfer <stefan@invis-server.org>

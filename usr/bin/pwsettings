@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zum einfachen konfigurieren der Passwort-Einstellungen eines invis-Servers
 # (c) 2016 Stefan Schaefer -- invis-server.org
 # (c) 2017 Ingo Goeppert -- invis-server.org

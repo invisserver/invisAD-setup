@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: setup
 # Tool zur Umrechnung von langen in kurze Netzwerkmasken
 # (c) 2009 Stefan Schaefer invis-server.org
 # Questions at: stefan@invis-server.org

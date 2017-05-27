@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: setup
 ## Automatischer Import oeffentlicher Schluessel von Buildservice-Repos
 ## für RPM-Paketmanager
 # (c) 2009 Stefan Schäfer invis-server.org

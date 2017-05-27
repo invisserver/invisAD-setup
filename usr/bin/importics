@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script zum automatischen Import von ICS Kalender Dateien in Kopano
 # Primaer sollen ICS-Dateien in persoenliche Kalender von Benutzern 
 # importiert werden. Weiterhin soll es moeglich sein ICS Dateien in

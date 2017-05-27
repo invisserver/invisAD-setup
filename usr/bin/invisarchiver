@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Script zum Archivieren von Benutzer und Gruppenverzeichnissen
 # nachdem diese geloescht wurden.
 # (C) 2015 Stefan Schaefer invis-server.org

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: setup
 # Script zur Erstaktivierung des dehydrated Letsencrypt Clients
 # Version 0.1
 # (c) 2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org

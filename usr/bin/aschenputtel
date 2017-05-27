@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Kleines Script zum Scannen nach Viren aller Dateien in einem Verzeichnis
 # Erkannte Viren werden in Quarantaene verschoben, nicht infizierte Dateien
 # in ein Ausgangsverzeichnis

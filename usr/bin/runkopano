@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: apps
 # Script to control all kopano services together
 # This script is using systemctl!
 # (c) 2016 Stefan Schaefer - stefan@invis-server.org

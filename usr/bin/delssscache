@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: server
 # Script zum Löschen der Cache-DB des SSS Daemons
 # (c) 2015 Stefan Schäfer - stefan@invis-server.org
 

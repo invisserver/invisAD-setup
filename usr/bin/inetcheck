@@ -1,4 +1,5 @@
 #! /bin/bash
+# Kategorie: portal
 # DSL Internetverbindung testen, bei Bedarf wiederherstellen und 
 # auswerten.
 # Als auswertung wird unter dem Namen inetcheck.html im DocumentRoot

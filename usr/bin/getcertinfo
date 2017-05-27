@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Serverzertifikate verifizieren und Ablaufdatum ermitteln
 # (C) 2015 Stefan Schäfer - invis-server.org
 

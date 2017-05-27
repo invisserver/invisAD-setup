@@ -1,4 +1,5 @@
 #!/bin/bash
+# Kategorie: portal
 # Script zur Datenextraktion aus APCUPSD CGI-Script
 # Version 0.99
 # (c) 2015 Stefan Schäfer / invis-server.org
