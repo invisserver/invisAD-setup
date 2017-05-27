@@ -205,6 +205,10 @@ echo "<div id='overlay'></div>
 	</div>";
 echo "<div id='userblock'></div>";
 
+if (!isset($USER_PW_COMPLEX)) {
+    $USER_PW_COMPLEX = 'off';
+}
+
 // settings
 echo "<div style=\"display: none;\"><input id=\"user_pw_min_length\" type=\"hidden\" value=\"" . $USER_PW_MIN_LENGTH . "\" />
       <input id=\"user_pw_complex\" type=\"hidden\" value=\"" . $USER_PW_COMPLEX . "\" /></div>";
