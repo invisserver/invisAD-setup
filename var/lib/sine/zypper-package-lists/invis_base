@@ -13,6 +13,7 @@ apache2-mod_fcgid
 php5-pear-MIME_Type
 php5-fastcgi
 php5-fileinfo
+php5-opcache
 phpMyAdmin
 phpPgAdmin
 phpldapadmin
