@@ -3365,11 +3365,10 @@ virtualbox() {
 	swpestat phpvirtualbox TRUE 2>&1 | tee -a $setupdir/sine.log | pgbox
 	chkservice "vboxweb-service"
 	
-	# vbinit installieren
-	
-	chkservice "vboxinit"
+	# vboxinit installieren
 	zypper refresh 2>&1 | tee -a $setupdir/sine.log | pgbox
 	zypper -n install -n invis-vboxinit 2>&1 | tee -a $setupdir/sine.log | pgbox
+	chkservice "vboxinit"
 	
 	# Arbeitsverzeichnisse für Virtualbox anlegen
 	vbworkingdir="/srv/virtualbox"
