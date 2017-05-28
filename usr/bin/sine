@@ -778,8 +778,8 @@ ownCloud Port: $ocport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
     # Passwort fuer LDAP-Admin und junk erzeugen
-    ldappw=`pwgen -snc 8 1`
-    junkpw=`pwgen -snc 8 1`
+    ldappw=`pwgen -sBnc 8 1`
+    junkpw=`pwgen -sBnc 8 1`
 
     # Alle Daten in Kontrolldatei Schreiben
     echo "Country:$country" > $setupdir/invis_confdata
@@ -2545,7 +2545,7 @@ case "$whichgroupware" in
 	    changevalues $path $file "$strings"
 
 	    # Zufallspasswort fuer Tine20 Setup-Zugang erstellen, einsetzen und anzeigen
-	    t20setuppw=`pwgen -sn 10 1`
+	    t20setuppw=`pwgen -sBnc 10 1`
 	    strings="t20setuppw%$t20setuppw"
 	    changevalues $path $file "$strings"
 	    msgbox "Es wurde ein Passwort für den Benutzer \"tine20setup\" erstellt.\nPasswort: $t20setuppw\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
@@ -2958,7 +2958,7 @@ am Faxgate Client anmelden und der alle eingehenden Faxe per email erhält.
 Geben Sie ein zugehöriges Passwort ein." "$windowtitle"
 
 
-	faxpw=`pwgen -snc 8 1`
+	faxpw=`pwgen -Bsnc 8 1`
 	## Passwort darf nicht ablaufen
 	samba-tool user setexpiry --noexpiry ldap.admin
 	samba-tool user create fax "$faxpw" --surname="CAPI" --given-name="Fax" --description="Beutzer für Fax-System" 2>&1| tee -a $setupdir/sine.log | pgbox
@@ -3354,7 +3354,7 @@ virtualbox() {
 	zyppercheck ${PIPESTATUS[0]}
 	# lokaler Benutzer vbox wird angelegt
 	useradd -c "Dummy Benutzer fuer phpVirtualBox" vbox 2>&1 | tee -a $setupdir/sine.log | pgbox
-	pwvbox=`pwgen -snc 8 1`
+	pwvbox=`pwgen -sBnc 8 1`
 	echo "vbox:$pwvbox" | chpasswd | tee -a $setupdir/sine.log | pgbox
 	# phpvirtualbox Konfiguration anpassen
 	path="/etc/phpvirtualbox"
