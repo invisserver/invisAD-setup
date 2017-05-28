@@ -24,24 +24,21 @@ Usage: invis-server [OPTION]
 
 Options:
     all		all commands
-    info	information commands
-    console	terminal commands
-    portal	portal commands
-    setup	setup commands
-    kopano	kopano commands
-    help        display this help and exit
+    server	commands for server control 
+    portal	commands for web portal
+    apps	commands for applications
+    setup	commands for setup script sine
+    help    display this help and exit
 
 Report bugs to <dimitri@invis-server.org>."
 }
 
 printline(){
-#set -x
 
 /bin/rpm -ql $VER | grep $PATH >/tmp/invis-server.lst
 
 while read line
 do
-#    echo $1
     Name=`echo $line | cut -d'/' -f4`
     Group=`head -n 2 $line | tail -n 1 | cut -d' ' -f3`
     Description=`head -n 3 $line | tail -n 1 | cut -c3-`
@@ -53,13 +50,10 @@ do
     fi
 #
 done </tmp/invis-server.lst
-
 }
 
-#set -x
 VER='invisAD-setup-12'
 PATH='/usr/bin'
-
 
 if test $# -eq 0; then
   usage
