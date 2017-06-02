@@ -1512,7 +1512,9 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
     chkservice "sssd"
 
     # PAM Dateien kopieren
-    cp $cfilesdir/System/pam.d/* /etc/pam.d/
+    #cp $cfilesdir/System/pam.d/* /etc/pam.d/
+    # PAM auf sss umstellen
+    pam-config --add --sss
 
     # phpldapadmin konfigurieren
     # Installation entfaellt, da es per rpm installiert wird.
