@@ -1,0 +1,195 @@
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Dieses Script führt alle zur Installation eines invis Servers AD notwendigen 
+# Konfigurationsschritte aus.
+# Das Script sine nutzt /var/lib/sine als Arbeitsverzeichnis, hier sind von sine
+# verwendete Kontroll-, Variablen- und Protokolldateien zu finden.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# Functions for sine2 and sine2 modules 
+# Werte aus Konfigurationsdatendatei extrahieren
+getconfdata() {
+    cat $setupdir/invis_confdata |grep "$1:" | cut -d ":" -f $2
+}
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+writeprepstat() {
+	prepstat=`cat $statusfile | cut -d ":" -f3`
+	prepstatnumber=`cat $REQMODFILE|grep ":$1" | cut -d ":" -f1`
+	if [[ $prepstat != "ready" ]]; then
+		echo "$prepstatnumber:$1" > $statusfile
+	fi
+}
+
+# Strings in Kleinschreibung umwandeln
+tolower() {
+    echo $1 | tr [:upper:] [:lower:]
+}
+
+yesno() {
+    # Argument $1 = Fragetext $2 = Dialogtitel
+    dialog --backtitle "$dialogtitle" --title "$2" --yesno "$1" 0 0
+}
+
+yesnono() {
+    # Argument $1 = Fragetext $2 = Dialogtitel
+    dialog --backtitle "$dialogtitle" --title "$2" --defaultno --yesno "$1" 0 0
+}
+
+textbox() {
+    # Argument $1 = Ausgabedatei $2 = Dialogtitel $3 = Exit-Label
+    if [[ -z $3 ]]; then
+        dialog --backtitle "$dialogtitle" --title "$2" --textbox "$1" 0 0
+    else
+	dialog --backtitle "$dialogtitle" --title "$2" --exit-label "$3" --textbox "$1" 0 0
+    fi
+}
+
+msgbox() {
+    # Argument $1 = Ausgabedatei $2 = Dialogtitel
+    dialog --backtitle "$dialogtitle" --title "$2" --msgbox "$1" 0 0
+}
+
+pgbox() {
+    dialog --sleep 2 --backtitle "$dialogtitle" --title "$windowtitle" --progressbox  "$pgsubtitle" 25 110
+}
+
+waitbox() {
+    # Fortschrittsbalken
+    i=0
+
+    { while [ $i -lt 50 ]; do
+	(( i=$i+1 ))
+	echo $(( $i * 100 / 50 ))
+	sleep 0.1
+    done } | dialog --backtitle "$dialogtitle" --title "Modul \"$1\" abgeschlossen" --gauge "Sie haben ca. 5 Sekunden Zeit um das Setup-Script mit \"Strg+C\" abzubrechen. Beim nächsten Aufruf wird sine mit Modul \"$2\" fortgesetzt." 8 70 0
+}
+
+waitinfobox() {
+    # Fortschrittsbalken
+    i=0
+
+    { while [ $i -lt 70 ]; do
+	(( i=$i+1 ))
+	echo $(( $i * 100 / 70 ))
+	sleep 0.1
+    done } | dialog --backtitle "$dialogtitle" --title "$2" --gauge "$1" 12 70 0
+}
+
+zyppercheck() {
+    # Argument $1 = Exit Corde
+    if (( $1 == 104 )); then
+	textbox "$setupdir/infofiles/zypper104.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
+	exit 1
+    elif (( $1 != 0 )); then 
+	textbox "$setupdir/infofiles/zypperunex.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
+	exit 1
+    fi
+}
+
+chkservice() {
+    systemctl --system daemon-reload
+    case "$2" in
+    "d")
+	pgsubtitle="$1-Daemon wird aus der Runlevelkonfiguration entfernt"
+	if [[ ! -f "/etc/init.d/$1" ]]; then
+	    systemctl disable $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	else
+    	    chkconfig --del "$1" 2>&1| tee -a $setupdir/sine.log | pgbox
+    	fi
+	pgsubtitle="$1-Daemon wird gestoppt"
+    	service "$1" stop 2>&1| tee -a $setupdir/sine.log | pgbox
+    	;;
+    "r")
+	pgsubtitle="$1-Daemon wird neu geladen."
+	if [[ ! -f "/etc/init.d/$1" ]]; then
+	    systemctl reload $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	else
+    	    service "$1" reload 2>&1| tee -a $setupdir/sine.log | pgbox
+    	fi
+    	;;
+    "")
+	pgsubtitle="$1-Daemon wird neu gestartet"
+	if [[ ! -f "/etc/init.d/$1" ]]; then
+	    if [[ `systemctl is-enabled "$1.service"` != "enabled" ]]; then
+		systemctl enable $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    fi
+	    systemctl restart $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	else
+	    if [[ `chkconfig $1 |tr -s " "|cut -d " " -f 2` == "off" ]]; then
+		chkconfig -a $1 2>&1| tee -a $setupdir/sine.log | pgbox
+	    fi
+    	    if [[ $1 != "avguard" ]]; then
+    		service "$1" restart 2>&1| tee -a $setupdir/sine.log | pgbox
+    	    else
+    		service "$1" restart
+    	    fi
+	fi   
+	;;
+esac
+}
+
+# Passwoerter sicher aendern
+smbadpw() {
+    ok=0
+    while (( $ok != "1" ));do
+	dialog --backtitle "$dialogtitle" --title "Benutzer Passwort ändern" --insecure --passwordform "$dialogshorthelp\n\n
+Geben Sie das Passwort für Benutzer $1 ein.\n\n
+Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzeichen enthalten." 17 64 2 \
+	"Benutzer Passwort:" 2 2 "" 2 23 10 0\
+	"Kontrolle:" 2 36 "" 2 47 10 0\
+	2>$setupdir/sine_temp
+	usersecrets=(`cat $setupdir/sine_temp`)
+
+	    if [[ ${usersecrets[0]} == ${usersecrets[1]} ]] && (( ${#usersecrets[0]} >= 7 ));then
+		ok=1
+	    fi
+    done
+    newpw="${usersecrets[0]}"
+
+    samba-tool user setpassword $1 --newpassword="$newpw"
+}
+
+revzone() {
+    localip=$(hostname -i)
+    netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+    netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+    # Neue QnD Loesung zum Bau der Reverse-Zone
+    # funktioniert zumindest bei glatten Netzwerkmasken zuverlaessig.
+    case $netmask in
+	"255.255.255.0"|"24")
+		revzone="${netbase[2]}.${netbase[1]}.${netbase[0]}"
+		;;
+	"255.255.0.0"|"16")
+		revzone="${netbase[1]}.${netbase[0]}"
+		;;
+	"255.0.0.0"|"8")
+		revzone="${netbase[0]}"
+		;;
+    esac
+    echo "$revzone.in-addr.arpa"
+}
