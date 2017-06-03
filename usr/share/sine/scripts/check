@@ -45,7 +45,82 @@ source $INCLUDEDIR/functions
 echo "Modul check"
 sleep 1
 
+# are all requirements fullfilled?
+dialog --backtitle "$dialogtitle" --title "Installationvoraussetzungen" --exit-label "Weiter" --textbox "$setupdir/infofiles/setuprequires.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "Installationvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
+prepok=${?}
 
-# Modul check beendet
-writeprepstat "quest"
-waitbox "check" "quest"
+if [[ $prepok == "0" ]]; then
+    windowtitle="Software Installation"
+    msgbox "Es wird alle für den invis Server benötigte Software installiert." "Software Installation"
+    # get signing keys from possible existing yum or rpm-md repositories
+    rpmkeyimporter
+    ## refresh zypper repo-Cache an do update
+    pgsubtitle="Repository-Cache wird aktualisiert"
+    zypper --gpg-auto-import-keys ref 2>&1| tee -a $setupdir/sine.log | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    pgsubtitle="Online Update wird durchgeführt" 
+    zypper -n up --type package 2>&1| tee -a $setupdir/sine.log | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+	
+    # enable Postfix
+    chkservice "postfix"
+	
+    # get upgrade packages from spins:invis:common
+    pgsubtitle="Distributions-Upgrade wird durchgeführt" 
+    zypper -n dup --from spins_invis_common 2>&1| tee -a $setupdir/sine.log | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+
+    # Patterns
+    pgsubtitle="Software-Gruppen werden installiert" 
+    zypper -n install -t pattern `cat $SINEWORKINGDIR/zypper-package-lists/invis_schemes` 2>&1 | tee -a $setupdir/sine.log | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    # Basis Software
+    pgsubtitle="Basis Software wird installiert" 
+    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_base` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
+    zyppercheck ${PIPESTATUS[0]}
+
+    # NTP Dienst wird konfiguriert
+    windowtitle="Grundkonfiguration"
+    pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
+
+    # remove auto behavior from NETCONFIG DNS and NTP policy
+    sysconf_addword /etc/sysconfig/network NETCONFIG_DNS_POLICY -r auto
+    sysconf_addword /etc/sysconfig/network NETCONFIG_NTP_POLICY -r auto
+	
+    cp $TEMPLATEDIR/system/ntp/servers-netconfig /var/run/ntp
+	
+    # enable ntp and set hardware clock
+    chkservice "ntpd"
+    hwclock --systohc
+
+    # cron & at-Daemon in Runlevel integrieren und starten
+    chkservice "cron"
+    chkservice "atd"
+
+    # Grub2-Konfiguration
+    # Eigenes Grub2 Theme installieren
+    tar -xf $TEMPLATEDIR/system/grub/invis8.tar.gz -C /boot/grub2/themes/
+        
+    # Grub2 Konfiguration erstellen
+    mv /etc/default/grub /etc/default/grub.opensuse
+    cp $TEMPLATEDIR/system/grub/grub /etc/default/
+    grub2-mkconfig -o /boot/grub2/grub.cfg  2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
+
+    # install grub on all harddisks if there is an raid device md0 an its mounted to /boot
+    bootdevice=`cat /etc/fstab |grep "/boot" | cut -d " " -f1`
+    if [[ $bootdevice == md* ]]; then
+	for device in `mdadm -D /dev/$bootdevice |grep "/dev/sd" |tr "\t" " "| tr -s " " |cut -d " " -f8 |cut -d "1" -f1`; do
+	    echo "Grub2 wird im Master-Boot-Record von Festplatte $device installiert." 2>&1| tee -a $LOGFILE/sine.log | pgbox 25 110
+	    grub2-install $device 2>&1| tee -a $LOGFILE/sine.log | pgbox 25 110
+	done
+    fi
+
+    # Module check done
+    writeprepstat "quest"
+    waitbox "check" "quest"
+
+else
+    msgbox "Erfüllen Sie zunächst alle Voraussetzungen und starten Sie das Script dann erneut" "Installationsvoraussetzungen"
+    exit
+fi
+
