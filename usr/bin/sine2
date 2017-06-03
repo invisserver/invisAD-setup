@@ -54,16 +54,19 @@ export SINEWORKINGDIR
 dialogtitle="invis AD Server $invisversion Setup"
 dialogshorthelp="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
 
+# global an local variables
 STATUSFILE="$SINEWORKINGDIR/prepstat"
 sinehelpersdir="/usr/share/sine"
 REQMODFILE="$sinehelpersdir/registered-modules.txt"
 moduledir="$sinehelpersdir/scripts"
 TEMPLATEDIR="$sinehelpersdir/templates"
 INCLUDEDIR="$sinehelpersdir/include"
+INVISCONFDIR="/etc/invis"
 export STATUSFILE
 export REQMODFILE
 export TEMPLATEDIR
 export INCLUDEDIR
+export INVISCONFDIR
 
 LOGFILE="/var/log/sine/sine.log"
 export LOGFILE

@@ -44,6 +44,317 @@ source $INCLUDEDIR/functions
 echo "Modul sysprep"
 sleep 1
 
+timestamp=`date +%s`
+windowtitle="Systemvorbereitung"
+pgsubtitle="Es wird eine Sicherung des /etc Verzeichnisses ertellt."
+tar -czf $SINEWORKINGDIR/etc-backup-$timestamp.tar.gz /etc 2>&1| tee -a $LOGFILE | pgbox
+
+# /etc/issue anpassen
+opensuseversion=`cat /etc/os-release |grep VERSION=|cut -d = -f2| tr -d "\""`
+mv /etc/issue /etc/issue.old
+mv /etc/issue.net /etc/issue.net.old
+
+echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. \r (\l)." > /etc/issue
+echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
+
+# Internes Interface auch offline hochfahren erzwingen
+grep LINK_REQUIRED /etc/sysconfig/network/ifcfg-intern 2>&1| tee -a $LOGFILE | pgbox
+if [[ "${PIPESTATUS[0]}" -ne "0" ]]; then
+    echo "LINK_REQUIRED='no'" >> /etc/sysconfig/network/ifcfg-intern
+    echo "LINK_REQUIRED der Netzwerkkonfiguration hinzugefügt!" 2>&1| tee -a $LOGFILE | pgbox
+fi
+
+# Verzeichnisse in /etc/skel anlegen
+mkdir /etc/skel/Dokumente
+mkdir /etc/skel/Downloads
+mkdir /etc/skel/Bilder
+mkdir /etc/skel/Musik
+mkdir /etc/skel/Videos
+mkdir /etc/skel/ics
+
+# Samba Pakete werden installiert
+pgsubtitle="Die gewählten Samba-Pakete werden installiert"
+sambapackages=`getconfdata "SambaPakete" "2"`
+
+# Installation der invis-eigenen Samba-Pakete
+zypper refresh 2>&1| tee -a $LOGFILE | pgbox
+zypper -n install --force-resolution -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
+zyppercheck ${PIPESTATUS[0]}
+# Samba Repo ermitteln
+sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
+# Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
+zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
+zyppercheck ${PIPESTATUS[0]}
+
+# NFS-Server
+pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
+zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/fileserver_additional` 2>&1| tee -a $LOGFILE | pgbox 25 110 
+zyppercheck ${PIPESTATUS[0]}
+
+## Virenscanner einrichten
+# Quarantäneverzeichnis anlegen
+mkdir /var/spool/infected
+av=`getconfdata "AV" "2"`
+avcron=`getconfdata "AVCRON" "2"`
+
+# Der ausgewählte Virenscanner wird in invis.conf eingetragen
+string="AV:clamav%AV:$av"
+changevalues $INVISCONFDIR "invis.conf" "$string"
+    
+# Eintragen, ob regelmäßig auf Viren geprüft wird.
+string="avCheck:j%avCheck:$avcron"
+changevalues $INVISCONFDIR "invis.conf" "$string"
+
+pgsubtitle="Der Virenscanner ClamAV wird installiert, aktualisiert und aktiviert.\nAls globales Quarantäneverzeichnis wurde /var/spool/infected angelegt."
+if [[ $av == "clamav" ]]; then 
+    zypper -n install -n clamav 2>&1| tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    cp $cfilesdir/Virenscanner/clamd.conf /etc 	2>&1| tee -a $LOGFILE
+    cp $cfilesdir/Virenscanner/freshclam.conf /etc 	2>&1| tee -a $LOGFILE
+    touch /var/log/clamd.log 				2>&1| tee -a $LOGFILE
+    chown vscan:vscan /var/log/clamd.log 			2>&1| tee -a $LOGFILE
+    touch /var/log/freshclam.log 				2>&1| tee -a $LOGFILE
+    chown vscan:vscan /var/log/freshclam.log 		2>&1| tee -a $LOGFILE
+    freshclam 2>&1| tee -a $LOGFILE | pgbox
+    chkservice "freshclam"
+    chkservice "clamd"
+else  
+    # Info einblenden
+    # Dieser Block ist vorgesehen fuer die Installation eines alternativen Virenscanners
+    clear
+    windowtitle=""
+fi
+
+## invis-Konfigurationsdatei anpassen
+path="/etc/invis"
+file="invis.conf"
+adminmail=`getconfdata "Admail" "2"`
+string="administrator@invis-net.loc%$adminmail"
+changevalues $path $file "$string"
+
+admin=`getconfdata "Admin" "2"`
+string="Heinz Becker%$admin"
+changevalues $path $file "$string"
+
+certmail=`getconfdata "certMail" "2"`
+string="certmail@invis-net.loc%$certmail"
+changevalues $path $file "$string"
+
+mailsender=`getconfdata "certOwner" "2"`
+string="certowner%$admin"
+changevalues $path $file "$string"
+
+domain=`getconfdata "Domain" "2"`
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+basedn=`getconfdata "baseDN" "2"`
+string="dc=invis-net,dc=loc%$basedn"
+changevalues $INVISCONFDIR $file "$string"
+
+cleantr=`getconfdata "cleanTR" "2"`
+if [[ $cleantr == "j" ]]; then
+    string="cleanTrOn:n%cleanTrOn:$cleantr"
+    changevalues $INVISCONFDIR $file "$string"
+    maxdays=`getconfdata "TRmaxDays" "2"`
+    string="trMaxDays:21%trMaxDays:$maxdays"
+    changevalues $INVISCONFDIR $file "$string"
+fi
+
+cleandasi=`getconfdata "cleanDasi" "2"`
+if [[ $cleandasi == "j" ]]; then
+    string="cleanDasi:n%cleanDasi:$cleandasi"
+    changevalues $INVISCONFDIR $file "$string"
+    maxdays=`getconfdata "DasimaxDays" "2"`
+    string="DasiMaxDays:21%DasiMaxDays:$maxdays"
+    changevalues $INVISCONFDIR $file "$string"
+fi
+
+ddnshn=`getconfdata "DDNS" "2"`
+if [[ $ddnshn != "none" ]]; then
+    string="hostname.ihredomain.de%$ddnshn"
+    changevalues $INVISCONFDIR $file "$string"
+fi
+
+groupware=`getconfdata "Groupware" "2"`
+## verwendete Groupware in Konfigurationsdatei schreiben
+case $groupware in
+    "kopano" ) 
+	string="usedgroupware%kopano"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+    "tine20" )
+	string="usedgroupware%tine20"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+    "sogo" )
+	string="usedgroupware%sogo"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+    "roundcube" )
+	string="usedgroupware%roundcube"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+esac
+
+erp=`getconfdata "ERPSoftware" "2"`
+## verwendete ERP in Konfigurationsdatei schreiben
+case $erp in
+    "wawision" ) 
+	string="usederp%wawision"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+    "kivitendo" )
+	string="usederp%kivitendo"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+    "keine" )
+	string="usederp%none"
+	changevalues $INVISCONFDIR $file "$string"
+	;;
+esac
+
+revdomain=`getconfdata "ReverseDom" "2"`
+revdomain="$revdomain.in-addr.arpa"
+string="220.168.192.in-addr.arpa%$revdomain"
+changevalues $path $file "$string"
+
+# Limits erhoehen fuer Samba und Zarafa
+cp $cfilesdir/System/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE | pgbox
+
+# Vorbereitete sysconfig Dateien kopieren
+# Ist QnD, sollte mit sysconf_addword erledigt werden....
+cp $cfilesdir/System/sysconfig/* /etc/sysconfig/ 2>&1| tee -a $LOGFILE | pgbox
+
+#/etc/hosts anpassen
+file="hosts"
+path="/etc"
+ipaddr=`getconfdata "IP" "2"`
+string="127.0.0.2%$ipaddr"
+changevalues $path $file "$string"
+    
+#/etc/sysconfig/ntop anpassen
+file="ntop"
+path="/etc/sysconfig"
+string="192.168.220.10%$ipaddr"
+changevalues $path $file "$string"
+
+#Admin PW fuer ntop-user wwwrun setzen
+# Achtung Bug im ntop Paket: Das Verzeichnis in dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
+mkdir /var/lib/ntop
+ntoppw=`getconfdata "NtopPw" "2"`
+ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $LOGFILE | pgbox
+
+pgsubtitle="Es wird eine Zertifizierungsstelle erzeugt"
+msgbox "Um auf Ihrem invis Server SSL-Schlüssel und Zertifikate für Web- und Mailserver zu erstellen wird eine Zertifizierungsstelle (CA) benötigt.\n\nDies wird im Folgenden vorgenommen. 
+Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie übernehmen. Lediglich den Common Name müssen Sie selbst erdenken. Er taucht als Name der CA in allen damit signierten Zertifikaten auf.
+\n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!" "CA erstellen"
+
+## easy-rsa einrichten und CA bauen
+cp $cfilesdir/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
+file="vars"
+path="/etc/easy-rsa"
+
+domain=`getconfdata "Domain" "2"`
+string="localdomain%$domain"
+changevalues $path $file "$string"
+
+country=`getconfdata "Country" "2"`
+string="DE%$country"
+changevalues $path $file "$string"
+
+region=`getconfdata "Region" "2"`
+string="Hessen%$region"
+changevalues $path $file "$string"
+
+city=`getconfdata "City" "2"`
+string="Schotten%$city"
+changevalues $path $file "$string"
+
+organisation=`getconfdata "Organisation" "2"`
+string="invis-server.org%$organisation"
+changevalues $path $file "$string"
+
+certmail=`getconfdata "certMail" "2"`
+string="me@example.net%$certmail"
+changevalues $path $file "$string"
+
+# PKI initialisieren
+easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
+
+# CA aufbauen
+easyrsa build-ca
+# CA Datei kopieren
+cp $path/$domain/ca.crt /etc/invis/certs
+chmod go+r /etc/invis/certs/ca.crt
+    
+# DH-Parameterdatei erzeugen
+# 2048 und 512 Bit DH-Parameter direkt mit openssl 
+openssl gendh -out $path/$domain/dh.pem -2 2048 2>&1| tee -a $LOGFILE | pgbox
+openssl gendh -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $LOGFILE | pgbox
+# Beide Dateien auch fuer Postfix bereit stellen
+cp $path/$domain/dh*.pem /etc/postfix
+    
+# CRL Umgebung initialisieren
+easyrsa gen-crl
+
+# CRL Chain Datei erzeugen
+cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
+
+# Zeitzoneneinstellung des Servers ermitteln
+# php versteht CEST nicht mehr
+timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
+
+# PHP ini-Dateien anpassen
+cp $cfilesdir/webserver/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
+path="/etc/php5/apache2"
+file="php.ini"
+string="i6lib%$libdir"
+changevalues $path $file "$string"
+
+string="UTC%$timezone"
+changevalues $path $file "$string"
+
+cp $cfilesdir/webserver/fcgid/php.ini /etc/php5/fastcgi/
+path="/etc/php5/fastcgi"
+string="i6libdir%$libdir"
+changevalues $path $file "$string"
+
+string="UTC%$timezone"
+changevalues $path $file "$string"
+
+# Workaround fuer fastcgi php.ini Bug
+# muss das noch, oder kann das weg?
+ln -s /etc/php5/fastcgi /etc/php5/fpm
+
+# NTP-Dienst fuer AD anpassen
+ntpconf="/etc/ntp.conf"
+echo -e "\n" >> $ntpconf
+echo '# Signed Socket for Samba 4 AD DC' >> $ntpconf
+echo 'ntpsigndsocket /var/lib/samba/ntp_signd' >> $ntpconf
+echo 'restrict default mssntp' >> $ntpconf
+
+sockdir="/var/lib/ntp/var/lib/samba/ntp_signd"
+mkdir -p $sockdir
+chown .ntp $sockdir
+chmod 0750 $sockdir
+
+# ntp muss chrooted laufen
+sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
+sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
+
+chkservice "ntpd"
+
+# invis Passwort-Datei anpassen
+file="invis-pws.conf"
+
+ldappw=`getconfdata "LDAPAdminPW" "2"`
+string="ldap-secret%$ldappw"
+changevalues $INVISCONFDIR $file "$string"
+
+mysqlpw=`getconfdata "MySQLpw" "2"`
+string="mysql-rootpw%$mysqlpw"
+changevalues $INVISCONFDIR $file "$string"
 
 # Modul "name of this module" beendet
 writeprepstat "samba_ad"
