@@ -98,7 +98,7 @@ fi
 
 ## main functions of sine2 starts here
 # Einlesen des aktuellen Setup-Status
-prepstat=`cat $STATUSFILE | cut -d ":" -f3`
+prepstat=`cat $STATUSFILE | cut -d ":" -f2`
 prepstatnumber=`cat $STATUSFILE | cut -d ":" -f1`
 
 # how was sine2 called?

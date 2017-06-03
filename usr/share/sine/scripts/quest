@@ -43,7 +43,506 @@ source $INCLUDEDIR/functions
 
 echo "Modul quest"
 sleep 1
+clear
 
+# Trennzeichen für Arrays auf \n (Zeilenumbruch setzen.
+oldifs=$IFS
+IFS=$'\n'
+
+# zentrales invis Konfigurationsverzeichnis anlegen
+textbox "$setupdir/infofiles/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "Weiter"
+
+# Vorgaben ermitteln
+vhn=`hostname -s`
+vdomname=`hostname -d`
+vipaddr=`ifconfig intern|grep "Bcast:"| cut -d ":" -f 2| cut -d " " -f 1`
+vlongnmask=`ifconfig intern|grep "Mask"| cut -d ":" -f 4`
+country="DE"
+
+#---# openSSL
+ok=0
+while (( $ok != "6" ));do
+    dialog --backtitle "$dialogtitle" --title "Fragen zur openSSL Umgebung" --form "$dialogshorthelp\n\n
+Die eingegebenen Daten sollten der Realität entsprechen, da sie beim Bau von SSL-Zertifikaten verwendet werden.
+Vor allem die email-Adresse des für die Zertifikate Verantwortlichen (Feld: Name) muss erreichbar sein.\n\n
+Alle Eingaben werden auf Plausibilität geprüft, fehlerhaft ausgefüllte Felder werden geleert." 26 80 10 \
+    "Staat:" 2 2 "$country" 2 16 2 2\
+    "Bundesland:" 2 24 "$region" 2 38 33 0\
+    "Stadt:" 4 2 "$city" 4 16 55 0\
+    "Organisation:" 6 2 "$organisation" 6 16 55 0\
+    "email:" 8 2 "$certmail" 8 16 55 0\
+    "Name:" 10 2 "$certowner" 10 16 55 0\
+    2>$setupdir/sine_temp
+    opensslvalues=(`cat "$setupdir/sine_temp"`)
+    # Werte prüfen und zuordnen
+    if (( ${#opensslvalues[0]} == 2 ));then
+        country="${opensslvalues[0]}"
+	ok=1
+    fi
+
+    if (( ${#opensslvalues[1]} >= 3 ));then
+	region="${opensslvalues[1]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if (( ${#opensslvalues[2]} >= 3 ));then
+	city="${opensslvalues[2]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if (( ${#opensslvalues[3]} >= 3 ));then
+	organisation="${opensslvalues[3]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ ${opensslvalues[4]} =~ ^[a-zA-Z0-9-]+([._a-zA-Z0-9.-]+)*@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4}) ]];then
+	certmail="${opensslvalues[4]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if (( ${#opensslvalues[5]} >= 5 ));then
+	certowner="${opensslvalues[5]}"
+	(( ok=$ok + 1 ))
+    fi
+	
+done
+
+ok=0
+while (( $ok != "2" ));do
+    dialog --backtitle "$dialogtitle" --title "IT Dienstleister" --form "$dialogshorthelp\n\n
+Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Administrators ein." 18 74 5 \
+    "email:" 2 2 "$admail" 2 20 45 0\
+    "Name:" 4 2 "$admin" 4 20 45 0\
+    2>$setupdir/sine_temp
+    exitcode=${?}
+    admincontact=(`cat $setupdir/sine_temp`)
+    if [[ ${admincontact[0]} =~ ^[a-zA-Z0-9-]+([._a-zA-Z0-9.-]+)*@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4}) ]];then
+	admail="${admincontact[0]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if (( ${#admincontact[1]} >= 5 ));then
+	admin="${admincontact[1]}"
+	(( ok=$ok + 1 ))
+    fi
+done
+
+#---# Netzwerk
+ok=1
+while (( $ok != "0" ));do
+    dialog --backtitle "$dialogtitle" --title "Fragen zur Netzwerkumgebung" --form "$dialogshorthelp\n\n
+Die Vorgabewerte wurden aus der Systemkonfiguration ermittelt und sollten somit richtig sein. \nPrüfen Sie vor allem,
+ob der angezeigte Domänenname aus Domain und Top-Level-Domain besteht; also zweiteilig ist. Domänennamen wie der bei
+openSUSE vorgegebene \"site\" bereiten im weiteren Verlauf der invis Server Installation Probleme.\nVerwenden Sie 
+keinesfalls eine real existierende Top-Level-Domain wie \".de\" oder \".com\". Statt dessen eigenet sich beispielsweise
+\".loc\" (für local).\n\n 
+Wenn Sie hier Änderungen vornehmen, müssen Sie diese nachträglich in Ihre Systemkonfiguration übernehmen.\n\n
+Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr schwer zu korrigieren." 29 80 5 \
+    "Hostname:" 2 2 "$vhn" 2 13 20 0\
+    "Domain:" 2 35 "$vdomname" 2 43 27 0\
+    "IP (intern):" 4 2 "$vipaddr" 4 13 20 0\
+    "Netzwerkmaske:" 4 35 "$vlongnmask" 4 50 20 0\
+    2>$setupdir/sine_temp
+    netvalues=(`cat $setupdir/sine_temp`)
+
+    # Alle Daten ermitteln.
+    hn="${netvalues[0]}"
+    domain="${netvalues[1]}"
+    ipaddr="${netvalues[2]}"
+    longnmask="${netvalues[3]}"
+    shortnmask=`netcalc $longnmask`
+    netaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Network:"|tr -s " "| cut -d " " -f2|cut -d "/" -f1`
+    bcastaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Broadcast:"|tr -s " "| cut -d " " -f2`
+    dp1=`echo "$domain" | cut -d "." -f 1`
+    dp2=`echo "$domain" | cut -d "." -f 2`
+    ldapbase="DC=$dp1,DC=$dp2"
+    # Testweise auf volle Domain geaendert -- noch nicht
+    smbdomain=`echo $dp1 | tr [a-z] [A-Z]`
+        
+    # Umgekehrte Netzwerkadresse bilden
+    i=0
+    while (( $i < 4 )); do
+        (( feld=$i + 1 ))
+        if [[ `echo "$longnmask" | cut -d "." -f $feld` != "0" ]];then
+	    revd[$i]=`echo "$netaddr" | cut -d "." -f $feld`
+	fi
+	i=$feld
+	done
+	
+	imax=${#revd[*]}
+	i=0
+	while (( $i < $imax )); do
+	    if (( $i == 0));then
+		revnet="${revd[$i]}"
+	    else
+		revnet="${revd[$i]}.$revnet"
+	    fi
+	    (( i=$i + 1 ))
+	done
+	
+	yesno "Prüfen Sie bitte genau ob die folgenden Angaben korrekt sind.\n
+	\nIP-Adresse(intern):   $ipaddr
+	\nNetzwerkbasis:        $netaddr
+	\nNetzwerkmaske (lang): $longnmask / (kurz): $shortnmask
+	\nBroadcast-Adresse:    $bcastaddr
+	\nFQDN:                 $hn.$domain
+	\nLDAP Base:            $ldapbase
+	\nSamba-Domäne:         $smbdomain
+	\n\nSind alle Angaben korrekt?" "Netzwerkdaten"
+	
+	ok=${?}
+    done
+
+# DNS Forwarder
+ok=3
+while (( $ok != "0" ));do
+    dialog --backtitle "$dialogtitle" --title "Forward DNS Server" --form "$dialogshorthelp\n\n
+Auf Ihrem invis Server wird ein DNS-Dienst eingerichtet. Zur Beschleunigung von DNS Anfragen ist es sinnvoll
+diesem bis zu drei \"Forward Nameserver\" zu nennen. Dies können beispielsweise der DNS eines vorgeschalteten
+Routers, DNS Server des Internet Zugangs Providers oder unabhängige DNS-Server im Internet sein.\n\n
+Achtung:
+Prüfen Sie bitte, ob die angegebenen DNS-Server auf Anfragen antworten, da ansonsten sowohl die weitere
+Installation, als auch der Betrieb des invis-Servers beeinträchtigt wird.\n\n
+Geben Sie midestens eine IP-Adresse ein.\n\n" 26 70 6 \
+    "DNS 1:" 2 2 "${fdns[0]}" 2 10 30 0\
+    "DNS 2:" 4 2 "${fdns[1]}" 4 10 30 0\
+    "DNS 3:" 6 2 "${fdns[2]}" 6 10 30 0\
+    2>$setupdir/sine_temp
+    fdns=(`cat $setupdir/sine_temp`)
+
+    if (( ${#fdns[@]} == 0 )); then
+	continue
+    else
+	ok=${#fdns[@]}
+    fi
+    i=0
+    # Pruefen ob die eingegebenen Werte korrekte IP-Adressen sind.
+    for dns in ${fdns[@]}; do
+	if [[ ! $dns =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ && ! $dns =~ ^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$ ]]; then
+	    fdns[$i]=""
+	    ((ok=$ok - 1))
+	fi
+	((i=$i + 1))
+    done
+    ((ok=${#fdns[@]} - $ok))
+done
+# Forward-String erzeugen
+forwarders=`echo ${fdns[@]} | sed s/" "/"; "/g`";"
+
+#---#System Passwörter
+ok=0
+
+# MySQL root-Passwort 
+ok=0
+while (( $ok != "1" ));do
+    dialog --backtitle "$dialogtitle" --title "MySQL-Root Passwort" --insecure --passwordform "$dialogshorthelp\n\n
+Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
+    "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
+    "Kontrolle:" 2 36 "" 2 47 10 0\
+    2>$setupdir/sine_temp
+    mysqlsecrets=(`cat $setupdir/sine_temp`)
+
+    if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
+	ok=1
+    fi
+done
+mysqlpw="${mysqlsecrets[0]}"
+
+# Ntop Admin-Passwort 
+ok=0
+while (( $ok != "1" ));do
+    dialog --backtitle "$dialogtitle" --title "ntop-Admin Passwort" --insecure --passwordform "$dialogshorthelp\n\n
+Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
+Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
+    "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
+    "Kontrolle:" 2 36 "" 2 47 10 0\
+    2>$setupdir/sine_temp
+    ntopsecrets=(`cat $setupdir/sine_temp`)
+
+    if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
+	ok=1
+    fi
+done
+ntoppw="${ntopsecrets[0]}"
+
+#---# MAIL & Groupware Server
+## Dovecot oder Kopano?
+dialog --backtitle "$dialogtitle" --title "MAIL & Groupware Server" --radiolist "$dialogshorthelp\n\n
+Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
+    kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
+    roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
+    tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
+    sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
+    2>$setupdir/sine_temp
+    whichgroupware=`cat $setupdir/sine_temp`
+
+if [[ $whichgroupware == "kopano" ]]; then
+    # Welche Kopano Version
+    dialog --backtitle "$dialogtitle" --title "Kopano Repository" --radiolist "$dialogshorthelp\n\n
+Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
+    limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
+    opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
+    2>$setupdir/sine_temp
+    whichkopanorep=`cat $setupdir/sine_temp`
+fi
+
+#---# ERP-Software
+# Es kann zwischen Kivitendo, Wawisoon oder keiner ERP-Software entschieden werden
+dialog --backtitle "$dialogtitle" --title "Enterprise Ressource Planning Software" --radiolist "$dialogshorthelp\n\n
+Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 14 100 6 \
+    Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
+    waWision "Moderne ERP Lösung für Handel und Dienstleistung inkl. Webshop-Schnittstelle." on\
+    Keine "Sie verwenden ein eigenes System" off\
+    2>$setupdir/sine_temp
+    whicherp=`cat $setupdir/sine_temp`
+    whicherp=`tolower $whicherp`
+
+#---# Virenscanner Radiobutton
+#    dialog --backtitle "$dialogtitle" --title "Virenscanner" --radiolist "$dialogshorthelp\n\n
+#Wählen Sie den von Ihnen bevorzugten Virenscanner aus. Er wird zum regelmäßen Scannen der Filerserver-Freigaben sowie
+#aller ein- und ausgehenden emails verwendet.\n\n
+#Wenn Sie Antivir von Avira auswählen, wird im weiteren Verlauf der Installation eine kostenfreie Lizenz zur privaten
+#Nutzung von Antivir installiert. Bei gewerblicher Nutzung des Servers muss eine entsprechende Lizenz käuflich erworben
+#werden.\nClamav hingegen ist zu 100% Open-Source-Software, d.h. dessen Nutzung ist auch im gewerblichen Umfeld kostenfrei." 22 80 8 \
+#	clamav "Open-Source Virenscanner" on\
+#	antivir "Kommerzieller Virenscanner von Avira" off\
+#	2>$setupdir/sine_temp
+#	av=`cat $setupdir/sine_temp`
+
+# Da derzeit lediglich Clamav zur Verfuegung steht, wird auf die Abfrage verzichtet.
+av=clamav
+
+#---# Monitoring
+dialog --backtitle "$dialogtitle" --title "Vorbereitung für Server Monitoring" --radiolist "$dialogshorthelp\n\n
+Planen Sie Ihren Server durch eine Monitoring Lösung zu überwachen?
+Für die Lösungen Icinga, Nagios oder Zabbix können im Verlauf des Setups Vorbereitungen getroffen werden.
+\n\n
+Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
+    nagios "Nagios-Plugins (Icinga & Nagios)" on\
+    zabbix "Zabbix-Agent" off\
+    keine  "Keine Überwachung" off\
+    2>$setupdir/sine_temp
+    whichmonitoring=`cat $setupdir/sine_temp`
+
+#---# HTTPS    
+yesno "Soll Ihr invis Server via Internet (HTTPS) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
+exthttps=${?}
+    
+if [[ $exthttps == "0" ]]; then
+    ok=0
+    while [[ $ok != "1" ]]; do
+	dialog --backtitle "$dialogtitle" --title "HTTPs Zugang" --inputbox "Geben Sie bitten den vollständigen Namen (FQDN) oder die IP-Adresse ein unter dem/der ihr invis Server erreichbar sein soll." 0 0 \
+	2>$setupdir/sine_temp
+	exitcode=${?}
+	ddnshn=`cat $setupdir/sine_temp`
+	
+	# Doch noch abbrechen
+	if [[ $exitcode == "1" || $exitcode == "255" ]]; then
+	    ddnshn="none"
+	    break
+	fi
+	
+	if [[ $ddnshn =~ ^[a-zA-Z0-9_\-]{1,254}\.[a-zA-Z0-9_\-]{1,254}+\.?[a-zA-Z0-9_\-]{1,254}+\.[a-zA-Z]{1,5}$ || $ddnshn =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]] ;then
+	    ok=1
+	fi
+    done
+else
+    ddnshn="none"
+fi
+
+#---#SMTP Daten
+yesno "Um Emails zuverlässig versenden zu können werden die Zugangsdaten zum SMTP-Server (Server für ausgehende Mails) Ihres Providers benötigt.\n\nSind Ihnen diese Daten bekannt?\n(Wenn nicht, müssen Sie dies zu einem späteren Zeitpunkt von Hand in den Dateien /etc/postfix/main.cf & sasl_passwd eintragen.)" "SMTP Zugangsdaten"
+bekannt=${?}
+ok=0
+if [[ $bekannt == "0" ]]; then
+    while (( $ok != "4" ));do
+	dialog --backtitle "$dialogtitle" --title "SMTP Zugangsdaten" --form "$dialogshorthelp\n\n
+Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres SMTP-Relays, sowie den zuhehörigen Benutzernamen und das Passwort ein." 20 74 9 \
+	"Hostname/IP:" 2 2 "$mailserver" 2 20 45 0\
+	"Port [25/587]:" 4 2 "$smtpport" 4 20 45 0\
+	"Benutzername:" 6 2 "$smtpun" 6 20 45 0\
+	"Passwort:" 8 2 "$smtppw" 8 20 45 0\
+	2>$setupdir/sine_temp
+	exitcode=${?}
+	# Doch noch abbrechen
+	if [[ $exitcode == "1" || $exitcode == "255" ]]; then
+	    mailrelay="none"
+	    break
+	fi
+	
+	smtpvalues=(`cat $setupdir/sine_temp`)
+	
+	if [[ ${smtpvalues[0]} =~ ^[a-zA-Z0-9_\-]{1,254}\.[a-zA-Z0-9_\-]{1,254}+\.?[a-zA-Z0-9_\-]{1,254}+\.[a-zA-Z]{1,5}$ || ${smtpvalues[0]} =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]] ;then
+	    mailserver="${smtpvalues[0]}"
+	    (( ok=$ok + 1 ))
+	else
+	    ok=0
+	fi
+	
+	if (( ${smtpvalues[1]} == 25 || ${smtpvalues[1]} == 587 ));then
+	    smtpport=${smtpvalues[1]}
+	    (( ok=$ok + 1 ))
+	else
+	    ok=0
+	fi
+	
+	if (( ${#smtpvalues[2]} > 2 ));then
+	    smtpun="${smtpvalues[2]}"
+	    (( ok=$ok + 1 ))
+	else
+	    ok=0
+	fi
+	
+	if (( ${#smtpvalues[3]} > 2 ));then
+	    smtppw="${smtpvalues[3]}"
+	    (( ok=$ok + 1 ))
+	else
+	    ok=0
+	fi
+    done
+	if (( $smtpport == 587 )); then
+	    mailrelay="[$mailserver]:$smtpport"
+	else
+	    mailrelay="[$mailserver]"
+	fi
+	
+else
+    mailrelay="none"
+fi
+
+#---# CleanTransfer
+yesno "Auf Ihrem Fileserver wird eine Verzeichnisfreigabe (Transfer) für den allgemeinen Dateiaustausch angelegt.\n\n
+Bekanntermaßen häufen sich dort die Datenmengen schnell an und sind größtenteils unstrukturiert. In der Regel fühlt sich niemand 
+dafür verantwortlich in besagtem Verzeichnis aufzuräumen.\n\n
+Sollen alte Dateien und Verzeichnisse automatisch aus der Transfer-Freigabe gelöscht werden?" "Transferverzeichnis aufräumen"
+cleantr=${?}
+    
+if [[ $cleantr == "0" ]]; then
+    dialog --backtitle "$dialogtitle" --title "Transferverzeichnis aufräumen" --radiolist "Wie alt dürfen Dateien und Verzeichnisse in der Transferfreigabe maximal werden?" 12 50 4\
+    "21 Tage" "3 Wochen" on\
+    "42 Tage" "6 Wochen" off\
+    "90 Tage" "3 Monate" off\
+    2>$setupdir/sine_temp
+    trdays=`cat $setupdir/sine_temp|cut -d " " -f1`
+fi
+
+#---# CleanDasi
+yesno "Auf Ihrem invis-Server werden regelmäßig Sicherung vorhandener Datenbanken und des Wiki-Datenbestandes angelegt.\n\n
+Dabei fallen schnell große Datenmengen schnell an. Da jeweils Vollsicherungen angelegt werden, können problemlos ältere 
+Sicherungen gelöscht werden.\n\n
+Sollen alte Datensicherungen automatisch gelöscht werden?" "Datensicherungen aufräumen"
+cleandasi=${?}
+    
+if [[ $cleandasi == "0" ]]; then
+    dialog --backtitle "$dialogtitle" --title "Datensicherungen aufräumen" --radiolist "Wie alt sollen interne Datensicherungen maximal werden?" 12 50 4\
+    "21 Tage" "3 Wochen" on\
+    "42 Tage" "6 Wochen" off\
+    "90 Tage" "3 Monate" off\
+    2>$setupdir/sine_temp
+    dasidays=`cat $setupdir/sine_temp|cut -d " " -f1`
+fi
+
+#   regelmässige Virenscans
+yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
+avcron=${?}
+
+#   Ports fuer SSH, HTTPS-Portal und HTTPs-OwnCloud ermitteln.
+sshport=`freeports`
+httpsport=`freeports`
+ocport=`freeports`
+# Doppelte Portbelegung verhindern
+while [[ $sshport == $httpsport ]]; do
+    httpsport=`freeports`
+done
+
+while [[ $ocport == $httpsport || $ocport == $sshport ]]; do
+    ocport=`freeports`
+done
+
+msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
+Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
+SSH Port: $sshport\n\n
+HTTPS Port: $httpsport\n\n
+ownCloud Port: $ocport\n\n
+Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
+
+# Passwort fuer LDAP-Admin und junk erzeugen
+ldappw=`pwgen -sBnc 8 1`
+junkpw=`pwgen -sBnc 8 1`
+
+# Alle Daten in Kontrolldatei Schreiben
+echo "Country:$country" > $setupdir/invis_confdata
+echo "Region:$region" >> $setupdir/invis_confdata
+echo "City:$city" >> $setupdir/invis_confdata
+echo "Organisation:$organisation" >> $setupdir/invis_confdata
+echo "certMail:$certmail" >> $setupdir/invis_confdata
+echo "certOwner:$certowner" >> $setupdir/invis_confdata
+
+echo "Admail:$admail" >> $setupdir/invis_confdata
+echo "Admin:$admin" >> $setupdir/invis_confdata
+
+echo "Hostname:$hn" >> $setupdir/invis_confdata
+echo "Domain:$domain" >> $setupdir/invis_confdata
+echo "FQDN:$hn.$domain" >> $setupdir/invis_confdata
+echo "baseDN:$ldapbase" >> $setupdir/invis_confdata
+echo "Workgroup:$smbdomain" >> $setupdir/invis_confdata
+echo "IP:$ipaddr" >> $setupdir/invis_confdata
+echo "Networkbase:$netaddr" >> $setupdir/invis_confdata
+echo "NMask-short:$shortnmask" >> $setupdir/invis_confdata
+echo "NMask-long:$longnmask" >> $setupdir/invis_confdata
+echo "Broadcast:$bcastaddr" >> $setupdir/invis_confdata
+echo "ReverseDom:$revnet" >> $setupdir/invis_confdata
+echo "Forwarders:$forwarders"  >> $setupdir/invis_confdata
+
+echo "LDAPAdminPW:$ldappw" >> $setupdir/invis_confdata
+echo "JunkPW:$junkpw" >> $setupdir/invis_confdata
+echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
+echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
+echo "Groupware:$whichgroupware"  >> $setupdir/invis_confdata
+if [[ $whichgroupware == "kopano" ]]; then
+    echo "KopanoRepo:$whichkopanorep"  >> $setupdir/invis_confdata
+fi
+echo "ERPSoftware:$whicherp" >> $setupdir/invis_confdata
+echo "MonitoringSoftware:$whichmonitoring" >> $setupdir/invis_confdata
+echo "SSHPORT:$sshport" >> $setupdir/invis_confdata
+echo "HTTPSPORT:$httpsport" >> $setupdir/invis_confdata
+echo "OCPORT:$ocport" >> $setupdir/invis_confdata
+    
+echo "AV:$av" >> $setupdir/invis_confdata
+if [[ $avcron == "0" ]]; then
+    echo "AVCRON:j" >> $setupdir/invis_confdata
+else
+    echo "AVCRON:n" >> $setupdir/invis_confdata
+fi
+echo "DDNS:$ddnshn" >> $setupdir/invis_confdata
+    
+if [[ $mailrelay == "none" ]]; then
+    echo "SMTPRELAY:$mailrelay" >> $setupdir/invis_confdata 
+else
+    echo "SMTPRELAY:$mailrelay" >> $setupdir/invis_confdata 
+    echo "SMTPRUN:$smtpun" >> $setupdir/invis_confdata 
+    echo "SMTPRPW:$smtppw" >> $setupdir/invis_confdata 
+fi
+if [[ $cleantr == "0" ]]; then
+    echo "cleanTR:j" >> $setupdir/invis_confdata
+    echo "TRmaxDays:$trdays" >> $setupdir/invis_confdata
+else
+    echo "cleanTR:n" >> $setupdir/invis_confdata
+fi
+
+if [[ $cleandasi == "0" ]]; then
+    echo "cleanDasi:j" >> $setupdir/invis_confdata
+    echo "DasimaxDays:$trdays" >> $setupdir/invis_confdata
+else
+    echo "cleanDasi:n" >> $setupdir/invis_confdata
+fi
+
+# Trennzeichenvariable zurück auf alten Wert setzen
+IFS=$oldifs
+    
+# Temporaermuell loeschen
+rm -f ./sine_temp
 
 # Modul "quest" beendet
 writeprepstat "sysprep"
