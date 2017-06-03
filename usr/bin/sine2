@@ -73,8 +73,8 @@ source $INCLUDEDIR/functions
 
 # environment check
 if [[ -d $TEMPLATEDIR ]]; then
-    if [[ ! -f $statusfile ]]; then
-	echo "001:check" > $statusfile
+    if [[ ! -f $STATUSFILE ]]; then
+	echo "001:check" > $STATUSFILE
     fi
 else
 	echo "Die Konfigurationsdateien sind nicht vorhanden!"

@@ -84,8 +84,8 @@ if [[ $prepok == "0" ]]; then
     pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
 
     # remove auto behavior from NETCONFIG DNS and NTP policy
-    sysconf_addword /etc/sysconfig/network/config NETCONFIG_DNS_POLICY -r auto 2>&1| tee -a $setupdir/sine.log | pgbox
-    sysconf_addword /etc/sysconfig/network/config NETCONFIG_NTP_POLICY -r auto 2>&1| tee -a $setupdir/sine.log | pgbox 
+    sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $setupdir/sine.log | pgbox
+    sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $setupdir/sine.log | pgbox 
 	
     cp $TEMPLATEDIR/system/ntp/servers-netconfig /var/run/ntp
 	
