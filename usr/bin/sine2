@@ -151,9 +151,12 @@ case $1 in
 		echo "$datum : sine2 module \"$module\" is already done." >> $LOGFILE
 		continue
 	    fi
-	    if [[ -x $PWD/$moduledir/$module  ]]; then
+	    if [[ -x /$moduledir/$module  ]]; then
 		echo "$datum : Starting sine2 module \"$module\"." >> $LOGFILE
-		$PWD/$moduledir/$module 
+		/$moduledir/$module 
+		if [[ $? == 5 ]]; then
+		    exit
+		fi
 	    else
 		exit 5
 	    fi
