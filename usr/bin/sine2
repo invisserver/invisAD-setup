@@ -47,7 +47,7 @@
 
 # Global variables
 INVISVERSION="12.3"
-SINEWORKINGDIR="var/lib/sine"
+SINEWORKINGDIR="/var/lib/sine"
 export SINEWORKINGDIR
 
 # global dialog settings
@@ -55,7 +55,7 @@ dialogtitle="invis AD Server $invisversion Setup"
 dialogshorthelp="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
 
 statusfile="$SINEWORKINGDIR/prepstat"
-sinehelpersdir="usr/share/sine"
+sinehelpersdir="/usr/share/sine"
 REQMODFILE="$sinehelpersdir/registered-modules.txt"
 moduledir="$sinehelpersdir/scripts"
 TEMPLATEDIR="$sinehelpersdir/templates"
@@ -64,7 +64,7 @@ export REQMODFILE
 export TEMPLATEDIR
 export INCLUDEDIR
 
-LOGFILE="var/log/sine/sine.log"
+LOGFILE="/var/log/sine/sine.log"
 export LOGFILE
 
 # include functions
