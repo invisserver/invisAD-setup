@@ -76,7 +76,7 @@ if [[ $prepok == "0" ]]; then
     zyppercheck ${PIPESTATUS[0]}
     # Basis Software
     pgsubtitle="Basis Software wird installiert" 
-    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_base` 2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
+    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_base` 2>&1| tee -a $setupdir/sine.log | pgbox 
     zyppercheck ${PIPESTATUS[0]}
 
     # NTP Dienst wird konfiguriert
@@ -84,14 +84,14 @@ if [[ $prepok == "0" ]]; then
     pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
 
     # remove auto behavior from NETCONFIG DNS and NTP policy
-    sysconf_addword /etc/sysconfig/network NETCONFIG_DNS_POLICY -r auto
-    sysconf_addword /etc/sysconfig/network NETCONFIG_NTP_POLICY -r auto
+    sysconf_addword /etc/sysconfig/network/config NETCONFIG_DNS_POLICY -r auto 2>&1| tee -a $setupdir/sine.log | pgbox
+    sysconf_addword /etc/sysconfig/network/config NETCONFIG_NTP_POLICY -r auto 2>&1| tee -a $setupdir/sine.log | pgbox 
 	
     cp $TEMPLATEDIR/system/ntp/servers-netconfig /var/run/ntp
 	
     # enable ntp and set hardware clock
     chkservice "ntpd"
-    hwclock --systohc
+    hwclock --systohc 2>&1| tee -a $setupdir/sine.log | pgbox 
 
     # cron & at-Daemon in Runlevel integrieren und starten
     chkservice "cron"
