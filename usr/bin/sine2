@@ -54,12 +54,13 @@ export SINEWORKINGDIR
 dialogtitle="invis AD Server $invisversion Setup"
 dialogshorthelp="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
 
-statusfile="$SINEWORKINGDIR/prepstat"
+STATUSFILE="$SINEWORKINGDIR/prepstat"
 sinehelpersdir="/usr/share/sine"
 REQMODFILE="$sinehelpersdir/registered-modules.txt"
 moduledir="$sinehelpersdir/scripts"
 TEMPLATEDIR="$sinehelpersdir/templates"
 INCLUDEDIR="$sinehelpersdir/include"
+export STATUSFILE
 export REQMODFILE
 export TEMPLATEDIR
 export INCLUDEDIR
@@ -97,8 +98,8 @@ fi
 
 ## main functions of sine2 starts here
 # Einlesen des aktuellen Setup-Status
-prepstat=`cat $statusfile | cut -d ":" -f3`
-prepstatnumber=`cat $statusfile | cut -d ":" -f1`
+prepstat=`cat $STATUSFILE | cut -d ":" -f3`
+prepstatnumber=`cat $STATUSFILE | cut -d ":" -f1`
 
 # how was sine2 called?
 case $1 in
@@ -115,7 +116,7 @@ case $1 in
 	;;
     "status")
 	# Status Ausgabe
-	if [[ -f $statusfile ]]; then
+	if [[ -f $STATUSFILE ]]; then
 	    echo "Nächstes sine Modul ist: $prepstat"
 	else
 	    echo "sine wurde noch nie aufgerufen. Es wird mit Modul \"check\" begonnen."
@@ -124,8 +125,8 @@ case $1 in
 	;;
     "log")
 	# Logfile Ausgabe
-	if [[ -f $setupdir/sine.log ]]; then
-	    less $setupdir/sine.log
+	if [[ -f $SINEWORKINGDIR/sine.log ]]; then
+	    less $SINEWORKINGDIR/sine.log
 	else
 	    echo "Es ist noch kein Logfile vorhanden."
 	fi
@@ -133,8 +134,8 @@ case $1 in
 	;;
     "showconf")
 	# Konfigurationsdaten ausgeben
-	if [[ -f $setupdir/invis_confdata ]]; then
-	    less $setupdir/invis_confdata
+	if [[ -f $SINEWORKINGDIR/invis_confdata ]]; then
+	    less $SINEWORKINGDIR/invis_confdata
 	else
 	    echo "Es sind noch keine Konfigurationsdaten vorhanden."
 	fi
@@ -164,11 +165,11 @@ case $1 in
 	# Zertifikate fuers Portal pruefen
 	getcertinfo
 	# Und Tschuess
-	textbox "$setupdir/infofiles/aftersetup.txt" "Installation abgeschlossen" "Beenden"
+	textbox "$SINEWORKINGDIR/infofiles/aftersetup.txt" "Installation abgeschlossen" "Beenden"
 
 	# Auräumen -- Evtl. verwaiste dialog Prozesse killen
 	killall dialog > /dev/null 2>&1
-	rm -f ./$setupdir/sine_temp
+	rm -f ./$SINEWORKINGDIR/sine_temp
 	exit 0
 	;;
 
@@ -177,12 +178,12 @@ case $1 in
 	if [[ -z $1 ]];then
 	    module=$1
 	fi
-	if [[ $prepstat == "ready" ]] && [[ -x $PWD/$moduledir/$module  ]]; then
-	    $PWD/$moduledir/$module
+	if [[ $prepstat == "ready" ]] && [[ -x $moduledir/$module  ]]; then
+	    $moduledir/$module
 	else
 	    echo "Das Modul \"$module\" ist nicht vorhanden oder nicht ausführbar."
 	fi
-	echo "ready" > $statusfile
+	echo "ready" > $SINEWORKINGDIR
 	exit
 	;;
 esac
