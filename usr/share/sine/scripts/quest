@@ -472,70 +472,70 @@ ldappw=`pwgen -sBnc 8 1`
 junkpw=`pwgen -sBnc 8 1`
 
 # Alle Daten in Kontrolldatei Schreiben
-echo "Country:$country" > $setupdir/invis_confdata
-echo "Region:$region" >> $setupdir/invis_confdata
-echo "City:$city" >> $setupdir/invis_confdata
-echo "Organisation:$organisation" >> $setupdir/invis_confdata
-echo "certMail:$certmail" >> $setupdir/invis_confdata
-echo "certOwner:$certowner" >> $setupdir/invis_confdata
+echo "Country:$country" > $SINEWORKINGDIR/invis_confdata
+echo "Region:$region" >> $SINEWORKINGDIR/invis_confdata
+echo "City:$city" >> $SINEWORKINGDIR/invis_confdata
+echo "Organisation:$organisation" >> $SINEWORKINGDIR/invis_confdata
+echo "certMail:$certmail" >> $SINEWORKINGDIR/invis_confdata
+echo "certOwner:$certowner" >> $SINEWORKINGDIR/invis_confdata
 
-echo "Admail:$admail" >> $setupdir/invis_confdata
-echo "Admin:$admin" >> $setupdir/invis_confdata
+echo "Admail:$admail" >> $SINEWORKINGDIR/invis_confdata
+echo "Admin:$admin" >> $SINEWORKINGDIR/invis_confdata
 
-echo "Hostname:$hn" >> $setupdir/invis_confdata
-echo "Domain:$domain" >> $setupdir/invis_confdata
-echo "FQDN:$hn.$domain" >> $setupdir/invis_confdata
-echo "baseDN:$ldapbase" >> $setupdir/invis_confdata
-echo "Workgroup:$smbdomain" >> $setupdir/invis_confdata
-echo "IP:$ipaddr" >> $setupdir/invis_confdata
-echo "Networkbase:$netaddr" >> $setupdir/invis_confdata
-echo "NMask-short:$shortnmask" >> $setupdir/invis_confdata
-echo "NMask-long:$longnmask" >> $setupdir/invis_confdata
-echo "Broadcast:$bcastaddr" >> $setupdir/invis_confdata
-echo "ReverseDom:$revnet" >> $setupdir/invis_confdata
-echo "Forwarders:$forwarders"  >> $setupdir/invis_confdata
+echo "Hostname:$hn" >> $SINEWORKINGDIR/invis_confdata
+echo "Domain:$domain" >> $SINEWORKINGDIR/invis_confdata
+echo "FQDN:$hn.$domain" >> $SINEWORKINGDIR/invis_confdata
+echo "baseDN:$ldapbase" >> $SINEWORKINGDIR/invis_confdata
+echo "Workgroup:$smbdomain" >> $SINEWORKINGDIR/invis_confdata
+echo "IP:$ipaddr" >> $SINEWORKINGDIR/invis_confdata
+echo "Networkbase:$netaddr" >> $SINEWORKINGDIR/invis_confdata
+echo "NMask-short:$shortnmask" >> $SINEWORKINGDIR/invis_confdata
+echo "NMask-long:$longnmask" >> $SINEWORKINGDIR/invis_confdata
+echo "Broadcast:$bcastaddr" >> $SINEWORKINGDIR/invis_confdata
+echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
+echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
-echo "LDAPAdminPW:$ldappw" >> $setupdir/invis_confdata
-echo "JunkPW:$junkpw" >> $setupdir/invis_confdata
-echo "MySQLpw:$mysqlpw" >> $setupdir/invis_confdata
-echo "NtopPw:$ntoppw" >> $setupdir/invis_confdata
-echo "Groupware:$whichgroupware"  >> $setupdir/invis_confdata
+echo "LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_confdata
+echo "JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_confdata
+echo "MySQLpw:$mysqlpw" >> $SINEWORKINGDIR/invis_confdata
+echo "NtopPw:$ntoppw" >> $SINEWORKINGDIR/invis_confdata
+echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
 if [[ $whichgroupware == "kopano" ]]; then
-    echo "KopanoRepo:$whichkopanorep"  >> $setupdir/invis_confdata
+    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
 fi
-echo "ERPSoftware:$whicherp" >> $setupdir/invis_confdata
-echo "MonitoringSoftware:$whichmonitoring" >> $setupdir/invis_confdata
-echo "SSHPORT:$sshport" >> $setupdir/invis_confdata
-echo "HTTPSPORT:$httpsport" >> $setupdir/invis_confdata
-echo "OCPORT:$ocport" >> $setupdir/invis_confdata
+echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
+echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
+echo "SSHPORT:$sshport" >> $SINEWORKINGDIR/invis_confdata
+echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
+echo "OCPORT:$ocport" >> $SINEWORKINGDIR/invis_confdata
     
-echo "AV:$av" >> $setupdir/invis_confdata
+echo "AV:$av" >> $SINEWORKINGDIR/invis_confdata
 if [[ $avcron == "0" ]]; then
-    echo "AVCRON:j" >> $setupdir/invis_confdata
+    echo "AVCRON:j" >> $SINEWORKINGDIR/invis_confdata
 else
-    echo "AVCRON:n" >> $setupdir/invis_confdata
+    echo "AVCRON:n" >> $SINEWORKINGDIR/invis_confdata
 fi
-echo "DDNS:$ddnshn" >> $setupdir/invis_confdata
+echo "DDNS:$ddnshn" >> $SINEWORKINGDIR/invis_confdata
     
 if [[ $mailrelay == "none" ]]; then
-    echo "SMTPRELAY:$mailrelay" >> $setupdir/invis_confdata 
+    echo "SMTPRELAY:$mailrelay" >> $SINEWORKINGDIR/invis_confdata 
 else
-    echo "SMTPRELAY:$mailrelay" >> $setupdir/invis_confdata 
-    echo "SMTPRUN:$smtpun" >> $setupdir/invis_confdata 
-    echo "SMTPRPW:$smtppw" >> $setupdir/invis_confdata 
+    echo "SMTPRELAY:$mailrelay" >> $SINEWORKINGDIR/invis_confdata 
+    echo "SMTPRUN:$smtpun" >> $SINEWORKINGDIR/invis_confdata 
+    echo "SMTPRPW:$smtppw" >> $SINEWORKINGDIR/invis_confdata 
 fi
 if [[ $cleantr == "0" ]]; then
-    echo "cleanTR:j" >> $setupdir/invis_confdata
-    echo "TRmaxDays:$trdays" >> $setupdir/invis_confdata
+    echo "cleanTR:j" >> $SINEWORKINGDIR/invis_confdata
+    echo "TRmaxDays:$trdays" >> $SINEWORKINGDIR/invis_confdata
 else
-    echo "cleanTR:n" >> $setupdir/invis_confdata
+    echo "cleanTR:n" >> $SINEWORKINGDIR/invis_confdata
 fi
 
 if [[ $cleandasi == "0" ]]; then
-    echo "cleanDasi:j" >> $setupdir/invis_confdata
-    echo "DasimaxDays:$trdays" >> $setupdir/invis_confdata
+    echo "cleanDasi:j" >> $SINEWORKINGDIR/invis_confdata
+    echo "DasimaxDays:$trdays" >> $SINEWORKINGDIR/invis_confdata
 else
-    echo "cleanDasi:n" >> $setupdir/invis_confdata
+    echo "cleanDasi:n" >> $SINEWORKINGDIR/invis_confdata
 fi
 
 # Trennzeichenvariable zurück auf alten Wert setzen
