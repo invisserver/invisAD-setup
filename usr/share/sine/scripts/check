@@ -56,10 +56,10 @@ if [[ $prepok == "0" ]]; then
     rpmkeyimporter
     ## refresh zypper repo-Cache an do update
     pgsubtitle="Repository-Cache wird aktualisiert"
-    zypper --gpg-auto-import-keys ref 2>&1| tee -a $setupdir/sine.log | pgbox
+    zypper --gpg-auto-import-keys ref 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     pgsubtitle="Online Update wird durchgeführt" 
-    zypper -n up --type package 2>&1| tee -a $setupdir/sine.log | pgbox
+    zypper -n up --type package 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 	
     # enable Postfix
@@ -67,35 +67,35 @@ if [[ $prepok == "0" ]]; then
 	
     # get upgrade packages from spins:invis:common
     pgsubtitle="Distributions-Upgrade wird durchgeführt" 
-    zypper -n dup --from spins_invis_common 2>&1| tee -a $setupdir/sine.log | pgbox
+    zypper -n dup --from spins_invis_common 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
     # Patterns
     pgsubtitle="Software-Gruppen werden installiert" 
-    zypper -n install -t pattern `cat $SINEWORKINGDIR/zypper-package-lists/invis_schemes` 2>&1 | tee -a $setupdir/sine.log | pgbox
+    zypper -n install -t pattern `cat $SINEWORKINGDIR/zypper-package-lists/invis_schemes` 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # Basis Software
     pgsubtitle="Basis Software wird installiert" 
-    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_base` 2>&1| tee -a $setupdir/sine.log | pgbox 
+    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_base` 2>&1| tee -a $LOGFILE | pgbox 
     zyppercheck ${PIPESTATUS[0]}
 
-    # NTP Dienst wird konfiguriert
-    windowtitle="Grundkonfiguration"
-    pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
+    # Samba Pakete werden installiert
+    pgsubtitle="Samba wird installiert"
 
-    # remove auto behavior from NETCONFIG DNS and NTP policy
-    sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $setupdir/sine.log | pgbox
-    sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $setupdir/sine.log | pgbox 
-	
-    cp $TEMPLATEDIR/system/ntp/servers-netconfig /var/run/ntp
-	
-    # enable ntp and set hardware clock
-    chkservice "ntpd"
-    hwclock --systohc 2>&1| tee -a $setupdir/sine.log | pgbox 
+    # Installation der invis-eigenen Samba-Pakete
+    zypper refresh 2>&1| tee -a $LOGFILE | pgbox
+    zypper -n install --force-resolution -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    # Samba Repo ermitteln
+    sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
+    # Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
+    zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
 
-    # cron & at-Daemon in Runlevel integrieren und starten
-    chkservice "cron"
-    chkservice "atd"
+    # NFS-Server
+    pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
+    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/fileserver_additional` 2>&1| tee -a $LOGFILE | pgbox 25 110 
+    zyppercheck ${PIPESTATUS[0]}
 
     # Grub2-Konfiguration
     # Eigenes Grub2 Theme installieren
@@ -104,7 +104,7 @@ if [[ $prepok == "0" ]]; then
     # Grub2 Konfiguration erstellen
     mv /etc/default/grub /etc/default/grub.opensuse
     cp $TEMPLATEDIR/system/grub/grub /etc/default/
-    grub2-mkconfig -o /boot/grub2/grub.cfg  2>&1| tee -a $setupdir/sine.log | pgbox 25 110 
+    grub2-mkconfig -o /boot/grub2/grub.cfg  2>&1| tee -a $LOGFILE | pgbox 25 110 
 
     # install grub on all harddisks if there is an raid device md0 an its mounted to /boot
     bootdevice=`cat /etc/fstab |grep "/boot" | cut -d " " -f1`

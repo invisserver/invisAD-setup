@@ -70,25 +70,6 @@ mkdir /etc/skel/Musik
 mkdir /etc/skel/Videos
 mkdir /etc/skel/ics
 
-# Samba Pakete werden installiert
-pgsubtitle="Die gewählten Samba-Pakete werden installiert"
-sambapackages=`getconfdata "SambaPakete" "2"`
-
-# Installation der invis-eigenen Samba-Pakete
-zypper refresh 2>&1| tee -a $LOGFILE | pgbox
-zypper -n install --force-resolution -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
-zyppercheck ${PIPESTATUS[0]}
-# Samba Repo ermitteln
-sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
-# Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
-zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
-zyppercheck ${PIPESTATUS[0]}
-
-# NFS-Server
-pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
-zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/fileserver_additional` 2>&1| tee -a $LOGFILE | pgbox 25 110 
-zyppercheck ${PIPESTATUS[0]}
-
 ## Virenscanner einrichten
 # Quarantäneverzeichnis anlegen
 mkdir /var/spool/infected
@@ -249,6 +230,10 @@ sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000
 
 sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001
 
+# remove auto behavior from NETCONFIG DNS and NTP policy
+sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $LOGFILE | pgbox 
+
 # /etc/hosts anpassen
 file="hosts"
 path="/etc"
@@ -339,6 +324,12 @@ changevalues $path $file "$string"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
+# NTP Dienst wird konfiguriert
+windowtitle="Grundkonfiguration"
+pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
+
+cp $TEMPLATEDIR/system/ntp/servers-netconfig /var/run/ntp
+
 # NTP-Dienst fuer AD anpassen
 ntpconf="/etc/ntp.conf"
 echo -e "\n" >> $ntpconf
@@ -351,15 +342,18 @@ mkdir -p $sockdir
 chown .ntp $sockdir
 chmod 0750 $sockdir
 
-# ntp muss chrooted laufen
+# ntp must run chrooted
 sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
 sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
 
+# start ntp daemon
 chkservice "ntpd"
 
-# invis Passwort-Datei anpassen
+# enable ntp and set hardware clock
 file="invis-pws.conf"
+hwclock --systohc 2>&1| tee -a $LOGFILE | pgbox 
 
+# invis Passwort-Datei anpassen
 ldappw=`getconfdata "LDAPAdminPW" "2"`
 string="ldap-secret%$ldappw"
 changevalues $INVISCONFDIR $file "$string"
@@ -367,6 +361,10 @@ changevalues $INVISCONFDIR $file "$string"
 mysqlpw=`getconfdata "MySQLpw" "2"`
 string="mysql-rootpw%$mysqlpw"
 changevalues $INVISCONFDIR $file "$string"
+
+# cron & at-Daemon in Runlevel integrieren und starten
+chkservice "cron"
+chkservice "atd"
 
 # Modul "name of this module" beendet
 writeprepstat "samba_ad"
