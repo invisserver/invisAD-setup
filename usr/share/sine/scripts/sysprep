@@ -57,12 +57,10 @@ mv /etc/issue.net /etc/issue.net.old
 echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. \r (\l)." > /etc/issue
 echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
 
-# Internes Interface auch offline hochfahren erzwingen
-grep LINK_REQUIRED /etc/sysconfig/network/ifcfg-intern 2>&1| tee -a $LOGFILE | pgbox
-if [[ "${PIPESTATUS[0]}" -ne "0" ]]; then
-    echo "LINK_REQUIRED='no'" >> /etc/sysconfig/network/ifcfg-intern
-    echo "LINK_REQUIRED der Netzwerkkonfiguration hinzugefügt!" 2>&1| tee -a $LOGFILE | pgbox
-fi
+# set LINK_REQUIRED global to no
+sysconf_addword -r /etc/sysconfig/network/config LINK_REQUIRED auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/network/config LINK_REQUIRED no 2>&1| tee -a $LOGFILE | pgbox
+echo "LINK_REQUIRED in der globalen Netzwerkkonfiguration auf \"no\" gesetzt!" 2>&1| tee -a $LOGFILE | pgbox
 
 # Verzeichnisse in /etc/skel anlegen
 mkdir /etc/skel/Dokumente
@@ -109,8 +107,8 @@ pgsubtitle="Der Virenscanner ClamAV wird installiert, aktualisiert und aktiviert
 if [[ $av == "clamav" ]]; then 
     zypper -n install -n clamav 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
-    cp $cfilesdir/Virenscanner/clamd.conf /etc 	2>&1| tee -a $LOGFILE
-    cp $cfilesdir/Virenscanner/freshclam.conf /etc 	2>&1| tee -a $LOGFILE
+    cp $TEMPLATEDIR/virusscanner/clamav/clamd.conf /etc 	2>&1| tee -a $LOGFILE
+    cp $TEMPLATEDIR/virusscanner/clamav/freshclam.conf /etc 	2>&1| tee -a $LOGFILE
     touch /var/log/clamd.log 				2>&1| tee -a $LOGFILE
     chown vscan:vscan /var/log/clamd.log 			2>&1| tee -a $LOGFILE
     touch /var/log/freshclam.log 				2>&1| tee -a $LOGFILE
@@ -220,26 +218,44 @@ string="220.168.192.in-addr.arpa%$revdomain"
 changevalues $path $file "$string"
 
 # Limits erhoehen fuer Samba und Zarafa
-cp $cfilesdir/System/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/system/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE | pgbox
 
-# Vorbereitete sysconfig Dateien kopieren
-# Ist QnD, sollte mit sysconf_addword erledigt werden....
-cp $cfilesdir/System/sysconfig/* /etc/sysconfig/ 2>&1| tee -a $LOGFILE | pgbox
+## prepare sysconfig variables
+ipaddr=`getconfdata "IP" "2"`
 
-#/etc/hosts anpassen
+# dhcpd
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_IFUP_RESTART yes
+sysconf_addword /etc/sysconfig/dhcpd DHCPD6_IFUP_RESTART yes
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_INTERFACE intern
+sysconf_addword /etc/sysconfig/dhcpd DHCPD6_INTERFACE intern
+
+# mail
+sysconf_addword -r /etc/sysconfig/mail MAIL_CREATE_CONFIG yes
+sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no
+
+# postfix
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no
+sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes
+
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no
+sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes
+
+# ntop
+sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0
+sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern
+
+sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000
+sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000
+
+sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001
+
+# /etc/hosts anpassen
 file="hosts"
 path="/etc"
-ipaddr=`getconfdata "IP" "2"`
 string="127.0.0.2%$ipaddr"
 changevalues $path $file "$string"
     
-#/etc/sysconfig/ntop anpassen
-file="ntop"
-path="/etc/sysconfig"
-string="192.168.220.10%$ipaddr"
-changevalues $path $file "$string"
-
-#Admin PW fuer ntop-user wwwrun setzen
+# Admin PW fuer ntop-user wwwrun setzen
 # Achtung Bug im ntop Paket: Das Verzeichnis in dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
 mkdir /var/lib/ntop
 ntoppw=`getconfdata "NtopPw" "2"`
@@ -251,7 +267,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 \n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!" "CA erstellen"
 
 ## easy-rsa einrichten und CA bauen
-cp $cfilesdir/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
 file="vars"
 path="/etc/easy-rsa"
 
@@ -306,7 +322,7 @@ cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
 timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
 # PHP ini-Dateien anpassen
-cp $cfilesdir/webserver/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
+cp $TEMPLATEDIR/lamp/php5/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
 path="/etc/php5/apache2"
 file="php.ini"
 string="i6lib%$libdir"
@@ -315,17 +331,13 @@ changevalues $path $file "$string"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
-cp $cfilesdir/webserver/fcgid/php.ini /etc/php5/fastcgi/
+cp $TEMPLATEDIR/lamp/php5/fcgid/php.ini /etc/php5/fastcgi/
 path="/etc/php5/fastcgi"
 string="i6libdir%$libdir"
 changevalues $path $file "$string"
 
 string="UTC%$timezone"
 changevalues $path $file "$string"
-
-# Workaround fuer fastcgi php.ini Bug
-# muss das noch, oder kann das weg?
-ln -s /etc/php5/fastcgi /etc/php5/fpm
 
 # NTP-Dienst fuer AD anpassen
 ntpconf="/etc/ntp.conf"
