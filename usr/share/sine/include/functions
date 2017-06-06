@@ -27,7 +27,7 @@
 # Functions for sine2 and sine2 modules 
 # Werte aus Konfigurationsdatendatei extrahieren
 getconfdata() {
-    cat $setupdir/invis_confdata |grep "$1:" | cut -d ":" -f $2
+    cat $SINEWORKINGDIR/invis_confdata |grep "$1:" | cut -d ":" -f $2
 }
 
 # Konfigurationsparameter tauschen
