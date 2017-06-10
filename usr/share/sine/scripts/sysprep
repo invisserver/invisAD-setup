@@ -71,16 +71,16 @@ mkdir /etc/skel/Videos
 mkdir /etc/skel/ics
 
 ## Virenscanner einrichten
-# Quarantäneverzeichnis anlegen
+# Quarantaeneverzeichnis anlegen
 mkdir /var/spool/infected
 av=`getconfdata "AV" "2"`
 avcron=`getconfdata "AVCRON" "2"`
 
-# Der ausgewählte Virenscanner wird in invis.conf eingetragen
+# Der ausgewaehlte Virenscanner wird in invis.conf eingetragen
 string="AV:clamav%AV:$av"
 changevalues $INVISCONFDIR "invis.conf" "$string"
     
-# Eintragen, ob regelmäßig auf Viren geprüft wird.
+# Eintragen, ob regelmaeßig auf Viren geprueft wird.
 string="avCheck:j%avCheck:$avcron"
 changevalues $INVISCONFDIR "invis.conf" "$string"
 
@@ -205,30 +205,30 @@ cp $TEMPLATEDIR/system/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE
 ipaddr=`getconfdata "IP" "2"`
 
 # dhcpd
-sysconf_addword /etc/sysconfig/dhcpd DHCPD_IFUP_RESTART yes
-sysconf_addword /etc/sysconfig/dhcpd DHCPD6_IFUP_RESTART yes
-sysconf_addword /etc/sysconfig/dhcpd DHCPD_INTERFACE intern
-sysconf_addword /etc/sysconfig/dhcpd DHCPD6_INTERFACE intern
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_IFUP_RESTART yes auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD6_IFUP_RESTART yes auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_INTERFACE intern auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD6_INTERFACE intern auto 2>&1| tee -a $LOGFILE | pgbox
 
 # mail
-sysconf_addword -r /etc/sysconfig/mail MAIL_CREATE_CONFIG yes
-sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no
+sysconf_addword -r /etc/sysconfig/mail MAIL_CREATE_CONFIG yes auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no auto 2>&1| tee -a $LOGFILE | pgbox
 
 # postfix
-sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no
-sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes auto 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no
-sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes auto 2>&1| tee -a $LOGFILE | pgbox
 
 # ntop
-sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0
-sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern
+sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0 auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern auto 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000
-sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000
+sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000 auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000 auto 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001
+sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001 auto 2>&1| tee -a $LOGFILE | pgbox
 
 # remove auto behavior from NETCONFIG DNS and NTP policy
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $LOGFILE | pgbox
@@ -252,7 +252,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 \n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!" "CA erstellen"
 
 ## easy-rsa einrichten und CA bauen
-cp $TEMPLATEDIR/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/system/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
 file="vars"
 path="/etc/easy-rsa"
 
