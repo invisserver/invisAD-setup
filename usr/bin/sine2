@@ -51,8 +51,10 @@ SINEWORKINGDIR="/var/lib/sine"
 export SINEWORKINGDIR
 
 # global dialog settings
-dialogtitle="invis AD Server $invisversion Setup"
-dialogshorthelp="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
+DIALOGTITLE="invis AD Server $invisversion Setup"
+DIALOGSHORTHELP="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
+export DIALOGTITLE
+export DIALOGSHORTHELP
 
 # global an local variables
 STATUSFILE="$SINEWORKINGDIR/prepstat"

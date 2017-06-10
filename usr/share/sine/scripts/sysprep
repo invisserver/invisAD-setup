@@ -58,9 +58,9 @@ echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $op
 echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
 
 # set LINK_REQUIRED global to no
+echo "LINK_REQUIRED wird in der globalen Netzwerkkonfiguration auf \"no\" gesetzt!" 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config LINK_REQUIRED auto 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/network/config LINK_REQUIRED no 2>&1| tee -a $LOGFILE | pgbox
-echo "LINK_REQUIRED in der globalen Netzwerkkonfiguration auf \"no\" gesetzt!" 2>&1| tee -a $LOGFILE | pgbox
 
 # Verzeichnisse in /etc/skel anlegen
 mkdir /etc/skel/Dokumente
@@ -204,33 +204,40 @@ cp $TEMPLATEDIR/system/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE
 ## prepare sysconfig variables
 ipaddr=`getconfdata "IP" "2"`
 
+pgsubtitle="Globale Systemkonfigurationsvariablen werden gesetzt."
 # dhcpd
-sysconf_addword /etc/sysconfig/dhcpd DHCPD_IFUP_RESTART yes auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/dhcpd DHCPD6_IFUP_RESTART yes auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/dhcpd DHCPD_INTERFACE intern auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/dhcpd DHCPD6_INTERFACE intern auto 2>&1| tee -a $LOGFILE | pgbox
+echo "Globale DHCP Server-Konfiguration wird angepasst." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_IFUP_RESTART yes 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD6_IFUP_RESTART yes 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_INTERFACE intern 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/dhcpd DHCPD6_INTERFACE intern 2>&1| tee -a $LOGFILE | pgbox
 
 # mail
-sysconf_addword -r /etc/sysconfig/mail MAIL_CREATE_CONFIG yes auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no auto 2>&1| tee -a $LOGFILE | pgbox
+echo "System wird so konfiguriert, dass die Postfix-Konfiguration nicht vom System vorgenommen wird." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/mail MAIL_CREATE_CONFIG yes 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no 2>&1| tee -a $LOGFILE | pgbox
 
 # postfix
-sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes auto 2>&1| tee -a $LOGFILE | pgbox
+echo "System wird so konfiguriert, dass Postfix-Konfiguration in einem Chroot-Jail läuft." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes 2>&1| tee -a $LOGFILE | pgbox
 
 # ntop
-sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0 auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern auto 2>&1| tee -a $LOGFILE | pgbox
+echo "NTOP Interface wird auf \"intern\" gesetzt." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000 auto 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000 auto 2>&1| tee -a $LOGFILE | pgbox
+echo "NTOP Ports werden auf 3000 und 3001 (SSL) gesetzt." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001 auto 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001 2>&1| tee -a $LOGFILE | pgbox
 
 # remove auto behavior from NETCONFIG DNS and NTP policy
+echo "System wird so konfiguriert, dass weder die Datei resolf.conf noch der NTP-Dienst automatisch konfiguriert werden." 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $LOGFILE | pgbox 
 
@@ -285,6 +292,12 @@ easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
 
 # CA aufbauen
 easyrsa build-ca
+
+# Stop sine, in case of problems with building the CA
+if [[ $? != 0 ]];then
+    exit 5
+fi
+
 # CA Datei kopieren
 cp $path/$domain/ca.crt /etc/invis/certs
 chmod go+r /etc/invis/certs/ca.crt
@@ -343,8 +356,8 @@ chown .ntp $sockdir
 chmod 0750 $sockdir
 
 # ntp must run chrooted
-sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no
-sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes
+sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
 
 # start ntp daemon
 chkservice "ntpd"
