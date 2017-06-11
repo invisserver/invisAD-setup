@@ -148,7 +148,33 @@ case $1 in
 	;;
 
     "")
+	# building the module list
+	i=0
+	while read line; do
+	    MODULES[i]=$line
+	    i=$(( $i + 1 ))
+	done < $REQMODFILE
+
 	# going through the modules
+	for line in ${MODULES[@]}; do
+	    datum=`date "+%b %d %H:%M:%S"`
+	    module=`echo $line|cut -d ":" -f3`
+	    number=`echo $line|cut -d ":" -f1`
+	    if [[ $number < $prepstatnumber ]]; then
+		echo "$datum : sine2 module \"$module\" is already done." >> $LOGFILE
+		continue
+	    fi
+	    if [[ -x /$moduledir/$module  ]]; then
+		echo "$datum : Starting sine2 module \"$module\"." >> $LOGFILE
+		/$moduledir/$module 
+		if [[ $? == 5 ]]; then
+		    exit
+		fi
+	    else
+		exit 5
+	    fi
+	done < $REQMODFILE
+
 	while read line; do
 	    datum=`date "+%b %d %H:%M:%S"`
 	    module=`echo $line|cut -d ":" -f3`
