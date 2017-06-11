@@ -103,10 +103,10 @@ waitinfobox() {
 zyppercheck() {
     # Argument $1 = Exit Corde
     if (( $1 == 104 )); then
-	textbox "$setupdir/infofiles/zypper104.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
+	textbox "$SINEWORKINGDIR/infofiles/zypper104.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
 	exit 1
     elif (( $1 != 0 )); then 
-	textbox "$setupdir/infofiles/zypperunex.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
+	textbox "$SINEWORKINGDIR/infofiles/zypperunex.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
 	exit 1
     fi
 }
@@ -162,8 +162,8 @@ Geben Sie das Passwort für Benutzer $1 ein.\n\n
 Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzeichen enthalten." 17 64 2 \
 	"Benutzer Passwort:" 2 2 "" 2 23 10 0\
 	"Kontrolle:" 2 36 "" 2 47 10 0\
-	2>$setupdir/sine_temp
-	usersecrets=(`cat $setupdir/sine_temp`)
+	2>$SINEWORKINGDIR/sine_temp
+	usersecrets=(`cat $SINEWORKINGDIR/sine_temp`)
 
 	    if [[ ${usersecrets[0]} == ${usersecrets[1]} ]] && (( ${#usersecrets[0]} >= 7 ));then
 		ok=1

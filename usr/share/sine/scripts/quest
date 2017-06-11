@@ -50,7 +50,7 @@ oldifs=$IFS
 IFS=$'\n'
 
 # zentrales invis Konfigurationsverzeichnis anlegen
-textbox "$setupdir/infofiles/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "Weiter"
+textbox "$SINEWORKINGDIR/infofiles/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "Weiter"
 
 # Vorgaben ermitteln
 vhn=`hostname -s`
@@ -72,8 +72,8 @@ Alle Eingaben werden auf Plausibilität geprüft, fehlerhaft ausgefüllte Felder
     "Organisation:" 6 2 "$organisation" 6 16 55 0\
     "email:" 8 2 "$certmail" 8 16 55 0\
     "Name:" 10 2 "$certowner" 10 16 55 0\
-    2>$setupdir/sine_temp
-    opensslvalues=(`cat "$setupdir/sine_temp"`)
+    2>$SINEWORKINGDIR/sine_temp
+    opensslvalues=(`cat "$SINEWORKINGDIR/sine_temp"`)
     # Werte prüfen und zuordnen
     if (( ${#opensslvalues[0]} == 2 ));then
         country="${opensslvalues[0]}"
@@ -113,9 +113,9 @@ while (( $ok != "2" ));do
 Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Administrators ein." 18 74 5 \
     "email:" 2 2 "$admail" 2 20 45 0\
     "Name:" 4 2 "$admin" 4 20 45 0\
-    2>$setupdir/sine_temp
+    2>$SINEWORKINGDIR/sine_temp
     exitcode=${?}
-    admincontact=(`cat $setupdir/sine_temp`)
+    admincontact=(`cat $SINEWORKINGDIR/sine_temp`)
     if [[ ${admincontact[0]} =~ ^[a-zA-Z0-9-]+([._a-zA-Z0-9.-]+)*@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4}) ]];then
 	admail="${admincontact[0]}"
 	(( ok=$ok + 1 ))
@@ -142,8 +142,8 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
     "Domain:" 2 35 "$vdomname" 2 43 27 0\
     "IP (intern):" 4 2 "$vipaddr" 4 13 20 0\
     "Netzwerkmaske:" 4 35 "$vlongnmask" 4 50 20 0\
-    2>$setupdir/sine_temp
-    netvalues=(`cat $setupdir/sine_temp`)
+    2>$SINEWORKINGDIR/sine_temp
+    netvalues=(`cat $SINEWORKINGDIR/sine_temp`)
 
     # Alle Daten ermitteln.
     hn="${netvalues[0]}"
@@ -207,8 +207,8 @@ Geben Sie midestens eine IP-Adresse ein.\n\n" 26 70 6 \
     "DNS 1:" 2 2 "${fdns[0]}" 2 10 30 0\
     "DNS 2:" 4 2 "${fdns[1]}" 4 10 30 0\
     "DNS 3:" 6 2 "${fdns[2]}" 6 10 30 0\
-    2>$setupdir/sine_temp
-    fdns=(`cat $setupdir/sine_temp`)
+    2>$SINEWORKINGDIR/sine_temp
+    fdns=(`cat $SINEWORKINGDIR/sine_temp`)
 
     if (( ${#fdns[@]} == 0 )); then
 	continue
@@ -240,8 +240,8 @@ Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root 
 Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
     "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
     "Kontrolle:" 2 36 "" 2 47 10 0\
-    2>$setupdir/sine_temp
-    mysqlsecrets=(`cat $setupdir/sine_temp`)
+    2>$SINEWORKINGDIR/sine_temp
+    mysqlsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
 
     if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
 	ok=1
@@ -257,8 +257,8 @@ Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den n
 Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
     "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
     "Kontrolle:" 2 36 "" 2 47 10 0\
-    2>$setupdir/sine_temp
-    ntopsecrets=(`cat $setupdir/sine_temp`)
+    2>$SINEWORKINGDIR/sine_temp
+    ntopsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
 
     if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
 	ok=1
@@ -274,8 +274,8 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
     roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
     tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
     sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
-    2>$setupdir/sine_temp
-    whichgroupware=`cat $setupdir/sine_temp`
+    2>$SINEWORKINGDIR/sine_temp
+    whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
 
 if [[ $whichgroupware == "kopano" ]]; then
     # Welche Kopano Version
@@ -283,8 +283,8 @@ if [[ $whichgroupware == "kopano" ]]; then
 Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
     limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
     opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
-    2>$setupdir/sine_temp
-    whichkopanorep=`cat $setupdir/sine_temp`
+    2>$SINEWORKINGDIR/sine_temp
+    whichkopanorep=`cat $SINEWORKINGDIR/sine_temp`
 fi
 
 #---# ERP-Software
@@ -294,8 +294,8 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
     Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
     waWision "Moderne ERP Lösung für Handel und Dienstleistung inkl. Webshop-Schnittstelle." on\
     Keine "Sie verwenden ein eigenes System" off\
-    2>$setupdir/sine_temp
-    whicherp=`cat $setupdir/sine_temp`
+    2>$SINEWORKINGDIR/sine_temp
+    whicherp=`cat $SINEWORKINGDIR/sine_temp`
     whicherp=`tolower $whicherp`
 
 #---# Virenscanner Radiobutton
@@ -307,8 +307,8 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
 #werden.\nClamav hingegen ist zu 100% Open-Source-Software, d.h. dessen Nutzung ist auch im gewerblichen Umfeld kostenfrei." 22 80 8 \
 #	clamav "Open-Source Virenscanner" on\
 #	antivir "Kommerzieller Virenscanner von Avira" off\
-#	2>$setupdir/sine_temp
-#	av=`cat $setupdir/sine_temp`
+#	2>$SINEWORKINGDIR/sine_temp
+#	av=`cat $SINEWORKINGDIR/sine_temp`
 
 # Da derzeit lediglich Clamav zur Verfuegung steht, wird auf die Abfrage verzichtet.
 av=clamav
@@ -322,8 +322,8 @@ Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
     nagios "Nagios-Plugins (Icinga & Nagios)" on\
     zabbix "Zabbix-Agent" off\
     keine  "Keine Überwachung" off\
-    2>$setupdir/sine_temp
-    whichmonitoring=`cat $setupdir/sine_temp`
+    2>$SINEWORKINGDIR/sine_temp
+    whichmonitoring=`cat $SINEWORKINGDIR/sine_temp`
 
 #---# HTTPS    
 yesno "Soll Ihr invis Server via Internet (HTTPS) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
@@ -333,9 +333,9 @@ if [[ $exthttps == "0" ]]; then
     ok=0
     while [[ $ok != "1" ]]; do
 	dialog --backtitle "$DIALOGTITLE" --title "HTTPs Zugang" --inputbox "Geben Sie bitten den vollständigen Namen (FQDN) oder die IP-Adresse ein unter dem/der ihr invis Server erreichbar sein soll." 0 0 \
-	2>$setupdir/sine_temp
+	2>$SINEWORKINGDIR/sine_temp
 	exitcode=${?}
-	ddnshn=`cat $setupdir/sine_temp`
+	ddnshn=`cat $SINEWORKINGDIR/sine_temp`
 	
 	# Doch noch abbrechen
 	if [[ $exitcode == "1" || $exitcode == "255" ]]; then
@@ -363,7 +363,7 @@ Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres SMTP-Relays, sowie den z
 	"Port [25/587]:" 4 2 "$smtpport" 4 20 45 0\
 	"Benutzername:" 6 2 "$smtpun" 6 20 45 0\
 	"Passwort:" 8 2 "$smtppw" 8 20 45 0\
-	2>$setupdir/sine_temp
+	2>$SINEWORKINGDIR/sine_temp
 	exitcode=${?}
 	# Doch noch abbrechen
 	if [[ $exitcode == "1" || $exitcode == "255" ]]; then
@@ -371,7 +371,7 @@ Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres SMTP-Relays, sowie den z
 	    break
 	fi
 	
-	smtpvalues=(`cat $setupdir/sine_temp`)
+	smtpvalues=(`cat $SINEWORKINGDIR/sine_temp`)
 	
 	if [[ ${smtpvalues[0]} =~ ^[a-zA-Z0-9_\-]{1,254}\.[a-zA-Z0-9_\-]{1,254}+\.?[a-zA-Z0-9_\-]{1,254}+\.[a-zA-Z]{1,5}$ || ${smtpvalues[0]} =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]] ;then
 	    mailserver="${smtpvalues[0]}"
@@ -423,8 +423,8 @@ if [[ $cleantr == "0" ]]; then
     "21 Tage" "3 Wochen" on\
     "42 Tage" "6 Wochen" off\
     "90 Tage" "3 Monate" off\
-    2>$setupdir/sine_temp
-    trdays=`cat $setupdir/sine_temp|cut -d " " -f1`
+    2>$SINEWORKINGDIR/sine_temp
+    trdays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
 fi
 
 #---# CleanDasi
@@ -439,8 +439,8 @@ if [[ $cleandasi == "0" ]]; then
     "21 Tage" "3 Wochen" on\
     "42 Tage" "6 Wochen" off\
     "90 Tage" "3 Monate" off\
-    2>$setupdir/sine_temp
-    dasidays=`cat $setupdir/sine_temp|cut -d " " -f1`
+    2>$SINEWORKINGDIR/sine_temp
+    dasidays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
 fi
 
 #   regelmässige Virenscans
