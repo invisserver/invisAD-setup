@@ -117,34 +117,34 @@ chkservice() {
     "d")
 	pgsubtitle="$1-Daemon wird aus der Runlevelkonfiguration entfernt"
 	if [[ ! -f "/etc/init.d/$1" ]]; then
-	    systemctl disable $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    systemctl disable $1.service 2>&1| tee -a $LOGFILE | pgbox
 	else
-    	    chkconfig --del "$1" 2>&1| tee -a $setupdir/sine.log | pgbox
+    	    chkconfig --del "$1" 2>&1| tee -a $LOGFILE | pgbox
     	fi
 	pgsubtitle="$1-Daemon wird gestoppt"
-    	service "$1" stop 2>&1| tee -a $setupdir/sine.log | pgbox
+    	service "$1" stop 2>&1| tee -a $LOGFILE | pgbox
     	;;
     "r")
 	pgsubtitle="$1-Daemon wird neu geladen."
 	if [[ ! -f "/etc/init.d/$1" ]]; then
-	    systemctl reload $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    systemctl reload $1.service 2>&1| tee -a $LOGFILE | pgbox
 	else
-    	    service "$1" reload 2>&1| tee -a $setupdir/sine.log | pgbox
+    	    service "$1" reload 2>&1| tee -a $LOGFILE | pgbox
     	fi
     	;;
     "")
 	pgsubtitle="$1-Daemon wird neu gestartet"
 	if [[ ! -f "/etc/init.d/$1" ]]; then
 	    if [[ `systemctl is-enabled "$1.service"` != "enabled" ]]; then
-		systemctl enable $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+		systemctl enable $1.service 2>&1| tee -a $LOGFILE | pgbox
 	    fi
-	    systemctl restart $1.service 2>&1| tee -a $setupdir/sine.log | pgbox
+	    systemctl restart $1.service 2>&1| tee -a $LOGFILE | pgbox
 	else
 	    if [[ `chkconfig $1 |tr -s " "|cut -d " " -f 2` == "off" ]]; then
-		chkconfig -a $1 2>&1| tee -a $setupdir/sine.log | pgbox
+		chkconfig -a $1 2>&1| tee -a $LOGFILE | pgbox
 	    fi
     	    if [[ $1 != "avguard" ]]; then
-    		service "$1" restart 2>&1| tee -a $setupdir/sine.log | pgbox
+    		service "$1" restart 2>&1| tee -a $LOGFILE | pgbox
     	    else
     		service "$1" restart
     	    fi
