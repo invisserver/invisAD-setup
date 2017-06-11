@@ -67,7 +67,7 @@ INVISCONFDIR="/etc/invis"
 export STATUSFILE
 export REQMODFILE
 export TEMPLATEDIR
-export INCLUDEDIR
+export SINEINCLUDEDIR
 export INVISCONFDIR
 
 LOGFILE="/var/log/sine/sine.log"
