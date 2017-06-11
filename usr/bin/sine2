@@ -173,26 +173,8 @@ case $1 in
 	    else
 		exit 5
 	    fi
-	done < $REQMODFILE
+	done
 
-	while read line; do
-	    datum=`date "+%b %d %H:%M:%S"`
-	    module=`echo $line|cut -d ":" -f3`
-	    number=`echo $line|cut -d ":" -f1`
-	    if [[ $number < $prepstatnumber ]]; then
-		echo "$datum : sine2 module \"$module\" is already done." >> $LOGFILE
-		continue
-	    fi
-	    if [[ -x /$moduledir/$module  ]]; then
-		echo "$datum : Starting sine2 module \"$module\"." >> $LOGFILE
-		/$moduledir/$module 
-		if [[ $? == 5 ]]; then
-		    exit
-		fi
-	    else
-		exit 5
-	    fi
-	done < $REQMODFILE
 	# Zertifikate fuers Portal pruefen
 	getcertinfo
 	# Und Tschuess
