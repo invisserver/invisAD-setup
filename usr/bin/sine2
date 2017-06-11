@@ -51,7 +51,7 @@ SINEWORKINGDIR="/var/lib/sine"
 export SINEWORKINGDIR
 
 # global dialog settings
-DIALOGTITLE="invis AD Server $invisversion Setup"
+DIALOGTITLE="invis AD Server $INVISVERSION Setup"
 DIALOGSHORTHELP="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
 export DIALOGTITLE
 export DIALOGSHORTHELP
@@ -62,7 +62,7 @@ sinehelpersdir="/usr/share/sine"
 REQMODFILE="$sinehelpersdir/registered-modules.txt"
 moduledir="$sinehelpersdir/scripts"
 TEMPLATEDIR="$sinehelpersdir/templates"
-INCLUDEDIR="$sinehelpersdir/include"
+SINEINCLUDEDIR="$sinehelpersdir/include"
 INVISCONFDIR="/etc/invis"
 export STATUSFILE
 export REQMODFILE
@@ -88,11 +88,11 @@ fi
 
 # is this a 64bit machine?.
 if [[ -d /usr/lib64 ]]; then
-    LIBDIR="/usr/lib64"
+    SYSLIBDIR="/usr/lib64"
 else
-    LIBDIR="/usr/lib"
+    SYSLIBDIR="/usr/lib"
 fi
-export LIBDIR
+export SYSLIBDIR
 
 # is dialog installed?
 if [[ -z `which dialog 2>/dev/null` ]]; then

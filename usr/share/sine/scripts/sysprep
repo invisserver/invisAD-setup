@@ -39,7 +39,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # include functions
-source $INCLUDEDIR/functions
+source $SINEINCLUDEDIR/functions
 
 echo "Modul sysprep"
 sleep 1
@@ -237,7 +237,7 @@ sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000 2>&1| tee -a $LOGFIL
 sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001 2>&1| tee -a $LOGFILE | pgbox
 
 # remove auto behavior from NETCONFIG DNS and NTP policy
-echo "System wird so konfiguriert, dass weder die Datei resolf.conf noch der NTP-Dienst automatisch konfiguriert werden." 2>&1| tee -a $LOGFILE | pgbox
+echo "System wird so konfiguriert, dass weder die Datei resolv.conf noch der NTP-Dienst automatisch konfiguriert werden." 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $LOGFILE | pgbox 
 
@@ -323,7 +323,7 @@ timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 cp $TEMPLATEDIR/lamp/php5/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
 path="/etc/php5/apache2"
 file="php.ini"
-string="i6lib%$libdir"
+string="i6lib%$SYSLIBDIR"
 changevalues $path $file "$string"
 
 string="UTC%$timezone"
@@ -331,7 +331,7 @@ changevalues $path $file "$string"
 
 cp $TEMPLATEDIR/lamp/php5/fcgid/php.ini /etc/php5/fastcgi/
 path="/etc/php5/fastcgi"
-string="i6libdir%$libdir"
+string="i6libdir%$SYSLIBDIR"
 changevalues $path $file "$string"
 
 string="UTC%$timezone"

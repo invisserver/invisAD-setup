@@ -39,7 +39,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # include functions
-source $INCLUDEDIR/functions
+source $SINEINCLUDEDIR/functions
 
 echo "Modul quest"
 sleep 1
