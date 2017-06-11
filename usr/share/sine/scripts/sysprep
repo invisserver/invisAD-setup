@@ -46,7 +46,7 @@ sleep 1
 
 timestamp=`date +%s`
 windowtitle="Systemvorbereitung"
-pgsubtitle="Es wird eine Sicherung des /etc Verzeichnisses ertellt."
+pgsubtitle="Es wird eine Sicherung des /etc Verzeichnisses erstellt."
 tar -czf $SINEWORKINGDIR/etc-backup-$timestamp.tar.gz /etc 2>&1| tee -a $LOGFILE | pgbox
 
 # /etc/issue anpassen
