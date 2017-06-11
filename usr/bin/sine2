@@ -74,7 +74,7 @@ LOGFILE="/var/log/sine/sine.log"
 export LOGFILE
 
 # include functions
-source $INCLUDEDIR/functions
+source $SINEINCLUDEDIR/functions
 
 # environment check
 if [[ -d $TEMPLATEDIR ]]; then
