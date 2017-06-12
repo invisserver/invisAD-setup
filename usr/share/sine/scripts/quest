@@ -41,8 +41,7 @@
 # include functions
 source $SINEINCLUDEDIR/functions
 
-echo "Modul quest"
-sleep 1
+modulename=`basename $0`
 clear
 
 # Trennzeichen für Arrays auf \n (Zeilenumbruch setzen.
@@ -50,7 +49,7 @@ oldifs=$IFS
 IFS=$'\n'
 
 # zentrales invis Konfigurationsverzeichnis anlegen
-textbox "$SINEWORKINGDIR/infofiles/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "Weiter"
+textbox "$INFODIR/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "Weiter"
 
 # Vorgaben ermitteln
 vhn=`hostname -s`
@@ -546,4 +545,4 @@ rm -f ./sine_temp
 
 # Modul "quest" beendet
 writeprepstat "sysprep"
-waitbox "quest" "sysprep"
+waitbox "$modulename" "sysprep"

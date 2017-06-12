@@ -42,11 +42,10 @@
 # include functions
 source $SINEINCLUDEDIR/functions
 
-echo "Modul check"
-sleep 1
+modulename=`basename $0`
 
 # are all requirements fullfilled?
-dialog --backtitle "$DIALOGTITLE" --title "Installationvoraussetzungen" --exit-label "Weiter" --textbox "$SINEWORKINGDIR/infofiles/setuprequires.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "Installationvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
+dialog --backtitle "$DIALOGTITLE" --title "Installationvoraussetzungen" --exit-label "Weiter" --textbox "$INFODIR/setuprequires.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "Installationvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
 prepok=${?}
 
 if [[ $prepok == "0" ]]; then
@@ -72,11 +71,11 @@ if [[ $prepok == "0" ]]; then
 
     # Patterns
     pgsubtitle="Software-Gruppen werden installiert" 
-    zypper -n install -t pattern `cat $SINEWORKINGDIR/zypper-package-lists/invis_schemes` 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install -t pattern `cat $PACKAGELISTDIR/invis_schemes` 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # Basis Software
     pgsubtitle="Basis Software wird installiert" 
-    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_base` 2>&1| tee -a $LOGFILE | pgbox 
+    zypper -n install -n `cat $PACKAGELISTDIR/invis_base` 2>&1| tee -a $LOGFILE | pgbox 
     zyppercheck ${PIPESTATUS[0]}
 
     # Samba Pakete werden installiert
@@ -84,7 +83,7 @@ if [[ $prepok == "0" ]]; then
 
     # Installation der invis-eigenen Samba-Pakete
     zypper refresh 2>&1| tee -a $LOGFILE | pgbox
-    zypper -n install --force-resolution -n `cat $SINEWORKINGDIR/zypper-package-lists/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
+    zypper -n install --force-resolution -n `cat $PACKAGELISTDIR/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # Samba Repo ermitteln
     sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
@@ -94,7 +93,7 @@ if [[ $prepok == "0" ]]; then
 
     # NFS-Server
     pgsubtitle="Zusätzliche Fileserver Software wird installiert" 
-    zypper -n install -n `cat $SINEWORKINGDIR/zypper-package-lists/fileserver_additional` 2>&1| tee -a $LOGFILE | pgbox 25 110 
+    zypper -n install -n `cat $PACKAGELISTDIR/fileserver_additional` 2>&1| tee -a $LOGFILE | pgbox 25 110 
     zyppercheck ${PIPESTATUS[0]}
 
     # Grub2-Konfiguration
@@ -102,8 +101,11 @@ if [[ $prepok == "0" ]]; then
     tar -xf $TEMPLATEDIR/system/grub/invis8.tar.gz -C /boot/grub2/themes/
         
     # Grub2 Konfiguration erstellen
-    mv /etc/default/grub /etc/default/grub.opensuse
-    cp $TEMPLATEDIR/system/grub/grub /etc/default/
+    path="/etc/default"
+    mv $path/grub $path/grub.opensuse
+    cp $TEMPLATEDIR/$modulename/grub/grub $path/
+    string="invisversion%$INVISVERSION"
+    changevalues "$path" grub "$string"
     grub2-mkconfig -o /boot/grub2/grub.cfg  2>&1| tee -a $LOGFILE | pgbox 25 110 
 
     # install grub on all harddisks if there is an raid device md0 an its mounted to /boot
@@ -117,7 +119,7 @@ if [[ $prepok == "0" ]]; then
 
     # Module check done
     writeprepstat "quest"
-    waitbox "check" "quest"
+    waitbox "$modulename" "quest"
 
 else
     msgbox "Erfüllen Sie zunächst alle Voraussetzungen und starten Sie das Script dann erneut" "Installationsvoraussetzungen"

@@ -63,12 +63,16 @@ REQMODFILE="$sinehelpersdir/registered-modules.txt"
 moduledir="$sinehelpersdir/scripts"
 TEMPLATEDIR="$sinehelpersdir/templates"
 SINEINCLUDEDIR="$sinehelpersdir/include"
+PACKAGELISTDIR="$sinehelpersdir/package-lists"
 INVISCONFDIR="/etc/invis"
+INFODIR="$sinehelpersdir/infofiles"
 export STATUSFILE
 export REQMODFILE
 export TEMPLATEDIR
 export SINEINCLUDEDIR
+export PACKAGELISTDIR
 export INVISCONFDIR
+export INFODIR
 
 LOGFILE="/var/log/sine/sine.log"
 export LOGFILE
@@ -161,11 +165,12 @@ case $1 in
 	    module=`echo $line|cut -d ":" -f3`
 	    number=`echo $line|cut -d ":" -f1`
 	    if [[ $number < $prepstatnumber ]]; then
-		echo "$datum : sine2 module \"$module\" is already done." >> $LOGFILE
+		echo "$datum : sine2 module \"$module\" is already done."  >> $LOGFILE
 		continue
 	    fi
 	    if [[ -x /$moduledir/$module  ]]; then
-		echo "$datum : Starting sine2 module \"$module\"." >> $LOGFILE
+		echo "$datum : Starting sine2 module \"$module\"."| tee -a $LOGFILE
+		sleep 1
 		/$moduledir/$module 
 		if [[ $? == 5 ]]; then
 		    exit
@@ -178,7 +183,7 @@ case $1 in
 	# Zertifikate fuers Portal pruefen
 	getcertinfo
 	# Und Tschuess
-	textbox "$SINEWORKINGDIR/infofiles/aftersetup.txt" "Installation abgeschlossen" "Beenden"
+	textbox "$INFODIR/aftersetup.txt" "Installation abgeschlossen" "Beenden"
 
 	# Auräumen -- Evtl. verwaiste dialog Prozesse killen
 	killall dialog > /dev/null 2>&1

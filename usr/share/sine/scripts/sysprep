@@ -41,8 +41,7 @@
 # include functions
 source $SINEINCLUDEDIR/functions
 
-echo "Modul sysprep"
-sleep 1
+modulename=`basename $0`
 
 timestamp=`date +%s`
 windowtitle="Systemvorbereitung"
@@ -88,8 +87,8 @@ pgsubtitle="Der Virenscanner ClamAV wird installiert, aktualisiert und aktiviert
 if [[ $av == "clamav" ]]; then 
     zypper -n install -n clamav 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
-    cp $TEMPLATEDIR/virusscanner/clamav/clamd.conf /etc 	2>&1| tee -a $LOGFILE
-    cp $TEMPLATEDIR/virusscanner/clamav/freshclam.conf /etc 	2>&1| tee -a $LOGFILE
+    cp $TEMPLATEDIR/$modulename/clamav/clamd.conf /etc 	2>&1| tee -a $LOGFILE
+    cp $TEMPLATEDIR/$modulename/clamav/freshclam.conf /etc 	2>&1| tee -a $LOGFILE
     touch /var/log/clamd.log 				2>&1| tee -a $LOGFILE
     chown vscan:vscan /var/log/clamd.log 			2>&1| tee -a $LOGFILE
     touch /var/log/freshclam.log 				2>&1| tee -a $LOGFILE
@@ -199,7 +198,7 @@ string="220.168.192.in-addr.arpa%$revdomain"
 changevalues $path $file "$string"
 
 # Limits erhoehen fuer Samba und Zarafa
-cp $TEMPLATEDIR/system/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/security/limits.conf /etc/security/ 2>&1| tee -a $LOGFILE | pgbox
 
 ## prepare sysconfig variables
 ipaddr=`getconfdata "IP" "2"`
@@ -259,7 +258,7 @@ Beantworten Sie die Fragen gewissenhaft. Die meisten Vorgabewerte können Sie ü
 \n\nNotieren Sie sich auf jeden Fall dass hierbei zu vergebende Passwort, Sie werden es immer wieder benötigen!" "CA erstellen"
 
 ## easy-rsa einrichten und CA bauen
-cp $TEMPLATEDIR/system/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/easy-rsa/vars /etc/easy-rsa 2>&1| tee -a $LOGFILE | pgbox
 file="vars"
 path="/etc/easy-rsa"
 
@@ -320,7 +319,7 @@ cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
 timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
 # PHP ini-Dateien anpassen
-cp $TEMPLATEDIR/lamp/php5/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
+cp $TEMPLATEDIR/$modulename/php5/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
 path="/etc/php5/apache2"
 file="php.ini"
 string="i6lib%$SYSLIBDIR"
@@ -329,7 +328,7 @@ changevalues $path $file "$string"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
-cp $TEMPLATEDIR/lamp/php5/fcgid/php.ini /etc/php5/fastcgi/
+cp $TEMPLATEDIR/$modulename/php5/fcgid/php.ini /etc/php5/fastcgi/
 path="/etc/php5/fastcgi"
 string="i6libdir%$SYSLIBDIR"
 changevalues $path $file "$string"
@@ -341,7 +340,7 @@ changevalues $path $file "$string"
 windowtitle="Grundkonfiguration"
 pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
 
-cp $TEMPLATEDIR/system/ntp/servers-netconfig /var/run/ntp
+cp $TEMPLATEDIR/$modulename/ntp/servers-netconfig /var/run/ntp
 
 # NTP-Dienst fuer AD anpassen
 ntpconf="/etc/ntp.conf"
