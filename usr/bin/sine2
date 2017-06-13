@@ -51,6 +51,11 @@ SINEWORKINGDIR="/var/lib/sine"
 export INVISVERSION
 export SINEWORKINGDIR
 
+# sine language
+# we have to discuss some kinde of automation for the language settings.
+SINELANG="de"
+export SINELANG
+
 # global dialog settings
 DIALOGTITLE="invis AD Server $INVISVERSION Setup"
 DIALOGSHORTHELP="Cursor- ([Auf]/[Ab]) und Tabulatortaste zur Navigation, Leertaste zum auswählen und Enter-Taste zum Bestätigen verwenden."
@@ -66,7 +71,7 @@ TEMPLATEDIR="$sinehelpersdir/templates"
 SINEINCLUDEDIR="$sinehelpersdir/include"
 PACKAGELISTDIR="$sinehelpersdir/package-lists"
 INVISCONFDIR="/etc/invis"
-INFODIR="$sinehelpersdir/infofiles"
+INFODIR="$sinehelpersdir/$SINELANG/infofiles"
 export STATUSFILE
 export REQMODFILE
 export TEMPLATEDIR
