@@ -98,7 +98,7 @@ if [[ $prepok == "0" ]]; then
 
     # Grub2-Konfiguration
     # Eigenes Grub2 Theme installieren
-    tar -xf $TEMPLATEDIR/system/grub/invis8.tar.gz -C /boot/grub2/themes/
+    tar -xf $TEMPLATEDIR/$modulename/grub/invis8.tar.gz -C /boot/grub2/themes/ 2>&1| tee -a $LOGFILE | pgbox 25 110 
         
     # Grub2 Konfiguration erstellen
     path="/etc/default"
