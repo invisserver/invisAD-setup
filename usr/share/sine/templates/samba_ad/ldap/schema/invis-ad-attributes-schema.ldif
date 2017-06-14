@@ -1,0 +1,559 @@
+dn: CN=fspLocalMailAddress,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.1
+schemaIdGuid:: iS/mdjsYFzrVlZrav8dApg==
+cn: fspLocalMailAddress
+name: fspLocalMailAddress
+lDAPDisplayName: fspLocalMailAddress
+description: RFC822 email address of this recipient
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspLocalMailHost,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.2
+schemaIdGuid:: +5aE+7HaT1bWxKjh8JomjA==
+cn: fspLocalMailHost
+name: fspLocalMailHost
+lDAPDisplayName: fspLocalMailHost
+description: FQDN of the local SMTP/MTA of this recipient
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspExtMailAddress,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.3
+schemaIdGuid:: PPozvXeXT+G2MgsFOWouWw==
+cn: fspExtMailAddress
+name: fspExtMailAddress
+lDAPDisplayName: fspExtMailAddress
+description: RFC822 external address of this recipient
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspMainMailAddress,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.4
+schemaIdGuid:: RX2AnGU2IO2eB7iL3BasaQ==
+cn: fspMainMailAddress
+name: fspMainMailAddress
+lDAPDisplayName: fspMainMailAddress
+description: RFC822 external address of this recipient
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspExtMailServer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.5
+schemaIdGuid:: 9SsXHOT7SCVBenXZdTdl7Q==
+cn: fspExtMailServer
+name: fspExtMailServer
+lDAPDisplayName: fspExtMailServer
+description: FQDN or IP addresse of the remote mailserver
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspExtMailProto,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.6
+schemaIdGuid:: Ye2N3mYwscbNAZJfK0pG2Q==
+cn: fspExtMailProto
+name: fspExtMailProto
+lDAPDisplayName: fspExtMailProto
+description: Protocoll to fetch mail with, like imap or pop3
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspExtMailUserName,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.7
+schemaIdGuid:: X/aiUpBAvBNxbHpJzVjWUw==
+cn: fspExtMailUserName
+name: fspExtMailUserName
+lDAPDisplayName: fspExtMailUserName
+description: Username for the remote mailbox
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspExtMailUserPW,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.8
+schemaIdGuid:: Fz0PYFF208e7wdVzWag7Mw==
+cn: fspExtMailUserPW
+name: fspExtMailUserPW
+lDAPDisplayName: fspExtMailUserPW
+description: Password for the remote mailbox
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: TRUE
+
+dn: CN=fspMailFetchOpts,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.1.1.9
+schemaIdGuid:: Dwqe55miM49qGgfSphgVMQ==
+cn: fspMailFetchOpts
+name: fspMailFetchOpts
+lDAPDisplayName: fspMailFetchOpts
+description: Options like fetchall or ssl - multiple values possible
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterName,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.1
+schemaIdGuid:: VcxwVLXTuPXjlIVDgmugnQ==
+cn: fspMailFilterName
+name: fspMailFilterName
+lDAPDisplayName: fspMailFilterName
+description: Name for Sieve Filter Rule
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterAction,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.2
+schemaIdGuid:: Ftl6Jrlb633to/i5jFtQJg==
+cn: fspMailFilterAction
+name: fspMailFilterAction
+lDAPDisplayName: fspMailFilterAction
+description: Sieve Actions: discard, reject, fileinto, redirect
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterTestCommand,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.3
+schemaIdGuid:: OTJ+rhdUH28U63gFVekp8Q==
+cn: fspMailFilterTestCommand
+name: fspMailFilterTestCommand
+lDAPDisplayName: fspMailFilterTestCommand
+description: Sieve Test: address, header, body, exists, size
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterTestAttribute,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.4
+schemaIdGuid:: bjun1N2troGKpu40GzOX4w==
+cn: fspMailFilterTestAttribute
+name: fspMailFilterTestAttribute
+lDAPDisplayName: fspMailFilterTestAttribute
+description: Sieve Conditions: from, to, cc, bcc, subject, date
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterComparativeOperator,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.5
+schemaIdGuid:: XUFd27VZV/UpmHelkHaN8w==
+cn: fspMailFilterComparativeOperator
+name: fspMailFilterComparativeOperator
+lDAPDisplayName: fspMailFilterComparativeOperator
+description: Sieve Conditions Comparative Operators: is, contains, match 
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterComparativeValue,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.6
+schemaIdGuid:: bCyLCsTm7SlrGxm7PIABAw==
+cn: fspMailFilterComparativeValue
+name: fspMailFilterComparativeValue
+lDAPDisplayName: fspMailFilterComparativeValue
+description: Sieve Comparative Values
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterTransType,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.7
+schemaIdGuid:: v0YFKn9Az/7sVOZSV+gp3Q==
+cn: fspMailFilterTransType
+name: fspMailFilterTransType
+lDAPDisplayName: fspMailFilterTransType
+description: Sieve Transformation Types: text/plain, text/html, audio/mp3
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterInfo,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.8
+schemaIdGuid:: nEU/FWaBL5RT+QGYZZ/uPQ==
+cn: fspMailFilterInfo
+name: fspMailFilterInfo
+lDAPDisplayName: fspMailFilterInfo
+description: Sieve Action Informations
+attributeSyntax: 2.5.5.5
+oMSyntax: 22
+isSingleValued: FALSE
+
+dn: CN=fspMailFilterDescription,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.2.1.9
+schemaIdGuid:: Ccp77po/V+OA2mmbyCBEig==
+cn: fspMailFilterDescription
+name: fspMailFilterDescription
+lDAPDisplayName: fspMailFilterDescription
+description: Short Description
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderVendor,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.1
+schemaIdGuid:: bkLLnv43nmz8O2OtOMEHhA==
+cn: fspMailProviderVendor
+name: fspMailProviderVendor
+lDAPDisplayName: fspMailProviderVendor
+description: Name of the Mail Service Provider
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderPOP,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.2
+schemaIdGuid:: 3DkQHxRK5VEqGZu+GoMgRA==
+cn: fspMailProviderPOP
+name: fspMailProviderPOP
+lDAPDisplayName: fspMailProviderPOP
+description: POP3 Server Address
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderIMAP,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.3
+schemaIdGuid:: q7zGrSt38eHhx03x9N77pA==
+cn: fspMailProviderIMAP
+name: fspMailProviderIMAP
+lDAPDisplayName: fspMailProviderIMAP
+description: IMAP Server Address
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderSMTP,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.4
+schemaIdGuid:: 3TagzHmusyF27M3jve9TgA==
+cn: fspMailProviderSMTP
+name: fspMailProviderSMTP
+lDAPDisplayName: fspMailProviderSMTP
+description: SMTP Server Address
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderPOPSSL,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.5
+schemaIdGuid:: 1vM+UXxBzOA0tTno2jWeTg==
+cn: fspMailProviderPOPSSL
+name: fspMailProviderPOPSSL
+lDAPDisplayName: fspMailProviderPOPSSL
+description: POP3 SSL Support
+attributeSyntax: 2.5.5.8
+oMSyntax: 1
+isSingleValued: TRUE
+
+dn: CN=fspMailProviderIMAPSSL,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.6
+schemaIdGuid:: XpgvawqYQJ4QFmw+QdM2FA==
+cn: fspMailProviderIMAPSSL
+name: fspMailProviderIMAPSSL
+lDAPDisplayName: fspMailProviderIMAPSSL
+description: IMAP SSL Support
+attributeSyntax: 2.5.5.8
+oMSyntax: 1
+isSingleValued: TRUE
+
+dn: CN=fspMailProviderSMTPPort,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.7
+schemaIdGuid:: vx3M4rDZNfBozZI49bwu6w==
+cn: fspMailProviderSMTPPort
+name: fspMailProviderSMTPPort
+lDAPDisplayName: fspMailProviderSMTPPort
+description: SMTP Server Port
+attributeSyntax: 2.5.5.9
+oMSyntax: 2
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderSMTPTLS,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.8
+schemaIdGuid:: ud1yYVBCsd8UwU2OdaRsmQ==
+cn: fspMailProviderSMTPTLS
+name: fspMailProviderSMTPTLS
+lDAPDisplayName: fspMailProviderSMTPTLS
+description: SMTP TLS Support
+attributeSyntax: 2.5.5.8
+oMSyntax: 1
+isSingleValued: TRUE
+
+dn: CN=fspMailProviderUserName,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.9
+schemaIdGuid:: 72B6vyO1tyt6JEw2iXGU5A==
+cn: fspMailProviderUserName
+name: fspMailProviderUserName
+lDAPDisplayName: fspMailProviderUserName
+description: POP/IMAP/SMTP Username
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=fspMailProviderDescription,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.2.1.1.10
+schemaIdGuid:: S0tpf3my7yB1DTbw6tdUsA==
+cn: fspMailProviderDescription
+name: fspMailProviderDescription
+lDAPDisplayName: fspMailProviderDescription
+description: Short Description Additional Informations
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=MMailUser,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.3.1.1
+schemaIdGuid:: fYmFhBu/ZIsoRQfO7nV0Qw==
+cn: MMailUser
+name: MMailUser
+lDAPDisplayName: MMailUser
+description: Login Name for IMAP Account
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=MMailPassword,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.3.1.2
+schemaIdGuid:: Adv4vh1hL2dlA2UVXI9c3Q==
+cn: MMailPassword
+name: MMailPassword
+lDAPDisplayName: MMailPassword
+description: Password for IMAP Account
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=MMailCustomName,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.3.1.3
+schemaIdGuid:: 8PucMCXQvRdRie0VE1hw0w==
+cn: MMailCustomName
+name: MMailCustomName
+lDAPDisplayName: MMailCustomName
+description: Custom Name for IMAP Account
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=MMailCustomSignature,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.1.3.1.4
+schemaIdGuid:: SZDyJOZOpIZt+dnUHs9q4Q==
+cn: MMailCustomSignature
+name: MMailCustomSignature
+lDAPDisplayName: MMailCustomSignature
+description: Custom Name for MAIL Signatur
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: FALSE
+
+dn: CN=iPortEntryName,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.1
+schemaIdGuid:: JCG7TZPmEuw1+JWay6RPYw==
+cn: iPortEntryName
+name: iPortEntryName
+lDAPDisplayName: iPortEntryName
+description: Name of the Portal Entry
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=iPortEntryActive,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.2
+schemaIdGuid:: VtuCYmSIIOjaCYCNHfIBOg==
+cn: iPortEntryActive
+name: iPortEntryActive
+lDAPDisplayName: iPortEntryActive
+description: Entry active or not
+attributeSyntax: 2.5.5.8
+oMSyntax: 1
+isSingleValued: TRUE
+
+dn: CN=iPortEntryURL,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.3
+schemaIdGuid:: 8xpT+ku308YaA/a2np5riw==
+cn: iPortEntryURL
+name: iPortEntryURL
+lDAPDisplayName: iPortEntryURL
+description: URL of the Portal Entry Destination
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=iPortEntrySSL,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.4
+schemaIdGuid:: jpHN5Nesx2SQvFWRkrP2qg==
+cn: iPortEntrySSL
+name: iPortEntrySSL
+lDAPDisplayName: iPortEntrySSL
+description: SSL-Encrypted Link
+attributeSyntax: 2.5.5.8
+oMSyntax: 1
+isSingleValued: TRUE
+
+dn: CN=iPortEntryDescription,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.5
+schemaIdGuid:: AY0AuUUFhLR59XU3+xo01Q==
+cn: iPortEntryDescription
+name: iPortEntryDescription
+lDAPDisplayName: iPortEntryDescription
+description: Short Description Additional Informations
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=iPortEntryPosition,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.6
+schemaIdGuid:: Cb+9PYR0M2Ld1V//zjMYZw==
+cn: iPortEntryPosition
+name: iPortEntryPosition
+lDAPDisplayName: iPortEntryPosition
+description: Where to place this Entry
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=iPortEntryPriv,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.7
+schemaIdGuid:: lPd+AjqVtk4HjuixfZfgLA==
+cn: iPortEntryPriv
+name: iPortEntryPriv
+lDAPDisplayName: iPortEntryPriv
+description: Who could see this Entry
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=iPortEntryButton,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.8
+schemaIdGuid:: b1feUPTqsuH6o7MDl6G56A==
+cn: iPortEntryButton
+name: iPortEntryButton
+lDAPDisplayName: iPortEntryButton
+description: Button Text of this Entry
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=iPortEntryLinkRubrik,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.3.1.1.9
+schemaIdGuid:: XZNhuhXXNiQA7tkyDinluw==
+cn: iPortEntryLinkRubrik
+name: iPortEntryLinkRubrik
+lDAPDisplayName: iPortEntryLinkRubrik
+description: Classifikation of this Link Entry
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=infoIdentifier,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.4.1.1.1
+schemaIdGuid:: McDBUVMJGF7wvDjhL3gqjQ==
+cn: infoIdentifier
+name: infoIdentifier
+lDAPDisplayName: infoIdentifier
+description: Information Identifier
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+
+dn: CN=infoText,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.25601.1.4.1.1.2
+schemaIdGuid:: lmevu9p+KegZkIKjDENHKg==
+cn: infoText
+name: infoText
+lDAPDisplayName: infoText
+description: Information Text
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+

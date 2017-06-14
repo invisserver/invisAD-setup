@@ -43,6 +43,252 @@ source $SINEINCLUDEDIR/functions
 
 modulename=`basename $0`
 
+clear
+windowtitle="Samba AD DC"
+pgsubtitle="Samba AD DC wird eingerichtet"
+
+# "realm" bei AD DC = "Domain" im sine
+ad_realm=`getconfdata "Domain" "2"`
+
+# "domain" bei AD DC = "Workgroup" im sine
+ad_domain=`getconfdata "Workgroup" "2"`
+
+# Interne IP fuer DNS
+ad_ip=`getconfdata "IP" "2"`
+
+# Passwort vorher abfragen!
+ad_adminpass="p@ssw0rd"
+msgbox "Das Passwort des Domänenadministrators lautet: $ad_adminpass\nBitte ändern Sie es später." "AD Administrator Passwort"
+
+# Bisher nur dc unterstuezt
+ad_server_role="dc"
+
+# Domain Function level
+# --function-level="2003"
+# Default: 2008_r2, moeglich 2008, 2008_r2, 2012 und 2012_r2. Wir verwenden den aktuellen Default und lassen es weg
+
+# Fuer UNIX UID/GID RFC2307 aktiv
+# --use-rfc2307
+
+samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-backend="BIND9_DLZ" 2>&1 | tee -a $LOGFILE | pgbox
+provresult=${PIPESTATUS[0]}
+
+if [[ $provresult != 0 ]]; then
+    echo "Provisioning meldet Fehler $provresult! Script wird beendet!" 2>&1| tee -a $LOGFILE | pgbox
+fi
+
+# Neue config kopieren
+cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
+
+# activate samba services
+chkservice "samba"
+
+# Gruppen anlegen
+samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" Verwaltung 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $LOGFILE | pgbox
+
+# User fuer LDAP-Lese-Zugang anlegen
+ldappw=`getconfdata "LDAPAdminPW" "2"`
+samba-tool user create ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $LOGFILE | pgbox
+## Passwort darf nicht ablaufen
+samba-tool user setexpiry --noexpiry ldap.admin
+samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $LOGFILE | pgbox
+
+# User fuer Junk-Postfach anlegen
+junkpw=`getconfdata "JunkPW" "2"`
+samba-tool user create junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $LOGFILE | pgbox
+samba-tool user setexpiry --noexpiry junk
+samba-tool group addmembers "maildummies" junk 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $LOGFILE | pgbox
+
+msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
+
+# stop samba temporarily
+systemctl stop samba.service 2>&1| tee -a $LOGFILE | pgbox
+
+# Samba Konfiguration anpassen
+smbworkingfile="$SINEWORKINGDIR/smb.conf"
+head -n 8 /etc/samba/smb.conf > $smbworkingfile
+echo -e "\n\tinclude = /etc/samba/smb.invis.conf" >> $smbworkingfile
+tail -n 8 /etc/samba/smb.conf >> $smbworkingfile
+mv /etc/samba/smb.conf /etc/samba/smb.conf.ori
+cp $smbworkingfile /etc/samba
+cp $TEMPLATEDIR/$modulename/samba/smb.invis.conf /etc/samba
+## LDIF-Dateien vorbereiten
+pgsubtitle="LDAP Schema-Erweiterungen werden vorbereitet"
+mkdir $SINEWORKINGDIR/schema 2>&1| tee -a $LOGFILE | pgbox
+{ for x in `find $TEMPLATEDIR/$modulename/ldap/schema/ -name "*.ldif"`; do
+    cp $x $SINEWORKINGDIR/schema| tee -a $LOGFILE
+done } 2>&1| tee -a $LOGFILE | pgbox
+
+path="$SINEWORKINGDIR/schema"
+{ for x in $path/*; do
+    file=`basename $x`
+    echo "Bereite Datei $file vor."
+    basedn=`getconfdata "baseDN" "2"`
+    strings="dc=invis-net,dc=loc%$basedn"
+    changevalues $path $file "$strings"
+    strings="DC=invis-net,DC=loc%$basedn"
+    changevalues $path $file "$strings"
+done } 2>&1| tee -a $LOGFILE | pgbox
+
+# Schemaerweiterung Attributtypen einpflegen
+pgsubtitle="LDAP Schema-Erweiterungen werden eingepflegt"
+{ for attrfile in `ls $SINEWORKINGDIR/schema/*-ad-attributes-schema.ldif`; do
+    ldbadd -v -H /var/lib/samba/private/sam.ldb $attrfile --option="dsdb:schema update allowed"=true
+done } 2>&1| tee -a $LOGFILE | pgbox
+
+# Schemaerweiterungen Objektklassen einpflegen
+{ for objcfile in `ls $SINEWORKINGDIR/schema/*-ad-objectclasses-schema.ldif`; do
+    ldbadd -v -H /var/lib/samba/private/sam.ldb $objcfile --option="dsdb:schema update allowed"=true
+done } 2>&1| tee -a $LOGFILE | pgbox
+
+# Daten fuer LDIF-Anpassungen abfragen
+basedn=`getconfdata "baseDN" "2"`
+organization=`getconfdata "Organisation" "2"`
+hname=`getconfdata "Hostname" "2"`
+fqdn=`getconfdata "FQDN" "2"`
+ddnsname=`getconfdata "DDNS" "2"`
+ocport=`getconfdata "OCPORT" "2"`
+domain=`getconfdata "Domain" "2"`
+dompart1=`echo $domain|cut -d "." -f 1`
+ipaddr=`getconfdata "IP" "2"`
+## IP-Adresse zerlegen
+netpart1=`echo "$ipaddr" | cut -d "." -f 1`
+netpart2=`echo "$ipaddr" | cut -d "." -f 2`
+netpart3=`echo "$ipaddr" | cut -d "." -f 3`
+ipnetmask=`getconfdata "NMask-short" "2"`
+
+## Kopano-Schema Erweiterungen installieren
+# Zarafa/Kopano AD Schema-Erweiterungen einpflegen
+pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
+# AD sichern
+adbackup 2>&1| tee -a $LOGFILE | pgbox
+zarafa_schema_add.sh $basedn $SINEWORKINGDIR/zarafa-ads/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $LOGFILE
+
+## LDIF-Dateien vorbereiten
+pgsubtitle="Ergänzende LDAP Daten werden vorbereitet"
+mkdir $SINEWORKINGDIR/ldif 2>&1| tee -a $LOGFILE | pgbox
+
+{ for x in `find $TEMPLATEDIR/$modulename/ldap/ldif -name "*.ldif"`; do
+    cp $x $SINEWORKINGDIR/ldif| tee -a $LOGFILE
+done } 2>&1| tee -a $LOGFILE | pgbox
+    
+path="$SINEWORKINGDIR/ldif"
+{ for x in $path/*; do
+    file=`basename $x`
+    echo "Bereite Datei $file vor."
+    strings="dc=invis-net,dc=loc%$basedn"
+    changevalues $path $file "$strings"
+
+    strings="DC=invis-net,DC=loc%$basedn"
+    changevalues $path $file "$strings"
+
+    strings="targetOrganization%$organization"
+    changevalues $path $file "$strings"
+
+    strings="descriptionText%Basisknoten des LDAP-Verzeichnisses von $organization"
+    changevalues $path $file "$strings"
+
+    strings="invis5%$hname"
+    changevalues $path $file "$strings"
+
+    strings="invisfqdn%$fqdn"
+    changevalues $path $file "$strings"
+
+    strings="server-fqdn-ocport%$ddnsname:$ocport"
+    changevalues $path $file "$strings"
+
+    strings="invis-net.loc%$domain"
+    changevalues $path $file "$strings"
+
+    strings="invis-net%$dompart1"
+    changevalues $path $file "$strings"
+
+    strings="192.168.220.10%$ipaddr"
+    changevalues $path $file "$strings"
+
+    # 24 oder 16 Bit Netzwerkmaske?
+    if [[ $ipnetmask == "24" ]]; then
+	netpart="$netpart1.$netpart2.$netpart3"
+	strings="192.168.220%$netpart"
+	changevalues $path $file "$strings"
+    elif [[ $ipnetmask == "16" ]]; then
+	netpart="$netpart1.$netpart2"
+	# DHCP Range aendern
+	strings="192.168.220.200 192.168.220.220%$netpart.200.1 $netpart.200.254"
+	changevalues $path $file "$strings"
+	# hier wird die Null automatisch eingefuegt, da von dieser Anpassung lediglich
+	# Server-Adressen betroffen sind, die immer zwischen. 172.x.0.1 und 172.x.0.10 liegen
+	strings="192.168.220%$netpart.0"
+	changevalues $path $file "$strings"
+	# Netzwerkmaske und Broadcast aendern
+	strings="255.255.255.0%255.255.0.0"
+	changevalues $path $file "$strings"
+	strings="192.168.220.255%$netpart.255.255"
+	changevalues $path $file "$strings"
+	# Short-NM fuer 16Bit Subnet-Definition aendern
+	strings="iscDhcpNetMask: 24%iscDhcpNetMask: 16"
+	changevalues $path $file "$strings"
+    fi
+	
+done } 2>&1| tee -a $LOGFILE | pgbox
+
+# LDAP fuellen
+pgsubtitle="Ergänzende LDAP Daten werden eingepflegt"
+{ for x in $path/*; do
+    #echo $x
+    ldbadd -v -H /var/lib/samba/private/sam.ldb $x
+done } 2>&1| tee -a $LOGFILE | pgbox
+    
+    
+# Bauen des Server-Schlüsselsatzes
+msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
+Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
+
+inviscerts intern 2>&1| tee -a $LOGFILE
+chown -R :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE
+chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $LOGFILE
+
+# restart samba services
+systemctl start samba.service 2>&1| tee -a $LOGFILE | pgbox
+
+## sssd einrichten
+# hostname ermitteln
+hn=`hostname`
+# keytab erzeugen
+samba-tool domain exportkeytab /etc/krb5.keytab --principal="$hn\$" 2>&1| tee -a $LOGFILE | pgbox
+chmod 0600 /etc/krb5.keytab
+cp $TEMPLATEDIR/$modulename/sssd/sssd.conf /etc/sssd/
+cp $TEMPLATEDIR/$modulename/sssd/nsswitch.conf /etc/
+
+## sssd konfiguration erzeugen
+domain=`getconfdata "Domain" "2"`
+fqdn=`getconfdata "FQDN" "2"`
+
+path="/etc/sssd"
+file="sssd.conf"
+
+strings="invis.invis-net.loc%$fqdn"
+changevalues $path $file "$strings"
+strings="invis-net.loc%$domain"
+changevalues $path $file "$strings"
+
+chmod 600 /etc/sssd/sssd.conf
+
+# sssd neu starten
+chkservice "sssd"
+
+# add sss to PAM
+pam-config --add --sss
+
+# phpldapadmin konfigurieren
+cp $TEMPLATEDIR/$modulename/ldap/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
+fullhostname=$(hostname -f)
+strings="invis.invis-net.loc%$fullhostname"
+changevalues /srv/www/htdocs/phpldapadmin/config/ config.php "$strings"
 
 # Modul "name of this module" beendet
 writeprepstat "dns"

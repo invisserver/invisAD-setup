@@ -1,0 +1,15 @@
+# DHCP Host und Subnetzkonfiguration
+# Angepasst an Samba4 AD LDAP Backend
+# (c) 2014 Stefan Schaefer -- invis-server.org
+# Netzwerk 192.168.220.0/24 
+# Domaene invis-net.loc 
+# 3PCs + Klappkiste bekommen feste Leases 120, 121, 122, 150
+# Zusaetzlich dynamischer Bereich: 200 - 220 inkl. 
+
+# Dynamischer Bereich
+dn: CN=192.168.220.0,CN=DHCP Config,CN=DHCP-Server,CN=invis-Server,DC=invis-net,DC=loc
+cn: 192.168.220.0
+objectClass: top
+objectClass: iscDhcpSubnet
+iscDhcpRange: 192.168.220.200 192.168.220.220
+iscDhcpNetMask: 24

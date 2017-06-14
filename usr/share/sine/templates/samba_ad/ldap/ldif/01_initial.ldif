@@ -1,0 +1,68 @@
+# Initiale LDIF Datei fuer invis Server with Samba 4 AD LDAP
+# Stand Maerz 2014
+# (c) 2008 Stefan Schaefer -- FSP Computer & Netzwerke
+# (c) 2011,2014 Stefan Schaefer -- invis-server.org
+# Datei muss an eigene Umgebung angepasst werden.
+# Es wird im Active Directory ein eigener Knoten fuer
+# invis-Server Erweiterungen geschaffen. Darin werden
+# alle weiteren fuer invis-Server relevanten Objekte
+# angelegt.
+# noch nicht vollstaendig.
+
+# Basisknoten invis Server Extensions
+dn: CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+cn: invis-Server
+description: Basisknoten fuer invis-Server LDAP Erweiterungen
+
+# Basisknoten DHCP Server
+dn: CN=DHCP-Server,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+CN: DHCP-Server
+description: Basis fuer den DHCP-Server
+
+# Basisknoten invis-Portal
+#dn: CN=invis-Portal,CN=invis-Server,dc=invis-net,dc=loc
+#objectClass: top
+#objectClass: container
+#CN: invis-Portal
+#description: Basis fuer die Eintraege des invis-Portals
+
+# Basisknoten Information
+dn: CN=Informationen,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+CN: Informationen
+description: Basis fuer abrufbare Informationen
+
+# Basisknoten Kontakt
+dn: CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+CN: Kontakt
+description: Basis fuer LDAP-Adressbuch
+
+# Basisknoten interne Kontakte
+dn: CN=internes_Adressbuch,CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+CN: internes_Adressbuch
+description: Basis fuer internes LDAP-Adressbuch
+
+# Basisknoten externe Kontakte
+dn: CN=externes_Adressbuch,CN=Kontakt,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+CN: externes_Adressbuch
+description: Basis fuer internes LDAP-Adressbuch
+
+# Basisknoten Information
+dn: CN=AdditionalUserInformation,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+CN: AdditionalUserInformation
+description: Basis fuer ergaenzende Benutzerinrfomationen - cornaz
+
+

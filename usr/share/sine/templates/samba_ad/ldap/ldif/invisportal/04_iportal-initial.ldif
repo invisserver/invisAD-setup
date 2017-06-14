@@ -1,0 +1,777 @@
+# Liste aller invis-Portal Einträge
+
+# Basisknoten invis Portal Eintraege
+dn: cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: container
+cn: invis-Portal
+description: Liste aller invis-Portal Einträge
+
+# Groupware Tine 2.0
+dn: cn=Tine-2.0,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+cn: Tine-2.0
+iPortEntryName: Tine-2.0
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/tine20
+iPortEntryDescription: Die Groupware "Tine 2.0" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails, CRM und Zeiterfassung. 
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Groupware
+iPortEntryPriv:	user
+
+# Groupware SOGo
+dn: cn=SOGo,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+cn: SOGo
+iPortEntryName: SOGo
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/SOGo
+iPortEntryDescription: Die Groupware "SOGo" bietet unter anderem Zugriff auf E-Mails,Terminkalender und Kontakterwaltung. 
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Groupware
+iPortEntryPriv:	user
+
+# Groupware ZarafaAcc
+dn: cn=ZarafaAcc,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: ZarafaAcc
+cn: ZarafaAcc
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/webaccess
+iPortEntryDescription: Der klassische Webaccess der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen im Oulook "Look & Feel". 
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Groupware
+iPortEntryPriv:	user
+
+# Groupware KopanoApp
+dn: cn=KopanoApp,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: KopanoApp
+cn: KopanoApp
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/webapp
+iPortEntryDescription: Die moderne Webapp der Groupware "Kopano" bietet Zugriff auf E-Mails, Terminkalender, Augabenverwaltung und Notizen in frischem "Look & Feel". 
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Groupware
+iPortEntryPriv:	user
+
+# Roundcube Webmailer
+dn: cn=Roundcube,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Roundcube
+cn: Roundcube
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/roundcubemail
+iPortEntryDescription: Der moderne Webmailer Roundcubemail ist ein potenter Mail-Client mit angenehmem "Look & Feel". 
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Groupware
+iPortEntryPriv:	user
+
+# AZE Kimai
+dn: cn=Kimai,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Kimai
+cn: Kimai
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/kimai
+iPortEntryDescription: Kimai ist eine Open-Source Zeiterfassung. Sie können Arbeitszeiten stoppen oder manuell eingeben. Arbeitszeiten können auf Kunden oder Projekte gebucht werden. Es können Abrechnungen über variable Zeiträume erstellt und Daten exportiert werden.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Zeiterfassung
+iPortEntryPriv:	user
+
+# ERP Kivitendo
+dn: cn=Kivitendo,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Kivitendo
+cn: Kivitendo
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/kivitendo-erp
+iPortEntryDescription: Das ERP Progamm Kivitendo umfasst Warenwirtschaft, Rechnungswesen, Umsatzsteuervoranmeldung, Einnahme-Überschuss-Berechnung und Bilanzen inklusive DATEV-Export.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Warenwirtschaft
+iPortEntryPriv:	user
+
+# waWision
+dn: cn=waWision,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: waWision
+cn: waWision
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/wawision
+iPortEntryDescription: Das Warenwirtschaftssystem für Ingenieurbüros, Agenturen, kleine Produktionen und Produktschmieden. Es umfasst Fakturierung, Lagerverwaltung, Versandabwicklung, Shop-Schnittstelle, Buchhaltung uvm.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Warenwirtschaft
+iPortEntryPriv:	user
+
+# ownCloud
+dn: cn=ownCloud,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: ownCloud
+cn: ownCloud
+iPortEntrySSL: TRUE
+iPortEntryURL: server-fqdn-ocport
+iPortEntryDescription: ownCloud ist eine freie Software für das Vorhalten von Daten (Filehosting) in einer eigenen privaten Cloud
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Cloud Computing
+iPortEntryPriv:	user
+
+# Dokuwiki
+dn: cn=Dokuwiki,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Dokuwiki
+cn: Dokuwiki
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/dokuwiki
+iPortEntryDescription: Ein Wiki-System ermöglicht Ihnen auf einfache Weise die Einrichtung einer eignen Wissensdatenbank für Ihr Unternehmen. Auf Ihrem invis Server ist Dokuwiki vorinstalliert. Bevor Sie eigene Einträge schreiben, müssen Sie sich einmalig registrieren.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Wissensdatenbank
+iPortEntryPriv:	user
+
+# Etherpad Lite
+dn: cn=Etherpad,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Etherpad
+cn: Etherpad
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/etherpad/
+iPortEntryDescription: Das Etherpad Lite ist eine Form der Textverarbeitung, die es mehreren Benutzern erlaubt, gleichzeitig, an verschiedenen Rechnern an einem Text zu arbeiten.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Etherpad Lite
+iPortEntryPriv:	user
+
+# CorNAz
+dn: cn=CorNAz,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: CorNAz
+cn: CorNAz
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/cornaz
+iPortEntryDescription: Mit CorNAz können Sie Ihre eMail-Konten selbst verwalten. Sie können Ihrem invis-Server externe Mailkonten bekannt machen, Abwesenheitsbenachrichtigungen erstellen usw.
+iPortEntryActive: TRUE
+iPortEntryPosition: Lokal
+iPortEntryButton: Mailkonten
+iPortEntryPriv:	user
+
+# WebCDwriter
+dn: cn=WebCDwriter,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: WebCDwriter
+cn: WebCDwriter
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/cdwriter
+iPortEntryDescription: WebCDwriter ermöglicht Ihnen das Brennen von CDs über den CD/DVD-Brenner Ihres invis-Servers.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: CDs brennen
+iPortEntryPriv:	guest
+
+# Faxgate Client
+dn: cn=FaxClient,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: FaxClient
+cn: FaxClient
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/java/FaxgateClient.jar
+iPortEntryDescription: Mit dem FaxgateClient erhalten Sie Zugriff auf die Fax-Funktionen Ihres invis-Servers. Den Client benötigen Sie etwa zur Eingabe der Empfänger-Fax-Nummer. Das Handbuch zum FaxgateClient finden Sie auf der Dokumentationsseite des Portals.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Faxserver Client
+iPortEntryPriv:	guest
+
+# Mailman
+dn: cn=Mailman,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Mailman
+cn: Mailman
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/mailman/listinfo
+iPortEntryDescription: Mailing-Listen sind das eMail Pendant zum klassischen Serienbrief. Über diese Schaltfläche können Sie vorhandene Mailinglisten abonnieren.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Mailing-Listen
+iPortEntryPriv:	guest
+
+# Mailman Administration
+dn: cn=Mailmanadmin,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Mailmanadmin
+cn: Mailmanadmin
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/mailman/admin
+iPortEntryDescription: Mailinglisten sind das eMail Pendant zum klassischen Serienbrief. Über diese Schaltfläche können Sie neue Mailinglisten einrichten.
+iPortEntryActive: FALSE
+iPortEntryPosition: Administration
+iPortEntryButton: Mailinglisten
+iPortEntryPriv:	admin
+
+# phpLDAPAdmin
+dn: cn=phpLDAPadmin,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: phpLDAPadmin
+cn: phpLDAPadmin
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/phpldapadmin
+iPortEntryDescription: Das LDAP-Verzeichnis Ihres invis-Server ist der zentrale Speicherort einer vielzahl von Konfigurationsdaten des Servers. Sie finden hier Daten zu DHCP, DNS, Benutzerverwaltung usw. Achtung der Umgang mit einem LDAP-Verzeichnis setzt entsprechende Grundkentnisse voraus.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: Verzeichnisdienst
+iPortEntryPriv:	admin
+
+# phpMyAdmin
+dn: cn=phpMyAdmin,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: phpMyAdmin
+cn: phpMyAdmin
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/phpMyAdmin
+iPortEntryDescription: Administration der Datenbank-Engine MariaDB. MariaDB wird beispielsweise vom Groupware-System Ihres invis-Server genutzt. Sie können hiermit neue Datenbanken anlegen, sollten aber keine vorhandenen Löschen. Sie können phpMyAdmin auch zur Erstellung von Datensicherungen der Datenbanken nutzen.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: MariaDB Administration
+iPortEntryPriv:	admin
+
+# phpPgAdmin
+dn: cn=phpPgAdmin,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: phpPgAdmin
+cn: phpPgAdmin
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/phpPgAdmin
+iPortEntryDescription: Administration der Datenbank-Engine PostgreSQL. PostgreSQL wird beispielsweise vom Warenwirtschaftssystem Ihres invis-Server genutzt. Sie können hiermit neue Datenbanken anlegen, sollten aber keine vorhandenen Löschen. Sie können phpPGAdmin auch zur Erstellung von Datensicherungen der Datenbanken nutzen.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: PostgreSQL Administration
+iPortEntryPriv:	admin
+
+# phpvirtualbox
+# Eintrag 1: cn=phpvirtualbox,ou=Informationen,dc=...
+dn: cn=phpvirtualbox,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+iportentryactive: FALSE
+iportentrybutton: Virtualbox
+iportentrydescription: Serverseitige Verwaltung virtueller Maschinen
+iportentryname: phpvirtualbox
+cn: phpvirtualbox
+iportentryposition: Administration
+iportentrypriv: admin
+iportentryssl: FALSE
+iportentryurl: [servername]/vbphp
+objectclass: top
+objectclass: iPortEntry
+
+# Shell-in-a-Box
+dn: cn=Shell-in-a-Box,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Shell-in-a-Box
+cn: Shell-in-a-Box
+iPortEntrySSL: TRUE
+iPortEntryURL: [servername]/shell
+iPortEntryDescription: Shell-in-a-Box kann zur direkten Administration der invis-Server genutzt werden.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: Server Administration
+iPortEntryPriv:	admin
+
+# CUPS
+dn: cn=CUPS,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: CUPS
+cn: CUPS
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]:631
+iPortEntryDescription: Ihr invis-Server ist in der Lage im Netzwerk vorhandene Drucker zentral zu verwalten und freizugeben. Hierüber erhalten Sie Zugriff auf die Administrationsseiten des zugehörigen Dienstes CUPS.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: Druckerverwaltung
+iPortEntryPriv:	admin
+
+# ntop
+dn: cn=ntop,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: ntop
+cn: ntop
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]:3000
+iPortEntryDescription: Das Programm ntop dient der Analyse des Datenverkehrs in Ihrem Netzwerk, nützlich etwa bei der Suche nach Fehlern. ntop ist im Normalbetrieb Ihres invis-Servers deaktiviert, da es diesen ansonsten unnötig belastet.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: Netzwerkanalyse
+iPortEntryPriv:	admin
+
+# Firewall Test
+dn: cn=FWTest,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: FWTest
+cn: FWTest
+iPortEntrySSL: FALSE
+iPortEntryURL: www.hackerwatch.org/probe
+iPortEntryDescription: Dieser Link führt Sie auf die Internetseite von hackerswatch.org. Sie haben von dort umfangreiche Möglichkeiten die Firewall Ihres invis-Servers von außen zu testen.
+iPortEntryActive: TRUE
+iPortEntryPosition: Administration
+iPortEntryButton: Firewall-Test
+iPortEntryPriv:	admin
+
+# invis Server Benutzerhandbuch
+dn: cn=invisUserManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: invisUserManual
+cn: invisUserManual
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/manuals/iusermanual.pdf
+iPortEntryDescription: Zugriff auf das Anwenderhandbuch für invis-Server.
+iPortEntryActive: TRUE
+iPortEntryPosition: Dokumentation
+iPortEntryButton: Anwenderhandbuch
+iPortEntryPriv:	user
+
+# invis Server Administrationshandbuch
+dn: cn=invisAdminManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: invisAdminManual
+cn: invisAdminManual
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/manuals/iadminmanual.pdf
+iPortEntryDescription: Zugriff auf das Administrationshandbuch für invis-Server.
+iPortEntryActive: FALSE
+iPortEntryPosition: Dokumentation
+iPortEntryButton: Anwenderhandbuch
+iPortEntryPriv:	admin
+
+# Faxgate Client Handbuch
+dn: cn=FGCManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: FGCManual
+cn: FGCManual
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/manuals/fgc/Help.html
+iPortEntryDescription: Zugriff auf das Faxgate Client Anwenderhandbuch für invis-Server.
+iPortEntryActive: FALSE
+iPortEntryPosition: Dokumentation
+iPortEntryButton: Anwenderhandbuch
+iPortEntryPriv:	user
+
+# openSuSE Handbuch
+dn: cn=openSUSEManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: openSUSEManual
+cn: openSUSEManual
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/handbuch
+iPortEntryDescription: Zugriff auf das openSUSE Linux Handbuch.
+iPortEntryActive: FALSE
+iPortEntryPosition: Dokumentation
+iPortEntryButton: openSUSE Handbuch
+iPortEntryPriv:	user
+
+# Apache Webserver Handbuch
+dn: cn=apacheManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: apacheManual
+cn: apacheManual
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/manual
+iPortEntryDescription: Zugriff auf das Apache Webserver Handbuch.
+iPortEntryActive: TRUE
+iPortEntryPosition: Dokumentation
+iPortEntryButton: Apache Webserver Handbuch
+iPortEntryPriv:	admin
+
+## Links
+
+# Heise Online
+dn: cn=Heise,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Heise
+cn: Heise
+iPortEntrySSL: FALSE
+iPortEntryURL: www.heise.de
+iPortEntryDescription: <b><i>Der</i></b> IT-Newsticker im Internet
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: News
+iPortEntryButton: Heise Online
+iPortEntryPriv:	guest
+
+# Spiegel Online
+dn: cn=Spiegel,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Spiegel
+cn: Spiegel
+iPortEntrySSL: FALSE
+iPortEntryURL: www.spiegel.de
+iPortEntryDescription: Nachrichten aus aller Welt
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: News
+iPortEntryButton: Spiegel Online
+iPortEntryPriv:	guest
+
+# ixquick
+dn: cn=ixquick,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: ixquick
+cn: ixquick
+iPortEntrySSL: TRUE
+iPortEntryURL: www.ixquick.com/deu/
+iPortEntryDescription: diskrete Meta-Suchmaschine
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Search
+iPortEntryButton: ixquick
+iPortEntryPriv:	guest
+
+# Metager
+dn: cn=MetaGer,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: MetaGer
+cn: MetaGer
+iPortEntrySSL: FALSE
+iPortEntryURL: meta.rrzn.uni-hannover.de
+iPortEntryDescription: Deutsche Meta-Suchmaschine
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Search
+iPortEntryButton: MetaGer
+iPortEntryPriv:	guest
+
+# Google
+dn: cn=Google,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Google
+cn: Google
+iPortEntrySSL: FALSE
+iPortEntryURL: www.google.de
+iPortEntryDescription: Die Suchmaschine
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Search
+iPortEntryButton: Google
+iPortEntryPriv:	guest
+
+# Wikipedia
+dn: cn=Wikipedia,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Wikipedia
+cn: Wikipedia
+iPortEntrySSL: FALSE
+iPortEntryURL: de.wikipedia.org
+iPortEntryDescription: Frei zugängliches Wissen
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Knowledge
+iPortEntryButton: Wikipedia
+iPortEntryPriv:	guest
+
+# Telefonbuch
+dn: cn=Telefonbuch,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Telefonbuch
+cn: Telefonbuch
+iPortEntrySSL: FALSE
+iPortEntryURL: www.telefonbuch.de
+iPortEntryDescription: Das Telefonbuch online
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Telefonbuch
+iPortEntryPriv:	guest
+
+# Gelbe Seiten
+dn: cn=GelbeSeiten,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: GelbeSeiten
+cn: GelbeSeiten
+iPortEntrySSL: FALSE
+iPortEntryURL: www.gelbeseiten.de
+iPortEntryDescription: Die Gelben Seiten online
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Gelbe Seiten
+iPortEntryPriv:	guest
+
+# Wetterauskunft
+dn: cn=Kachelmann,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Kachelmann
+cn: Kachelmann
+iPortEntrySSL: FALSE
+iPortEntryURL: www.kachelmannwetter.de
+iPortEntryDescription: Die Wetterauskunft des "Wettermanns"
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Wetterauskunft
+iPortEntryPriv:	guest
+
+# Reiseauskunft Bahn
+dn: cn=Bahn,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Bahn
+cn: Bahn
+iPortEntrySSL: FALSE
+iPortEntryURL: reiseauskunft.bahn.de/bin/query.exe/dn
+iPortEntryDescription: Die Reiseauskunft der Bahn
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Bahn Auskunft
+iPortEntryPriv:	guest
+
+# Verkehrsinfos
+dn: cn=Verkehr,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Verkehr
+cn: Verkehr
+iPortEntrySSL: FALSE
+iPortEntryURL: www.verkehrsinfo.de
+iPortEntryDescription: Aktuelle Verkehrsinformationen
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Verkehrsinfos
+iPortEntryPriv:	guest
+
+# Routenplaner
+dn: cn=Routenplaner,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Routenplaner
+cn: Routenplaner
+iPortEntrySSL: FALSE
+iPortEntryURL: route.web.de
+iPortEntryDescription: Verschiedene Routenplaner
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Routenplaner
+iPortEntryPriv:	guest
+
+# Google Maps
+dn: cn=GoogleMaps,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Google Maps
+cn: GoogleMaps
+iPortEntrySSL: FALSE
+iPortEntryURL: maps.google.de
+iPortEntryDescription: Google Maps
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: Google Maps
+iPortEntryPriv:	guest
+
+# OpenstreeMap
+dn: cn=OpenStreetMap,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: OpenStreetMap
+cn: OpenStreetMap
+iPortEntrySSL: FALSE
+iPortEntryURL: www.openstreetmap.de/karte.html
+iPortEntryDescription: OpenStreetMap
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Info
+iPortEntryButton: OpenStreetMap
+iPortEntryPriv:	guest
+
+# Tagesschau
+dn: cn=Tagesschau,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Tagesschau
+cn: Tagesschau
+iPortEntrySSL: FALSE
+iPortEntryURL: www.tagesschau.de
+iPortEntryDescription: Infos aller Welt
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: News
+iPortEntryButton: Tagesschau
+iPortEntryPriv:	guest
+
+# Telepolis
+dn: cn=Telepolis,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: Telepolis
+cn: Telepolis
+iPortEntrySSL: FALSE
+iPortEntryURL: www.telepolis.de
+iPortEntryDescription: Grimme prämiertes Online Magazin
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Knowledge
+iPortEntryButton: Telepolis
+iPortEntryPriv:	guest
+
+# invis Projekt
+dn: cn=invisServer,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: invisServer
+cn: invisServer
+iPortEntrySSL: FALSE
+iPortEntryURL: www.invis-server.org
+iPortEntryDescription: invis Server im Internet
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: invis
+iPortEntryButton: invis Server
+iPortEntryPriv:	guest
+
+# invis Blog
+dn: cn=invisBlog,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: invisBlog
+cn: invisBlog
+iPortEntrySSL: FALSE
+iPortEntryURL: blog.invis-server.org
+iPortEntryDescription: invis Server Support Forum
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: invis
+iPortEntryButton: invis Blog
+iPortEntryPriv:	guest
+
+# invis Wiki
+dn: cn=invisWiki,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: invisWiki
+cn: invisWiki
+iPortEntrySSL: FALSE
+iPortEntryURL: wiki.invis-server.org
+iPortEntryDescription: invis Server Dokumentations-Wiki
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: invis
+iPortEntryButton: invis Wiki
+iPortEntryPriv:	guest
+
+# Leo DE-EN
+dn: cn=DictEN,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: DictEN
+cn: DictEN
+iPortEntrySSL: FALSE
+iPortEntryURL: dict.leo.org/ende?lang=de&lp=ende&search=
+iPortEntryDescription: Deutsch - Englisch Wörterbuch
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Dictionary
+iPortEntryButton: DE-EN Wörterbuch
+iPortEntryPriv:	guest
+
+# Leo DE-FR
+dn: cn=DictFR,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: DictFR
+cn: DictFR
+iPortEntrySSL: FALSE
+iPortEntryURL: dict.leo.org/frde?lang=de&lp=frde&search=
+iPortEntryDescription: Deutsch - Französisch Wörterbuch
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Dictionary
+iPortEntryButton: DE-FR Wörterbuch
+iPortEntryPriv:	guest
+
+# Leo DE-ES
+dn: cn=DictES,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: DictES
+cn: DictES
+iPortEntrySSL: FALSE
+iPortEntryURL: dict.leo.org/esde?lang=de&lp=esde&search=
+iPortEntryDescription: Deutsch - Spanisch Wörterbuch
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Dictionary
+iPortEntryButton: DE-ES Wörterbuch
+iPortEntryPriv:	guest
+
+# Leo DE-IT
+dn: cn=DictIT,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: DictIT
+cn: DictIT
+iPortEntrySSL: FALSE
+iPortEntryURL: dict.leo.org/itde?lang=de&lp=itde&search=
+iPortEntryDescription: Deutsch - Italienisch Wörterbuch
+iPortEntryActive: TRUE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Dictionary
+iPortEntryButton: DE-IT Wörterbuch
+iPortEntryPriv:	guest
+
+# Leo DE-Chin
+dn: cn=DictCHi,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: DictCHi
+cn: DictCHi
+iPortEntrySSL: FALSE
+iPortEntryURL: dict.leo.org/chde?lang=de&lp=chde&search=
+iPortEntryDescription: Deutsch - Chinesisch Wörterbuch
+iPortEntryActive: FALSE
+iPortEntryPosition: Internet
+iPortEntryLinkRubrik: Dictionary
+iPortEntryButton: DE-CHi Wörterbuch
+iPortEntryPriv:	guest

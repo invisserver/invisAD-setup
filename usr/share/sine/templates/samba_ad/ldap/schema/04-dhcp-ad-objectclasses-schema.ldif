@@ -1,0 +1,130 @@
+dn: CN=iscDhcpClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.7
+schemaIdGuid:: RTKCzyEVy2zMf0T18VnOhQ==
+cn: iscDhcpClass
+name: iscDhcpClass
+possSuperiors: iscDhcpService
+possSuperiors: iscDhcpSubnet
+lDAPDisplayName: iscDhcpClass
+description: Represents information about a collection of related clients.
+subClassOf: top
+mustContain: cn
+mayContain: iscDhcpSubClassesDN
+mayContain: iscDhcpOptionsDN
+mayContain: iscDhcpStatements
+mayContain: iscDhcpComments
+mayContain: iscDhcpOption
+defaultObjectCategory: CN=iscDhcpClass,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+
+dn: CN=iscDhcpGroup,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.5
+schemaIdGuid:: w8Z/fGs5pN0uJjfp7qCjyA==
+cn: iscDhcpGroup
+possSuperiors: iscDhcpService
+possSuperiors: iscDhcpSubnet
+name: iscDhcpGroup
+lDAPDisplayName: iscDhcpGroup
+description: Group object that lists host DNs and parameters. This is a contai
+ ner object.
+subClassOf: top
+mustContain: cn
+mayContain: iscDhcpHostDN
+mayContain: iscDhcpOptionsDN
+mayContain: iscDhcpStatements
+mayContain: iscDhcpComments
+mayContain: iscDhcpOption
+defaultObjectCategory: CN=iscDhcpGroup,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+
+dn: CN=iscDhcpPool,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.4
+schemaIdGuid:: npTt+7MIZtRq1jsD0oOZVw==
+cn: iscDhcpPool
+possSuperiors: iscDhcpSubnet
+possSuperiors: iscDhcpSharedNetwork
+name: iscDhcpPool
+lDAPDisplayName: iscDhcpPool
+description: This stores configuration information about a pool.
+subClassOf: top
+mustContain: cn
+mustContain: iscDhcpRange
+mayContain: iscDhcpClassesDN
+mayContain: iscDhcpPermitList
+mayContain: iscDhcpLeasesDN
+mayContain: iscDhcpOptionsDN
+mayContain: iscDhcpZoneDN
+mayContain: iscDhcpKeyDN
+mayContain: iscDhcpStatements
+mayContain: iscDhcpComments
+mayContain: iscDhcpOption
+defaultObjectCategory: CN=iscDhcpPool,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+
+dn: CN=iscDhcpTSigKey,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.13
+schemaIdGuid:: ACNlQVEqoGP1efLccvZl1w==
+cn: iscDhcpTSigKey
+name: iscDhcpTSigKey
+possSuperiors: iscDhcpService
+possSuperiors: iscDhcpSharedNetwork
+possSuperiors: iscDhcpSubnet
+lDAPDisplayName: iscDhcpTSigKey
+description: TSIG key for secure dynamic updates
+subClassOf: top
+mustContain: cn
+mustContain: iscDhcpKeyAlgorithm
+mustContain: iscDhcpKeySecret
+mayContain: iscDhcpComments
+defaultObjectCategory: CN=iscDhcpTSigKey,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+
+dn: CN=iscDhcpFailOverPeer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.15
+schemaIdGuid:: LayiBBSBhg3B7zJbslSCSg==
+cn: iscDhcpFailOverPeer
+name: iscDhcpFailOverPeer
+possSuperiors: iscDhcpService
+possSuperiors: iscDhcpSharedNetwork
+possSuperiors: iscDhcpSubnet
+lDAPDisplayName: iscDhcpFailOverPeer
+description: This class defines the Fail over peer
+subClassOf: top
+mustContain: cn
+mustContain: iscDhcpFailOverPrimaryServer
+mustContain: iscDhcpFailOverSecondaryServer
+mustContain: iscDhcpFailoverPrimaryPort
+mustContain: iscDhcpFailOverSecondaryPort
+mayContain: iscDhcpFailOverResponseDelay
+mayContain: iscDhcpFailOverUnackedUpdates
+mayContain: iscDhcpMaxClientLeadTime
+mayContain: iscDhcpFailOverSplit
+mayContain: iscDhcpHashBucketAssignment
+mayContain: iscDhcpFailOverLoadBalanceTime
+mayContain: iscDhcpComments
+defaultObjectCategory: CN=iscDhcpFailOverPeer,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+
+dn: CN=iscDhcpDnsZone,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 2.16.840.1.113719.1.203.6.14
+schemaIdGuid:: IHOTh25Wb+luz5+VKYQffw==
+cn: iscDhcpDnsZone
+name: iscDhcpDnsZone
+possSuperiors: iscDhcpService
+possSuperiors: iscDhcpSharedNetwork
+possSuperiors: iscDhcpSubnet
+lDAPDisplayName: iscDhcpDnsZone
+description: DNS Zone for updating leases
+subClassOf: top
+mustContain: cn
+mustContain: iscDhcpDnsZoneServer
+mayContain: iscDhcpKeyDN
+mayContain: iscDhcpComments
+defaultObjectCategory: CN=iscDhcpDnsZone,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
