@@ -52,30 +52,30 @@ tolower() {
 
 yesno() {
     # Argument $1 = Fragetext $2 = Dialogtitel
-    dialog --backtitle "$dialogtitle" --title "$2" --yesno "$1" 0 0
+    dialog --backtitle "$DIALOGTITLE" --title "$2" --yesno "$1" 0 0
 }
 
 yesnono() {
     # Argument $1 = Fragetext $2 = Dialogtitel
-    dialog --backtitle "$dialogtitle" --title "$2" --defaultno --yesno "$1" 0 0
+    dialog --backtitle "$DIALOGTITLE" --title "$2" --defaultno --yesno "$1" 0 0
 }
 
 textbox() {
     # Argument $1 = Ausgabedatei $2 = Dialogtitel $3 = Exit-Label
     if [[ -z $3 ]]; then
-        dialog --backtitle "$dialogtitle" --title "$2" --textbox "$1" 0 0
+        dialog --backtitle "$DIALOGTITLE" --title "$2" --textbox "$1" 0 0
     else
-	dialog --backtitle "$dialogtitle" --title "$2" --exit-label "$3" --textbox "$1" 0 0
+	dialog --backtitle "$DIALOGTITLE" --title "$2" --exit-label "$3" --textbox "$1" 0 0
     fi
 }
 
 msgbox() {
     # Argument $1 = Ausgabedatei $2 = Dialogtitel
-    dialog --backtitle "$dialogtitle" --title "$2" --msgbox "$1" 0 0
+    dialog --backtitle "$DIALOGTITLE" --title "$2" --msgbox "$1" 0 0
 }
 
 pgbox() {
-    dialog --sleep 2 --backtitle "$dialogtitle" --title "$windowtitle" --progressbox  "$pgsubtitle" 25 110
+    dialog --sleep 2 --backtitle "$DIALOGTITLE" --title "$windowtitle" --progressbox  "$pgsubtitle" 25 110
 }
 
 waitbox() {
@@ -86,7 +86,7 @@ waitbox() {
 	(( i=$i+1 ))
 	echo $(( $i * 100 / 50 ))
 	sleep 0.1
-    done } | dialog --backtitle "$dialogtitle" --title "Modul \"$1\" abgeschlossen" --gauge "Sie haben ca. 5 Sekunden Zeit um das Setup-Script mit \"Strg+C\" abzubrechen. Beim nächsten Aufruf wird sine mit Modul \"$2\" fortgesetzt." 8 70 0
+    done } | dialog --backtitle "$DIALOGTITLE" --title "Modul \"$1\" abgeschlossen" --gauge "Sie haben ca. 5 Sekunden Zeit um das Setup-Script mit \"Strg+C\" abzubrechen. Beim nächsten Aufruf wird sine mit Modul \"$2\" fortgesetzt." 8 70 0
 }
 
 waitinfobox() {
@@ -97,7 +97,7 @@ waitinfobox() {
 	(( i=$i+1 ))
 	echo $(( $i * 100 / 70 ))
 	sleep 0.1
-    done } | dialog --backtitle "$dialogtitle" --title "$2" --gauge "$1" 12 70 0
+    done } | dialog --backtitle "$DIALOGTITLE" --title "$2" --gauge "$1" 12 70 0
 }
 
 zyppercheck() {
@@ -157,7 +157,7 @@ esac
 smbadpw() {
     ok=0
     while (( $ok != "1" ));do
-	dialog --backtitle "$dialogtitle" --title "Benutzer Passwort ändern" --insecure --passwordform "$dialogshorthelp\n\n
+	dialog --backtitle "$DIALOGTITLE" --title "Benutzer Passwort ändern" --insecure --passwordform "$DIALOGSHORTHELP\n\n
 Geben Sie das Passwort für Benutzer $1 ein.\n\n
 Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzeichen enthalten." 17 64 2 \
 	"Benutzer Passwort:" 2 2 "" 2 23 10 0\
