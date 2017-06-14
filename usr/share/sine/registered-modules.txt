@@ -2,3 +2,5 @@
 002:d:quest
 003:d:sysprep
 004:d:samba_ad
+005:d:dns
+006:d:dhcp

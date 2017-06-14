@@ -166,7 +166,7 @@ ipnetmask=`getconfdata "NMask-short" "2"`
 pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
 # AD sichern
 adbackup 2>&1| tee -a $LOGFILE | pgbox
-zarafa_schema_add.sh $basedn $SINEWORKINGDIR/zarafa-ads/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $LOGFILE
+zarafa_schema_add.sh $basedn $SINEWORKINGDIR/schema/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $LOGFILE
 
 ## LDIF-Dateien vorbereiten
 pgsubtitle="Ergänzende LDAP Daten werden vorbereitet"
