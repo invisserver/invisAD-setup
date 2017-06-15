@@ -4,3 +4,5 @@
 004:d:samba_ad
 005:d:dns
 006:d:dhcp
+007:mailserver
+008:cups

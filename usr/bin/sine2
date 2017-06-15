@@ -52,7 +52,7 @@ export INVISVERSION
 export SINEWORKINGDIR
 
 # sine language
-# we have to discuss some kinde of automation for the language settings.
+# we have to discuss some kind of automation for the language settings.
 SINELANG="de"
 export SINELANG
 
@@ -70,6 +70,7 @@ moduledir="$sinehelpersdir/scripts"
 TEMPLATEDIR="$sinehelpersdir/templates"
 SINEINCLUDEDIR="$sinehelpersdir/include"
 PACKAGELISTDIR="$sinehelpersdir/package-lists"
+REPODIR="$sinehelpersdir/additional-repos"
 INVISCONFDIR="/etc/invis"
 INFODIR="$sinehelpersdir/$SINELANG/infofiles"
 export STATUSFILE
@@ -79,6 +80,7 @@ export SINEINCLUDEDIR
 export PACKAGELISTDIR
 export INVISCONFDIR
 export INFODIR
+export REPODIR
 
 LOGFILE="/var/log/sine/sine.log"
 export LOGFILE
