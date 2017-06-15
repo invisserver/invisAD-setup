@@ -103,10 +103,10 @@ waitinfobox() {
 zyppercheck() {
     # Argument $1 = Exit Corde
     if (( $1 == 104 )); then
-	textbox "$SINEWORKINGDIR/infofiles/zypper104.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
+	textbox "$INFODIR/zypper104.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
 	exit 1
     elif (( $1 != 0 )); then 
-	textbox "$SINEWORKINGDIR/infofiles/zypperunex.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
+	textbox "$INFODIR/zypperunex.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
 	exit 1
     fi
 }
