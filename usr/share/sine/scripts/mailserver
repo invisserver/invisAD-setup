@@ -172,7 +172,7 @@ case "$whichgroupware" in
 		msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
 		exit 1
 	    fi
-	    zypper -n install -n `cat $PACKAGELISTDIR/kopanolimited` 2>&1| tee -a $LOGFILE | pgbox | pgbox
+	    zypper -n install -n `cat $PACKAGELISTDIR/kopanolimited` 2>&1| tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	else
 	    zypper ar -f $TEMPLATEDIR/zypper/kopano-obs.repo 2>&1| tee -a $LOGFILE | pgbox
@@ -252,7 +252,7 @@ done
 
 # Postfix neustarten und in Runlevel aufnehmen
 chkservice "postfix"
-chkconfig "saslauthd"
+chkservice "saslauthd"
 
 # Modul "name of this module" beendet
 writeprepstat "cups"
