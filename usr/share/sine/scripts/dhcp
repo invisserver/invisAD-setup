@@ -1,5 +1,5 @@
 #!/bin/bash
-### MODUL-NR. 001 ### <- Hier Nummer einfügen!
+### MODUL-NR. 006 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -8,9 +8,9 @@
 # License: GPLv3
 # Questions: info@invis-server.org
 
-# Hier Kurzbeschreibung des Moduls einfügen
+# Einrichtung des DHCP Servers
 
-# Insert short description of this module here
+# DHCP server setup
 
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
 # GNU General Public License, wie von der Free Software Foundation veröffentlicht,
@@ -44,11 +44,32 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="Dialog Titel einfügen - insert dialog title"
-pgsubtitle="Kurzbeschreibung einfügen - insert short description"
+windowtitle="DHCP Server Setup"
+pgsubtitle="Einrichtung des DHCP Dienstes"
 
+cp $TEMPLATEDIR/dhcp/dhcpd.conf /etc
 
+# Konfiguration des DHCP Servers wird angepasst
+path="/etc"
+file="dhcpd.conf"
+domain=`getconfdata "Domain" "2"`
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+ldappw=`getconfdata "LDAPAdminPW" "2"`
+string="ldap-secret%$ldappw"
+changevalues $path $file "$string"
+
+basedn=`getconfdata "baseDN" "2"`
+string="dc=invis-net,dc=loc%$basedn"
+changevalues $path $file "$string"
+
+# Für LDAP TLS notwendig
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_CONF_INCLUDE_FILES /etc/invis/certs/ca.crt 2>&1| tee -a $LOGFILE | pgbox
+
+# DHCP Dienst starten und ins Runlevel-Konzept einbinden.
+chkservice "dhcpd"
 
 # Modul "name of this module" beendet
-writeprepstat "name of the next module"
-waitbox "$modulename" "name of the next module"
+writeprepstat "mailserver"
+waitbox "$modulename" "mailserver"
