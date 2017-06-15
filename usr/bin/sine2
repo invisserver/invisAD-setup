@@ -72,7 +72,7 @@ SINEINCLUDEDIR="$sinehelpersdir/include"
 PACKAGELISTDIR="$sinehelpersdir/package-lists"
 REPODIR="$sinehelpersdir/additional-repos"
 INVISCONFDIR="/etc/invis"
-INFODIR="$sinehelpersdir/$SINELANG/infofiles"
+INFODIR="$sinehelpersdir/infofiles/$SINELANG"
 export STATUSFILE
 export REQMODFILE
 export TEMPLATEDIR
