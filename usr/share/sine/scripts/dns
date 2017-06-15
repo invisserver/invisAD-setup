@@ -1,0 +1,103 @@
+#!/bin/bash
+### MODUL-NR. 005 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Installation des DNS Servers bind
+
+# Setup for dns server bind
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="DNS Server Setup"
+pgsubtitle="DNS Server einrichten und benötigte Ressource Records anlegen."
+
+domain=`getconfdata "Domain" "2"`
+fqdn=`getconfdata "FQDN" "2"`
+forwarders=`getconfdata "Forwarders" "2"`
+ipaddr=`getconfdata "IP" "2"`
+ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+
+cp $TEMPLATEDIR/dns/named.conf /etc 2>&1| tee -a $LOGFILE | pgbox
+
+# Konfiguration von bind wird angepasst
+path="/etc"
+file="named.conf"
+strings="FORWARD-DNS-SERVERS%$forwarders"
+changevalues $path $file "$strings"
+
+# Anpassen der Datei /etc/resolv.conf
+cp $TEMPLATEDIR/dns/resolv.conf /etc 2>&1| tee -a $LOGFILE | pgbox
+file="resolv.conf"
+
+strings="invis-net.loc%$domain"
+changevalues $path $file "$strings" 
+
+# Bind darf in Kombination mit Samba4 AD nicht chrooted laufen
+sysconf_addword -r /etc/sysconfig/named NAMED_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/named NAMED_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
+
+# DNS Dienst starten und ins Runlevel-Konzept einbinden.
+chkservice "named"
+    
+# Reverse-Zone anlegen
+zone=$(revzone)
+samba-tool dns zonecreate 127.0.0.1 $zone -U ldap.admin --password $ldapadminpw 2>&1| tee -a $LOGFILE | pgbox
+
+## DNS PTR Eintrag fuer den Server selbst anlegen
+moddnsrecords a PTR $ipaddr $fqdn 2>&1| tee -a $LOGFILE | pgbox
+
+## DNS Eintraege fuer Mailserver in Zone eintragen
+samba-tool dns add 127.0.0.1 $domain @ MX "mail.$domain 10" -U ldap.admin --password $ldapadminpw 2>&1| tee -a $LOGFILE | pgbox
+samba-tool dns add 127.0.0.1 $domain mail A $ipaddr -U ldap.admin --password $ldapadminpw 2>&1| tee -a $LOGFILE | pgbox
+
+## externe IP falls vorhanden aus DNS entfernen
+ips=(`dig $fqdn +short`)
+if (( ${#ips[*]} == 2 )); then
+    ## Sicherheitshalber Lokalisierung auf POSIX setzen, damit ifconfig berechenbar funktioniert
+    ## Sollte eigentlich generell auf POSIX gesetzt sein....
+    oldlang=$LANG
+    LANG=POSIX
+    extip=`ifconfig extern | grep "inet addr" | cut -d ":" -f 2 |cut -d " " -f 1`
+    samba-tool dns delete 127.0.0.1 $domain $fqdn A $extip -U ldap.admin --password $ldapadminpw 2>&1| tee -a $LOGFILE | pgbox
+    LANG=$oldlang
+fi
+
+# Modul "dns" beendet
+writeprepstat "dhcp"
+waitbox "$modulename" "dhcp"
