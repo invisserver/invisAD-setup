@@ -3079,15 +3079,15 @@ openvpn() {
         changevalues $path $file "$strings"
 
 	ip=`getconfdata "IP" "2"`
-        strings="192.168.220.10%$ip"
+        strings="invis-int-ip%$ip"
         changevalues $path $file "$strings"
 
 	net=`getconfdata "Networkbase" "2"`
-        strings="192.168.220.0%$net"
+        strings="netbase-address%$net"
         changevalues $path $file "$strings"
 
 	netmask=`getconfdata "NMask-long" "2"`
-	strings="255.255.255.0%$netmask"
+	strings="netmask-long%$netmask"
         changevalues $path $file "$strings"
 
 	ddns=`getconfdata "DDNS" "2"`
