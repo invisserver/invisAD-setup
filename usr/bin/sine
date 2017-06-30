@@ -1751,8 +1751,10 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 	    kopanorepo=`getconfdata "KopanoRepo" "2"`
 	    if [[ $kopanorepo == "limited" ]]; then
 		zypper ar -f $cfilesdir/zypper/kopano-limited.repo 2>&1| tee -a $setupdir/sine.log
-		msgbox "Das Kopano Limited Repository benötigt Zugangsdaten, diese werden nachfolgend abgefragt." "Kopano Repository"
+		zypper ar -f $cfilesdir/zypper/kopano-webapp-limited.repo 2>&1| tee -a $setupdir/sine.log
+		msgbox "Die Kopano Limited Repositories benötigen Zugangsdaten, diese werden nachfolgend abgefragt." "Kopano Repository"
 		zypper --gpg-auto-import-keys ref --repo Kopano-openSUSE-42.2_limited
+		zypper --gpg-auto-import-keys ref --repo Kopano-Webapp-limited
 		if [[ $? != 0 ]]; then
 		    msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
 		    exit 1
