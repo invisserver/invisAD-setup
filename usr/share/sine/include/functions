@@ -104,10 +104,10 @@ zyppercheck() {
     # Argument $1 = Exit Corde
     if (( $1 == 104 )); then
 	textbox "$INFODIR/zypper104.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
-	exit 1
+	exit 5
     elif (( $1 != 0 )); then 
 	textbox "$INFODIR/zypperunex.txt" "Zypper hat einen Fehler bei der Software-Installation gemeldet"
-	exit 1
+	exit 5
     fi
 }
 
