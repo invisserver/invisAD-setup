@@ -6,3 +6,4 @@
 006:d:dhcp
 007:d:mailserver
 008:d:cups
+009:fileserver
