@@ -118,7 +118,6 @@ cp $smbworkingfile /etc/samba
 cp $TEMPLATEDIR/$modulename/samba/smb.invis.conf /etc/samba
 ## LDIF-Dateien vorbereiten
 pgsubtitle="LDAP Schema-Erweiterungen werden vorbereitet"
-mkdir $SINEWORKINGDIR/schema 2>&1| tee -a $LOGFILE | pgbox
 { for x in `find $TEMPLATEDIR/$modulename/ldap/schema/ -name "*.ldif"`; do
     cp $x $SINEWORKINGDIR/schema| tee -a $LOGFILE
 done } 2>&1| tee -a $LOGFILE | pgbox
