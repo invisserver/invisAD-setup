@@ -1,0 +1,193 @@
+#!/bin/bash
+### MODUL-NR. 009 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Das Modul fileserver richtet die Netzwerkfreigaben des invis-Servers ein
+
+# The module fileserver sets up the invis-server network shares
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="Fileserver"
+pgsubtitle="Netzwerkfreigaben einrichten"
+
+ipaddr=`getconfdata "IP" "2"`
+smbdom=`getconfdata "Workgroup" "2"`
+basedn=`getconfdata "baseDN" "2"`
+hn=`getconfdata "Hostname" "2"`
+smbhostname=`echo $hn | tr [a-z] [A-Z]`
+masterpw=`getconfdata "LDAPAdminPW" "2"`
+av=`getconfdata "AV" "2"`
+#    whichsamba=`getconfdata "SambaPakete" "2"`
+domain=`getconfdata "Domain" "2"`
+netbase=`getconfdata "Networkbase" "2"`
+nmaskshort=`getconfdata "NMask-short" "2"`
+smbdom=`getconfdata "Workgroup" "2"`
+ddns=`getconfdata "DDNS" "2"`
+# Scriptvorlage fuer das Verschieben der Windows-Bibliotheken kopieren
+unix2dos /etc/invis/templates/*.cmd 2>&1| tee -a $LOGFILE | pgbox
+unix2dos /srv/shares/service/Win_Scripts/*.cmd 2>&1| tee -a $LOGFILE | pgbox
+unix2dos /srv/shares/service/Win_Timeserver/*.cmd 2>&1| tee -a $LOGFILE | pgbox
+unix2dos /srv/shares/service/VPN-Clients/Windows/vpn-client.ovpn 2>&1| tee -a $LOGFILE | pgbox
+unix2dos /srv/shares/service/VPN-Clients/Windows/jowi_openvpnmanager/vpn-client-management.ovpn 2>&1| tee -a $LOGFILE | pgbox
+unix2dos /srv/shares/service/Remove_DC/* 2>&1| tee -a $LOGFILE | pgbox
+
+# invisconnect-Script anpassen
+path="/srv/shares/service/VPN-Clients/Linux"
+file="invisconnect"
+string="192.168.220.10%$ipaddr"
+changevalues $path $file "$string"
+
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+# OpenVPN Client-Konfigurationsdateien anpassen
+file="vpn-client.ovpn"
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+string="server.ihredomain.de%$ddns"
+changevalues $path $file "$string"
+
+path="/srv/shares/service/VPN-Clients/Windows"
+file="vpn-client.ovpn"
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+string="server.ihredomain.de%$ddns"
+changevalues $path $file "$string"
+
+# Anpassen der Datei smb.conf
+path="/etc/samba"
+file="smb.conf"
+
+# Freigaben Erweiterung in Samba-Konfiguration einbinden
+echo >> $path/$file
+echo "## invis-server.org Freigabenkonfiguration einbinden" >> $path/$file
+echo "include = /etc/samba/smb.shares.conf" >> $path/$file
+
+if [[ $av == "beide" ]]; then
+    av="antivir"
+fi
+
+#Erstellen der Virenscanner-Konfiguration
+cp $TEMPLATEDIR/fileserver/samba/vscan-$av.conf /etc/samba/vscan-$av.conf 2>&1| tee -a $LOGFILE
+
+# Freigaben werden angelegt
+cp $TEMPLATEDIR/fileserver/samba/smb.shares.conf /etc/samba/smb.shares.conf 2>&1| tee -a $LOGFILE
+path="/etc/samba"
+file="smb.shares.conf"
+string="vscan-av%vscan-$av"
+changevalues $path $file "$string"
+
+# Verzeichnis fuer Windows-Batch-Scripts anlegen
+mkdir -p -m 2775 /srv/shares/service/winscripts 2>&1| tee -a $LOGFILE
+
+# Service Dateien kopieren
+chmod -R g+w /srv/shares/service 2>&1| tee -a $LOGFILE
+
+# Logon-Scripts werden kopiert und ins DOS-Format ueberfuehrt
+netlogonpath="/var/lib/samba/sysvol/$domain/scripts"
+cp $TEMPLATEDIR/fileserver/samba/logon-scripts/*.cmd $netlogonpath/ 2>&1| tee -a $LOGFILE
+unix2dos $netlogonpath/*.cmd 2>&1| tee -a $LOGFILE | pgbox
+
+path="$netlogonpath"
+file="user.cmd"
+string="invis5%$hn"
+changevalues $path $file "$string"
+
+file="admin.cmd"
+string="invis5%$hn"
+changevalues $path $file "$string"
+
+file="gast.cmd"
+string="invis5%$hn"
+changevalues $path $file "$string"
+
+file="verwaltung.cmd"
+string="invis5%$hn"
+changevalues $path $file "$string"
+
+# Samba4 wertet X-Bit aus
+chmod +x $netlogonpath/*  2>&1| tee -a $LOGFILE
+
+#Verzeichnisrechte anpassen - Profilverzeichnisse
+chmod 1777 /srv/shares/profiles 2>&1| tee -a $LOGFILE
+
+#Verzeichnisrechte anpassen - Druckertreiber Freigabe print$
+chmod -R g+ws /var/lib/samba/drivers 2>&1| tee -a $LOGFILE
+
+msgbox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
+Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt über die Freigaben:\n\n
+    - Gruppen: Mitglieder der jeweiligen Gruppe haben Zugriff auf das gleichnamige Verzeichnis.\n
+    - Portal: Freigabe für den Dateiaustausch über das invis-Portal.\n
+    - Verwaltung: Freigabe für Mitglieder der gleichnamigen Gruppe.\n
+    - Archiv: Ablageort für nicht mehr aktuelle Dateien.\n
+    - Aktuell: Ablageort für aktuelle Dateien.\n
+    - Service: Dateien für den Domänen-Administrator, wie Software, Treiber und Patches.\n
+    - Transfer: Freigabe für Dateiaustausch.\n
+    - & Media: Freigabe für Multimedia-Dateien.\n\n
+Es wurde die Gruppen Verwaltung, Archiv, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
+
+#Ermitteln, welche Samba-Pakete zum Einsatz kommen
+sambapackages=`getconfdata "SambaPakete" "2"`
+if [[ $sambapackages == "sernet" ]]; then
+    # Sernet-Samba AD neu starten 
+    systemctl restart sernet-samba-ad.service 2>&1| tee -a $LOGFILE | pgbox
+else
+    # Eigene Samba-Pakete neu starten
+    systemctl restart samba.service 2>&1| tee -a $LOGFILE | pgbox
+fi
+
+# NFSv4 Server vorbereiten -- aber nicht starten
+cp $TEMPLATEDIR/fileserver/nfs/exports_nfs4 /etc/exports  2>&1| tee -a $LOGFILE
+cp $TEMPLATEDIR/fileserver/nfs/nfs /etc/sysconfig  2>&1| tee -a $LOGFILE
+cat $TEMPLATEDIR/fileserver/nfs/fstab_extention >> /etc/fstab
+mount -a
+path="/etc"
+file="idmapd.conf"
+string="localdomain%$domain"
+changevalues $path $file "$string"
+file=exports
+string="192.168.220.0/24%$netbase/$nmaskshort"
+changevalues $path $file "$string"
+
+# Modul "name of this module" beendet
+writeprepstat "webserver"
+waitbox "$modulename" "webserver"
