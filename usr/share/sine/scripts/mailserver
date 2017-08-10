@@ -175,11 +175,9 @@ case "$whichgroupware" in
 	    zypper -n install -n `cat $PACKAGELISTDIR/kopanolimited` 2>&1| tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	else
-	    zypper ar -f $TEMPLATEDIR/zypper/kopano-obs.repo 2>&1| tee -a $LOGFILE | pgbox
-	    zypper --gpg-auto-import-keys ref --repo 'Kopano Core (openSUSE_Leap_42.2)' 2>&1| tee -a $LOGFILE | pgbox
 	    zypper -n install -n `cat $PACKAGELISTDIR/kopanoobs` 2>&1| tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
-	    # Wenn Kopano aus dem OBS installiert wurde liegt die Propmap Datei in /usr/share/kopano
+	    # Propmap file is in /usr/share/kopano
 	    ln -s /usr/share/kopano/ldap.propmap.cfg /etc/kopano/
 	fi
 
