@@ -251,6 +251,9 @@ inviscerts intern 2>&1| tee -a $LOGFILE
 chown -R :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE
 chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $LOGFILE
 
+# run dbcheck for ad
+samba-tool dbcheck --fix --yes
+
 # restart samba services
 systemctl start samba.service 2>&1| tee -a $LOGFILE | pgbox
 
