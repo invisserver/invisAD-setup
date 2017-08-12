@@ -8,3 +8,5 @@
 008:d:cups
 009:d:fileserver
 010:d:webserver
+011:d:mysqlserver
+012:d:postgresqlserver
