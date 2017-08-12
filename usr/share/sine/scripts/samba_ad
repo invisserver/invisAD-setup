@@ -252,13 +252,14 @@ chown -R :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE
 chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $LOGFILE
 
 # run dbcheck for ad
-samba-tool dbcheck --fix --yes
+pgsubtitle="LDAP Verzeichnis wird geprueft und etwaige Fehler behoben."
+samba-tool dbcheck --fix --yes 2>&1| tee -a $LOGFILE | pgbox
 
 # restart samba services
 systemctl start samba.service 2>&1| tee -a $LOGFILE | pgbox
 
 # LDAP Client-Konfiguration anpassen
-cp $TEMPLATEDIR/$modulename/ldap-client/openldap/ldap.conf /etc/openldap
+cp $TEMPLATEDIR/$modulename/ldap/ldap-client/openldap/ldap.conf /etc/openldap
 ldaphost=`getconfdata "FQDN" "2"`
 basedn=`getconfdata "baseDN" "2"`
 path="/etc/openldap/"
