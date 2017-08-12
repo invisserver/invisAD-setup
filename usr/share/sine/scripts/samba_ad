@@ -257,6 +257,17 @@ samba-tool dbcheck --fix --yes
 # restart samba services
 systemctl start samba.service 2>&1| tee -a $LOGFILE | pgbox
 
+# LDAP Client-Konfiguration anpassen
+cp $TEMPLATEDIR/$modulename/ldap-client/openldap/ldap.conf /etc/openldap
+ldaphost=`getconfdata "FQDN" "2"`
+basedn=`getconfdata "baseDN" "2"`
+path="/etc/openldap/"
+file="ldap.conf"
+string="dc=invis-net,dc=loc%$basedn"
+changevalues $path $file "$string"
+string="ldapserver%$ldaphost"
+changevalues $path $file "$string"
+
 ## sssd einrichten
 # hostname ermitteln
 hn=`hostname`

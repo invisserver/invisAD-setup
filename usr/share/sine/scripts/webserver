@@ -1,0 +1,243 @@
+#!/bin/bash
+### MODUL-NR. 010 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Das Modul richtet den Webserver Apache und das invis-Portal ein.
+
+# This module sets up the webserver Apache2 and the invis-Portal.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="Apache Webserver"
+pgsubtitle="Apache Webserver and invis-Portal setup"
+
+waitinfobox "Ihr Webserver sowie das invis-Portal werden eingerichtet.
+Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
+fqdn=`getconfdata "FQDN" "2"`
+ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+company=`getconfdata "Organisation" "2"`
+path="/etc/invis/portal"
+cp $path/config.php.dist $path/config.php
+file="config.php"
+string="admin-secret%$ldapadminpw"
+changevalues $path $file "$string"
+
+string="invis.invis-net.loc%$fqdn"
+changevalues $path $file "$string"
+
+string="MyCompany%$company"
+changevalues $path $file "$string"
+
+ipaddr=`getconfdata "IP" "2"`
+netpart1=`echo "$ipaddr" | cut -d "." -f 1`
+netpart2=`echo "$ipaddr" | cut -d "." -f 2`
+netpart3=`echo "$ipaddr" | cut -d "." -f 3`
+
+# 24 oder 16 Bit Netzwerkmaske?
+ipnetmask=`getconfdata "NMask-short" "2"`
+if [[ $ipnetmask == "24" ]]; then
+    netpart="$netpart1.$netpart2.$netpart3"
+    string="192.168.220%$netpart"
+    changevalues $path $file "$string"
+    
+    netpart="$netpart3.$netpart2.$netpart1"
+    string="220.168.192%$netpart"
+    changevalues $path $file "$string"
+elif [[ $ipnetmask == "16" ]]; then
+    netpart="$netpart1.$netpart2"
+    string="192.168.220%$netpart"
+    changevalues $path $file "$string"
+    netpart="$netpart2.$netpart1"
+    string="220.168.192%$netpart"
+    changevalues $path $file "$string"
+
+    # IP Bereiche an 16 Bit Netzwerkmaske anpassen
+    # Server
+    string="11, 19%0.11, 0.253"
+    changevalues $path $file "$string"
+    # Drucker
+    string="20, 50%1.1, 1.254"
+    changevalues $path $file "$string"
+    # IP-Geraete 
+    string="60, 90%2.1, 3.254"
+    changevalues $path $file "$string"
+    # Client Computer
+    string="120, 199%4.1, 4.254"
+    changevalues $path $file "$string"
+fi
+# Netzwerkmaske in Portalkonfigurationen eintragen. 
+string="ipnetmask%$ipnetmask"
+changevalues $path $file "$string"
+
+ipnetbase=`getconfdata "Networkbase" "2"`
+# Netzwerkmaske in Portalkonfigurationen eintragen. 
+string="ipnetbase%$ipnetbase"
+changevalues $path $file "$string"
+
+# Verwendete Groupware in Portal-Konfiguration eintragen
+groupware=`getconfdata "Groupware" "2"`
+string="usedgroupware%$groupware"
+changevalues $path $file "$string"
+
+# Link fuer Portal-Konfiguration anlegen
+ln -s $path/$file /srv/www/htdocs/portal/config.php
+    
+# Erforderliche Apache Module aktivieren
+a2enmod php5 2>&1| tee -a $LOGFILE | pgbox
+a2enmod headers 2>&1| tee -a $LOGFILE | pgbox
+#a2enmod xml2enc 2>&1| tee -a $LOGFILE | pgbox
+a2enmod proxy 2>&1| tee -a $LOGFILE | pgbox
+a2enmod proxy_http 2>&1| tee -a $LOGFILE | pgbox
+a2enmod proxy_html 2>&1| tee -a $LOGFILE | pgbox
+a2enmod socache_shmcb 2>&1| tee -a $LOGFILE | pgbox
+a2enmod version 2>&1| tee -a $LOGFILE | pgbox
+a2enmod fcgid 2>&1| tee -a $LOGFILE | pgbox
+a2enmod rewrite 2>&1| tee -a $LOGFILE | pgbox
+    
+# Stammzertifikat der Server-CA bereitstellen
+cp /etc/invis/certs/ca.crt /srv/www/htdocs/portal/inc/
+    
+cp $TEMPLATEDIR/$modulename/vh-intern.conf /etc/apache2/vhosts.d/
+path="/etc/apache2/vhosts.d"
+file="vh-intern.conf"
+fqdn=`getconfdata "FQDN" "2"`
+string="invisX.invis-net.loc%$fqdn"
+changevalues $path $file "$string"
+    
+domain=`getconfdata "Domain" "2"`
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+ip=`getconfdata "IP" "2"`
+string="192.168.220.10%$ip"
+changevalues $path $file "$string"
+
+### aufraeumen -> PHP 5.5 verwendet internes opcache Modul und nicht mehr APC
+# php5-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
+echo "apc.rfc1867 = On" >> /etc/php5/conf.d/apc.ini
+# die folgende Einstellung verhindert den Versuch die Klasse adLDAP mehrfach zu laden.
+# gefunden bei Stack Overflow
+echo "apc.include_once_override = 0" >> /etc/php5/conf.d/apc.ini
+
+# HTTPS-Port ändern
+cp $TEMPLATEDIR/$modulename/listen.conf /etc/apache2/
+file="listen.conf"
+path="/etc/apache2"
+    
+httpsport=`getconfdata "HTTPSPORT" "2"`
+string="httpsport%$httpsport"
+changevalues $path $file "$string"
+
+## Externer Zugriff via HTTPS?
+ddnshn=`getconfdata "DDNS" "2"`
+if [[ $ddnshn != "none" ]]; then
+    extcerts=`getconfdata "extCerts" "2"`
+    msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
+
+    # Challenge Verzeichnis anlegen
+    mkdir -p "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
+
+    # dehydrated Konfiguration sichern und anpassen
+    path="/etc/dehydrated/"
+    certmail=`getconfdata "certMail" "2"`
+    mv $path/config $path/config.ori
+    cp $TEMPLATEDIR/$modulename/dehydrated/config $path
+    file="config"
+    string="adminmail%$certmail"
+    changevalues $path $file "$string"
+
+    ## DDNS Namen in Domain-Datei eintragen
+    echo $ddnshn > $path/domains.txt
+
+    # Neue vHost Datei kopieren und anpassen
+    path="/etc/apache2/vhosts.d"
+    cp $TEMPLATEDIR/$modulename/dehydrated/dehydrated.conf $path
+    file="dehydrated.conf"
+    string="your.ddns-domain.net%$ddnshn"
+    changevalues $path $file "$string"
+
+    inviscerts extern
+    a2enflag OWNCERTS
+
+    # Kopieren und anpassend der Konfigurationsdateien
+    cd $setupdir
+    cp $TEMPLATEDIR/$modulename/vh-extern.conf /etc/apache2/vhosts.d/
+    path="/etc/apache2/vhosts.d"
+    file="vh-extern.conf"
+    string="your.ddns-domain.net%$ddnshn"
+    changevalues $path $file "$string"
+
+    # Lokalen Hostnamen ersetzten
+    fqdn=`getconfdata "FQDN" "2"`
+    string="invis.invis-net.loc%$fqdn"
+    changevalues $path $file "$string"
+
+    # Https Port setzen
+    httpsport=`getconfdata "HTTPSPORT" "2"`
+    string="httpsport%$httpsport"
+    changevalues $path $file "$string"
+
+fi
+
+# adLDAP-Konfiguration anpassen
+path="/srv/www/htdocs/portal/inc/"
+file="adLDAP.php"
+string="DC=invis-net,DC=loc%$basedn"
+changevalues $path $file "$string"
+string="ldapserver%$ldaphost"
+changevalues $path $file "$string"
+
+# Wozu ist das gut?
+ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
+
+path="/etc/sysconfig/"
+file="apache2"
+string="APACHE_MPM=\"\"%APACHE_MPM=\"prefork\""
+changevalues $path $file "$string"
+a2enflag FCGID
+a2enflag SSL
+    
+# Webserver, shellinabox, fetchmail und Mailman neustarten und in Runlevel integrieren
+pgsubtitle="Mehrere Dienste werden neu gestartet"
+chkservice "shellinaboxd"
+chkservice "apache2"
+
+# Modul "name of this module" beendet
+writeprepstat "mysqlserver"
+waitbox "$modulename" "mysqlserver"

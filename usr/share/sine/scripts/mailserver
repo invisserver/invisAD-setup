@@ -54,9 +54,9 @@ zyppercheck ${PIPESTATUS[0]}
 # amavisd-new und clamav einrichten
 av=`getconfdata "AV" "2"`
 if [[ $av == "clamav" ]]; then
-        cp $TEMPLATEDIR/mailserver/amavisd/amavisd_clamav.conf /etc/amavisd.conf 2>&1| tee -a $LOGFILE | pgbox
+        cp $TEMPLATEDIR/$modulename/amavisd/amavisd_clamav.conf /etc/amavisd.conf 2>&1| tee -a $LOGFILE | pgbox
 else
-	cp $TEMPLATEDIR/mailserver/amavisd/amavisd.conf /etc/amavisd.conf 2>&1| tee -a $LOGFILE | pgbox
+	cp $TEMPLATEDIR/$modulename/amavisd/amavisd.conf /etc/amavisd.conf 2>&1| tee -a $LOGFILE | pgbox
 fi
 
 # Der Dienst freshclam wird auf jeden Fall gestartet, da Clamav zur Standart Installation gehoert
@@ -91,7 +91,7 @@ usermod -a -G pkeys wwwrun 2>&1| tee -a $LOGFILE | pgbox
 usermod -a -G mail postfix 2>&1| tee -a $LOGFILE | pgbox
 
 # Kopieren der Postfix-Konfigurationsdateien
-cp $TEMPLATEDIR/mailserver/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
+cp $TEMPLATEDIR/$modulename/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
 # ldap-aliases wird nicht mehr benoetigt
 rm /etc/postfix/ldap-aliases.cf 2>&1| tee -a $LOGFILE
     
@@ -105,7 +105,7 @@ case "$whichgroupware" in
 	zypper -n install -n dovecot22 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	# Konfiguration anpassen
-	cp -r $TEMPLATEDIR/mailserver/dovecot/ad/* /etc/dovecot/ 2>&1| tee -a $LOGFILE
+	cp -r $TEMPLATEDIR/$modulename/dovecot/ad/* /etc/dovecot/ 2>&1| tee -a $LOGFILE
 	path="/etc/dovecot/conf.d"
 	file="15-lda.conf"
 	domain=`getconfdata "Domain" "2"`
@@ -248,9 +248,32 @@ for datei in ${files[*]}; do
     changevalues $path $datei "$string"
 done
 
-# Postfix neustarten und in Runlevel aufnehmen
+# Postfix und saslauthd neustarten und in Runlevel aufnehmen
 chkservice "postfix"
 chkservice "saslauthd"
+
+# Fetchmail einrichten
+# Sysconfig Datei bearbeiten
+cp $TEMPLATEDIR/$modulename/fetchmail/fetchmail.service /etc/systemd/system/
+systemctl daemon reload
+path="/etc/systemd/system"
+file="fetchmail.service"
+string="localdomain%$domain"
+changevalues $path $file "$string"
+
+# Dummy fetchmailrc anlegen.
+fetchmailrc="/var/lib/cornaz/build/.fetchmailrc"
+echo 'poll pop.example.com protocol pop3 user dummy pass . is junk here' > $fetchmailrc
+chown wwwrun.www $fetchmailrc
+chmod 0660 $fetchmailrc
+    
+# fetchcopy ausfuehren
+/var/lib/cornaz/bin/fetchcopy				2>&1|tee -a $LOGFILE |pgbox
+chmod 0700 /var/lib/cornaz/inuse/.fetchmailrc		2>&1|tee -a $LOGFILE |pgbox
+chown fetchmail /var/lib/cornaz/inuse/.fetchmailrc	2>&1|tee -a $LOGFILE |pgbox
+
+# fetchmail starten und in Autostart aufnehmen
+chkservice "fetchmail"
 
 # Modul "name of this module" beendet
 writeprepstat "cups"
