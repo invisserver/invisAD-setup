@@ -125,7 +125,7 @@ a2enmod headers 2>&1| tee -a $LOGFILE | pgbox
 a2enmod proxy 2>&1| tee -a $LOGFILE | pgbox
 a2enmod proxy_http 2>&1| tee -a $LOGFILE | pgbox
 a2enmod proxy_html 2>&1| tee -a $LOGFILE | pgbox
-a2enmod socache_shmcb 2>&1| tee -a $LOGFILE | pgbox
+#a2enmod socache_shmcb 2>&1| tee -a $LOGFILE | pgbox
 a2enmod version 2>&1| tee -a $LOGFILE | pgbox
 a2enmod fcgid 2>&1| tee -a $LOGFILE | pgbox
 a2enmod rewrite 2>&1| tee -a $LOGFILE | pgbox
@@ -187,8 +187,8 @@ if [[ $ddnshn != "none" ]]; then
 
     # Neue vHost Datei kopieren und anpassen
     path="/etc/apache2/vhosts.d"
-    cp $TEMPLATEDIR/$modulename/dehydrated/dehydrated.conf $path
-    file="dehydrated.conf"
+    cp $TEMPLATEDIR/$modulename/vh-dehydrated.conf $path
+    file="vh-dehydrated.conf"
     string="your.ddns-domain.net%$ddnshn"
     changevalues $path $file "$string"
 
