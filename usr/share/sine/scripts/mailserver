@@ -92,8 +92,6 @@ usermod -a -G mail postfix 2>&1| tee -a $LOGFILE | pgbox
 
 # Kopieren der Postfix-Konfigurationsdateien
 cp $TEMPLATEDIR/$modulename/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
-# ldap-aliases wird nicht mehr benoetigt
-rm /etc/postfix/ldap-aliases.cf 2>&1| tee -a $LOGFILE
     
 ## SOGo, Group-e, Zarafa oder Roundcube
 whichgroupware=`getconfdata "Groupware" "2"`
@@ -255,7 +253,7 @@ chkservice "saslauthd"
 # Fetchmail einrichten
 # Sysconfig Datei bearbeiten
 cp $TEMPLATEDIR/$modulename/fetchmail/fetchmail.service /etc/systemd/system/
-systemctl daemon reload
+systemctl daemon-reload
 path="/etc/systemd/system"
 file="fetchmail.service"
 string="localdomain%$domain"
