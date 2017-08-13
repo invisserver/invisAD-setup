@@ -225,6 +225,7 @@ string="ldapserver%$ldaphost"
 changevalues $path $file "$string"
 
 # Wozu ist das gut?
+# Es wird jedenfalls die ldap.conf ins Home-Verzeichnis des users wwwrun verknuepft.
 ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
 
 path="/etc/sysconfig/"
