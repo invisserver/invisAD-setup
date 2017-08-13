@@ -13,3 +13,4 @@
 013:d:firewall
 014:d:monitoring
 015:o:apcupsd
+016:o:groupware
