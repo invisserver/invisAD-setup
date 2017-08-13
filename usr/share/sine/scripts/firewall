@@ -1,5 +1,5 @@
 #!/bin/bash
-### MODUL-NR. 012 ###
+### MODUL-NR. 013 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -8,9 +8,9 @@
 # License: GPLv3
 # Questions: info@invis-server.org
 
-# PostgreSQL Server einrichten
+# Firewall Einrichtung basierend auf SuSEfirewall2
 
-# PostgreSQL Server setup
+# SuSEfirewall2 based firewall setup
 
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
 # GNU General Public License, wie von der Free Software Foundation veröffentlicht,
@@ -44,42 +44,54 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="PostgreSQL Server"
-pgsubtitle="PostgreSQL Server Setup"
+windowtitle="SuSEfirewall2"
+pgsubtitle="Firewall Setup dor invis-server"
 
-#Frage nach Version von PostgreSQL
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/postgresql.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle" --yesno "Soll die openSUSE-Version von PostgreSQL installiert werden?" 0 0
-cont=${?}
+# Kopieren und anpassen der Firewall Konfiguration
+cp $TEMPLATEDIR/$modulename/SuSEfirewall2 /etc/sysconfig/
+file="SuSEfirewall2"
+path="/etc/sysconfig"
+nw=`getconfdata "Networkbase" "2"`
+netpart1=`echo "$nw" | cut -d "." -f 1`
+netpart2=`echo "$nw" | cut -d "." -f 2`
+netpart3=`echo "$nw" | cut -d "." -f 3`
+netpart4=`echo "$nw" | cut -d "." -f 4`
+netpart="$netpart1.$netpart2.$netpart3.$netpart4"
+shortnmask=`getconfdata "NMask-short" "2"`
+strings="192.168.220.0/24%$netpart/$shortnmask"
+changevalues $path $file $strings
 
-# Weitermachen?
-if [[ $cont == "0" ]]; then
-    pgsubtitle="Aktuelle Version wird installiert"
-    zypper ref 2>&1|tee -a $LOGFILE |pgbox
-    zypper -n install -n `cat $PACKAGELISTDIR/postgresql` 2>&1| tee -a $LOGFILE | pgbox 25 110
-    zyppercheck ${PIPESTATUS[0]}
-else
-    pgsubtitle="Spezielle Version wird installiert"
-    zypper ref 2>&1|tee -a $LOGFILE |pgbox
-    zypper -n install -D -n `cat $PACKAGELISTDIR/postgresql` 2>&1| tee -a $LOGFILE | pgbox 25 110
-    zyppercheck ${PIPESTATUS[0]}
-fi
+# geaenderten SSH-Port einfuegen
+sshport=`getconfdata "SSHPORT" "2"`
+strings="sshport%$sshport"
+changevalues $path $file "$strings"
 
-pgsubtitle="PostgreSQL \"vorübergehend\" starten."
-systemctl start postgresql.service 2>&1|tee -a $LOGFILE |pgbox
+# geaenderten HTTPS-Port einfuegen
+httpsport=`getconfdata "HTTPSPORT" "2"`
+strings="httpsport%$httpsport"
+changevalues $path $file "$strings"
 
-# Konfigurationsdateien kopieren -> sind fuer kivitendo vorbereitet.
-cp $TEMPLATEDIR/postgresql/*.conf /var/lib/pgsql/data 2>&1 |tee -a $LOGFILE
-chown -R postgres:postgres /var/lib/pgsql/ 2>&1 |tee -a $LOGFILE
-# Postgresql neu starten
+# OwnCloud-Port einfuegen
+ocport=`getconfdata "OCPORT" "2"`
+strings="ocport%$ocport"
+changevalues $path $file "$strings"
+    
+# SSH Port ändern
+cp $TEMPLATEDIR/$modulename/sshd_config /etc/ssh/
+path="/etc/ssh"
+file="sshd_config"
 
-yesnono "Soll PostgreSQL automatisch gestartet werden? (Ist nur notwendig, wenn Kivitendo installiert wird.)" "Runlevel Eintrag für PostgreSQL wird konfiguriert."
-pgsqlrl=${?}
-if [[ $pgsqlrl == "1" ]]; then
-    chkservice "postgresql" disable
-else
-    chkservice "postgresql"
-fi
+sshport=`getconfdata "SSHPORT" "2"`
+strings="sshport%$sshport"
+changevalues $path $file "$strings"
+
+# SSHd neu starten
+chkservice "sshd"
+    
+# Firewall starten und in Runlevel eintragen
+chkservice "SuSEfirewall2_init"
+chkservice "SuSEfirewall2"
 
 # Modul "name of this module" beendet
-writeprepstat "firewall"
-waitbox "$modulename" "firewall"
+writeprepstat "monitoring"
+waitbox "$modulename" "monitoring"

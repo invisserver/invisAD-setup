@@ -10,3 +10,5 @@
 010:d:webserver
 011:d:mysqlserver
 012:d:postgresqlserver
+013:d:firewall
+014:d:monitoring
