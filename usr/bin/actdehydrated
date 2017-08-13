@@ -26,7 +26,7 @@
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
 setupdir="/var/lib/sine"
-
+challengedir="/srv/www/htdocs/dehydrated/.well-known/acme-challenge/"
 # Funktionen
 # Werte aus Konfigurationsdatendatei extrahieren
 getconfdata() {
@@ -62,13 +62,20 @@ if [[ $prepok == "0" ]]; then
     strings="10.10.10.10%$extip"
     changevalues $path $file "$strings"
     
+    # Pruefen, ob das challenge-Verzeichnis dem Benutzer dehydrated gehoert
+    # wenn nicht, wird das Besitzrecht geaendert
+    dirowner=`stat -c %U $challengedir`
+    if [[ $dirowner != "dehydrated" ]]; then
+	chown dehydrated $challengedir
+    fi
+
     # Lets Encrypt Account aktivieren
-    dehydrated --register --accept-terms
-    
+    sudo -u dehydrated dehydrated --register --accept-terms
+
     # Zertifikate nur erstellen, wenn Account-Anlegen erfolgreich.
     if [[ $? == 0 ]]; then
 	# Zertifikat generieren
-	dehydrated -c
+	sudo -u dehydrated dehydrated -c
 	ecode=$?
     else
 	echo "Programm wurde abgebrochen, da der Let's Encrypt Account nicht angelegt werden konnte"

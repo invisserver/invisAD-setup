@@ -170,8 +170,9 @@ if [[ $ddnshn != "none" ]]; then
     extcerts=`getconfdata "extCerts" "2"`
     msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
 
-    # Challenge Verzeichnis anlegen
+    # Challenge Verzeichnis anlegen und Besitzrecht anpassen
     mkdir -p "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
+    chown dehydrated "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
 
     # dehydrated Konfiguration sichern und anpassen
     path="/etc/dehydrated/"
