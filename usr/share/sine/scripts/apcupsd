@@ -1,5 +1,5 @@
 #!/bin/bash
-### MODUL-NR. 013 ###
+### MODUL-NR. 015 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -8,9 +8,9 @@
 # License: GPLv3
 # Questions: info@invis-server.org
 
-# Firewall Einrichtung basierend auf SuSEfirewall2
+# APC USV Support
 
-# SuSEfirewall2 based firewall setup
+# APC USV Support
 
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
 # GNU General Public License, wie von der Free Software Foundation veröffentlicht,
@@ -44,54 +44,36 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="SuSEfirewall2"
-pgsubtitle="Firewall Setup dor invis-server"
+windowtitle="APC UPS Daemon"
+pgsubtitle="apcupsd setup"
 
-# Kopieren und anpassen der Firewall Konfiguration
-cp $TEMPLATEDIR/$modulename/SuSEfirewall2 /etc/sysconfig/
-file="SuSEfirewall2"
-path="/etc/sysconfig"
-nw=`getconfdata "Networkbase" "2"`
-netpart1=`echo "$nw" | cut -d "." -f 1`
-netpart2=`echo "$nw" | cut -d "." -f 2`
-netpart3=`echo "$nw" | cut -d "." -f 3`
-netpart4=`echo "$nw" | cut -d "." -f 4`
-netpart="$netpart1.$netpart2.$netpart3.$netpart4"
-shortnmask=`getconfdata "NMask-short" "2"`
-string="192.168.220.0/24%$netpart/$shortnmask"
-changevalues $path $file $string
+dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/apcupsd.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie apcupsd installieren?" 0 0
+cont=${?}
 
-# geaenderten SSH-Port einfuegen
-sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
-changevalues $path $file "$string"
+# Weitermachen?
+if [[ $cont == "0" ]]; then
+    pgsubtitle="Software wird installiert"
+    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install apcupsd apcupsd-cgi 2>&1 | tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
 
-# geaenderten HTTPS-Port einfuegen
-httpsport=`getconfdata "HTTPSPORT" "2"`
-string="httpsport%$httpsport"
-changevalues $path $file "$string"
+    confdir="/etc/apcupsd"
+    file="apcupsd.conf"
+    string="UPSCABLE smart%UPSCABLE usb"
+    changevalues $confdir $file "$string"
+    string="UPSTYPE apcsmart%UPSTYPE usb"
+    changevalues $confdir $file "$string"
+    string="DEVICE /dev/ttyS0%DEVICE"
+    changevalues $confdir $file "$string"
+    chkservice "apcupsd"
 
-# OwnCloud-Port einfuegen
-ocport=`getconfdata "OCPORT" "2"`
-string="ocport%$ocport"
-changevalues $path $file "$string"
-    
-# SSH Port ändern
-cp $TEMPLATEDIR/$modulename/sshd_config /etc/ssh/
-path="/etc/ssh"
-file="sshd_config"
-
-sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
-changevalues $path $file "$string"
-
-# SSHd neu starten
-chkservice "sshd"
-    
-# Firewall starten und in Runlevel eintragen
-chkservice "SuSEfirewall2_init"
-chkservice "SuSEfirewall2"
+    # Apache Dummy Konfiguration installieren
+    cp $TEMPLATEDIR/$modulename/apcupsd.conf /etc/apache2/conf.d/
+    systemctl reload apache2.service 2>&1 | tee -a $LOGFILE | pgbox
+else
+    msgbox "apcupsd Installation übersprungen" "$windowtitle"
+fi
 
 # Modul "name of this module" beendet
-writeprepstat "monitoring"
-waitbox "$modulename" "monitoring"
+writeprepstat "groupware"
+waitbox "$modulename" "groupware"
