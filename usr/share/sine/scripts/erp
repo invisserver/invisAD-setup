@@ -1,0 +1,162 @@
+#!/bin/bash
+### MODUL-NR. 017 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# ERP Software Installation
+
+# ERP software setup
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="ERP Setup"
+pgsubtitle="Kivitendo - WaWision"
+
+whicherp=`getconfdata "ERPSoftware" "2"`
+case $whicherp in
+
+    "kivitendo" )
+	# PostgreSQL in RL eintragen, wenn noch nicht geschehen
+	srvon=`chkconfig postgresql|grep " on"`
+	if [[ -z $srvon ]]; then 
+	    chkservice "postgresql"
+	fi
+	
+	windowtitle="Kivitendo Installation"
+	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kivitendo.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kivitendo installieren?" 0 0
+	cont=${?}
+
+	if [[ $cont == "0" ]]; then
+	    pgsubtitle="Zusätzliche Software wird installiert"
+	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
+	    zypper -n install -n `cat $PACKAGELISTDIR/kivitendo` 2>&1 | tee -a $LOGFILE  |pgbox
+	    zyppercheck ${PIPESTATUS[0]}
+	
+	    # Kivitendo Konfiguration vorbereiten
+	    cp $TEMPLATEDIR/$modulename/kivitendo-erp/kivitendo.conf /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf
+
+	    msgbox "Der Kivitendo Taskserver wird ins Runklevelkonzept integriert.
+Sein Start wird solange fehlschlagen, bis Sie einen gültigen Kivitendo Benutzernamen in
+/srv/www/htdocs/kivitendo-erp/config/kivitendo.conf eingetragen haben." "$windowtitle"
+
+	    chkservice "kivitendo-task-server"
+
+	    msgbox "Es wird ein Postgresql-Benutzer - kivitendo - für Kivitendo angelegt. 
+Vergessen Sie bitte nicht das hierbei von Ihnen zu vergebende Passwort. ;-)" "$windowtitle"
+	    sudo -u postgres createuser -d -r -S -P kivitendo
+	    ok=0
+	    while (( $ok != "1" ));do
+		dialog --backtitle "$DIALOGTITLE" --title "Kivitendo-DB Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+Bitte geben Sie dass soeben vergebene Passwort für den Kivitendo Datenbankbenutzer zur weiteren Verwendung erneut ein.\n\n" 17 64 2 \
+		"Kivitendo-DB-Passwort:" 2 2 "" 2 23 10 0\
+		"Kontrolle:" 2 36 "" 2 47 10 0\
+		2>$SINEWORKINGDIR/sine_temp
+		lxpassword=(`cat $SINEWORKINGDIR/sine_temp`)
+		if [[ ${lxpassword[0]} == ${lxpassword[1]} ]];then
+		    ok=1
+		fi
+	    done
+	    lxpw="${lxpassword[0]}"
+
+	    pgsubtitle="Datenbanken werden angelegt"
+	    dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
+Legen Sie jetzt bitte fest auf welche Art Kivitendo Benutzer authentifiziert werden.\n
+Da Kivitendo nur eine 1 zu 1 Zuordnung von Benutzer zu Datenbank zulässt, ist die LDAP-Authentifizierung nur
+dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  16 80 8 \
+	    SQL "Benutzerverwaltung über eigene Authentifizierungsdatenbank" on\
+	    LDAP "Anbindung an die vorhandene LDAP Benutzerverwaltung" off\
+	    2>$SINEWORKINGDIR/sine_temp
+	    lxauth=`cat $SINEWORKINGDIR/sine_temp`
+	    path="/srv/www/htdocs/kivitendo-erp/config"
+	    file="kivitendo.conf"
+	    if [[ $lxauth == "LDAP" ]]; then
+		basedn=`getconfdata "baseDN" "2"`
+		string="dc=invis-net,dc=loc%$basedn"
+		changevalues $path $file "$string"
+		string="module = DB%module = LDAP"
+		changevalues $path $file "$string"
+		ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+		string="admin_secret%$ldapadminpw"
+		changevalues $path $file "$string"
+	    fi
+	    string="lxpw%$lxpw"
+	    changevalues $path $file "$string"
+
+	    # Kivitendo im Portal aktivieren
+	    swpestat Kivitendo TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	    
+	    writeprepstat "faxgate"
+	    waitbox "$modulename" "faxgate"
+	
+	else
+	    msgbox "Kivitendo Installation übersprungenen" "$windowtitle"
+	    writeprepstat "faxgate"
+	fi 
+	;;
+    
+    "wawision")
+	windowtitle="waWision Installation"
+	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/wawision.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie waWision installieren?" 0 0
+	cont=${?}
+	
+	if [[ $cont == "0" ]]; then
+	    pgsubtitle="Zusätzliche Software wird installiert"
+	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
+	    zypper -n install -n `cat $PACKAGELISTDIR/wawision` 2>&1 |pgbox
+	    zyppercheck ${PIPESTATUS[0]}
+	    # Hier Datenbank installation einfügen
+	    wawipass=`mkdbsilent wawision1 wawision a`
+	    msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision1\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
+	    chkservice apache2 r
+	    # Wawision im Portal aktivieren
+	    swpestat waWision TRUE 2>&1 | tee -a $LOGFILE | pgbox
+
+	    writeprepstat "faxgate"
+	    waitbox "$modulename" "faxgate"
+	else
+	    msgbox "waWision Installation übersprungenen" "$windowtitle"
+	    writeprepstat "faxgate"
+	fi
+	;;
+
+    *)
+        msgbox "Keine ERP Software gewünscht" "$windowtitle"
+	writeprepstat "faxgate"
+	waitbox "$modulename" "faxgate"
+	;;
+esac

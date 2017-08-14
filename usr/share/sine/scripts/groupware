@@ -95,10 +95,11 @@ case "$whichgroupware" in
 	    samba-tool group add --description="Gruppe zur Beschränkung der Tine 2.0 Nutzer" tine20 2>&1| tee -a $LOGFILE | pgbox
 	
 	    writeprepstat "erp"
-	    waitbox "groupware" "erp"
+	    waitbox "$modulename" "erp"
 	else
 	    msgbox "Tine 2.0 Installation übersprungenen." "$windowtitle"
 	    writeprepstat "erp" 
+	    waitbox "$modulename" "erp"
 	fi
 	;; 
 
@@ -106,7 +107,7 @@ case "$whichgroupware" in
 	windowtitle="SOGo Installation"
 	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/sogo.txt" 38 90
 	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-	zypper -n install -n `cat $setupdir/zypper-package-lists/sogo` 2>&1 | tee -a $LOGFILE | pgbox
+	zypper -n install -n `cat $PACKAGELISTDIR/sogo` 2>&1 | tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	
 	## Leere sogo-Datenbank anlegen
@@ -150,7 +151,7 @@ case "$whichgroupware" in
 	swpestat SOGo TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
 	writeprepstat "erp"
-	waitbox "groupware" "erp"
+	waitbox "$modulename" "erp"
 	;;
     "kopano" )
 	## Kopano
@@ -265,7 +266,7 @@ case "$whichgroupware" in
 	swpestat KopanoApp TRUE 2>&1 | tee -a $LOGFILE | pgbox
     
 	writeprepstat "erp"
-	waitbox "groupware" "erp"
+	waitbox "$modulename" "erp"
 	;;
     "roundcube" )
 	windowtitle="Roundcube Installation"
@@ -294,10 +295,6 @@ case "$whichgroupware" in
 	swpestat Roundcube TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
 	writeprepstat "erp"
-	waitbox "groupware" "erp"
+	waitbox "$modulename" "erp"
 	;;
 esac
-
-# Modul "name of this module" beendet
-writeprepstat "erp"
-waitbox "$modulename" "erp"
