@@ -1,0 +1,303 @@
+#!/bin/bash
+### MODUL-NR. 016 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Groupware Installation
+
+# Groupware Setup
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="Groupware Setup"
+pgsubtitle="Kopano - Tine20 - SoGo - Roundcube"
+
+whichgroupware=`getconfdata "Groupware" "2"`
+
+case "$whichgroupware" in
+
+    "tine20" )
+	windowtitle="tine20 Installation"
+	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/tine20.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
+	cont=${?}
+
+	if [[ $cont == "0" ]]; then
+	    pgsubtitle="Zusätzliche Software wird installiert"
+	    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+	    zypper -n install -n tine20 2>&1 | tee -a $LOGFILE | pgbox
+	    zyppercheck ${PIPESTATUS[0]}
+
+	    pgsubtitle="tine20 wird installiert."
+	    # Datenbank anlegen
+	    tinedbpw=`mkdbsilent tine20 tine20 a`
+	    
+	    # Mini-Konfiguration erstellen und anpassen
+	    path="/var/lib/tine20/webroot"
+	    cp $TEMPLATEDIR/$modulename/tine20/config.inc.php $path
+	    file="config.inc.php"
+	    string="tinedbpw%$tinedbpw"
+	    changevalues $path $file "$string"
+
+	    # Zufallspasswort fuer Tine20 Setup-Zugang erstellen, einsetzen und anzeigen
+	    t20setuppw=`pwgen -sBnc 10 1`
+	    string="t20setuppw%$t20setuppw"
+	    changevalues $path $file "$string"
+	    msgbox "Es wurde ein Passwort für den Benutzer \"tine20setup\" erstellt.\nPasswort: $t20setuppw\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
+
+	    # Zugriffsrechte auf Config-Datei so aendern, dass Apache sie schreiben darf
+	    chown wwwrun $path/$file
+	    
+	    # Tine 2.0 im Portal aktivieren
+	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	    a2enflag TINE20
+
+	    # Original Tine20 Apache Konfiguration mit Dummy-Text ueberschreiben
+	    echo "# invis-server.org: Tine20 Dummy Datei. Diese Datei verhindert Update-Probleme." > /etc/apache2/conf.d/tine20.conf
+	    # Apache neu starten
+	    chkservice "apache2"
+
+	    # Gruppe fuer Tine 2.0 anlegen
+	    samba-tool group add --description="Gruppe zur Beschränkung der Tine 2.0 Nutzer" tine20 2>&1| tee -a $LOGFILE | pgbox
+	
+	    writeprepstat "erp"
+	    waitbox "groupware" "erp"
+	else
+	    msgbox "Tine 2.0 Installation übersprungenen." "$windowtitle"
+	    writeprepstat "erp" 
+	fi
+	;; 
+
+    "sogo" )
+	windowtitle="SOGo Installation"
+	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/sogo.txt" 38 90
+	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+	zypper -n install -n `cat $setupdir/zypper-package-lists/sogo` 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+	
+	## Leere sogo-Datenbank anlegen
+	sogodbuserpw=`mkdbsilent sogo sogo a`
+
+	# Konfigurationsvorlagen kopieren
+	cp $TEMPLATEDIR/$modulename/sogo/SOGo /etc/sysconfig/SOGo
+	cp $TEMPLATEDIR/$modulename/sogo/SOGo.conf /etc/apache2/conf.d/
+	mkdir /etc/sogo
+	cp $TEMPLATEDIR/$modulename/sogo/sogo.conf /etc/sogo/	
+	
+	# Konfigurationsdaten einlesen
+	domain=`getconfdata "Domain" "2"`
+	basedn=`getconfdata "baseDN" "2"`
+	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
+
+	# LDAP-Konfiguration anpassen
+	path="/etc/sogo"
+	file="sogo.conf"
+
+	string="dc=i5-net,dc=loc%$basedn"
+	changevalues $path $file "$string"
+
+	string="invis-net.loc%$domain"
+	changevalues $path $file "$string"
+
+	string="admin-secret%$ldapmasterpw"
+	changevalues $path $file "$string"
+
+	# Nach den Aenderungen Rechte setzen
+	chown :sogo /etc/sogo/sogo.conf
+
+	# Datenbank-Konfiguration anpassen
+	string="dbuserpw%$sogodbuserpw"
+	changevalues $path $file "$string"
+
+	# SOGo starten
+	chkservice "sogod"
+
+	# SoGo im Portal aktivieren
+	swpestat SOGo TRUE 2>&1 | tee -a $LOGFILE | pgbox
+
+	writeprepstat "erp"
+	waitbox "groupware" "erp"
+	;;
+    "kopano" )
+	## Kopano
+	windowtitle="Kopano Konfiguration"
+	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kopano.txt" 38 90
+
+	## Leere Kopano-Datenbank anlegen
+	kopanodbuserpw=`mkdbsilent kopano kopano a`
+
+	## hier gehts weiter....
+        # Locales-Vorlage kopieren
+	cp $TEMPLATEDIR/$modulename/kopano/kopano /etc/sysconfig/
+
+	# Konfigurationsvorlagen kopieren
+	cp $TEMPLATEDIR/$modulename/kopano/*.cfg /etc/kopano/
+	chown -R .kopano /etc/kopano/
+	chmod g+r /etc/kopano/*.cfg
+	
+	# Konfigurationsdaten einlesen
+	domain=`getconfdata "Domain" "2"`
+	basedn=`getconfdata "baseDN" "2"`
+	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
+
+	# Datenbank Zugang in Kopano Konfiguration einfuegen usw.
+	path="/etc/kopano"
+	file="server.cfg"
+	string="dbuserpass%$kopanodbuserpw"
+	changevalues $path $file "$string"
+
+	string="postmaster@localhost%administrator@$domain"
+	changevalues $path $file "$string"
+
+	# cache_cell_size anpassen, wenn zmemcalc mehr als 512M berechnet
+	kopanomem=($(kmemcalc))
+	if (( ${kopanomem[2]} > 512 ));then
+	    string="512M%${kopanomem[2]}M"
+	    changevalues $path $file "$string"
+	fi
+	
+	## Plugin-Path bei Bedarf anpassen
+	if [[ $SYSLIBDIR == "/usr/lib64" ]]; then
+	    string="/usr/lib/kopano%$SYSLIBDIR/kopano"
+	    changevalues $path $file "$string"
+	fi
+
+	# LDAP Konfiguration anpassen
+	file="ldap.cfg"
+	string="admin-secret%$ldapmasterpw"
+	changevalues $path $file "$string"
+
+	string="dc=kopano,dc=com%$basedn"
+	changevalues $path $file "$string"
+    
+	string="dc=invis-net,dc=loc%$basedn"
+	changevalues $path $file "$string"
+	
+	string="invis-net.loc%$domain"
+	changevalues $path $file "$string"
+    
+	## Locales anpassen
+	path="/etc/kopano/userscripts"
+	string="en_US%de_DE.UTF-8"
+	file="companies_common.sh"
+	changevalues $path $file "$string"
+
+	file="groups_common.sh"
+	changevalues $path $file "$string"
+
+	file="users_common.sh"
+	changevalues $path $file "$string"
+
+	# Webapp
+	path="/etc/kopano/webapp"
+	file="config.php"
+
+	string="London%Berlin"
+	changevalues $path $file "$string"
+
+	string="en_GB%de_DE.UTF-8"
+	changevalues $path $file "$string"
+    
+	# Kopano-Schluessel erzeugen
+	mkkopanokey
+    
+	# Rechte am Zarafa Attachement-Verzeichnis anpassen
+	mkdir /srv/kopano
+	chown -R kopano.kopano /srv/kopano
+
+	# Dienste ins Runlevel-Konzept eintragen
+	for kopinit in /etc/init.d/kopano-* ; do
+	    kopinit=`basename $kopinit`
+	    chkservice $kopinit
+	done
+    
+	# z-push als vHost anlegen & apache reload
+	cp $TEMPLATEDIR/$modulename/kopano/vh-zpush.conf /etc/apache2/vhosts.d/
+	rm -f /etc/apache2/conf.d/z-push2.conf
+
+	file="vh-zpush.conf"
+	path="/etc/apache2/vhosts.d/"
+	ddnsname=`getconfdata "DDNS" "2"`
+	string="your.ddns-domain.net%$ddnsname"
+	changevalues $path $file "$string"
+
+	chkservice apache2 r
+    
+	# Oeffentlichen Speicher anlegen
+	kopano-admin -s
+
+	## Stefan - LDIF anpassen
+	# Webapp im Portal aktivieren
+	swpestat KopanoApp TRUE 2>&1 | tee -a $LOGFILE | pgbox
+    
+	writeprepstat "erp"
+	waitbox "groupware" "erp"
+	;;
+    "roundcube" )
+	windowtitle="Roundcube Installation"
+	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/roundcube.txt" 38 90
+	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+	zypper -n install -n roundcubemail 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+	
+	# Datenbank anlegen
+	rcmdbpass=`mkdbsilent roundcubemail roundcube a`
+	mysql -u roundcube --password=$rcmdbpass roundcubemail < /usr/share/doc/packages/roundcubemail/SQL/mysql.initial.sql
+
+	# Konfigurationsdateien kopieren und anpassen
+	path="/etc/roundcubemail/"
+	cp $TEMPLATEDIR/$modulename/roundcubemail/*.php $path
+	file="config.inc.php"
+	string="rcmdbpass%$rcmdbpass"
+	changevalues $path $file "$string"
+
+	domain=`getconfdata "Domain" "2"`
+	file="defaults.inc.php"
+	string="invis-net.loc%$domain"
+	changevalues $path $file "$string"
+
+	# Roundcube im Portal aktivieren
+	swpestat Roundcube TRUE 2>&1 | tee -a $LOGFILE | pgbox
+
+	writeprepstat "erp"
+	waitbox "groupware" "erp"
+	;;
+esac
+
+# Modul "name of this module" beendet
+writeprepstat "erp"
+waitbox "$modulename" "erp"
