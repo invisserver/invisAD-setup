@@ -1,5 +1,5 @@
 #!/bin/bash
-### MODUL-NR. 013 ###
+### MODUL-NR. 014 ### 
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
@@ -8,9 +8,9 @@
 # License: GPLv3
 # Questions: info@invis-server.org
 
-# Firewall Einrichtung basierend auf SuSEfirewall2
+# openVPN Einrichten
 
-# SuSEfirewall2 based firewall setup
+# openVPN setup
 
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
 # GNU General Public License, wie von der Free Software Foundation veröffentlicht,
@@ -44,54 +44,63 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="SuSEfirewall2"
-pgsubtitle="Firewall Setup dor invis-server"
+windowtitle="openVPN"
+pgsubtitle="Setup openVPN"
 
-# Kopieren und anpassen der Firewall Konfiguration
-cp $TEMPLATEDIR/$modulename/SuSEfirewall2 /etc/sysconfig/
-file="SuSEfirewall2"
-path="/etc/sysconfig"
-nw=`getconfdata "Networkbase" "2"`
-netpart1=`echo "$nw" | cut -d "." -f 1`
-netpart2=`echo "$nw" | cut -d "." -f 2`
-netpart3=`echo "$nw" | cut -d "." -f 3`
-netpart4=`echo "$nw" | cut -d "." -f 4`
-netpart="$netpart1.$netpart2.$netpart3.$netpart4"
-shortnmask=`getconfdata "NMask-short" "2"`
-string="192.168.220.0/24%$netpart/$shortnmask"
-changevalues $path $file $string
+dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/openvpn.txt" 38 92
 
-# geaenderten SSH-Port einfuegen
-sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
+pgsubtitle="openvpn wird installiert" 
+zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
+zypper -n install -n openvpn 2>&1 | tee -a $LOGFILE | pgbox
+zyppercheck ${PIPESTATUS[0]}
+
+# Server-Konfiguration erzeugen.
+cp $TEMPLATEDIR/$modulename/invis-server.conf /etc/openvpn
+path="/etc/openvpn"
+file="invis-server.conf"
+
+string="invis-net.loc%$domain"
 changevalues $path $file "$string"
 
-# geaenderten HTTPS-Port einfuegen
-httpsport=`getconfdata "HTTPSPORT" "2"`
-string="httpsport%$httpsport"
+ip=`getconfdata "IP" "2"`
+string="invis-int-ip%$ip"
 changevalues $path $file "$string"
 
-# OwnCloud-Port einfuegen
-ocport=`getconfdata "OCPORT" "2"`
-string="ocport%$ocport"
-changevalues $path $file "$string"
-    
-# SSH Port ändern
-cp $TEMPLATEDIR/$modulename/sshd_config /etc/ssh/
-path="/etc/ssh"
-file="sshd_config"
-
-sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
+net=`getconfdata "Networkbase" "2"`
+string="netbase-address%$net"
 changevalues $path $file "$string"
 
-# SSHd neu starten
-chkservice "sshd"
-    
-# Firewall starten und in Runlevel eintragen
-chkservice "SuSEfirewall2_init"
-chkservice "SuSEfirewall2"
+netmask=`getconfdata "NMask-long" "2"`
+string="netmask-long%$netmask"
+changevalues $path $file "$string"
+
+ddns=`getconfdata "DDNS" "2"`
+string="openvpn_server%$ddns"
+changevalues $path $file "$string"
+
+# Schluesselverzeichnis erstellen und fuellen
+domain=`getconfdata "Domain" "2"`
+
+earsadir="/etc/easy-rsa/$domain"
+keydir="/etc/openvpn/keys"
+mkdir $keydir
+cp $earsadir/dh.pem $keydir
+cp $earsadir/crl.pem $keydir
+cp $earsadir/ca.crt $keydir
+
+#msgbox "Schlüssel und Zertifikat für VPN-Server wird erzeugt." "$windowtitle"
+## Webserverschluessel übernehmen
+cp $earsadir/private/$ddns.key $keydir
+cp $earsadir/issued/$ddns.crt $keydir
+
+msgbox "Beispiel Client-Konfigurationsdateien finden Sie in der Service-Freigabe des Fileservers.
+Um Schlüssel für einen Client zu erzeugen führen Sie inviscerts vpn aus. Weitere Infos unter wiki.invis-server.de." "openVPN Clients einrichten"
+# openvpn ins Runlevel-Konzept integrieren und starten
+# Seit openSUSE 13.1 bekommt jede openvpn-Konfiguration ein eigenes systemd Service-File
+# Start und Stop koennen damit fuer jede Konfiguration einzeln erfolgen.
+cp /usr/lib/systemd/system/openvpn@.service /usr/lib/systemd/system/openvpn@invis-server.service
+chkservice "openvpn@invis-server"
 
 # Modul "name of this module" beendet
-writeprepstat "openvpn"
-waitbox "$modulename" "openvpn"
+writeprepstat "monitoring"
+waitbox "$modulename" "monitoring"

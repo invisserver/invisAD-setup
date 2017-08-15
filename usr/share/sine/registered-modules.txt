@@ -11,6 +11,9 @@
 011:d:mysqlserver
 012:d:postgresqlserver
 013:d:firewall
-014:d:monitoring
-015:o:apcupsd
-016:o:groupware
+014:d:openvpn
+015:d:monitoring
+016:o:apcupsd
+017:o:groupware
+018:o:erp
+019:o:faxgate
