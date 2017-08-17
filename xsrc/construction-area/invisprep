@@ -1,7 +1,8 @@
 #!/bin/bash
-# Minimale openSUSE Leap Installation fuer invis Server Setup vorbereiten
+# Script zur Vorbereitung des invis-Server Setups
+# invis-Server 11/12
 
-# (c) 2015 Stefan Schaefer - invis-server.org
+# (c) 2015,2016 Stefan Schaefer - invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -17,21 +18,22 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
-# System vorbereiten, yast installieren
-zypper -n rm -t pattern minimal_base-conflicts
-zypper -n in -t pattern yast2_basis
-
 # Invis-Repo installieren
 while [[ ! $iversion =~ [s,u] ]]; do
 	read -p "Soll eine 'stable' oder 'unstable' Version des invis-Servers installiert werden? (s,u) " iversion
 	iversion=`echo $iversion | tr [:upper:] [:lower:]`
 done
+# SUSE Release ermitteln - fuer unstable Installation
+suseversion=`cat /etc/SuSE-release | grep VERSION |tr -d " " |cut -d "=" -f2`
 
 if [[ $iversion == s ]]; then
-	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable/openSUSE_42.1/spins:invis:stable.repo
+	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable/openSUSE_Leap_42.2/spins:invis:stable.repo
+	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable:/samba/openSUSE_42.2/spins:invis:stable:samba.repo
 else
-	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable/openSUSE_42.1/spins:invis:unstable.repo
+	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable/openSUSE_Leap_$suseversion/spins:invis:unstable.repo
+	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable:/samba/openSUSE_Leap_$suseversion/spins:invis:unstable:samba.repo
 fi
 
+# Repository-Schluessel importieren
 zypper --gpg-auto-import-keys ref
 
