@@ -47,7 +47,7 @@ clear
 windowtitle="openVPN"
 pgsubtitle="Setup openVPN"
 
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/openvpn.txt" 38 92
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/openvpn.txt" 38 92
 
 pgsubtitle="openvpn wird installiert" 
 zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox

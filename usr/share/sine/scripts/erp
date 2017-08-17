@@ -58,7 +58,7 @@ case $whicherp in
 	fi
 	
 	windowtitle="Kivitendo Installation"
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kivitendo.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kivitendo installieren?" 0 0
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kivitendo.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kivitendo installieren?" 0 0
 	cont=${?}
 
 	if [[ $cont == "0" ]]; then
@@ -81,7 +81,7 @@ Vergessen Sie bitte nicht das hierbei von Ihnen zu vergebende Passwort. ;-)" "$w
 	    sudo -u postgres createuser -d -r -S -P kivitendo
 	    ok=0
 	    while (( $ok != "1" ));do
-		dialog --backtitle "$DIALOGTITLE" --title "Kivitendo-DB Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+		dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kivitendo-DB Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
 Bitte geben Sie dass soeben vergebene Passwort für den Kivitendo Datenbankbenutzer zur weiteren Verwendung erneut ein.\n\n" 17 64 2 \
 		"Kivitendo-DB-Passwort:" 2 2 "" 2 23 10 0\
 		"Kontrolle:" 2 36 "" 2 47 10 0\
@@ -94,7 +94,7 @@ Bitte geben Sie dass soeben vergebene Passwort für den Kivitendo Datenbankbenut
 	    lxpw="${lxpassword[0]}"
 
 	    pgsubtitle="Datenbanken werden angelegt"
-	    dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
+	    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
 Legen Sie jetzt bitte fest auf welche Art Kivitendo Benutzer authentifiziert werden.\n
 Da Kivitendo nur eine 1 zu 1 Zuordnung von Benutzer zu Datenbank zulässt, ist die LDAP-Authentifizierung nur
 dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  16 80 8 \
@@ -131,7 +131,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
     
     "wawision")
 	windowtitle="waWision Installation"
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/wawision.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie waWision installieren?" 0 0
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/wawision.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --defaultno --yesno "Möchten Sie waWision installieren?" 0 0
 	cont=${?}
 	
 	if [[ $cont == "0" ]]; then

@@ -48,7 +48,7 @@ windowtitle="PostgreSQL Server"
 pgsubtitle="PostgreSQL Server Setup"
 
 #Frage nach Version von PostgreSQL
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/postgresql.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle" --yesno "Soll die openSUSE-Version von PostgreSQL installiert werden?" 0 0
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/postgresql.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle" --yesno "Soll die openSUSE-Version von PostgreSQL installiert werden?" 0 0
 cont=${?}
 
 # Weitermachen?

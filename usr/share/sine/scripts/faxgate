@@ -47,13 +47,13 @@ clear
 windowtitle="Faxserver Setup"
 pgsubtitle="Capisuite with Faxgate Extension"
 
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/faxgate.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Faxgate installieren?" 0 0
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/faxgate.txt" 38 90 --and-widget --backtitle "$dialogtitle" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Faxgate installieren?" 0 0
 cont=${?}
 
 if [[ $cont == "0" ]]; then
     ok=0
     while [[ $ok != "1" ]]; do
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --inputbox "Geben Sie bitte Ihre Telefonvorwahl ein." 0 0 \
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --inputbox "Geben Sie bitte Ihre Telefonvorwahl ein." 0 0 \
 	2>$SINEWORKINGDIR/sine_temp
 	exitcode=${?}
 	vorwahl=`cat $SINEWORKINGDIR/sine_temp`
@@ -94,7 +94,7 @@ if [[ $cont == "0" ]]; then
     string="vorwahl%$vorwahl"
     changevalues $path $file "$string"
 
-    dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
 Je nach dem, ob Sie über lediglich eine oder mehrere Faxnummern verfügen,
 können Sie Faxgate für den Single- oder Multi-User-Betrieb einrichten.\n\n
 Für den Multi-User-Betrieb sollten Sie über einen ISDN Anlagenanschluss verfügen."  16 90 8 \

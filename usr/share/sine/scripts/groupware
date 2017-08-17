@@ -53,7 +53,7 @@ case "$whichgroupware" in
 
     "tine20" )
 	windowtitle="tine20 Installation"
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/tine20.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/tine20.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
 	cont=${?}
 
 	if [[ $cont == "0" ]]; then
@@ -105,7 +105,7 @@ case "$whichgroupware" in
 
     "sogo" )
 	windowtitle="SOGo Installation"
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/sogo.txt" 38 90
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/sogo.txt" 38 90
 	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
 	zypper -n install -n `cat $PACKAGELISTDIR/sogo` 2>&1 | tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
@@ -156,7 +156,7 @@ case "$whichgroupware" in
     "kopano" )
 	## Kopano
 	windowtitle="Kopano Konfiguration"
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kopano.txt" 38 90
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kopano.txt" 38 90
 
 	## Leere Kopano-Datenbank anlegen
 	kopanodbuserpw=`mkdbsilent kopano kopano a`
@@ -270,7 +270,7 @@ case "$whichgroupware" in
 	;;
     "roundcube" )
 	windowtitle="Roundcube Installation"
-	dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/roundcube.txt" 38 90
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/roundcube.txt" 38 90
 	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
 	zypper -n install -n roundcubemail 2>&1 | tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}

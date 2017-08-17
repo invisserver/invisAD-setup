@@ -61,7 +61,7 @@ country="DE"
 #---# openSSL
 ok=0
 while (( $ok != "6" ));do
-    dialog --backtitle "$DIALOGTITLE" --title "Fragen zur openSSL Umgebung" --form "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fragen zur openSSL Umgebung" --form "$DIALOGSHORTHELP\n\n
 Die eingegebenen Daten sollten der Realität entsprechen, da sie beim Bau von SSL-Zertifikaten verwendet werden.
 Vor allem die email-Adresse des für die Zertifikate Verantwortlichen (Feld: Name) muss erreichbar sein.\n\n
 Alle Eingaben werden auf Plausibilität geprüft, fehlerhaft ausgefüllte Felder werden geleert." 26 80 10 \
@@ -108,7 +108,7 @@ done
 
 ok=0
 while (( $ok != "2" ));do
-    dialog --backtitle "$DIALOGTITLE" --title "IT Dienstleister" --form "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "IT Dienstleister" --form "$DIALOGSHORTHELP\n\n
 Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Administrators ein." 18 74 5 \
     "email:" 2 2 "$admail" 2 20 45 0\
     "Name:" 4 2 "$admin" 4 20 45 0\
@@ -129,7 +129,7 @@ done
 #---# Netzwerk
 ok=1
 while (( $ok != "0" ));do
-    dialog --backtitle "$DIALOGTITLE" --title "Fragen zur Netzwerkumgebung" --form "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fragen zur Netzwerkumgebung" --form "$DIALOGSHORTHELP\n\n
 Die Vorgabewerte wurden aus der Systemkonfiguration ermittelt und sollten somit richtig sein. \nPrüfen Sie vor allem,
 ob der angezeigte Domänenname aus Domain und Top-Level-Domain besteht; also zweiteilig ist. Domänennamen wie der bei
 openSUSE vorgegebene \"site\" bereiten im weiteren Verlauf der invis Server Installation Probleme.\nVerwenden Sie 
@@ -195,7 +195,7 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
 # DNS Forwarder
 ok=3
 while (( $ok != "0" ));do
-    dialog --backtitle "$DIALOGTITLE" --title "Forward DNS Server" --form "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Forward DNS Server" --form "$DIALOGSHORTHELP\n\n
 Auf Ihrem invis Server wird ein DNS-Dienst eingerichtet. Zur Beschleunigung von DNS Anfragen ist es sinnvoll
 diesem bis zu drei \"Forward Nameserver\" zu nennen. Dies können beispielsweise der DNS eines vorgeschalteten
 Routers, DNS Server des Internet Zugangs Providers oder unabhängige DNS-Server im Internet sein.\n\n
@@ -234,7 +234,7 @@ ok=0
 # MySQL root-Passwort 
 ok=0
 while (( $ok != "1" ));do
-    dialog --backtitle "$DIALOGTITLE" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
 Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
 Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
     "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
@@ -251,7 +251,7 @@ mysqlpw="${mysqlsecrets[0]}"
 # Ntop Admin-Passwort 
 ok=0
 while (( $ok != "1" ));do
-    dialog --backtitle "$DIALOGTITLE" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
 Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
 Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
     "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
@@ -267,7 +267,7 @@ ntoppw="${ntopsecrets[0]}"
 
 #---# MAIL & Groupware Server
 ## Dovecot oder Kopano?
-dialog --backtitle "$DIALOGTITLE" --title "MAIL & Groupware Server" --radiolist "$DIALOGSHORTHELP\n\n
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MAIL & Groupware Server" --radiolist "$DIALOGSHORTHELP\n\n
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
     kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
     roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
@@ -278,7 +278,7 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 
 if [[ $whichgroupware == "kopano" ]]; then
     # Welche Kopano Version
-    dialog --backtitle "$DIALOGTITLE" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
 Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
     limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
     opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
@@ -288,7 +288,7 @@ fi
 
 #---# ERP-Software
 # Es kann zwischen Kivitendo, Wawisoon oder keiner ERP-Software entschieden werden
-dialog --backtitle "$DIALOGTITLE" --title "Enterprise Ressource Planning Software" --radiolist "$DIALOGSHORTHELP\n\n
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Enterprise Ressource Planning Software" --radiolist "$DIALOGSHORTHELP\n\n
 Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 14 100 6 \
     Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
     waWision "Moderne ERP Lösung für Handel und Dienstleistung inkl. Webshop-Schnittstelle." on\
@@ -298,7 +298,7 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
     whicherp=`tolower $whicherp`
 
 #---# Virenscanner Radiobutton
-#    dialog --backtitle "$DIALOGTITLE" --title "Virenscanner" --radiolist "$DIALOGSHORTHELP\n\n
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Virenscanner" --radiolist "$DIALOGSHORTHELP\n\n
 #Wählen Sie den von Ihnen bevorzugten Virenscanner aus. Er wird zum regelmäßen Scannen der Filerserver-Freigaben sowie
 #aller ein- und ausgehenden emails verwendet.\n\n
 #Wenn Sie Antivir von Avira auswählen, wird im weiteren Verlauf der Installation eine kostenfreie Lizenz zur privaten
@@ -313,7 +313,7 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
 av=clamav
 
 #---# Monitoring
-dialog --backtitle "$DIALOGTITLE" --title "Vorbereitung für Server Monitoring" --radiolist "$DIALOGSHORTHELP\n\n
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Server Monitoring" --radiolist "$DIALOGSHORTHELP\n\n
 Planen Sie Ihren Server durch eine Monitoring Lösung zu überwachen?
 Für die Lösungen Icinga, Nagios oder Zabbix können im Verlauf des Setups Vorbereitungen getroffen werden.
 \n\n
@@ -331,7 +331,7 @@ exthttps=${?}
 if [[ $exthttps == "0" ]]; then
     ok=0
     while [[ $ok != "1" ]]; do
-	dialog --backtitle "$DIALOGTITLE" --title "HTTPs Zugang" --inputbox "Geben Sie bitten den vollständigen Namen (FQDN) oder die IP-Adresse ein unter dem/der ihr invis Server erreichbar sein soll." 0 0 \
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "HTTPs Zugang" --inputbox "Geben Sie bitten den vollständigen Namen (FQDN) oder die IP-Adresse ein unter dem/der ihr invis Server erreichbar sein soll." 0 0 \
 	2>$SINEWORKINGDIR/sine_temp
 	exitcode=${?}
 	ddnshn=`cat $SINEWORKINGDIR/sine_temp`
@@ -356,7 +356,7 @@ bekannt=${?}
 ok=0
 if [[ $bekannt == "0" ]]; then
     while (( $ok != "4" ));do
-	dialog --backtitle "$DIALOGTITLE" --title "SMTP Zugangsdaten" --form "$DIALOGSHORTHELP\n\n
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "SMTP Zugangsdaten" --form "$DIALOGSHORTHELP\n\n
 Geben Sie bitte den Hostnamen bzw. die IP-Adresse Ihres SMTP-Relays, sowie den zuhehörigen Benutzernamen und das Passwort ein." 20 74 9 \
 	"Hostname/IP:" 2 2 "$mailserver" 2 20 45 0\
 	"Port [25/587]:" 4 2 "$smtpport" 4 20 45 0\
@@ -418,7 +418,7 @@ Sollen alte Dateien und Verzeichnisse automatisch aus der Transfer-Freigabe gel�
 cleantr=${?}
     
 if [[ $cleantr == "0" ]]; then
-    dialog --backtitle "$DIALOGTITLE" --title "Transferverzeichnis aufräumen" --radiolist "Wie alt dürfen Dateien und Verzeichnisse in der Transferfreigabe maximal werden?" 12 50 4\
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Transferverzeichnis aufräumen" --radiolist "Wie alt dürfen Dateien und Verzeichnisse in der Transferfreigabe maximal werden?" 12 50 4\
     "21 Tage" "3 Wochen" on\
     "42 Tage" "6 Wochen" off\
     "90 Tage" "3 Monate" off\
@@ -434,7 +434,7 @@ Sollen alte Datensicherungen automatisch gelöscht werden?" "Datensicherungen au
 cleandasi=${?}
     
 if [[ $cleandasi == "0" ]]; then
-    dialog --backtitle "$DIALOGTITLE" --title "Datensicherungen aufräumen" --radiolist "Wie alt sollen interne Datensicherungen maximal werden?" 12 50 4\
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Datensicherungen aufräumen" --radiolist "Wie alt sollen interne Datensicherungen maximal werden?" 12 50 4\
     "21 Tage" "3 Wochen" on\
     "42 Tage" "6 Wochen" off\
     "90 Tage" "3 Monate" off\

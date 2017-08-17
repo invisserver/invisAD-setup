@@ -47,7 +47,7 @@ clear
 windowtitle="APC UPS Daemon"
 pgsubtitle="apcupsd setup"
 
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/apcupsd.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie apcupsd installieren?" 0 0
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/apcupsd.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie apcupsd installieren?" 0 0
 cont=${?}
 
 # Weitermachen?
