@@ -65,7 +65,7 @@ if [[ $cont == "0" ]]; then
     # Treiber installieren
     pgsubtitle="Fritzcard-Treiber werden installiert"
     # Nachfolgende Zeilen ersetzen das fcinst-Script.
-    zypper ar -f -c http://www.fkn-systems.de/_repos/FKN-Repo_-_fcpci/FKN-Systems_-_Repo_-_fcpci
+    zypper ar -f -c http://www.fkn-systems.de/_repos/FKN-Repo_-_fcpci/ FKN-Systems_-_Repo_-_fcpci
     rpm --import http://www.fkn-systems.de/_repos/FKN-Repo_-_fcpci/repodata/repomd.xml.key
     kernel=`uname -r | cut -d "-" -f1-2`
     packetname=`zypper search -s fcpci |grep $kernel | tr -d " " | cut -d "|" -f2`
