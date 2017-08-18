@@ -112,8 +112,8 @@ Geben Sie ein zugehöriges Passwort ein." "$windowtitle"
 
 	faxpw=`pwgen -Bsnc 8 1`
 	## Passwort darf nicht ablaufen
-	samba-tool user setexpiry --noexpiry ldap.admin
 	samba-tool user create fax "$faxpw" --surname="CAPI" --given-name="Fax" --description="Beutzer für Fax-System" 2>&1| tee -a $LOGFILE | pgbox
+	samba-tool user setexpiry --noexpiry fax
 	msgbox "Es wurde ein Benutzer \"fax\" angelegt. Dieser Benutzer wird für den Zugang zum Fax-System benötigt.\nSein Passwort lautet: $faxpw"
 
 	echo "Fax-Benutzer erfolgreich eingerichtet"|mailx -s "Init-Mail" fax@localhost
