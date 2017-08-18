@@ -53,15 +53,15 @@ ipaddr=`getconfdata "IP" "2"`
 path="/etc/cups"
 file="cupsd.conf"
 string="192.168.220.10%$ipaddr"
-changevalues $path $file $strings
+changevalues $path $file $string
 
 net=`getconfdata "Networkbase" "2"`
 string="192.168.220.0%$net"
-changevalues $path $file $strings
+changevalues $path $file $string
 
 mask=`getconfdata "NMask-short" "2"`
 string="netmask%$mask"
-changevalues $path $file $strings
+changevalues $path $file $string
 
 chkservice "cups"
 
