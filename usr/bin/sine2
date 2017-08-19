@@ -166,22 +166,31 @@ case $1 in
 	    MODULES[i]=$line
 	    i=$(( $i + 1 ))
 	done < $REQMODFILE
+	modulecount=$i
 
+	i=0
 	# going through the modules
 	for line in ${MODULES[@]}; do
+	    ((i=$i+1))
 	    datum=`date "+%b %d %H:%M:%S"`
-	    module=`echo $line|cut -d ":" -f3`
+	    modulename=`echo $line|cut -d ":" -f3`
 	    number=`echo $line|cut -d ":" -f1`
 	    if [[ $number < $prepstatnumber ]]; then
-		echo "$datum : sine2 module \"$module\" is already done."  >> $LOGFILE
+		echo "$datum : sine2 module \"$modulename\" is already done."  >> $LOGFILE
 		continue
 	    fi
-	    if [[ -x /$moduledir/$module  ]]; then
-		echo "$datum : Starting sine2 module \"$module\"."| tee -a $LOGFILE | pgbox
+	    if [[ -x /$moduledir/$modulename  ]]; then
+		echo "$datum : Starting sine2 module \"$modulename\"."| tee -a $LOGFILE | pgbox
 		sleep 1
-		/$moduledir/$module 
+		/$moduledir/$modulename
 		if [[ $? == 5 ]]; then
 		    exit
+		else
+		    if [[ $i < $modulecount ]]; then
+			#nextmodule=`echo ${MODULES[$i]}|cut -d ":" -f3`
+			#writeprepstat "$nextmodule"
+			#waitbox "$module" "$nextmodule"
+		    fi
 		fi
 	    else
 		exit 5
@@ -202,12 +211,12 @@ case $1 in
     *)
 	# calling optional modules directly
 	if [[ -z $1 ]];then
-	    module=$1
+	    modulename=$1
 	fi
-	if [[ $prepstat == "ready" ]] && [[ -x $moduledir/$module  ]]; then
-	    $moduledir/$module
+	if [[ $prepstat == "ready" ]] && [[ -x $moduledir/$modulename  ]]; then
+	    $moduledir/$modulename
 	else
-	    echo "Das Modul \"$module\" ist nicht vorhanden oder nicht ausführbar."
+	    echo "Das Modul \"$modulename\" ist nicht vorhanden oder nicht ausführbar."
 	fi
 	echo "ready" > $SINEWORKINGDIR
 	exit
