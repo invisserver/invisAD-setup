@@ -80,7 +80,7 @@ pgbox() {
 
 waitbox() {
     # Fortschrittsbalken
-    i=0
+    lokal i=0
 
     { while [ $i -lt 50 ]; do
 	(( i=$i+1 ))
@@ -91,7 +91,7 @@ waitbox() {
 
 waitinfobox() {
     # Fortschrittsbalken
-    i=0
+    lokal i=0
 
     { while [ $i -lt 70 ]; do
 	(( i=$i+1 ))
@@ -155,7 +155,7 @@ esac
 
 # Passwoerter sicher aendern
 smbadpw() {
-    ok=0
+    lokal ok=0
     while (( $ok != "1" ));do
 	dialog --backtitle "$DIALOGTITLE" --title "Benutzer Passwort ändern" --insecure --passwordform "$DIALOGSHORTHELP\n\n
 Geben Sie das Passwort für Benutzer $1 ein.\n\n
