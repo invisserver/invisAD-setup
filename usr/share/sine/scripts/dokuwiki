@@ -61,18 +61,18 @@ if [[ $cont == "0" ]];then
     # Display Wiki Page Plugin herunterladen
     # Vorübergehender Link fuer Displaywikipage
     pgsubtitle="Dokuwiki-Erweiterungen werden heruntergeladen und installiert"
-    wget http://cloud.github.com/downloads/tatewake/dokuwiki-plugin-displaywikipage/displaywikipage-stable.tar.gz 2>&1 | tee -a $LOGFILE | pgbox
+    wget -P $SINEWORKINGIR http://cloud.github.com/downloads/tatewake/dokuwiki-plugin-displaywikipage/displaywikipage-stable.tar.gz 2>&1 | tee -a $LOGFILE | pgbox
     getpath=`find $SINEWORKINGDIR -name "display*.tar.gz"`
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $LOGFILE | pgbox
 
     # Display Wiki Page Plugin herunterladen
     # Voruebergehender Link fuer Monobook Template
-    wget -O monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $LOGFILE | pgbox
+    wget -P $SINEWORKINGIR -O monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $LOGFILE | pgbox
     getpath=`find $SINEWORKINGDIR -name "monobook*.tar.gz"`
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $LOGFILE | pgbox
 
     # Encrypt Password Plugin
-    wget https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
+    wget -P $SINEWORKINGIR https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
     getpath=`find $SINEWORKINGDIR -name "master.zip"`
     unzip $getpath -d /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $LOGFILE | pgbox
     mv /srv/www/htdocs/dokuwiki/lib/plugins/dw-plugin-encryptedpasswords-master /srv/www/htdocs/dokuwiki/lib/plugins/encryptedpasswords 2>&1 | tee -a $LOGFILE | pgbox
