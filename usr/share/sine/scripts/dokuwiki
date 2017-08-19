@@ -67,7 +67,7 @@ if [[ $cont == "0" ]];then
 
     # Display Wiki Page Plugin herunterladen
     # Voruebergehender Link fuer Monobook Template
-    wget -O /$SINEWORKINGDIR/monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $LOGFILE | pgbox
+    wget -O $SINEWORKINGDIR/monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $LOGFILE | pgbox
     getpath=`find $SINEWORKINGDIR -name "monobook-stable.tar.gz"`
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $LOGFILE | pgbox
 
