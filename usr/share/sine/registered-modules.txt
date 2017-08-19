@@ -18,3 +18,6 @@
 018:o:erp
 019:o:faxgate
 020:o:dokuwiki
+021:o:owncloud
+022:o:kimai
+023:o:virtualbox
