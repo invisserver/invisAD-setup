@@ -1,3 +1,0 @@
-Cmnd_Alias      CHKMDR =  /usr/lib/nagios/plugins/check_md_raid
-
-nagios  ALL = (root) NOPASSWD:CHKMDR

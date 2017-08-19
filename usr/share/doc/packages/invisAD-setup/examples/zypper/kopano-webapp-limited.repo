@@ -1,8 +1,0 @@
-[Kopano-Webapp-limited]
-name=Kopano-Webapp-limited
-enabled=1
-autorefresh=1
-baseurl=https://download.kopano.io/limited/webapp:/final/openSUSE_Leap_42.2/
-path=/
-type=rpm-md
-keeppackages=0

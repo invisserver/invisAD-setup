@@ -1,8 +1,0 @@
-[sernet-samba-4.2]
-name=SerNet Samba 4.2 Packages (sles-12)
-type=rpm-md
-baseurl=https://USERNAME:ACCESSKEY@download.sernet.de/packages/samba/4.2/sles/12/
-gpgcheck=1
-gpgkey=https://USERNAME:ACCESSKEY@download.sernet.de/packages/samba/4.2/sles/12/repodata/repomd.xml.key
-enabled=1
-

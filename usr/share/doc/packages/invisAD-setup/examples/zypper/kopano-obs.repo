@@ -1,7 +1,0 @@
-[server_mail_kopano]
-name=Kopano Core (openSUSE_Leap_42.2)
-type=rpm-md
-baseurl=http://download.opensuse.org/repositories/server:/mail:/kopano/openSUSE_Leap_42.2/
-gpgcheck=1
-gpgkey=http://download.opensuse.org/repositories/server:/mail:/kopano/openSUSE_Leap_42.2//repodata/repomd.xml.key
-enabled=1
