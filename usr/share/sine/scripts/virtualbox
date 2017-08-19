@@ -1,0 +1,96 @@
+#!/bin/bash
+### MODUL-NR. 022 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Virtualbox Installation
+
+# Virtualbox setup
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="VirtualBox"
+pgsubtitle="VirtualBox und phpvirtualbox installieren"
+
+dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/virtualbox.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Virtualbox installieren?" 0 0
+cont=${?}
+
+# Weitermachen?
+if [[ $cont == "0" ]]; then
+    pgsubtitle="Software wird installiert"
+
+    # Umgebungsvariablen fuer Virtualbox erstellen
+    cp $TEMPLATEDIR/$modulename/virtualbox /etc/default
+    # Virtualbox Repo installieren
+    cp $REPODIR/virtualbox.repo /etc/zypp/repos.d/
+    rpmkeyimporter
+    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install -n `cat $PACKAGELISTDIR/virtualbox` 2>&1 | tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    # lokaler Benutzer vbox wird angelegt
+    useradd -c "Dummy Benutzer fuer phpVirtualBox" vbox 2>&1 | tee -a $LOGFILE | pgbox
+    pwvbox=`pwgen -sBnc 8 1`
+    echo "vbox:$pwvbox" | chpasswd | tee -a $LOGFILE | pgbox
+    # phpvirtualbox Konfiguration anpassen
+    path="/etc/phpvirtualbox"
+    file="config.php"
+    cp $TEMPLATEDIR/$modulename/config.php $path
+    string="vboxpass%$pwvbox"
+    changevalues $path $file "$string"
+    swpestat phpvirtualbox TRUE 2>&1 | tee -a $LOGFILE | pgbox
+    chkservice "vboxweb-service"
+
+    # vboxinit installieren
+    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install -n invis-vboxinit 2>&1 | tee -a $LOGFILE | pgbox
+    chkservice "vboxinit"
+
+    # Arbeitsverzeichnisse für Virtualbox anlegen
+    vbworkingdir="/srv/virtualbox"
+    mkdir -p $vbworkingdir/apps
+    mkdir -p $vbworkingdir/isos
+    chown -R .vboxusers $vbworkingdir
+    chmod -R g+ws $vbworkingdir
+    VBoxManage setproperty machinefolder $vbworkingdir
+
+else
+    msgbox "Virtualbox Installation übersprungen" "$windowtitle"
+fi
+
+# Modul "name of this module" beendet
+writeprepstat "ready"
