@@ -85,10 +85,4 @@ case $whichmonitoring in
 	;;
 esac
 
-# Apparmor deaktivieren -> muss mit eigenen Samba Paketen wieder aktiviert werden
-systemctl disable apparmor.service 2>&1 | tee -a $LOGFILE | pgbox
-systemctl stop apparmor.service 2>&1 | tee -a $LOGFILE | pgbox
-    
-# nur zur Sicherheit ;-)
-chkconfig -d boot.apparmor 2>&1 | tee -a $LOGFILE | pgbox
 

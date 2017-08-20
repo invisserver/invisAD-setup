@@ -1,0 +1,22 @@
+# Last Modified: Sun Aug 20 12:35:43 2017
+#include <tunables/global>
+
+/usr/sbin/samba_spnupdate {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/python>
+  #include <abstractions/samba>
+
+  /proc/meminfo r,
+  /usr/ r,
+  /usr/bin/ r,
+  /usr/bin/env rix,
+  /usr/bin/python r,
+  /usr/bin/python2.7 rix,
+  /usr/lib/ r,
+  /usr/lib64/samba/ldb/*.so mr,
+  /usr/local/lib/ r,
+  /usr/local/lib64/ r,
+  /usr/sbin/samba_spnupdate r,
+
+}
