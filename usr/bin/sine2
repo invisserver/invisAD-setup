@@ -213,6 +213,8 @@ case $1 in
     *)
 	# calling optional modules directly
 	if [[ -z $1 ]];then
+	    echo "Fehler: Kein Modul angegeben."
+	else
 	    modulename=$1
 	fi
 	if [[ $prepstat == "ready" ]] && [[ -x $moduledir/$modulename  ]]; then

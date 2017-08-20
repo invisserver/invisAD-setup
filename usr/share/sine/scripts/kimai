@@ -47,9 +47,10 @@ clear
 windowtitle="Kimai"
 pgsubtitle="Kimai Arbeitszeiterfassung installieren"
 
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$setupdir/infofiles/kimai.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kimai installieren?" 0 0
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/kimai.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kimai installieren?" 0 0
 cont=${?}
 
+# Weitermachen?
 if [[ $cont == "0" ]]; then
     pgsubtitle="Software wird installiert"
     zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
@@ -71,4 +72,3 @@ if [[ $cont == "0" ]]; then
 else
     msgbox "Kimai Installation übersprungen" "$windowtitle"
 fi
-
