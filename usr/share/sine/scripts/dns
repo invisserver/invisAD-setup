@@ -98,6 +98,3 @@ if (( ${#ips[*]} == 2 )); then
     LANG=$oldlang
 fi
 
-# Modul "dns" beendet
-writeprepstat "dhcp"
-waitbox "$modulename" "dhcp"

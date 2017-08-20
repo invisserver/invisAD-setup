@@ -101,6 +101,3 @@ Um Schlüssel für einen Client zu erzeugen führen Sie inviscerts vpn aus. Weit
 cp /usr/lib/systemd/system/openvpn@.service /usr/lib/systemd/system/openvpn@invis-server.service
 chkservice "openvpn@invis-server"
 
-# Modul "name of this module" beendet
-writeprepstat "monitoring"
-waitbox "$modulename" "monitoring"

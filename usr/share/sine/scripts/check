@@ -117,10 +117,6 @@ if [[ $prepok == "0" ]]; then
 	done
     fi
 
-    # Module check done
-    writeprepstat "quest"
-    waitbox "$modulename" "quest"
-
 else
     msgbox "Erfüllen Sie zunächst alle Voraussetzungen und starten Sie das Script dann erneut" "Installationsvoraussetzungen"
     exit 5

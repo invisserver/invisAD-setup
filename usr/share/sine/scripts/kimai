@@ -72,6 +72,3 @@ else
     msgbox "Kimai Installation übersprungen" "$windowtitle"
 fi
 
-# Modul "name of this module" beendet
-writeprepstat "virtualbox"
-waitbox "$modulename" "virtualbox"

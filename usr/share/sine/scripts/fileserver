@@ -188,6 +188,3 @@ file=exports
 string="192.168.220.0/24%$netbase/$nmaskshort"
 changevalues $path $file "$string"
 
-# Modul "name of this module" beendet
-writeprepstat "webserver"
-waitbox "$modulename" "webserver"

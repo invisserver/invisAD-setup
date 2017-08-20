@@ -543,6 +543,3 @@ IFS=$oldifs
 # Temporaermuell loeschen
 rm -f ./sine_temp
 
-# Modul "quest" beendet
-writeprepstat "sysprep"
-waitbox "$modulename" "sysprep"

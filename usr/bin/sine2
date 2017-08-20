@@ -185,12 +185,14 @@ case $1 in
 		/$moduledir/$modulename
 		if [[ $? == 5 ]]; then
 		    exit
-		#else
-		    #if [[ $i -lt $modulecount ]]; then
-			#nextmodule=`echo ${MODULES[$i]}|cut -d ":" -f3`
-			#writeprepstat "$nextmodule"
-			#waitbox "$modulename" "$nextmodule"
-		    #fi
+		else
+		    if [[ $i -lt $modulecount ]]; then
+			nextmodule=`echo ${MODULES[$i]}|cut -d ":" -f3`
+			writeprepstat "$nextmodule"
+			waitbox "$modulename" "$nextmodule"
+		    else
+			writeprepstat "ready"
+		    fi
 		fi
 	    else
 		exit 5

@@ -119,13 +119,9 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 
 	    # Kivitendo im Portal aktivieren
 	    swpestat Kivitendo TRUE 2>&1 | tee -a $LOGFILE | pgbox
-	    
-	    writeprepstat "faxgate"
-	    waitbox "$modulename" "faxgate"
 	
 	else
 	    msgbox "Kivitendo Installation übersprungenen" "$windowtitle"
-	    writeprepstat "faxgate"
 	fi 
 	;;
     
@@ -146,17 +142,12 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    # Wawision im Portal aktivieren
 	    swpestat waWision TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
-	    writeprepstat "faxgate"
-	    waitbox "$modulename" "faxgate"
 	else
 	    msgbox "waWision Installation übersprungenen" "$windowtitle"
-	    writeprepstat "faxgate"
 	fi
 	;;
 
     *)
         msgbox "Keine ERP Software gewünscht" "$windowtitle"
-	writeprepstat "faxgate"
-	waitbox "$modulename" "faxgate"
 	;;
 esac

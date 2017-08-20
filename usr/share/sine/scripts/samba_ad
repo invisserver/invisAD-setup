@@ -303,7 +303,3 @@ cp $TEMPLATEDIR/$modulename/ldap/phpldapadmin/config.php /srv/www/htdocs/phpldap
 fullhostname=$(hostname -f)
 strings="invis.invis-net.loc%$fullhostname"
 changevalues /srv/www/htdocs/phpldapadmin/config/ config.php "$strings"
-
-# Modul "name of this module" beendet
-writeprepstat "dns"
-waitbox "$modulename" "dns"

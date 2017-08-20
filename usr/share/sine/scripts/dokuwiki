@@ -120,6 +120,3 @@ else
 	msgbox "Wenn Sie es sich zu einem späteren Zeitpunkt anders überlegen, können Sie diesen Schritt durch erneutes Aufrufen des Setup-Scripts mit dem Parameter \"dokuwiki\" wiederholen." "Dokuwiki Installation übersprungen"
 fi
 
-# Modul "name of this module" beendet
-writeprepstat "owncloud"
-waitbox "$modulename" "owncloud"

@@ -94,12 +94,8 @@ case "$whichgroupware" in
 	    # Gruppe fuer Tine 2.0 anlegen
 	    samba-tool group add --description="Gruppe zur Beschränkung der Tine 2.0 Nutzer" tine20 2>&1| tee -a $LOGFILE | pgbox
 	
-	    writeprepstat "erp"
-	    waitbox "$modulename" "erp"
 	else
 	    msgbox "Tine 2.0 Installation übersprungenen." "$windowtitle"
-	    writeprepstat "erp" 
-	    waitbox "$modulename" "erp"
 	fi
 	;; 
 
@@ -150,8 +146,6 @@ case "$whichgroupware" in
 	# SoGo im Portal aktivieren
 	swpestat SOGo TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
-	writeprepstat "erp"
-	waitbox "$modulename" "erp"
 	;;
     "kopano" )
 	## Kopano
@@ -265,8 +259,6 @@ case "$whichgroupware" in
 	# Webapp im Portal aktivieren
 	swpestat KopanoApp TRUE 2>&1 | tee -a $LOGFILE | pgbox
     
-	writeprepstat "erp"
-	waitbox "$modulename" "erp"
 	;;
     "roundcube" )
 	windowtitle="Roundcube Installation"
@@ -294,7 +286,5 @@ case "$whichgroupware" in
 	# Roundcube im Portal aktivieren
 	swpestat Roundcube TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
-	writeprepstat "erp"
-	waitbox "$modulename" "erp"
 	;;
 esac

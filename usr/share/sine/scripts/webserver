@@ -239,7 +239,4 @@ a2enflag SSL
 pgsubtitle="Mehrere Dienste werden neu gestartet"
 chkservice "shellinaboxd"
 chkservice "apache2"
-
-# Modul "name of this module" beendet
-writeprepstat "mysqlserver"
-waitbox "$modulename" "mysqlserver"
+    

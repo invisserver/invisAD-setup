@@ -73,7 +73,3 @@ if [[ $cont == "0" ]]; then
 else
     msgbox "apcupsd Installation übersprungen" "$windowtitle"
 fi
-
-# Modul "name of this module" beendet
-writeprepstat "groupware"
-waitbox "$modulename" "groupware"

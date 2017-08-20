@@ -92,6 +92,3 @@ systemctl stop apparmor.service 2>&1 | tee -a $LOGFILE | pgbox
 # nur zur Sicherheit ;-)
 chkconfig -d boot.apparmor 2>&1 | tee -a $LOGFILE | pgbox
 
-# Modul "name of this module" beendet
-writeprepstat "apcupsd"
-waitbox "$modulename" "apcupsd"

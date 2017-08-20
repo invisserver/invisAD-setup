@@ -92,6 +92,3 @@ chkservice "sshd"
 chkservice "SuSEfirewall2_init"
 chkservice "SuSEfirewall2"
 
-# Modul "name of this module" beendet
-writeprepstat "openvpn"
-waitbox "$modulename" "openvpn"

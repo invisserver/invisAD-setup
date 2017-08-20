@@ -47,8 +47,3 @@ clear
 windowtitle="Dialog Titel einfügen - insert dialog title"
 pgsubtitle="Kurzbeschreibung einfügen - insert short description"
 
-
-
-# Modul "name of this module" beendet
-writeprepstat "name of the next module"
-waitbox "$modulename" "name of the next module"

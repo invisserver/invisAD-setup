@@ -70,6 +70,3 @@ sysconf_addword /etc/sysconfig/dhcpd DHCPD_CONF_INCLUDE_FILES /etc/invis/certs/c
 # DHCP Dienst starten und ins Runlevel-Konzept einbinden.
 chkservice "dhcpd"
 
-# Modul "name of this module" beendet
-writeprepstat "mailserver"
-waitbox "$modulename" "mailserver"

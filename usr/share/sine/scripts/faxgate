@@ -146,10 +146,6 @@ Geben Sie ein zugehöriges Passwort ein." "$windowtitle"
     # Faxgate im Portal aktivieren
     swpestat FaxClient TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
-    writeprepstat "dokuwiki"
-    waitbox "faxgate" "dokuwiki"
-
 else
     msgbox "Fax-Server-Installation übersprungenen." "$windowtitle"
-    writeprepstat "dokuwiki"
 fi 

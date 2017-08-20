@@ -64,7 +64,3 @@ string="netmask%$mask"
 changevalues $path $file $string
 
 chkservice "cups"
-
-# Modul "name of this module" beendet
-writeprepstat "fileserver"
-waitbox "$modulename" "fileserver"

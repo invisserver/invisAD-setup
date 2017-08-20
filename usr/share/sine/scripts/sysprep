@@ -377,7 +377,3 @@ changevalues $INVISCONFDIR $file "$string"
 # cron & at-Daemon in Runlevel integrieren und starten
 chkservice "cron"
 chkservice "atd"
-
-# Modul "name of this module" beendet
-writeprepstat "samba_ad"
-waitbox "sysprep" "samba_ad"

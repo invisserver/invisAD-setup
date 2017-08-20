@@ -85,6 +85,3 @@ mysqladmin password $mysqlpw
 # Neuaufbau der Postfix chroot Umgebung zur Unsterstützung von mysql.sock 
 chkservice "postfix"
 
-# Modul "name of this module" beendet
-writeprepstat "postgresqlserver"
-waitbox "$modulename" "postgresqlserver"

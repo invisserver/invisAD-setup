@@ -79,7 +79,3 @@ if [[ $pgsqlrl == "1" ]]; then
 else
     chkservice "postgresql"
 fi
-
-# Modul "name of this module" beendet
-writeprepstat "firewall"
-waitbox "$modulename" "firewall"

@@ -273,6 +273,3 @@ chown fetchmail /var/lib/cornaz/inuse/.fetchmailrc	2>&1|tee -a $LOGFILE |pgbox
 # fetchmail starten und in Autostart aufnehmen
 chkservice "fetchmail"
 
-# Modul "name of this module" beendet
-writeprepstat "cups"
-waitbox "$modulename" "cups"
