@@ -163,7 +163,7 @@ Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt
     - Service: Dateien für den Domänen-Administrator, wie Software, Treiber und Patches.\n
     - Transfer: Freigabe für Dateiaustausch.\n
     - & Media: Freigabe für Multimedia-Dateien.\n\n
-Es wurde die Gruppen Verwaltung, Archiv, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
+Es wurden die Gruppen Verwaltung, Archiv, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
 
 #Ermitteln, welche Samba-Pakete zum Einsatz kommen
 sambapackages=`getconfdata "SambaPakete" "2"`
