@@ -164,7 +164,7 @@ case $1 in
 	i=0
 	while read line; do
 	    MODULES[i]=$line
-	    i=$(( $i + 1 ))
+	    ((i=$i+1))
 	done < $REQMODFILE
 	modulecount=$i
 
@@ -175,7 +175,7 @@ case $1 in
 	    datum=`date "+%b %d %H:%M:%S"`
 	    modulename=`echo $line|cut -d ":" -f3`
 	    number=`echo $line|cut -d ":" -f1`
-	    if [[ $number < $prepstatnumber ]]; then
+	    if [[ $number -lt $prepstatnumber ]]; then
 		echo "$datum : sine2 module \"$modulename\" is already done."  >> $LOGFILE
 		continue
 	    fi
@@ -186,7 +186,7 @@ case $1 in
 		if [[ $? == 5 ]]; then
 		    exit
 		#else
-		    #if [[ $i < $modulecount ]]; then
+		    #if [[ $i -lt $modulecount ]]; then
 			#nextmodule=`echo ${MODULES[$i]}|cut -d ":" -f3`
 			#writeprepstat "$nextmodule"
 			#waitbox "$modulename" "$nextmodule"
