@@ -39,7 +39,11 @@ changevalues() {
 
 writeprepstat() {
 	local prepstat=`cat $STATUSFILE | cut -d ":" -f3`
-	local prepstatnumber=`cat $REQMODFILE|grep ":$1" | cut -d ":" -f1`
+	if [[ $1 == "ready" ]]; then
+		local prepstatnumber=999
+	else
+		local prepstatnumber=`cat $REQMODFILE|grep ":$1" | cut -d ":" -f1`
+	fi
 	if [[ $prepstat != "ready" ]]; then
 		echo "$prepstatnumber:$1" > $STATUSFILE
 	fi
