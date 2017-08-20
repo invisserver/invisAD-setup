@@ -1,5 +1,5 @@
-VirtualBox-5.1
+virtualbox
+virtualbox-vnc
+virtualbox-webserv
 phpvirtualbox
-kernel-source
-gcc
-make
+vbox-init

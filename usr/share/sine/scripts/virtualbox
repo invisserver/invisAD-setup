@@ -56,11 +56,8 @@ if [[ $cont == "0" ]]; then
 
     # Umgebungsvariablen fuer Virtualbox erstellen
     cp $TEMPLATEDIR/$modulename/virtualbox /etc/default
-    # Virtualbox Repo installieren
-    cp $REPODIR/virtualbox.repo /etc/zypp/repos.d/
-    rpmkeyimporter
     zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-    zypper -n install -n `cat $PACKAGELISTDIR/virtualbox` 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install -n --no-recommends `cat $PACKAGELISTDIR/virtualbox` 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # lokaler Benutzer vbox wird angelegt
     useradd -c "Dummy Benutzer fuer phpVirtualBox" vbox 2>&1 | tee -a $LOGFILE | pgbox
@@ -74,10 +71,6 @@ if [[ $cont == "0" ]]; then
     changevalues $path $file "$string"
     swpestat phpvirtualbox TRUE 2>&1 | tee -a $LOGFILE | pgbox
     chkservice "vboxweb-service"
-
-    # vboxinit installieren
-    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-    zypper -n install -n invis-vboxinit 2>&1 | tee -a $LOGFILE | pgbox
     chkservice "vboxinit"
 
     # Arbeitsverzeichnisse für Virtualbox anlegen
