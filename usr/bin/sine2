@@ -220,7 +220,7 @@ case $1 in
 	else
 	    echo "Das Modul \"$modulename\" ist nicht vorhanden oder nicht ausführbar."
 	fi
-	    echo "999:ready" > $prepstat
+	    echo "999:ready" > $SINWORKINGDIR/prepstat
 	exit
 	;;
 esac
