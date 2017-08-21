@@ -175,7 +175,7 @@ case $1 in
 	    datum=`date "+%b %d %H:%M:%S"`
 	    modulename=`echo $line|cut -d ":" -f3`
 	    number=`echo $line|cut -d ":" -f1`
-	    if [ $number -lt $prepstatnumber ]; then
+	    if (( $number < $prepstatnumber )); then
 		echo "$datum: sine2 module \"$modulename\" is already done."| tee -a $LOGFILE | pgbox
 		continue
 	    fi
@@ -186,7 +186,7 @@ case $1 in
 		if [[ $? == 5 ]]; then
 		    exit
 		else
-		    if [ $i -lt $modulecount ]; then
+		    if (( $i < $modulecount )); then
 			nextmodule=`echo ${MODULES[$i]}|cut -d ":" -f3`
 			writeprepstat "$nextmodule"
 			waitbox "$modulename" "$nextmodule"
