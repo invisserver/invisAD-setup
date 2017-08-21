@@ -176,11 +176,11 @@ case $1 in
 	    modulename=`echo $line|cut -d ":" -f3`
 	    number=`echo $line|cut -d ":" -f1`
 	    if [ $number -lt $prepstatnumber ]; then
-		echo "$datum : sine2 module \"$modulename\" is already done."  >> $LOGFILE
+		echo "$datum: sine2 module \"$modulename\" is already done."| tee -a $LOGFILE | pgbox
 		continue
 	    fi
 	    if [[ -x /$moduledir/$modulename  ]]; then
-		echo "$datum : Starting sine2 module \"$modulename\"."| tee -a $LOGFILE | pgbox
+		echo "$datum: Starting sine2 module \"$modulename\"."| tee -a $LOGFILE | pgbox
 		sleep 1
 		/$moduledir/$modulename
 		if [[ $? == 5 ]]; then
@@ -218,11 +218,16 @@ case $1 in
 	    modulename=$1
 	fi
 	if [[ $prepstat == "ready" ]] && [[ -x $moduledir/$modulename  ]]; then
-	    $moduledir/$modulename
+	    modtype=`grep $modulename $REQMODFILE | cut -d ":" -f2`
+	    if [[ $modtype == o ]]; then
+		$moduledir/$modulename
+	    else
+		echo "Das Modul \"$modulename\" ist kein optionales Modul."| tee -a $LOGFILE | pgbox
+	    fi
 	else
-	    echo "Das Modul \"$modulename\" ist nicht vorhanden oder nicht ausführbar."
+	    echo "Das Modul \"$modulename\" ist nicht vorhanden, nicht ausführbar oder die eigentliche Server-Installation ist noch nicht abgeschlossen."| tee -a $LOGFILE | pgbox
 	fi
-	    writeprepstat "ready"
+	writeprepstat "ready"
 	exit
 	;;
 esac
