@@ -21,15 +21,17 @@
 
 templatepath="/srv/shares/media/ordnervorlagen"
 
-setrigths() {
+setrights() {
 	chmod g+rwxs,o-rwx $1
 	chgrp $2 $1
+	setacl -d -m group:$2:rwx
 }
 
 if (( $# == 1 )); then
 	GRP=$1
 	DIR=/srv/shares/gruppen/$GRP
 	mkdir $DIR
+	setrights $DIR $GRP
 elif (( $# == 2 )); then
 	GRP=$1
 	TEMPLATE=$2
