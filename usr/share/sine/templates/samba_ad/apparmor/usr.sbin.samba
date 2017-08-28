@@ -1,4 +1,4 @@
-# Last Modified: Sun Aug 20 12:38:15 2017
+# Last Modified: Mon Aug 28 22:12:50 2017
 #include <tunables/global>
 
 /usr/sbin/samba {
@@ -10,6 +10,7 @@
   /etc/invis/certs/ca.crt r,
   /etc/invis/certs/ldap-cert.pem r,
   /etc/invis/private/ldap-key.pem r,
+  /run/samba/ncalrpc/ w,
   /run/samba/ncalrpc/DEFAULT w,
   /run/samba/ncalrpc/EPMAPPER w,
   /run/samba/ncalrpc/np/browser w,

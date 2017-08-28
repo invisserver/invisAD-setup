@@ -1,4 +1,4 @@
-# Last Modified: Sun Aug 20 12:38:10 2017
+# Last Modified: Mon Aug 28 22:09:17 2017
 #include <tunables/global>
 
 /usr/sbin/samba_kcc {
@@ -11,6 +11,8 @@
   /proc/*/mounts r,
   /proc/filesystems r,
   /proc/meminfo r,
+  /sbin/ldconfig rix,
+  /tmp/* w,
   /usr/ r,
   /usr/bin/ r,
   /usr/bin/env rix,
@@ -18,10 +20,12 @@
   /usr/bin/python2.7 rix,
   /usr/lib/ r,
   /usr/lib64/samba/ldb/*.so mr,
+  /usr/lib{,32,64}/python{2.[4-7],3.[0-5]}/**.{pyc,so} mrw,
   /usr/local/lib/ r,
   /usr/local/lib64/ r,
   /usr/sbin/ r,
   /usr/sbin/samba r,
   /usr/sbin/samba_kcc r,
+  /var/tmp/* w,
 
 }
