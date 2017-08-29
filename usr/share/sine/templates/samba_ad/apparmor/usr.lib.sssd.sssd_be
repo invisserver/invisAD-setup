@@ -1,0 +1,23 @@
+# Last Modified: Tue Aug 29 21:25:42 2017
+#include <tunables/global>
+
+/usr/lib/sssd/sssd_be {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  /etc/ssl/openssl.cnf r,
+  /proc/ r,
+  /proc/*/status r,
+  /proc/filesystems r,
+  /usr/bin/nsupdate rix,
+  /usr/lib/sssd/ldap_child rix,
+  /usr/lib{,32,64}/** mr,
+  /var/lib/sss/db/* rwk,
+  /var/lib/sss/mc/initgroups r,
+  /var/lib/sss/pipes/private/* rw,
+  /var/lib/sss/pubconf/* rw,
+  /var/log/sssd/krb5_child.log w,
+  /var/log/sssd/ldap_child.log w,
+  /var/log/sssd/sssd_*.log w,
+
+}

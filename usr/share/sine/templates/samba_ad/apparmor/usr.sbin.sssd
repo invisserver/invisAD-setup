@@ -1,0 +1,36 @@
+# Last Modified: Tue Aug 29 21:25:12 2017
+#include <tunables/global>
+
+/usr/sbin/sssd {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  capability sys_admin,
+  capability sys_resource,
+
+  /etc/libnl/classid r,
+  /etc/shells r,
+  /etc/sssd/conf.d/ r,
+  /etc/sssd/sssd.conf r,
+  /proc/ r,
+  /proc/*/net/psched r,
+  /proc/*/status r,
+  /proc/filesystems r,
+  /run/sssd.pid w,
+  /usr/bin/nsupdate r,
+  /usr/lib/sssd/sssd_be px,
+  /usr/lib/sssd/sssd_nss rix,
+  /usr/lib/sssd/sssd_pam rix,
+  /usr/lib{,32,64}/** mr,
+  /usr/sbin/sssd mr,
+  /usr/share/sssd/cfg_rules.ini r,
+  /var/lib/sss/db/* rwk,
+  /var/lib/sss/mc/group rwk,
+  /var/lib/sss/mc/initgroups rwk,
+  /var/lib/sss/mc/passwd rwk,
+  /var/lib/sss/pipes/pam w,
+  /var/lib/sss/pipes/private/* rw,
+  /var/lib/sss/pubconf/* rw,
+  /var/log/sssd/* rw,
+
+}
