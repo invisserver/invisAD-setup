@@ -1,4 +1,4 @@
-# Last Modified: Mon Aug 28 22:12:50 2017
+# Last Modified: Tue Aug 29 21:41:05 2017
 #include <tunables/global>
 
 /usr/sbin/samba {
@@ -13,6 +13,7 @@
   /run/samba/ncalrpc/ w,
   /run/samba/ncalrpc/DEFAULT w,
   /run/samba/ncalrpc/EPMAPPER w,
+  /run/samba/ncalrpc/np/ w,
   /run/samba/ncalrpc/np/browser w,
   /run/samba/ncalrpc/np/dnsserver w,
   /run/samba/ncalrpc/np/epmapper w,
@@ -32,7 +33,7 @@
   /usr/lib64/samba/service/*.so mr,
   /usr/sbin/samba mr,
   /usr/sbin/samba_dnsupdate Px,
-  /usr/sbin/samba_kcc Px,
+  /usr/sbin/samba_kcc rPx,
   /usr/sbin/samba_spnupdate Px,
   /usr/sbin/smbd Px,
   /usr/sbin/winbindd Px,

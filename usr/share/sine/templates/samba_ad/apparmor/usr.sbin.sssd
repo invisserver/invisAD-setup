@@ -1,4 +1,4 @@
-# Last Modified: Tue Aug 29 21:25:12 2017
+# Last Modified: Tue Aug 29 21:41:13 2017
 #include <tunables/global>
 
 /usr/sbin/sssd {
@@ -17,6 +17,9 @@
   /proc/*/status r,
   /proc/filesystems r,
   /run/sssd.pid w,
+  /sys/devices/pci0000:00/0000:00:03.0/net/extern/* r,
+  /sys/devices/pci0000:00/0000:00:08.0/net/intern/* r,
+  /sys/devices/virtual/net/vpn/* r,
   /usr/bin/nsupdate r,
   /usr/lib/sssd/sssd_be px,
   /usr/lib/sssd/sssd_nss rix,

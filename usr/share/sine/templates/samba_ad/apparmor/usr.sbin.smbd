@@ -1,4 +1,4 @@
-# Last Modified: Mon Aug 28 22:19:08 2017
+# Last Modified: Tue Aug 29 21:39:20 2017
 #include <tunables/global>
 
 /usr/sbin/smbd {
@@ -24,6 +24,7 @@
   capability sys_resource,
   capability sys_tty_config,
 
+  /dev/urandom rw,
   /etc/mtab r,
   /etc/netgroup r,
   /etc/printcap r,
