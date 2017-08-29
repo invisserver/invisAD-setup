@@ -1,0 +1,9 @@
+dn: CN=rulename,CN=Sudo-Rules,CN=invis-Server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: sudoRole
+cn: rulename
+distinguishedName: CN=rulename,CN=Sudo-Rules,CN=invis-Server,dc=invis-net,dc=loc
+name: rulename
+sudoHost: ALL
+sudoCommand: /usr/bin/less
+sudoUser: username
