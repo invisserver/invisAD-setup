@@ -8,8 +8,6 @@
   #include <abstractions/python>
   #include <abstractions/samba>
 
-  /Bt0Jki w,
-  /RFm_lI w,
   /proc/meminfo r,
   /tmp/* w,
   /usr/ r,
