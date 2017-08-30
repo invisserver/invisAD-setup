@@ -1,4 +1,4 @@
-# Last Modified: Tue Aug 29 21:39:20 2017
+# Last Modified: Wed Aug 30 21:11:45 2017
 #include <tunables/global>
 
 /usr/sbin/smbd {
@@ -29,6 +29,8 @@
   /etc/netgroup r,
   /etc/printcap r,
   /etc/samba/* rwk,
+  # This should not be neccessary, but apparmor refused writeaccess to our samba-shares
+  /srv/shares/*/* rw,
   /usr/lib*/samba/auth/script.so mr,
   /usr/lib*/samba/charset/*.so mr,
   /usr/lib*/samba/pdb/*.so mr,

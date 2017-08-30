@@ -1,4 +1,4 @@
-# Last Modified: Tue Aug 29 21:41:05 2017
+# Last Modified: Wed Aug 30 21:06:48 2017
 #include <tunables/global>
 
 /usr/sbin/samba {
@@ -27,14 +27,15 @@
   /run/samba/ncalrpc/np/unixinfo w,
   /run/samba/ncalrpc/np/wkssvc w,
   /run/samba/samba.pid rwk,
+  /usr/bin/env r,
   /usr/lib64/samba/gensec/krb*.so mr,
   /usr/lib64/samba/ldb/*.so mr,
   /usr/lib64/samba/process_model/standard.so mr,
   /usr/lib64/samba/service/*.so mr,
   /usr/sbin/samba mr,
-  /usr/sbin/samba_dnsupdate Px,
+  /usr/sbin/samba_dnsupdate rPx,
   /usr/sbin/samba_kcc rPx,
-  /usr/sbin/samba_spnupdate Px,
+  /usr/sbin/samba_spnupdate rPx,
   /usr/sbin/smbd Px,
   /usr/sbin/winbindd Px,
   /var/lib/ntp/var/lib/samba/ntp_signd/socket w,

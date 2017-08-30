@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sucht aus einer vorbereiteten LDIF-Datei fuer die fetchmail- und Postfix-Eintraege
-# des invis-Servers im LDAP (AD) alle Benutzer hereua und legt fuer diese Unterknoten
+# des invis-Servers im LDAP (AD) alle Benutzer heraus und legt fuer diese Unterknoten
 # im AD an.
 # Nuetzlich bei der Migration von invis-Classic auf invis-AD
 
