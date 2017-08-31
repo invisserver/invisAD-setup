@@ -1,0 +1,219 @@
+#!/bin/bash
+# Kategorie: administration
+# Script zur Erstaktivierung des dehydrated Letsencrypt Clients
+# Version 0.1
+# (c) 2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Dieses Script führt alle zur Installation eines invis Servers AD notwendigen 
+# Konfigurationsschritte aus.
+# Das Script sine nutzt /var/lib/sine als Arbeitsverzeichnis, hier sind von sine
+# verwendete Kontroll-, Variablen- und Protokolldateien zu finden.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# invis-server setup workingdir
+workingdir="/var/lib/sine"
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+dialogtitle="sudorule2ad"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2:" | cut -d ":" -f $3
+}
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+yesno() {
+    # Argument $1 = Fragetext $2 = Dialogtitel
+    dialog --backtitle "$dialogtitle" --title "$2" --yesno "$1" 0 0
+}
+
+# Daten aus Konfiguration holen
+basedn=`getconfdata $conffile "baseDN" "2"`
+
+## possible attributes are:
+# sudoCommand
+# sudoHost
+# sudoNotAfter
+# sudoNotBefore
+# sudoRunAs
+# sudoRunsAsGroup
+# sudoRunAsUser
+# sudoUser
+
+ok=0
+while (( $ok != "10" ));do
+    dialog --backtitle "$dialogtitle" --title "Parameter für die sudo-Regel" --form "$DIALOGSHORTHELP
+Die abgefragten Daten werden zum Anlegen einer sudo-Regel benötigt. Dabei wird zwischen zwingenden und
+optionalen Daten unterschieden. Zwingend sind \"Regelname\", \"sudo Kommando\", \"sudo Host\" und \"sudo User\".\n
+Die weiteren Felder sind optional.\n\n
+Alle Eingaben werden auf Plausibilität geprüft, fehlerhaft ausgefüllte Felder werden geleert." 28 80 15 \
+    "Regelname:" 1 2 "$rulename" 1 17 55 0\
+    "sudo Kommando:" 3 2 "$sudocommand" 3 17 55 0\
+    "sudo Host:" 5 2 "$sudohost" 5 17 55 0\
+    "sudo User:" 7 2 "$sudouser" 7 17 55 0\
+    "not After:" 9 2 "$sudonotafter" 9 17 20 0\
+    "not Before:" 9 38 "$sudonotbefore" 9 52 20 0\
+    "sudo run AS:" 11 2 "$sudorunas" 11 17 55 0\
+    "run as User:" 13 2 "$sudorunasuser" 13 17 20 0\
+    "run as Group:" 13 38 "$sudorunasgroup" 13 52 20 0\
+    "Beschreibung:" 15 2 "$description" 15 17 55 0\
+    2>$workingdir/sine_temp
+    IFS=$'\n'
+    i=0
+    while read zeile ; do
+	#echo "$i:$zeile:${#zeile}"
+	if ((  ${#zeile} == 0 )); then
+	    sudovalues[$i]="leer"
+	else
+	    sudovalues[$i]="$zeile"
+	fi
+	((i++))
+    done<$workingdir/sine_temp
+
+    # Werte prüfen und zuordnen
+    if (( ${#sudovalues[0]} >= 4 )); then
+        rulename="${sudovalues[0]}"
+	ok=1
+    fi
+
+    if [[ ${sudovalues[1]} =~ ^(/)?([^/\0]+(/)?)+$ ]]; then
+	sudocommand="${sudovalues[1]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if (( ${#sudovalues[2]} >= 3 )); then
+	sudohost="${sudovalues[2]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if (( ${#sudovalues[3]} >= 4 )); then
+	sudouser="${sudovalues[3]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    # Ab hier Dummypruefungen
+    if [[ ${sudovalues[4]} != leer ]]; then
+	sudonotafter="${sudovalues[4]}"
+	(( ok=$ok + 1 ))
+    else
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ ${sudovalues[5]} != leer ]]; then
+	sudonotbefore="${sudovalues[5]}"
+	(( ok=$ok + 1 ))
+    else
+	(( ok=$ok + 1 ))
+    fi
+	
+    if [[ ${sudovalues[6]} != leer ]]; then
+	sudorunas="${sudovalues[6]}"
+	(( ok=$ok + 1 ))
+    else
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ ${sudovalues[7]} != leer ]]; then
+	sudorunasuser="${sudovalues[7]}"
+	(( ok=$ok + 1 ))
+    else
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ ${sudovalues[8]} != leer ]]; then
+	sudorunasgroup="${sudovalues[8]}"
+	(( ok=$ok + 1 ))
+    else
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ -z $description ]]; then
+	description="${sudovalues[0]}"
+	(( ok=$ok + 1 ))
+    else
+	description="${sudovalues[9]}"
+	(( ok=$ok + 1 ))
+	
+    fi
+done
+
+# Arbeitsdatei anlegen
+workfile="/$workingdir/sudoattributes.ldif"
+echo "Sudoers Rule im AD anlegen"
+echo "dn: CN=$rulename,CN=Sudo-Rules,CN=invis-Server,$basedn" > $workfile
+echo "changetype: add" >> $workfile
+echo "add: objectclass" >> $workfile
+echo "objectclass: sudoRole" >> $workfile
+echo "add: CN" >> $workfile
+echo "CN: $rulename" >> $workfile
+echo "add: Name" >> $workfile
+echo "Name: $rulename" >> $workfile
+echo "add: sudoCommand" >> $workfile
+echo "sudoCommand: $sudocommand" >> $workfile
+echo "add: sudoHost" >> $workfile
+echo "sudoHost: $sudohost" >> $workfile
+echo "add: sudoUser" >> $workfile
+echo "sudoUser: $sudouser" >> $workfile
+if [[ -n $sudonotafter ]]; then
+    echo "add: sudoNotAfter" >> $workfile
+    echo "sudoNotAfter: $sudonotafter" >> $workfile
+fi
+if [[ -n $sudonotbefore ]]; then
+    echo "add: sudoNotBefore" >> $workfile
+    echo "sudoNotBefore: $sudonotbefore" >> $workfile
+fi
+if [[ -n $sudorunas ]]; then
+    echo "add: sudoRunAs" >> $workfile
+    echo "sudoRunAs: $sudorunas" >> $workfile
+fi
+if [[ -n $sudorunasuser ]]; then
+    echo "add: sudoRunAsUser" >> $workfile
+    echo "sudoRunAsUser: $sudorunasuser" >> $workfile
+fi
+if [[ -n $sudorunasgroup ]]; then
+    echo "add: sudoRunAsGroup" >> $workfile
+    echo "sudoRunAsGroup: $sudorunasgroup" >> $workfile
+fi
+echo "add: description" >> $workfile
+echo "description: $description" >> $workfile
+
+cat $workfile
+
+ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
