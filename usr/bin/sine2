@@ -63,6 +63,7 @@ export DIALOGTITLE
 export DIALOGSHORTHELP
 
 # global an local variables
+OPENSUSEVERSION=`cat /etc/os-release |grep VERSION=|cut -d = -f2| tr -d "\""`
 STATUSFILE="$SINEWORKINGDIR/prepstat"
 sinehelpersdir="/usr/share/sine"
 REQMODFILE="$sinehelpersdir/registered-modules.txt"
@@ -81,6 +82,7 @@ export PACKAGELISTDIR
 export INVISCONFDIR
 export INFODIR
 export REPODIR
+export OPENSUSEVERSION
 
 LOGFILE="/var/log/sine/sine.log"
 export LOGFILE

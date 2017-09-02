@@ -49,12 +49,11 @@ pgsubtitle="Es wird eine Sicherung des /etc Verzeichnisses erstellt."
 tar -czf $SINEWORKINGDIR/etc-backup-$timestamp.tar.gz /etc 2>&1| tee -a $LOGFILE | pgbox
 
 # /etc/issue anpassen
-opensuseversion=`cat /etc/os-release |grep VERSION=|cut -d = -f2| tr -d "\""`
 mv /etc/issue /etc/issue.old
 mv /etc/issue.net /etc/issue.net.old
 
-echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. \r (\l)." > /etc/issue
-echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $opensuseversion. %r (%t)." > /etc/issue.net
+echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $OPENSUSEVERSION. \r (\l)." > /etc/issue
+echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $OPENSUSEVERSION. %r (%t)." > /etc/issue.net
 
 # set LINK_REQUIRED global to no
 echo "LINK_REQUIRED wird in der globalen Netzwerkkonfiguration auf \"no\" gesetzt!" 2>&1| tee -a $LOGFILE | pgbox

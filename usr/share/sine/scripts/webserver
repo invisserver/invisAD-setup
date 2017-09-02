@@ -64,6 +64,12 @@ changevalues $path $file "$string"
 string="MyCompany%$company"
 changevalues $path $file "$string"
 
+string="invisversion%$INVISVERSION"
+changevalues $path $file "$string"
+
+string="opensuseversion%$OPENSUSEVERSION"
+changevalues $path $file "$string"
+
 ipaddr=`getconfdata "IP" "2"`
 netpart1=`echo "$ipaddr" | cut -d "." -f 1`
 netpart2=`echo "$ipaddr" | cut -d "." -f 2`
