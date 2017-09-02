@@ -20,10 +20,13 @@ if ($EXTERNAL_ACCESS && !isset($_COOKIE['invis'])) die();
 $CMD = $_POST['c'];
 	
 if ($CMD == 'basic_info') {
-	echo '<b>Servername:</b><br />' . shell_exec('hostname -f') . '<br />';
-	echo '<span style="font-size: 0.7em;">(' . trim(shell_exec('uname -r')) .')</span><br /><br />';
-	
-	echo '<b>Serverzeit:</b><br />' . shell_exec('date +"%d.%m.%Y, %H:%M"') . 'Uhr<br /><br />';
+	echo '<b><span style="font-size: 0.9em;">Servername:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('hostname -f') . '</span><br />';
+	echo '<span style="font-size: 0.7em;">(' . trim(shell_exec('uname -r')) .')</span><br />';
+	echo '<b><span style="font-size: 0.9em;">Versionsinformationen:</span></b><br />';
+	echo '<span style="font-size: 0.8em;">invis-Server Version: <b>' . $INVISVERSION . '</b></span><br />';
+	echo '<span style="font-size: 0.8em;">openSUSE Version: <b>' . $OPENSUSEVERSION . '</b></span><br /><br />';
+
+	echo '<b><span style="font-size: 0.9em;">Serverzeit:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('date +"%d.%m.%Y, %H:%M"') . 'Uhr</span><br />';
 	
 	$uptime = intval(shell_exec('cat /proc/uptime | cut -d"." -f1'));
 	
@@ -36,12 +39,12 @@ if ($CMD == 'basic_info') {
 	$up_m = floor(($uptime - $up_d * 86400 - $up_h * 3600) / 60);
 	
 	$uptime_string = "$up_d Tage, $up_h Stunden, $up_m Minuten";
-	echo '<b>Uptime:</b><br />' . $uptime_string . '<br /><hr>';			// neu
+	echo '<b><span style="font-size: 0.9em;">Uptime:</span></b><br /><span style="font-size: 0.8em;">' . $uptime_string . '</span><br /><hr>';			// neu
 
 }
 elseif ($CMD == 'inet_info'){
 	$file_inet = file('/var/spool/results/inetcheck/inetcheck');
-	echo '<b>Internet:</b><br />';
+	echo '<b><span style="font-size: 0.9em;">Internet:</span></b><br />';
 	echo '<span style="font-size: 0.7em;">Zeit: ' . $file_inet[0] . ' Uhr</span><br/>';
 	echo 'Status: ';
 	switch(intval($file_inet[1])) {
@@ -56,7 +59,7 @@ elseif ($CMD == 'inet_info'){
 }
 elseif ($CMD == 'hd_info') {
 	$file_raid = file('/var/spool/results/diskchecker/status');
-	echo '<b>Festplatten:</b><br />';
+	echo '<b><span style="font-size: 0.9em;">Festplatten:</span></b><br />';
 	$raid_error = false;
 	echo '<span style="font-size: 0.7em;">Zeit: ' . $file_raid[0] . ' Uhr</span><br />';
 	for ($i = 1; $i < count($file_raid); $i++) {
@@ -92,7 +95,7 @@ elseif ($CMD == 'hd_info') {
 }
 elseif ($CMD == 'capacity_info') {
 	echo '<hr>';
-	echo '<b>Festplattenauslastung:</b>';
+	echo '<b><span style="font-size: 0.9em;">Festplattenauslastung:</span></b>';
 	echo '</td></tr><tr><td valign="top" align="center">';
 	echo '<table border="0" style="font-size: 0.8em; border: 1px solid #e0e0e0;">';
 	echo '<tr><th>Verzeichnis</th><th align="center">% belegt</th><th align="center">GB belegt</th><th align="center">GB gesamt</th></tr>';
@@ -126,7 +129,7 @@ elseif ($CMD == 'capacity_info') {
 }
 elseif ($CMD == 'cert_info') {
 //	echo '<hr>';
-	echo '<b>Serverzertifikate </b><span style="font-size: 0.7em;"> (Verwendungszweck:Ablaufdatum:Status)</span><br>';
+	echo '<b><span style="font-size: 0.9em;">Serverzertifikate </span></b><span style="font-size: 0.7em;"> (Verwendungszweck:Ablaufdatum:Status)</span><br>';
 	// Status-Datei einlesen
 	$file_certs = file('/var/spool/results/certs/certstatus');
 	// Datei verarbeiten
@@ -172,7 +175,7 @@ elseif ($CMD == 'backup_info') {
 	$last = intval($file_backup[0]);
 	$diff_days = floor(($now - $last) / (60 * 60 * 24));
 
-	echo '<b>Datensicherung:</b><br>';
+	echo '<b><span style="font-size: 0.9em;">Datensicherung:</span></b><br>';
 	echo '<span style="font-size: 0.7em;"> Zeit: ' . date('d.m.Y, H:i', $last) . '</span><br />';
 
 	// Anzeigen, wenn Dasi laeuft
@@ -239,7 +242,7 @@ elseif ($CMD == 'usv_status') {
 	$file_usv = file('/var/spool/results/usv/usvstat');
 	$lables = array('USV Typ', 'Status', 'Akku-Ladung', 'V-Spannung', 'Last', 'USV-Temp', 'Akku-Pufferzeit');
 
-	echo '<b>USV Status:</b><br>';
+	echo '<b><span style="font-size: 0.9em;">USV Status:</span></b><br>';
 	
 	foreach($lables as $key => $lable) {
 		$value = explode( ":", $file_usv[$key]);
