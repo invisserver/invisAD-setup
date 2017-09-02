@@ -22,9 +22,30 @@ $CMD = $_POST['c'];
 if ($CMD == 'basic_info') {
 	echo '<b><span style="font-size: 0.9em;">Servername:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('hostname -f') . '</span><br />';
 	echo '<span style="font-size: 0.7em;">(' . trim(shell_exec('uname -r')) .')</span><br />';
+
+	// Version-Check
+	$file_versioninfo = file('/var/spool/results/inetcheck/versioninfo');
+	$opinversion=str_replace( ".", "", $INVISVERSION);
+	$opsuseversion=str_replace( ".", "", $OPENSUSEVERSION);
+	if ($opinversion == trim($file_versioninfo[0])) {
+	    $invisversioncolor = 'green';
+	} elseif ( $opinversion < trim($file_versioninfo[0]) && $opinversion >= trim($file_versioninfo[1])) {
+	    $invisversioncolor = 'orange';
+	} else {
+	    $invisversioncolor = 'red';
+	};
+
+	if ($opsuseversion == trim($file_versioninfo[2])) {
+	    $suseversioncolor = 'green';
+	} elseif ( $opsuseversion < trim($file_versioninfo[2]) && $opsuseversion >= trim($file_versioninfo[3])) {
+	    $suseversioncolor = 'orange';
+	} else {
+	    $susesversioncolor = 'red';
+	};
+
 	echo '<b><span style="font-size: 0.9em;">Versionsinformationen:</span></b><br />';
-	echo '<span style="font-size: 0.8em;">invis-Server Version: <b>' . $INVISVERSION . '</b></span><br />';
-	echo '<span style="font-size: 0.8em;">openSUSE Version: <b>' . $OPENSUSEVERSION . '</b></span><br /><br />';
+	echo '<span style="font-size: 0.8em;">invis-Server Version: <b style="color:' . $invisversioncolor . ';">' . $INVISVERSION . '</b></span><br />';
+	echo '<span style="font-size: 0.8em;">openSUSE Leap Version: <b style="color:' . $suseversioncolor . ';">' . $OPENSUSEVERSION . '</b></span><br /><br />';
 
 	echo '<b><span style="font-size: 0.9em;">Serverzeit:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('date +"%d.%m.%Y, %H:%M"') . 'Uhr</span><br />';
 	

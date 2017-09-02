@@ -8,11 +8,14 @@
 # nicht im invis-Portal verlinkt.
 # Zusätzlich wird unter /var/spool/results/inetcheck eine Ergebnisdatei
 # abgelegt, die vom invis Portal ausgewertet wird.
-# Seit Version 2.0 kann das Script auch ein DDNS Update zu einem DNS-Server
+# Das Script ist in der Lage ein DDNS Update zu einem DNS-Server
 # durchführen.
+# Mit invis-Version 13.0 werden auch invis- und openSUSE-Versionsnummern
+# von www.invis-server.org abgerufen. Dies dient dazu die Aktualität des
+# Servers im invis-Portal anzuzeigen.
 #
-# Version 2.1
-# (c) 2009 Stefan Schaefer invis-server.org
+# Version 13.0
+# (c) 2009-2017 Stefan Schaefer invis-server.org
 # Questions: stefan@invis-server.org
 
 # License: GPLv3
@@ -48,15 +51,15 @@ changevalues() {
 }
 
 # Verzeichnis für Ergebnisdateien
-directory="/var/spool/results/inetcheck"
+resultdir="/var/spool/results/inetcheck"
 
 # Datum und Zeit ermitteln
 datum=`date "+%c"`
 
 # Verzeichnis anlegen.
-if [[ ! -d $directory ]]; then
-    mkdir -p $directory
-    chown -R .www $directory
+if [[ ! -d $resultdir ]]; then
+    mkdir -p $resultdir
+    chown -R .www $resultdir
 fi
 
 # Soll ein DDNS Update erfolgen? (Hierzu werden entsprechende Schlüssel
@@ -67,18 +70,21 @@ fqdn=`getconfdata $conffile "fqdn" "2"`
 keynumber=`getconfdata $conffile "keyNumber" "2"`
 
 # Wenn noch nicht vorhanden die Datei lastip anlegen.
-if [[ ! -f $directory/lastip ]]; then
-    echo "0.0.0.0" > $directory/lastip
+if [[ ! -f $resultdir/lastip ]]; then
+    echo "0.0.0.0" > $resultdir/lastip
 fi
 
 # Testen ob Internetverbindung über Router oder DSL-Modem hergestellt wird
 dsl=`ls /etc/sysconfig/network|grep dsl|cut -d "-" -f 2`
 
 if [[ $dsl == "" ]];then
-    #ownip=`wget -q -O - "http://myip.dtdns.com"`
-    ownip=`lynx --dump http://www.meineip.org|tr -d " "|grep ^[1-9]|head -n1`
-
-    #echo $ownip
+    tmpfile="/tmp/invisinfo"
+    lynx --dump https://www.invis-server.org/invisinfo.php > $tmpfile
+    ownip=`cat $tmpfile |tr -d " "|grep ^[1-9]|head -n1`
+    echo `cat $tmpfile | grep currentinvisversion | cut -d ":" -f2` > $resultdir/versioninfo
+    echo `cat $tmpfile | grep minmaintainedinvis | cut -d ":" -f2` >> $resultdir/versioninfo
+    echo `cat $tmpfile | grep currentopensuseversion | cut -d ":" -f2` >> $resultdir/versioninfo
+    echo `cat $tmpfile | grep minmaintainedopensuse | cut -d ":" -f2` >> $resultdir/versioninfo
 else
     # Testen, ob das DSL-Device vorhanden ist.
     dsl0deviceok=`ifconfig $dsl 2>&1|cut -d " " -f 2`
@@ -97,12 +103,7 @@ fi
 ipok=`ping -c3 81.91.164.5|grep "received"|cut -d "," -f 2|cut -d " " -f 2`
 dnsok=`ping -c3 www.denic.de|grep "received"|cut -d "," -f 2|cut -d " " -f 2`
 
-#echo $ownip
-
-# Zum Testen
-#ipok=0
-#dnsok=0
-
+# Ergebnis HTML-Datei generieren
 echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
