@@ -79,7 +79,7 @@ dsl=`ls /etc/sysconfig/network|grep dsl|cut -d "-" -f 2`
 
 if [[ $dsl == "" ]];then
     tmpfile="/tmp/invisinfo"
-    lynx --dump https://www.invis-server.org/invisinfo.php > $tmpfile
+    lynx --dump https://versioninfo.invis-server.org > $tmpfile
     ownip=`cat $tmpfile |tr -d " "|grep ^[1-9]|head -n1`
     echo `cat $tmpfile | grep currentinvisversion | cut -d ":" -f2` > $resultdir/versioninfo
     echo `cat $tmpfile | grep minmaintainedinvis | cut -d ":" -f2` >> $resultdir/versioninfo
