@@ -17,7 +17,7 @@ Für die Installation eines invis Servers 13.0 AD müssen folgende Voraussetzung
       erfolgt sein.
       
     - Der Server muss vor Ausführung des Setup-Scripts über einen vollständigen Hostnamen verfügen.
-      Der Hostname kann ebenfalls per YaST gesetzt werden und sollte dem Muster "Hostname.Domain.tld"
+      Der Hostname kann ebenfalls per YaST gesetzt werden und sollte dem Muster "hostname.domain.tld"
       gehorchen.
       
     - Sie benötigen bis zu drei (mindestens eine) IP Adressen von Nameservern, die Sie für den

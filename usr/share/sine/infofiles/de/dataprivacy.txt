@@ -1,0 +1,22 @@
+Einige Funktionen des invis-Portals machen es erforderlich, dass
+ein Script (inetcheck) des invis-Servers regelmäßig die URL:
+
+https://versioninfo.invis-server.org
+
+aufruft. Dabei werden außer den in der HTTP-Anfrage zwangsläufig
+enthaltenen Informationen keine weiteren Daten Ihres Servers an 
+"uns", das Projekt invis-Server.org übertragen. 
+Die Seite erstellt zwar ein Zugriffs-Protokoll, darin wird aber 
+die IP-Adresse Ihres Server außdrücklich nicht gespeichert.
+
+Im Zugriffs-Protokoll werden lediglich Uhrzeit des Zugriffs und der
+verwendete User-Agent gespeichert. Das ermöglich uns allenfalls eine
+wage Schätzung der Anzahl aktiver invis-Server, nicht aber Rückschlüsse
+auf Standort oder Betreiber.
+
+Weiterhin erfolgt die Kontaktaufnahme vollständig verschlüsselt.
+
+Sollte diese Praxis nicht in Ihrem Sinne sein, informieren Sie uns
+bitte darüber.
+
+Ihr invis-Server Team.

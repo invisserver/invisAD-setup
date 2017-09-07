@@ -44,6 +44,9 @@ source $SINEINCLUDEDIR/functions
 
 modulename=`basename $0`
 
+# data privacy information
+textbox "$INFODIR/dataprivacy.txt" "Datenschutzinformationen" "Weiter"
+
 # are all requirements fullfilled?
 dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Installationvoraussetzungen" --exit-label "Weiter" --textbox "$INFODIR/setuprequires.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "Installationvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
 prepok=${?}
