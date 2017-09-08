@@ -70,6 +70,8 @@ if [[ $cont == "0" ]]; then
     string="vboxpass%$pwvbox"
     changevalues $path $file "$string"
     swpestat phpvirtualbox TRUE 2>&1 | tee -a $LOGFILE | pgbox
+    a2enflag PHPVB
+    chkservice "apache2"
     chkservice "vboxweb-service"
     chkservice "vboxinit"
 

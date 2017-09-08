@@ -111,7 +111,8 @@ if [[ $cont == "0" ]];then
     # Monobook Konfiguration installieren
     cp $TEMPLATEDIR/$modulename/monobook.conf /etc/apache2/conf.d
     find /srv/www/htdocs/dokuwiki/lib/tpl/monobook -name ".htaccess" -exec rm {} \;
-    chkservice apache2 r
+    a2enflag DOKUWIKI
+    chkservice apache2
 
     # Dokuwiki im Portal aktivieren
     swpestat Dokuwiki TRUE 2>&1 | tee -a $LOGFILE | pgbox

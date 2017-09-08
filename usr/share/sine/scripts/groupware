@@ -250,7 +250,8 @@ case "$whichgroupware" in
 	string="your.ddns-domain.net%$ddnsname"
 	changevalues $path $file "$string"
 
-	chkservice apache2 r
+	a2enflag KOPANO
+	chkservice apache2
     
 	# Oeffentlichen Speicher anlegen
 	kopano-admin -s

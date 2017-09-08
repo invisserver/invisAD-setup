@@ -119,7 +119,10 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 
 	    # Kivitendo im Portal aktivieren
 	    swpestat Kivitendo TRUE 2>&1 | tee -a $LOGFILE | pgbox
-	
+
+	    a2enflag KIVITENDO
+	    chkservice "apache2"
+	    cp /etc/apache2/conf.d/kivitendo-erp.conf.dist /etc/apache2/conf.d/kivitendo-erp.conf
 	else
 	    msgbox "Kivitendo Installation übersprungenen" "$windowtitle"
 	fi 
