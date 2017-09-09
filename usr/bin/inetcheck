@@ -117,16 +117,16 @@ echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www
 # Auswertung
 if (( $ipok == 3 && $dnsok == 3 )); then
     echo "<div align=\"center\"><b><font color=\"darkgreen\">Verbindung steht</font></b><br><font size=\"-1\">Ihre IP-Adresse: $ownip - Datum und Uhrzeit des Tests: $datum</font></div>" >> /srv/www/htdocs/inetcheck.html
-    echo -e "$datum\n0\n$ownip" > $directory/inetcheck
+    echo -e "$datum\n0\n$ownip" > $resultdir/inetcheck
 elif (( $ipok == 3 && $dnsok == 0 )); then
     echo "<div align=\"center\"><b><font color=\"darkorange\">Verbindung steht, Namensauflösung nicht möglich</font></b><br><font size=\"-1\">Ihre IP-Adresse: $ownip - Datum und Uhrzeit des Tests: $datum</font></div" >> /srv/www/htdocs/inetcheck.html
-    echo -e "$datum\n1\n$ownip" > $directory/inetcheck
+    echo -e "$datum\n1\n$ownip" > $resultdir/inetcheck
 elif (( $ipok < 3 && $ipok > 0 )); then
     echo "<div align=\"center\"><b><font color=\"darkorange\">Verbindung schlecht</font></b><br><font size=\"-1\">Ihre IP-Adresse: $ownip - Datum und Uhrzeit des Tests: $datum</font></div" >> /srv/www/htdocs/inetcheck.html
-    echo -e "$datum\n2\n$ownip" > $directory/inetcheck
+    echo -e "$datum\n2\n$ownip" > $resultdir/inetcheck
 else
     echo "<div align=\"center\"><b><font color=\"darkred\">Internetverbindung nicht möglich - Test wird in einer Stunde wiederholt</font></b><br><font size=\"-1\">Datum und Uhrzeit des Tests: $datum</font></div" >> /srv/www/htdocs/inetcheck.html
-    echo -e "$datum\n3" > $directory/inetcheck
+    echo -e "$datum\n3" > $resultdir/inetcheck
 fi
 
 echo '<hr><div align="right"><font size="-2">(c) 2008 stefan@invis-server.org - www.invis-server.org</font></div></body></html>' >> /srv/www/htdocs/inetcheck.html
@@ -145,7 +145,7 @@ if [[ $ddnsup == "j" ]]; then
 	    echo "update add $fqdn 60 A $ownip"
 	    echo "send"
 	) | nsupdate -k /etc/invis/ddns/K$fqdn.+157+$keynumber.private
-	echo $ownip > $directory/lastip
+	echo $ownip > $resultdir/lastip
     fi
 fi
 
