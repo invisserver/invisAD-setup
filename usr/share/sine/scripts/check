@@ -86,12 +86,12 @@ if [[ $prepok == "0" ]]; then
 
     # Installation der invis-eigenen Samba-Pakete
     zypper refresh 2>&1| tee -a $LOGFILE | pgbox
-    zypper -n install --force-resolution -n `cat $PACKAGELISTDIR/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
-    zyppercheck ${PIPESTATUS[0]}
     # Samba Repo ermitteln
     sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
     # Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
     zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    zypper -n install --from "$sambarepo" --force-resolution -n `cat $PACKAGELISTDIR/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
     # NFS-Server
