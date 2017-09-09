@@ -1253,6 +1253,44 @@ function hostCreate($conn, $cn) {
 		if ($location == "")
 		    $location = "-";
 		
+		// Check MAC
+		$mac_ok = false;
+		$error_msg = "";
+		$mac_int = 0;
+		$iscdhcphwaddress = explode(" ", $mac);
+		if (is_array($iscdhcphwaddress))
+		{
+			if (array_key_exists(1, $iscdhcphwaddress))
+			{
+				$realmac = explode(":", $iscdhcphwaddress[1]);
+				$error_msg = $iscdhcphwaddress[1];
+				if (is_array($realmac))
+				{
+					if (count($realmac) == 6)
+					{
+						for ($i=0; $i < 6; $i++) {
+							if (!ctype_xdigit($realmac[$i]))							
+								break;
+							else
+								$mac_int += hexdec($realmac[$i]);
+						}	
+						if (($i == 6) && ($mac_int > 0) && ($mac_int < 1530))
+							$mac_ok = true;
+					}						
+				}
+			}
+		}
+		if ($mac_ok != true)
+			return "MAC-Adresse $error_msg ist fehlerhaft!";
+				
+		// Check Hostname
+		if ((strlen($cn) == 0) || ($cn == "-"))
+			return "Kein Hostname angegeben!";
+		if (strlen($cn) > 63)
+			return "Hostname zu lang!";
+		if (preg_match("/[^a-z0-9-]/", $cn))
+			return "Hostname enthaelt ungueltige Zeichen! Gueltig sind a-z, 0-9 und Minus.";
+		
 		// create DHCP entry
 		$attributes = array(
 			'iscdhcphwaddress' => $mac,
