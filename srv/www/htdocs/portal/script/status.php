@@ -21,7 +21,7 @@ $CMD = $_POST['c'];
 	
 if ($CMD == 'basic_info') {
 	echo '<b><span style="font-size: 0.9em;">Servername:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('hostname -f') . '</span><br />';
-	echo '<span style="font-size: 0.7em;">(' . trim(shell_exec('uname -r')) .')</span><br />';
+	echo '<span style="font-size: 0.7em;">(Kernel: ' . trim(shell_exec('uname -r')) .')</span><br />';
 
 	// Version-Check
 	$file_versioninfo = file('/var/spool/results/inetcheck/versioninfo');
