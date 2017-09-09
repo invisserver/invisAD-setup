@@ -1,7 +1,9 @@
 #!/bin/bash
-# invis-server	info	Invis-Server Commans
+# Kategorie: server
+# invis-Server helper script. It shows all invis-server scripts including a short description
 
 # Copyright (C) 2017 Dimitri Asarowski
+# Copyright (C) 2017 Stefan Schäfer -- invis-server.org
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +18,14 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+
 usage(){
-echo "invis-server v10.4 help
+echo "invis-server help
 Copyright (C) 2017 Dimitri Asarowski
+Copyright (C) 2017 Stefan Schäfer
 
 Usage: invis-server [OPTION]
 
@@ -31,6 +38,12 @@ Options:
     help    display this help and exit
 
 Report bugs to <dimitri@invis-server.org>."
+}
+
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
 }
 
 printline(){
@@ -52,7 +65,9 @@ do
 done </tmp/invis-server.lst
 }
 
-VER='invisAD-setup-12'
+# get invis version number
+versionnumber=`getconfdata "$conffile" "invisVersion" "2"|cut -d "." -f1`
+VER="invisAD-setup-$versionnumber"
 PATH='/usr/bin'
 
 if test $# -eq 0; then

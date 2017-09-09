@@ -82,6 +82,10 @@ changevalues $INVISCONFDIR "invis.conf" "$string"
 string="avCheck:j%avCheck:$avcron"
 changevalues $INVISCONFDIR "invis.conf" "$string"
 
+# add invis-Version to config-file
+string="invisversion%$INVISVERSION"
+changevalues $INVISCONFDIR "invis.conf" "$string"
+
 pgsubtitle="Der Virenscanner ClamAV wird installiert, aktualisiert und aktiviert.\nAls globales Quarantäneverzeichnis wurde /var/spool/infected angelegt."
 if [[ $av == "clamav" ]]; then 
     zypper -n install -n clamav 2>&1| tee -a $LOGFILE | pgbox
