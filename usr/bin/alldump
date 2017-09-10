@@ -61,34 +61,35 @@ fi
 
 datum=`date +%Y%m%d`
 
-## Sichern des LDAP-Verzeichnisses, wenn moeglich
-if [[ -f `which slapcat` ]];then
-    slapcat > $dumpdir/ldap-sicherung.ldif
+## MySQL
+mystatus=`systemctl is-enabled postgresql.service`
+if [[ $mystatus == "enabled" ]]; then
+    # root PW einlesen
+    mysqlrootpw=`getconfdata $passfile "MySQLroot" "2"`
+    loginstring="-u root --password=$mysqlrootpw"
+
+    # Alle Datenbanken ermitteln und sichern
+    alldbs=(`mysqlshow  $loginstring |tr -s " "| cut -d " " -f2| grep -v "+"|grep -v "Databases"`)
+    for db in ${alldbs[*]}; do
+	# Zarafa-DB ausschließen
+	if [[ $db != "$zarafadb" ]]; then
+	    mysqldump $loginstring --add-drop-table --single-transaction $db > $dumpdir/mysql-$db-sicherung.sql
+	fi
+    done
 fi
 
-## MySQL
-# root PW einlesen
-mysqlrootpw=`getconfdata $passfile "MySQLroot" "2"`
-loginstring="-u root --password=$mysqlrootpw"
-
-# Alle Datenbanken ermitteln und sichern
-alldbs=(`mysqlshow  $loginstring |tr -s " "| cut -d " " -f2| grep -v "+"|grep -v "Databases"`)
-for db in ${alldbs[*]}; do
-    # Zarafa-DB ausschließen
-    if [[ $db != "$zarafadb" ]]; then
-	mysqldump $loginstring --add-drop-table --single-transaction $db > $dumpdir/mysql-$db-sicherung.sql
-    fi
-done
-
 ## PostgreSQL
-# ins Home-Verzeichnis von User postgres wechseln
-cd /var/lib/pgsql
-alldbs=(`sudo -u postgres psql -l|tr -d " "|grep -v "Name"|grep -v "Listof" |grep -v '^--' |grep -v "("|cut -d "|" -f1`)
+pgstatus=`systemctl is-enabled postgresql.service`
+if [[ $pgstatus == "enabled" ]]; then
+    # ins Home-Verzeichnis von User postgres wechseln
+    cd /var/lib/pgsql
+    alldbs=(`sudo -u postgres psql -l|tr -d " "|grep -v "Name"|grep -v "Listof" |grep -v '^--' |grep -v "("|cut -d "|" -f1`)
 
-for db in ${alldbs[*]}; do
-    sudo -u postgres pg_dump -C --inserts -b $db > $dumpdir/pgsql-$db-sicherung.sql 2>/dev/null
-done
-cd
+    for db in ${alldbs[*]}; do
+	sudo -u postgres pg_dump -C --inserts -b $db > $dumpdir/pgsql-$db-sicherung.sql 2>/dev/null
+    done
+    cd
+fi
 
 ## Sicherungen archivieren
 find $dumpdir/*| afio -oZ $dasidir/$datum-alle-datenbanken.cpio
