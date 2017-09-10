@@ -1133,6 +1133,55 @@ function hostNumberToIPString($number) {
 // Zum Debuggen, schreibt ins Apache Error Log:
 //error_log("IPString from number: " . hostNumberToIPString(65319));
 
+// Prueft MAC-Adresse in Form des DHCP-iscdhcphwaddress-Statements (ethernet 00:00:00:00:00:00) auf gueltige Werte
+// return "" = Ok
+// return "Fehlermeldung" = Fehler
+function checkMac($statement) {
+		$mac_ok = false;
+		$error_msg = $statement;
+		$mac_int = 0;
+		$iscdhcphwaddress = explode(" ", $statement);
+		if (is_array($iscdhcphwaddress))
+		{
+			if (array_key_exists(1, $iscdhcphwaddress))
+			{
+				$realmac = explode(":", $iscdhcphwaddress[1]);
+				$error_msg = $iscdhcphwaddress[1];
+				if (is_array($realmac))
+				{
+					if (count($realmac) == 6)
+					{
+						for ($i=0; $i < 6; $i++) {
+							if (!ctype_xdigit($realmac[$i]))
+								break;
+							else
+								$mac_int += hexdec($realmac[$i]);
+						}	
+						if (($i == 6) && ($mac_int > 0) && ($mac_int < 1530))
+							$mac_ok = true;
+					}						
+				}
+			}
+		}
+		if ($mac_ok != true)
+			return "MAC-Adresse ($error_msg) ist fehlerhaft!";
+		else
+			return "";
+}
+
+// Prueft hostname auf gueltige Werte
+// return "" = Ok
+// return "Fehlermeldung" = Fehler
+function checkHostname($hostname) {
+		if ((strlen($hostname) == 0) || ($hostname == "-"))
+			return "Kein Hostname angegeben!";
+		if (strlen($hostname) > 63)
+			return "Hostname zu lang!";
+		if (preg_match("/[^a-z0-9-]/", $hostname))
+			return "Hostname enthaelt ungueltige Zeichen! Gueltig sind a-z, 0-9 und Minus.";
+		return "";
+}
+
 //--------------------
 // HOST STUFF
 //--------------------
@@ -1254,42 +1303,14 @@ function hostCreate($conn, $cn) {
 		    $location = "-";
 		
 		// Check MAC
-		$mac_ok = false;
-		$error_msg = "";
-		$mac_int = 0;
-		$iscdhcphwaddress = explode(" ", $mac);
-		if (is_array($iscdhcphwaddress))
-		{
-			if (array_key_exists(1, $iscdhcphwaddress))
-			{
-				$realmac = explode(":", $iscdhcphwaddress[1]);
-				$error_msg = $iscdhcphwaddress[1];
-				if (is_array($realmac))
-				{
-					if (count($realmac) == 6)
-					{
-						for ($i=0; $i < 6; $i++) {
-							if (!ctype_xdigit($realmac[$i]))							
-								break;
-							else
-								$mac_int += hexdec($realmac[$i]);
-						}	
-						if (($i == 6) && ($mac_int > 0) && ($mac_int < 1530))
-							$mac_ok = true;
-					}						
-				}
-			}
-		}
-		if ($mac_ok != true)
-			return "MAC-Adresse $error_msg ist fehlerhaft!";
-				
+		$error_msg = checkMac($mac);
+		if ($error_msg != "")
+			return $error_msg;
+
 		// Check Hostname
-		if ((strlen($cn) == 0) || ($cn == "-"))
-			return "Kein Hostname angegeben!";
-		if (strlen($cn) > 63)
-			return "Hostname zu lang!";
-		if (preg_match("/[^a-z0-9-]/", $cn))
-			return "Hostname enthaelt ungueltige Zeichen! Gueltig sind a-z, 0-9 und Minus.";
+		$error_msg = checkHostname($cn);
+		if ($error_msg != "")
+			return $error_msg;
 		
 		// create DHCP entry
 		$attributes = array(
@@ -1323,6 +1344,11 @@ function hostModify($conn, $cn) {
 	if (isset($attributes['cn'])) {
 		$newcn = $attributes['cn'];
 		unset($attributes['cn']);
+		
+		// Check Hostname
+		$error_msg = checkHostname($newcn);
+		if ($error_msg != "")
+			return $error_msg;
 
 		// DNS-Eintraege aendern
 		$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
@@ -1349,11 +1375,17 @@ function hostModify($conn, $cn) {
 	if (empty($attributes)) {
 	    $ok1 = 1;
 	} else {
-	    if (isset($newcn)) {
-		$ok1 = modify($conn, "cn=$newcn,$BASE_DN_DHCP", $attributes);
-	    } else {
-		$ok1 = modify($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
-	    }
+		// Check MAC
+		$mac = $attributes['iscdhcphwaddress']
+		$error_msg = checkMac($mac);
+		if ($error_msg != "")
+			return $error_msg;
+
+		if (isset($newcn)) {
+			$ok1 = modify($conn, "cn=$newcn,$BASE_DN_DHCP", $attributes);
+		} else {
+			$ok1 = modify($conn, "cn=$cn,$BASE_DN_DHCP", $attributes);
+		}
 	}
 	return ($ok1)?0:array(ldap_errno($conn) => ldap_error($conn));
 }
