@@ -1297,7 +1297,10 @@ function hostCreate($conn, $cn) {
 		$next = hostNumberToIPString($free[0]);
 		$mac = $cookie_data['iscdhcphwaddress'];
 		// Location uebernehmen
-		$location = $cookie_data['location'];
+		if (array_key_exists('location', $cookie_data))
+			$location = $cookie_data['location'];
+		else
+			 $location = "";
 		
 		if ($location == "")
 		    $location = "-";
@@ -1345,41 +1348,45 @@ function hostModify($conn, $cn) {
 		$newcn = $attributes['cn'];
 		unset($attributes['cn']);
 		
-		// Check Hostname
-		$error_msg = checkHostname($newcn);
-		if ($error_msg != "")
-			return $error_msg;
+		if ($newcn != $cn)
+		{
+			// Check Hostname
+			$error_msg = checkHostname($newcn);
+			if ($error_msg != "")
+				return $error_msg;
 
-		// DNS-Eintraege aendern
-		$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
-		if ($result) {
-			$result = cleanup($result[0]);
-			// Workaround!
-			// DNS Eintraege muessen mit "exec samba-tool dns" geloescht werden.
-			// moddnsrecords ist ein bash Frontend fuer samba-tool
-			$fullip = hostStatementToFullIp($result['iscdhcpstatements']);
-			// Name kann nicht geaendert werden, geht nur ueber loeschen und neu anlegen
-			// Nur IP koennte geandert werden
-			shell_exec("sudo /usr/bin/moddnsrecords r A $cn $fullip;");
-			shell_exec("sudo /usr/bin/moddnsrecords a A $newcn $fullip;");
+			// DNS-Eintraege aendern
+			$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcpstatements'));
+			if ($result) {
+				$result = cleanup($result[0]);
+				// Workaround!
+				// DNS Eintraege muessen mit "exec samba-tool dns" geloescht werden.
+				// moddnsrecords ist ein bash Frontend fuer samba-tool
+				$fullip = hostStatementToFullIp($result['iscdhcpstatements']);
+				// Name kann nicht geaendert werden, geht nur ueber loeschen und neu anlegen
+				// Nur IP koennte geandert werden
+				shell_exec("sudo /usr/bin/moddnsrecords r A $cn $fullip;");
+				shell_exec("sudo /usr/bin/moddnsrecords a A $newcn $fullip;");
 
-			//$oldfqdn = "$cn.$DOMAIN";
-			$newfqdn = "$newcn.$DOMAIN";
-			shell_exec("sudo /usr/bin/moddnsrecords u PTR $fullip $newfqdn;");
+				$newfqdn = "$newcn.$DOMAIN";
+				shell_exec("sudo /usr/bin/moddnsrecords u PTR $fullip $newfqdn;");
+			}
+			// rename DHCP
+			rename_ldap($conn, "cn=$cn,$BASE_DN_DHCP", "cn=$newcn");
 		}
-		// rename DHCP
-		rename_ldap($conn, "cn=$cn,$BASE_DN_DHCP", "cn=$newcn");
 	}
 
 	// modify DHCP Location
 	if (empty($attributes)) {
 	    $ok1 = 1;
 	} else {
-		// Check MAC
-		$mac = $attributes['iscdhcphwaddress'];
-		$error_msg = checkMac($mac);
-		if ($error_msg != "")
-			return $error_msg;
+		if (array_key_exists('iscdhcphwaddress',$attributes)) {
+			// Check MAC
+			$mac = $attributes['iscdhcphwaddress'];
+			$error_msg = checkMac($mac);
+			if ($error_msg != "")
+				return $error_msg;
+		}
 
 		if (isset($newcn)) {
 			$ok1 = modify($conn, "cn=$newcn,$BASE_DN_DHCP", $attributes);
