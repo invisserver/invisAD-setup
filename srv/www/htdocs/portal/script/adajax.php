@@ -1376,7 +1376,7 @@ function hostModify($conn, $cn) {
 	    $ok1 = 1;
 	} else {
 		// Check MAC
-		$mac = $attributes['iscdhcphwaddress']
+		$mac = $attributes['iscdhcphwaddress'];
 		$error_msg = checkMac($mac);
 		if ($error_msg != "")
 			return $error_msg;
