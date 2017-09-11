@@ -25,7 +25,7 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
-setupdir="/var/lib/sine"
+setupdir="/usr/share/sine"
 challengedir="/srv/www/htdocs/dehydrated/.well-known/acme-challenge/"
 # Funktionen
 # Werte aus Konfigurationsdatendatei extrahieren
@@ -48,7 +48,7 @@ yesno() {
 
 dialogtitle="Let's Encrypt Client dehydrated aktivieren"
 # Sind alle Voraussetzungen erfuellt?
-dialog --backtitle "$dialogtitle" --title "Nutzungsvoraussetzungen" --exit-label "Weiter" --textbox "$setupdir/infofiles/letsencryptrequires.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "Nutzungsvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
+dialog --backtitle "$dialogtitle" --title "Nutzungsvoraussetzungen" --exit-label "Weiter" --textbox "$setupdir/infofiles/de/letsencryptrequires.txt" 0 0 --and-widget --backtitle "$dialogtitle" --title "Nutzungsvoraussetzungen"  --defaultno --yesno "Sind alle Voraussetungen erfüllt?" 0 0
 prepok=${?}
 
 
@@ -58,9 +58,12 @@ if [[ $prepok == "0" ]]; then
     LANG=POSIX
     extip=`ifconfig extern| grep "inet addr" | cut -d ":" -f 2 |cut -d " " -f1`
     path="/etc/apache2/vhosts.d"
-    file="dehydrated.conf"
+    file="vh-dehydrated.conf"
     strings="10.10.10.10%$extip"
     changevalues $path $file "$strings"
+
+    # Apache reload
+    systemctl reload apache2.service
     
     # Pruefen, ob das challenge-Verzeichnis dem Benutzer dehydrated gehoert
     # wenn nicht, wird das Besitzrecht geaendert
