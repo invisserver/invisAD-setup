@@ -1,15 +1,19 @@
-# Last Modified: Tue Aug 29 21:25:42 2017
+# Last Modified: Mon Sep 11 15:15:34 2017
 #include <tunables/global>
 
 /usr/lib/sssd/sssd_be {
   #include <abstractions/base>
   #include <abstractions/nameservice>
 
+  capability setgid,
+  capability setuid,
+
   /etc/ssl/openssl.cnf r,
   /proc/ r,
   /proc/*/status r,
   /proc/filesystems r,
   /usr/bin/nsupdate rix,
+  /usr/lib/sssd/krb5_child rix,
   /usr/lib/sssd/ldap_child rix,
   /usr/lib{,32,64}/** mr,
   /var/lib/sss/db/* rwk,
