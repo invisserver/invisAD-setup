@@ -73,8 +73,6 @@ if (!isset($_COOKIE['invis-login'])) {
 				'PWD_EXPIRE' => $pwdexpiry['expiryformat'],
 				'PWD_RLZ' => $pwdrlz,
 				'uidnumber' => ridfromsid(bin_to_str_sid("$response->objectsid")));
-		$challenge = $adldap->authenticate($data['uid'], $data['pwd']);
-		error_log($challenge);
 		// test given password against
 		if ($adldap->authenticate($data['uid'], $data['pwd'])) {
 			// Restlaufzeit bis Ablauf des Kontos ermitteln
