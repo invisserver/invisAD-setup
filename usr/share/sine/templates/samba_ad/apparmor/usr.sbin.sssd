@@ -1,9 +1,10 @@
-# Last Modified: Mon Sep 11 12:52:16 2017
+# Last Modified: Tue Sep 12 09:30:29 2017
 #include <tunables/global>
 
 /usr/sbin/sssd {
   #include <abstractions/base>
   #include <abstractions/nameservice>
+  #include <abstractions/samba>
 
   capability sys_admin,
   capability sys_resource,
@@ -17,13 +18,13 @@
   /proc/*/status r,
   /proc/filesystems r,
   /run/sssd.pid w,
-  /sys/devices/*/*/net/*/* r,
+  /sys/devices/pci0000:00/0000:00:03.0/net/extern/* r,
+  /sys/devices/pci0000:00/0000:00:08.0/net/intern/* r,
   /sys/devices/virtual/net/vpn/* r,
   /usr/bin/nsupdate r,
   /usr/lib/sssd/sssd_be px,
   /usr/lib/sssd/sssd_nss rix,
   /usr/lib/sssd/sssd_pam rix,
-  /usr/lib{,32,64}/** mr,
   /usr/sbin/sssd mr,
   /usr/share/sssd/cfg_rules.ini r,
   /var/lib/sss/db/* rwk,

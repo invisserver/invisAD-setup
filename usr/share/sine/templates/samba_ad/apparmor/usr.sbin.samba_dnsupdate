@@ -1,4 +1,4 @@
-# Last Modified: Sat Sep  9 11:35:08 2017
+# Last Modified: Tue Aug 29 21:28:08 2017
 #include <tunables/global>
 
 /usr/sbin/samba_dnsupdate {
@@ -9,7 +9,7 @@
   #include <abstractions/samba>
 
   /proc/meminfo r,
-  /tmp/* rw,
+  /tmp/* w,
   /usr/ r,
   /usr/bin/ r,
   /usr/bin/env rix,
@@ -17,10 +17,10 @@
   /usr/bin/python2.7 rix,
   /usr/lib/ r,
   /usr/lib64/samba/ldb/*.so mr,
-  /usr/lib{,32,64}/python{2.[4-7],3.[0-5]}/**.{pyc,so} mrw,
+  #/usr/lib{,32,64}/python{2.[4-7],3.[0-5]}/**.{pyc,so} mrw,
   /usr/local/lib/ r,
   /usr/local/lib64/ r,
   /usr/sbin/samba_dnsupdate r,
-  /var/tmp/* rw,
+  /var/tmp/* w,
 
 }

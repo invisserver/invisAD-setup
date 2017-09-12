@@ -1,4 +1,4 @@
-# Last Modified: Mon Aug 28 22:09:17 2017
+# Last Modified: Tue Sep 12 09:17:18 2017
 #include <tunables/global>
 
 /usr/sbin/winbindd {
@@ -21,10 +21,11 @@
   /etc/samba/smbd.tmp/msg/* rwk,
   /tmp/.winbindd/ w,
   /tmp/krb5cc_* rwk,
+  /usr/lib*/samba/gensec/krb*.so mr,
   /usr/lib*/samba/idmap/*.so mr,
   /usr/lib*/samba/nss_info/*.so mr,
   /usr/lib*/samba/pdb/*.so mr,
-  /usr/lib{,32,64}/** mr,
+  /usr/lib*/samba/ldb/*.so mr,
   /usr/sbin/winbindd mr,
   /var/cache/krb5rcache/* rw,
   /var/cache/samba/*.tdb rwk,
