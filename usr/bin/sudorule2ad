@@ -1,6 +1,6 @@
 #!/bin/bash
 # Kategorie: administration
-# Script zur Erstaktivierung des dehydrated Letsencrypt Clients
+# Script zum Hinzufügen von Sudo-Regeln ins AD.
 # Version 0.1
 # (c) 2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 
@@ -214,6 +214,6 @@ fi
 echo "add: description" >> $workfile
 echo "description: $description" >> $workfile
 
-cat $workfile
+#cat $workfile
 
 ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
