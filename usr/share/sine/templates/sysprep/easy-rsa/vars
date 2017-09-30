@@ -84,7 +84,7 @@ set_var EASYRSA_DN	"org"
 set_var EASYRSA_REQ_COUNTRY	"DE"
 set_var EASYRSA_REQ_PROVINCE	"Hessen"
 set_var EASYRSA_REQ_CITY	"Schotten"
-set_var EASYRSA_REQ_ORG		"invis-Server.org"
+set_var EASYRSA_REQ_ORG		"invis-server.org"
 set_var EASYRSA_REQ_EMAIL	"me@example.net"
 set_var EASYRSA_REQ_OU		"invis-Server"
 
