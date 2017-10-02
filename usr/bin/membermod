@@ -1,7 +1,7 @@
 #!/bin/bash
-# Kategorie: server
+# Kategorie: portal
 # Script zum Erweitern eines Maschinenkontos um RFC2307 Attribute.
-# (c) 2016 Stefan Schaefer - FSP Computer & Netzwerke
+# (c) 2016-2017 Stefan Schaefer - FSP Computer & Netzwerke
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -45,28 +45,33 @@ domain=`getconfdata $conffile "intDomain" "2"`
 nisdomain=`echo $domain | cut -d "." -f1`
 
 # RID der Maschine ermitteln
-rid=`pdbedit -Lv $membername$ | grep "User SID" | cut -d "-" -f8`
+rid=`pdbedit -Lv $membername$  2>/dev/null| grep "User SID" | cut -d "-" -f8`
+
 #echo $rid
 
-# Arbeitsdatei anlegen
-workfile="/tmp/machineattributes.ldif"
-echo "Maschinenkonto erweitern"
-echo "dn: CN=$membername,CN=Computers,$basedn" > $workfile
-echo "changetype: modify" >> $workfile
-echo "add: objectclass" >> $workfile
-echo "objectclass: posixAccount" >> $workfile
-echo "add: uidNumber" >> $workfile
-echo "uidNumber: $rid" >> $workfile
-echo "add: gidNumber" >> $workfile
-echo "gidNumber: 515" >> $workfile
-echo "add: mssfu30nisDomain" >> $workfile
-echo "mssfu30nisDomain: $nisdomain" >> $workfile
-echo "add: loginShell" >> $workfile
-echo "loginShell: /bin/false" >> $workfile
-echo "add: unixHomeDirectory" >> $workfile
-echo "unixHomeDirectory: /dev/null" >> $workfile
-echo "add: description" >> $workfile
-echo "description: Computer" >> $workfile
+if [[ -z $rid ]]; then
+    exit 2
+else
+    # Arbeitsdatei anlegen
+    workfile="/tmp/machineattributes.ldif"
+    #echo "Maschinenkonto erweitern"
+    echo "dn: CN=$membername,CN=Computers,$basedn" > $workfile
+    echo "changetype: modify" >> $workfile
+    echo "add: objectclass" >> $workfile
+    echo "objectclass: posixAccount" >> $workfile
+    echo "add: uidNumber" >> $workfile
+    echo "uidNumber: $rid" >> $workfile
+    echo "add: gidNumber" >> $workfile
+    echo "gidNumber: 515" >> $workfile
+    echo "add: mssfu30nisDomain" >> $workfile
+    echo "mssfu30nisDomain: $nisdomain" >> $workfile
+    echo "add: loginShell" >> $workfile
+    echo "loginShell: /bin/false" >> $workfile
+    echo "add: unixHomeDirectory" >> $workfile
+    echo "unixHomeDirectory: /dev/null" >> $workfile
+    echo "add: description" >> $workfile
+    echo "description: Computer" >> $workfile
 
-
-ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
+    #ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
+    ldbmodify -H /var/lib/samba/private/sam.ldb $workfile
+fi
