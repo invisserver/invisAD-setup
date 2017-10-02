@@ -127,10 +127,24 @@ iPortEntryName: ownCloud
 cn: ownCloud
 iPortEntrySSL: TRUE
 iPortEntryURL: server-fqdn-ocport
-iPortEntryDescription: ownCloud ist eine freie Software für das Vorhalten von Daten (Filehosting) in einer eigenen privaten Cloud
+iPortEntryDescription: ownCloud ist eine freie Software für das Vorhalten und Teilen von Dateien (Filehosting/Filesharing) in einer eigenen privaten Cloud
 iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
-iPortEntryButton: Cloud Computing
+iPortEntryButton: Filesharing
+iPortEntryPriv:	user
+
+# ownCloud via z-push vHost
+dn: cn=ownCloudZP,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: ownCloudZP
+cn: ownCloudZP
+iPortEntrySSL: TRUE
+iPortEntryURL: server-ddns/owncloud
+iPortEntryDescription: ownCloud ist eine freie Software für das Vorhalten und Teilen von Dateien (Filehosting/Filesharing) in einer eigenen privaten Cloud
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Filesharing
 iPortEntryPriv:	user
 
 # Dokuwiki

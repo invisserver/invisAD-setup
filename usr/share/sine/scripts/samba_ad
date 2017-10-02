@@ -211,6 +211,9 @@ path="$SINEWORKINGDIR/ldif"
     strings="server-fqdn-ocport%$ddnsname:$ocport"
     changevalues $path $file "$strings"
 
+    strings="server-ddns%$ddnsname"
+    changevalues $path $file "$strings"
+
     strings="invis-net.loc%$domain"
     changevalues $path $file "$strings"
 

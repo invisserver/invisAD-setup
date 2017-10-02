@@ -92,7 +92,14 @@ if [[ $cont == "0" ]]; then
     samba-tool group add --description="Gruppe zur Beschränkung der ownCloud Nutzer" owncloud 2>&1| tee -a $LOGFILE | pgbox
 
     # ownCloud im Portal aktivieren
-    swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
+    # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
+    usedgroupware=`getconfdata "Groupware" "2"`
+    if [[ $usedgroupware == "roundcube" ]]; then
+	swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
+    else
+	swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
+    fi
+
 else
     msgbox "ownCloud Installation übersprungen" "$windowtitle"
 fi
