@@ -54,11 +54,13 @@ cont=${?}
 if [[ $cont == "0" ]]; then
     pgsubtitle="Software wird installiert"
 
-    # Umgebungsvariablen fuer Virtualbox erstellen
-    cp $TEMPLATEDIR/$modulename/virtualbox /etc/default
     zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
     zypper -n install -n `cat $PACKAGELISTDIR/virtualbox` 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
+
+    # Umgebungsvariablen fuer Virtualbox erstellen
+    cat $TEMPLATEDIR/$modulename/virtualbox >> /etc/default/virtualbox
+
     # lokaler Benutzer vbox wird angelegt
     useradd -c "Dummy Benutzer fuer phpVirtualBox" vbox 2>&1 | tee -a $LOGFILE | pgbox
     pwvbox=`pwgen -sBnc 8 1`
