@@ -203,7 +203,6 @@ if [[ $ddnshn != "none" ]]; then
     a2enflag OWNCERTS
 
     # Kopieren und anpassend der Konfigurationsdateien
-    cd $setupdir
     cp $TEMPLATEDIR/$modulename/vh-extern.conf /etc/apache2/vhosts.d/
     path="/etc/apache2/vhosts.d"
     file="vh-extern.conf"
@@ -218,6 +217,14 @@ if [[ $ddnshn != "none" ]]; then
     # Https Port setzen
     httpsport=`getconfdata "HTTPSPORT" "2"`
     string="httpsport%$httpsport"
+    changevalues $path $file "$string"
+
+    # Kopieren und anpassend der Konfigurationsdateien
+    cp $TEMPLATEDIR/$modulename/vh-combined-ext.conf /etc/apache2/vhosts.d/
+    file="vh-combined-ext.conf"
+    path="/etc/apache2/vhosts.d/"
+    ddnsname=`getconfdata "DDNS" "2"`
+    string="your.ddns-domain.net%$ddnsname"
     changevalues $path $file "$string"
 
 fi

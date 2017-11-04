@@ -68,7 +68,7 @@ case $whicherp in
 	    zyppercheck ${PIPESTATUS[0]}
 	
 	    # Kivitendo Konfiguration vorbereiten
-	    cp $TEMPLATEDIR/$modulename/kivitendo-erp/kivitendo.conf /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf
+	    cp $TEMPLATEDIR/$modulename/kivitendo/program/kivitendo.conf /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf
 
 	    msgbox "Der Kivitendo Taskserver wird ins Runklevelkonzept integriert.
 Sein Start wird solange fehlschlagen, bis Sie einen gültigen Kivitendo Benutzernamen in
@@ -120,9 +120,12 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    # Kivitendo im Portal aktivieren
 	    swpestat Kivitendo TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
+	    # activate apache configuration
+	    cp $TEMPLATEDIR/$modulename/kivitendo/apache2/kivitendo.conf /etc/apache2/conf.d
+	    
+	    # activate KIVITENDO and restart apache webserver
 	    a2enflag KIVITENDO
 	    chkservice "apache2"
-	    cp /etc/apache2/conf.d/kivitendo-erp.conf.dist /etc/apache2/conf.d/kivitendo-erp.conf
 	else
 	    msgbox "Kivitendo Installation übersprungenen" "$windowtitle"
 	fi 
@@ -141,6 +144,12 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    # Hier Datenbank installation einfügen
 	    wawipass=`mkdbsilent wawision1 wawision a`
 	    msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision1\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
+	    
+	    # activate apache configuration
+	    cp $TEMPLATEDIR/$modulename/wawision/wawision.conf /etc/apache2/conf.d
+
+	    a2enflag WAWISION
+	
 	    chkservice apache2 r
 	    # Wawision im Portal aktivieren
 	    swpestat waWision TRUE 2>&1 | tee -a $LOGFILE | pgbox

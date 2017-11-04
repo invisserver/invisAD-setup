@@ -239,16 +239,9 @@ case "$whichgroupware" in
 	    kopinit=`basename $kopinit`
 	    chkservice $kopinit
 	done
-    
-	# z-push als vHost anlegen & apache reload
-	cp $TEMPLATEDIR/$modulename/kopano/vh-zpush.conf /etc/apache2/vhosts.d/
-	rm -f /etc/apache2/conf.d/z-push2.conf
 
-	file="vh-zpush.conf"
-	path="/etc/apache2/vhosts.d/"
-	ddnsname=`getconfdata "DDNS" "2"`
-	string="your.ddns-domain.net%$ddnsname"
-	changevalues $path $file "$string"
+	# Konfigurationsvorlagen kopieren
+	cp $TEMPLATEDIR/$modulename/kopano/apache2/kopano-webapp.conf /etc/apache2/conf.d
 
 	a2enflag KOPANO
 	chkservice apache2

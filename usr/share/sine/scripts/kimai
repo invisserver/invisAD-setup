@@ -61,8 +61,10 @@ if [[ $cont == "0" ]]; then
 
     msgbox "Datenbank für Kimai wurde angelegt.\n\nDatenbank: kimai\nBenutzer: kimai\nPasswort: $kimaipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf Kimai benötigt." "$windowtitle"
 
-    # Apache Konfiguration aktivieren
-    # Flag KIMAI setzen
+    # activate apache configuration
+    cp $TEMPLATEDIR/$modulename/kimai.conf /etc/apache2/conf.d
+
+    # set KIMAI flag
     a2enflag KIMAI
     chkservice apache2 r
 
