@@ -97,8 +97,8 @@ if [[ $prepok == "0" ]]; then
     # Workaround for invisAD 13.0, reinstalling libldb1 from openSUSE repo
     # sssd refuses to start with the newer packages from our samba repo
     # we have to solve this problem for the next versions of invis-server
-    zypper -n in -n --force --repo download.opensuse.org-oss libldb1 2>&1| tee -a $LOGFILE | pgbox
-    zyppercheck ${PIPESTATUS[0]}
+    #zypper -n in -n --force --repo download.opensuse.org-oss libldb1 2>&1| tee -a $LOGFILE | pgbox
+    #zyppercheck ${PIPESTATUS[0]}
 
     # NFS-Server
     pgsubtitle="Zusätzliche Fileserver Software wird installiert" 

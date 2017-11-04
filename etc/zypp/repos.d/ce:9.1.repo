@@ -1,0 +1,7 @@
+[ce_9.1]
+name=ownCloud Server Version 9.1 (openSUSE_Leap_42.3)
+type=rpm-md
+baseurl=http://download.owncloud.org/download/repositories/9.1/openSUSE_Leap_42.3
+gpgcheck=1
+gpgkey=http://download.owncloud.org/download/repositories/9.1/openSUSE_Leap_42.3/repodata/repomd.xml.key
+enabled=1
