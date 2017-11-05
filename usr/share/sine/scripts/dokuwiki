@@ -72,7 +72,7 @@ if [[ $cont == "0" ]];then
     tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $LOGFILE | pgbox
 
     # Encrypt Password Plugin
-    wget -P $SINEWORKINGDIR https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip
+    wget -P $SINEWORKINGDIR https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip 2>&1 | tee -a $LOGFILE | pgbox
     getpath=`find $SINEWORKINGDIR -name "master.zip"`
     unzip $getpath -d /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $LOGFILE | pgbox
     mv /srv/www/htdocs/dokuwiki/lib/plugins/dw-plugin-encryptedpasswords-master /srv/www/htdocs/dokuwiki/lib/plugins/encryptedpasswords 2>&1 | tee -a $LOGFILE | pgbox

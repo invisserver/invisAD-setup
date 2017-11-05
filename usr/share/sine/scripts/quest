@@ -446,24 +446,18 @@ fi
 yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
 avcron=${?}
 
-#   Ports fuer SSH, HTTPS-Portal und HTTPs-OwnCloud ermitteln.
+#   Ports fuer SSH, HTTPS-Portal ermitteln.
 sshport=`freeports`
 httpsport=`freeports`
-ocport=`freeports`
 # Doppelte Portbelegung verhindern
 while [[ $sshport == $httpsport ]]; do
     httpsport=`freeports`
-done
-
-while [[ $ocport == $httpsport || $ocport == $sshport ]]; do
-    ocport=`freeports`
 done
 
 msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
 Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
 SSH Port: $sshport\n\n
 HTTPS Port: $httpsport\n\n
-ownCloud Port: $ocport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
 # Passwort fuer LDAP-Admin und junk erzeugen
@@ -506,8 +500,7 @@ echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
 echo "SSHPORT:$sshport" >> $SINEWORKINGDIR/invis_confdata
 echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
-echo "OCPORT:$ocport" >> $SINEWORKINGDIR/invis_confdata
-    
+
 echo "AV:$av" >> $SINEWORKINGDIR/invis_confdata
 if [[ $avcron == "0" ]]; then
     echo "AVCRON:j" >> $SINEWORKINGDIR/invis_confdata

@@ -70,7 +70,7 @@ case $whicherp in
 	    # Kivitendo Konfiguration vorbereiten
 	    cp $TEMPLATEDIR/$modulename/kivitendo/program/kivitendo.conf /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf
 
-	    msgbox "Der Kivitendo Taskserver wird ins Runklevelkonzept integriert.
+	    msgbox "Der Kivitendo Taskserver wird ins Runlevelkonzept integriert.
 Sein Start wird solange fehlschlagen, bis Sie einen gültigen Kivitendo Benutzernamen in
 /srv/www/htdocs/kivitendo-erp/config/kivitendo.conf eingetragen haben." "$windowtitle"
 
