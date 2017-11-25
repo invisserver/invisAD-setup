@@ -107,6 +107,26 @@ fi
 # Freien Platz auf evtl. vorhandenen PVs finden
 
 if [[ ! `pvscan -v 2>&1 |grep "No matching physical volumes found"` ]]; then
-    freespace=`pvscan -v 2>&1 |grep PV|tr -s " "|cut -d "[" -f2 | cut -d "/" -f2|cut -d " " -f2-3`
-    echo "pvfree $freespace" >> $directory/status
+    # Von mehreren physical divices ausgehen
+    IFS=$'\n'
+    freespace=(`pvscan -v 2>&1 |grep PV|tr -s " "|cut -d "[" -f2 | cut -d "/" -f2|cut -d " " -f2-3`)
+    totalfreespace=0
+    # Ausgabezelen bearbeiten
+    for zeile in ${freespace[@]}; do
+	# voll ausgeschoepfte pvs ignorieren 
+	if (( ${zeile%" "*} != 0 )); then
+	    # Einheit separieren
+	    einheit=${zeile#*" "}
+	    # Dezimaltrenner von , auf . aendern -> bc braucht das
+	    space=`echo ${zeile%" "*} | tr "," "."`
+	    # In Terrabyte (Tebibyte)  umrechnen, wenn Gigabyte (Gibibyte)
+	    if [[ $einheit =~ ^G ]]; then
+		space=`echo "scale=3 ; $space/1000" | bc`
+	    fi
+	    # Summe bilden
+	    totalfreespace=`echo "scale=3 ; $totalfreespace+$space" |bc`
+        fi
+    done
+    # Ausgabe erzeugen
+    echo "pvfree $totalfreespace $einheit" >> $directory/status
 fi
