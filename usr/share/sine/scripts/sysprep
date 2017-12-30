@@ -337,7 +337,7 @@ usermod -a -G mail postfix 2>&1| tee -a $LOGFILE | pgbox
 
 # external key and cert, only needed if let's encrypt certs are not used
 msgbox "Es wird jetzt ein SSL-Schlüsselsatz für den externen Server-Zugriff erzeugt.\nDieses Schlüsselpaar kann später durch echte Zertifikate von Let's Encrypt ersetzt werden.\n\n
-Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Mailserver Schlüsselsatzes"
+Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Schlüsselsatzes für externen Zugriff"
 
 inviscerts extern 2>&1| tee -a $LOGFILE
 
