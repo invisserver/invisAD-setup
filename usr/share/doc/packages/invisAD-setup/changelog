@@ -1,5 +1,10 @@
 Neuere Changelogs sind auf unser Github-Seite zu finden.
 
+invis 13.x
+- Basis: openSUSE Leap 42.3
+- Upgrade auf Samba 4.6.x
+- Modularisiertes sine2 ersetzt sine
+
 invis 12.x
 - Umstieg auf eigene Samba-Pakete mit AD-Unterstützung.
 - Wechsel von Zarafa auf Kopano

@@ -81,15 +81,6 @@ string="invis-net.loc%$domain"
 changevalues $path $file "$string"
 chkservice "amavis"
 
-# Bauen des Server-Schlüsselsatzes
-msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren Mailserver erzeugt.\n\n
-Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Mailserver Schlüsselsatzes"
-
-inviscerts ms 2>&1| tee -a $LOGFILE
-usermod -a -G pkeys postfix 2>&1| tee -a $LOGFILE | pgbox
-usermod -a -G pkeys wwwrun 2>&1| tee -a $LOGFILE | pgbox
-usermod -a -G mail postfix 2>&1| tee -a $LOGFILE | pgbox
-
 # Kopieren der Postfix-Konfigurationsdateien
 cp $TEMPLATEDIR/$modulename/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
     

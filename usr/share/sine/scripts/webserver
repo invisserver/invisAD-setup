@@ -199,7 +199,7 @@ if [[ $ddnshn != "none" ]]; then
     string="your.ddns-domain.net%$ddnshn"
     changevalues $path $file "$string"
 
-    inviscerts extern
+    # setting apache config to use internal keypairs
     a2enflag OWNCERTS
 
     # Kopieren und anpassend der Konfigurationsdateien
