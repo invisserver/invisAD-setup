@@ -239,7 +239,10 @@ done
 
 # Postfix und saslauthd neustarten und in Runlevel aufnehmen
 chkservice "postfix"
-chkservice "saslauthd"
+# saslauthd only if kopano is installed
+if [[ $whichgroupware == "kopano" ]]; then
+    chkservice "saslauthd"
+fi
 
 # Fetchmail einrichten
 # Sysconfig Datei bearbeiten
