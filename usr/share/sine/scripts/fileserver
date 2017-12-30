@@ -153,7 +153,7 @@ chmod 1777 /srv/shares/profiles 2>&1| tee -a $LOGFILE
 #Verzeichnisrechte anpassen - Druckertreiber Freigabe print$
 chmod -R g+ws /var/lib/samba/drivers 2>&1| tee -a $LOGFILE
 
-msgbox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
+waitinfobox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
 Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt über die Freigaben:\n\n
     - Gruppen: Mitglieder der jeweiligen Gruppe haben Zugriff auf das gleichnamige Verzeichnis.\n
     - Portal: Freigabe für den Dateiaustausch über das invis-Portal.\n
@@ -187,4 +187,3 @@ changevalues $path $file "$string"
 file=exports
 string="192.168.220.0/24%$netbase/$nmaskshort"
 changevalues $path $file "$string"
-
