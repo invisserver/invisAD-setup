@@ -68,14 +68,14 @@ if [[ $cont == "0" ]]; then
     usedgroupware=`getconfdata "Groupware" "2"`
     if [[ $usedgroupware == "roundcube" ]]; then
 	swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
-	# Flag OWNCLOUD setzen
-	a2enflag OWNCLOUD
     else
 	## Apache vorbereiten
 	# activate apache configuration
 	cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
 	swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
     fi
+    # Flag OWNCLOUD setzen
+    a2enflag OWNCLOUD
     chkservice apache2 r
 
 else
