@@ -13,6 +13,7 @@
 // Alte LDAP Klasse von Daniel einbinden, wird fuer die DHCP Geschichten benötigt
 require_once('../ldap.php');
 // Hinzugefügt nach Erweiterung der config.php (SMB_HOSTNAME) 21.07.2009 -- Stefan
+require_once('../default/default-config.php');
 require_once('../config.php');
 // adLDAP Klasse einbinden und Objekt erzeugen
 require_once('../inc/adLDAP.php');

@@ -9,6 +9,7 @@
  */
 
 require_once('../inc/functions.inc.php');
+require_once('../default/default-config.php');
 require_once('../config.php');
 
 // check if request comes from internal address

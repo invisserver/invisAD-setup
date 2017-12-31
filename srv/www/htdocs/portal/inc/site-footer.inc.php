@@ -6,7 +6,8 @@
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
- require_once('config.php');
+require_once('default/default-config.php');
+require_once('config.php');
 ?>
 
 <div id='footer_bg'>

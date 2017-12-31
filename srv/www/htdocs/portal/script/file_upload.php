@@ -9,6 +9,7 @@
  */
 
 
+require_once('../default/default-config.php');
 require_once('../config.php');
 
 if (!isset($_COOKIE['invis'])) die();

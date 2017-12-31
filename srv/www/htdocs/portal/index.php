@@ -14,6 +14,7 @@
 //
 
 require_once('inc/invis.inc.php');
+require_once('default/default-config.php');
 require_once('config.php');
 require_once('inc/adLDAP.php');
 require_once('inc/functions.inc.php');

@@ -58,7 +58,8 @@ require_once(dirname(__FILE__) . '/classes/adLDAPUtils.php');
 require_once(dirname(__FILE__) . '/classes/adLDAPContacts.php');
 require_once(dirname(__FILE__) . '/classes/adLDAPExchange.php');
 require_once(dirname(__FILE__) . '/classes/adLDAPComputers.php');
-require_once '/etc/invis/portal/config.php';
+require_once('/srv/www/htdocs/portal/default/default-config.php');
+require_once('/etc/invis/portal/config.php');
 
 class adLDAP {
     
@@ -97,7 +98,7 @@ class adLDAP {
     * 
     * @var string
     */
-    protected $baseDn = "DC=invis-net,DC=loc"; 
+    protected $baseDn = ""; 
     
     /** 
     * Port used to talk to the domain controllers. 
@@ -112,7 +113,7 @@ class adLDAP {
     * 
     * @var array
     */
-    protected $domainControllers = array("ldapserver");
+    protected $domainControllers = array("");
 	
     /**
     * Optional account with higher privileges for searching

@@ -8,6 +8,7 @@
  * Questions: daniel@invis-server.org
  */
 
+require_once('default/default-config.php');
 require_once('config.php');
 
 //--------------------
