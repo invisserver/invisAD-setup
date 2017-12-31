@@ -58,11 +58,6 @@ if [[ $cont == "0" ]]; then
     zyppercheck ${PIPESTATUS[0]}
     # Hier Datenbank installation einfügen
     ocpass=`mkdbsilent owncloud owncloud a`
-
-    ## Apache vorbereiten
-    # activate apache configuration
-    cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
-
     msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
 
     # Gruppe "owncloud" anlegen
@@ -76,6 +71,9 @@ if [[ $cont == "0" ]]; then
 	# Flag OWNCLOUD setzen
 	a2enflag OWNCLOUD
     else
+	## Apache vorbereiten
+	# activate apache configuration
+	cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
 	swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
     fi
     chkservice apache2 r
