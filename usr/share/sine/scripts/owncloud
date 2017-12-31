@@ -60,14 +60,10 @@ if [[ $cont == "0" ]]; then
     ocpass=`mkdbsilent owncloud owncloud a`
 
     ## Apache vorbereiten
-    # Flag OWNCLOUD setzen
-    a2enflag OWNCLOUD
-
     # activate apache configuration
     cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
 
     msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
-    chkservice apache2 r
 
     # Gruppe "owncloud" anlegen
     samba-tool group add --description="Gruppe zur Beschränkung der ownCloud Nutzer" owncloud 2>&1| tee -a $LOGFILE | pgbox
@@ -77,9 +73,12 @@ if [[ $cont == "0" ]]; then
     usedgroupware=`getconfdata "Groupware" "2"`
     if [[ $usedgroupware == "roundcube" ]]; then
 	swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	# Flag OWNCLOUD setzen
+	a2enflag OWNCLOUD
     else
 	swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
     fi
+    chkservice apache2 r
 
 else
     msgbox "ownCloud Installation übersprungen" "$windowtitle"
