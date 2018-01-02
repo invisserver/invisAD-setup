@@ -93,6 +93,9 @@ case "$whichgroupware" in
 	pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
 	zypper -n install -n dovecot22 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
+	# copy own apparmo profiles
+	cp -r $TEMPLATEDIR/$modulename/dovecot/apparmor/* /etc/apparmor.d/ 2>&1| tee -a $LOGFILE
+	systemctl restart apparmor.service 2>&1| tee -a $LOGFILE
 	# Konfiguration anpassen
 	cp -r $TEMPLATEDIR/$modulename/dovecot/ad/* /etc/dovecot/ 2>&1| tee -a $LOGFILE
 	path="/etc/dovecot/conf.d"
