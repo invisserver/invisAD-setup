@@ -56,7 +56,7 @@ for cert in ${certs[*]}; do
 	certname=`basename $certpath`
 	certstate=`echo $verify| tr -d " " |cut -d ":" -f 2`
 	if [[ `echo $certname | grep "^ca"` ]]; then
-	    certtype="Stamzertifikat"
+	    certtype="Stammzertifikat"
 	fi
 	if [[ `echo $certname | grep "^ldap"` ]]; then
 	    certtype="LDAP-Server"
