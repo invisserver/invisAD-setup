@@ -76,7 +76,7 @@ if ($STATUS_APCUPSD == true)
 				</tr>
 			</table>
 			<span id="capacity_info"></span>
-			<br><span id="cert_info"></span></td>
+			<span id="cert_info"></span></td>
 		</td>
 	</tr>
 </table>

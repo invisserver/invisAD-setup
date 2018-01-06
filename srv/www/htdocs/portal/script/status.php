@@ -57,7 +57,7 @@ if ($CMD == 'basic_info') {
 	echo '<span style="font-size: 0.8em;">invis-Server Version: <b style="color:' . $invisversioncolor . ';">' . $INVISVERSION . '</b></span><br />';
 	echo '<span style="font-size: 0.8em;">openSUSE Leap Version: <b style="color:' . $suseversioncolor . ';">' . $OPENSUSEVERSION . '</b></span><br /><br />';
 
-	echo '<b><span style="font-size: 0.9em;">Serverzeit:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('date +"%d.%m.%Y, %H:%M"') . 'Uhr</span><br />';
+	echo '<b><span style="font-size: 0.9em;">Serverzeit:</span></b><br /><span style="font-size: 0.8em;">' . shell_exec('date +"%d.%m.%Y / %H:%M"') . 'Uhr</span><br />';
 	
 	$uptime = intval(shell_exec('cat /proc/uptime | cut -d"." -f1'));
 	
@@ -148,18 +148,18 @@ elseif ($CMD == 'capacity_info') {
 			<td align="center">' . round($used, 2) . '</td>
 			<td align="center">' . round($total, 2) . '</td>';
 		
-		echo"<tr>
+		echo "<tr>
 				<td colspan='4'>
 					<div style='width: " . $max . "px; border: 1px solid #000000'>
 						<div style='padding: 2px; width: ".($max * $used_factor)."px; border-right: 1px solid black; background-color: #".$red.$green."55;'>&nbsp;</div>
-						</div>
-					</td>
+					</div>
+				</td>
 			</tr>";
 	}
 	echo "</table>";
 }
 elseif ($CMD == 'cert_info') {
-//	echo '<hr>';
+	echo '<hr>';
 	echo '<b><span style="font-size: 0.9em;">Serverzertifikate </span></b><span style="font-size: 0.7em;"> (Verwendungszweck:Ablaufdatum:Status)</span><br>';
 	// Status-Datei einlesen
 	$file_certs = file('/var/spool/results/certs/certstatus');
