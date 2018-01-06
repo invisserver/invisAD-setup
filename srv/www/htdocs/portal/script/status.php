@@ -265,7 +265,7 @@ elseif ($CMD == 'backup_info') {
 	$file_diskfull = file('/var/spool/results/backup/full');
 	$disk_state = ($file_diskfull[0] < 90)? '<b style="color: green; font-size: 0.8em;">'. $file_diskfull[0] .'</b>':'<b style="color: red; font-size: 0.8em;">'. $file_diskfull[0] .'</b>';
 	echo '<span style="font-size: 0.8em;"> Datensicherungsplatte zu '. $disk_state . '% voll.</span><br />';
-	echo "<br/>";
+	//echo "<br/>";
 
 }
 elseif ($CMD == 'usv_status') {
