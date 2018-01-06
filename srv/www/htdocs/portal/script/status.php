@@ -29,18 +29,27 @@ if ($CMD == 'basic_info') {
 	$opinversion=str_replace( ".", "", $INVISVERSION);
 	$opsuseversion=str_replace( ".", "", $OPENSUSEVERSION);
 	if ($opinversion == trim($file_versioninfo[0])) {
+	    // current version
 	    $invisversioncolor = 'green';
 	} elseif ( $opinversion < trim($file_versioninfo[0]) && $opinversion >= trim($file_versioninfo[1])) {
+	    // maintained version
 	    $invisversioncolor = 'orange';
+	} elseif ($opinversion > trim($file_versioninfo[0])) {
+	    // prototype version
+	    $invisversioncolor = 'purple';
 	} else {
+	    // outdated version
 	    $invisversioncolor = 'red';
 	};
 
 	if ($opsuseversion == trim($file_versioninfo[2])) {
+	    // current version
 	    $suseversioncolor = 'green';
 	} elseif ( $opsuseversion < trim($file_versioninfo[2]) && $opsuseversion >= trim($file_versioninfo[3])) {
+	    // maintained version
 	    $suseversioncolor = 'orange';
 	} else {
+	    // outdated version
 	    $susesversioncolor = 'red';
 	};
 
