@@ -1,8 +1,8 @@
-[Kopano-openSUSE-42.2_limited]
-name=Kopano-openSUSE-42.2_limited
+[Kopano-openSUSE_limited]
+name=Kopano-openSUSE_limited
 enabled=1
 autorefresh=1
-baseurl=https://download.kopano.io/limited/core:/final/openSUSE_Leap_42.2
+baseurl=https://download.kopano.io/limited/core:/final/openSUSE_Leap_42.3
 path=/
 type=rpm-md
 keeppackages=0
