@@ -235,8 +235,8 @@ case "$whichgroupware" in
 	chown -R kopano.kopano /srv/kopano
 
 	# Dienste ins Runlevel-Konzept eintragen
-	for kopinit in /etc/init.d/kopano-* ; do
-	    kopinit=`basename $kopinit`
+	for kopinit in /usr/lib/systemd/system/kopano-* ; do
+	    kopinit=`basename $kopinit|cut -d "." -f1`
 	    chkservice $kopinit
 	done
 
