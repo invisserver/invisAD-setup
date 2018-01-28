@@ -57,6 +57,7 @@ fi
 #Anpassen der Besitzrechte der Freigaben
 chown -R root:"Domain Users" /srv/shares/aktuell
 chown -R root:"Archiv" /srv/shares/archiv
+chmod -R o-rx /srv/shares/archiv
 chown root:"Domain Users" /srv/shares/gruppen
 #chown -R root:"Domain Users" /srv/shares/projekte
 chown root:"Domain Users" /srv/shares/profiles
