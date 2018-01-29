@@ -114,13 +114,13 @@ if [[ ! `pvscan -v 2>&1 |grep "No matching physical volumes found"` ]]; then
     # Ausgabezelen bearbeiten
     for zeile in ${freespace[@]}; do
 	# voll ausgeschoepfte pvs ignorieren 
-	if (( ${zeile%" "*} != 0 )); then
+	if [[ ${zeile%" "*} != 0 ]]; then
 	    # Einheit separieren
 	    einheit=${zeile#*" "}
 	    # Dezimaltrenner von , auf . aendern -> bc braucht das
 	    space=`echo ${zeile%" "*} | tr "," "."`
 	    # In Terrabyte (Tebibyte)  umrechnen, wenn Gigabyte (Gibibyte)
-	    if [[ $einheit =~ ^G ]]; then
+	    if [[ $einheit =~ 'G$' ]]; then
 		space=`echo "scale=3 ; $space/1000" | bc`
 	    fi
 	    # Summe bilden
