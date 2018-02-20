@@ -27,11 +27,6 @@ confdir="/etc/invis"
 conffile="$confdir/invis.conf"
 openvpndir="/etc/openvpn/keys"
 
-if [[ -z $1 ]]; then
-    usage
-fi
-
-stype="$1"
 
 # Funktionen
 # Werte aus Konfigurationsdatendatei extrahieren
@@ -91,6 +86,12 @@ deploycerts() {
     esac
 }
 
+if [[ -z $1 ]]; then
+    usage
+fi
+
+stype="$1"
+
 # Eingabe pruefen und CN erzeugen bzw. abfragen
 domain=$(hostname -d)
 ersadir="/etc/easy-rsa/$domain"
@@ -121,6 +122,7 @@ esac
 echo -e "\033[1;33mEs werden Schlüssel und Zertifikat für \"$cn\" erzeugt.\033[0m"
 
 if [[ ! -f $ersadir/issued/$cn.crt ]]; then
+    echo Hallo; exit
     if [[ $stype != "vpn" ]]; then
 	easyrsa build-server-full $cn nopass
 	deploycerts
@@ -150,9 +152,11 @@ else
 	fi
     else
 	echo -e "Das angeforderte Zertifikat wird erneuert.\n"
-	easyrsa sign-req server $cn
 	if [[ $stype == "vpn" ]]; then
+	    easyrsa sign-req client $cn
 	    easyrsa export-p12 $cn
+	else
+	    easyrsa sign-req server $cn
 	fi
 	deploycerts
 	out
