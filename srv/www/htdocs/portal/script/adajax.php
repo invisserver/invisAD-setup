@@ -1139,7 +1139,7 @@ function hostNumberToIPString($number) {
 // Prueft MAC-Adresse in Form des DHCP-iscdhcphwaddress-Statements (ethernet 00:00:00:00:00:00) auf gueltige Werte
 // return "" = Ok
 // return "Fehlermeldung" = Fehler
-function checkMac($statement) {
+function checkMac($mac_statements, $statement) {
 		$mac_ok = false;
 		$error_msg = $statement;
 		$mac_int = 0;
@@ -1155,7 +1155,7 @@ function checkMac($statement) {
 					if (count($realmac) == 6)
 					{
 						for ($i=0; $i < 6; $i++) {
-							if (!ctype_xdigit($realmac[$i]))
+							if (!ctype_xdigit($realmac[$i]) || (strlen($realmac[$i]) != 2))
 								break;
 							else
 								$mac_int += hexdec($realmac[$i]);
@@ -1169,7 +1169,14 @@ function checkMac($statement) {
 		if ($mac_ok != true)
 			return "MAC-Adresse ($error_msg) ist fehlerhaft!";
 		else
+		{
+			foreach ($mac_statements as $mac_statement)
+			{
+			    if ($mac_statement == $statement)
+				return "MAC-Adresse ($error_msg) exisitiert bereits!";
+			}
 			return "";
+		}
 }
 
 // Prueft hostname auf gueltige Werte
@@ -1245,12 +1252,13 @@ function hostCreate($conn, $cn) {
 	$free_client = range($DHCP_RANGE_CLIENT[0], $DHCP_RANGE_CLIENT[1], 1);
 	
 	// list all current hosts
-	$result = search($conn, $BASE_DN_DHCP, 'objectclass=iscdhcphost', array('iscdhcpstatements'));
+	$result = search($conn, $BASE_DN_DHCP, 'objectclass=iscdhcphost', array('iscdhcpstatements', 'iscdhcphwaddress'));
 	if ($result) {
 		$occ_client = array();
 		$occ_printer = array();
 		$occ_ipdev = array();
 		$occ_server = array();
+		$mac_statements = array();
 		
 		// build list with all used IPs
 		for ($i=0; $i < $result["count"]; $i++) {
@@ -1266,6 +1274,7 @@ function hostCreate($conn, $cn) {
 				default:
 					array_push($occ_client, $ip); break;
 			}
+			array_push($mac_statements, $entry['iscdhcphwaddress']);
 		}
 
 		// remove used client IPs
@@ -1309,7 +1318,7 @@ function hostCreate($conn, $cn) {
 		    $location = "-";
 		
 		// Check MAC
-		$error_msg = checkMac($mac);
+		$error_msg = checkMac($mac_statements, $mac);
 		if ($error_msg != "")
 			return $error_msg;
 
@@ -1345,6 +1354,14 @@ function hostCreate($conn, $cn) {
 function hostModify($conn, $cn) {
 	global $BASE_DN_DHCP, $cookie_data, $DOMAIN, $DHCP_IP_BASE;
 	$attributes = $cookie_data;
+	$old_mac = "";
+
+	// Read current MAC
+	$result = search($conn, $BASE_DN_DHCP, "cn=$cn", array('iscdhcphwaddress'));
+	if ($result) {
+	    $result = cleanup($result[0]);
+	    $old_mac = $result['iscdhcphwaddress'];
+	}
 
 	// if cn has changed, rename DHCP&DNS-forward, change DNS-reverse
 	if (isset($attributes['cn'])) {
@@ -1379,16 +1396,29 @@ function hostModify($conn, $cn) {
 		}
 	}
 
-	// modify DHCP Location
+	// modify MAC and/or DHCP Location
 	if (empty($attributes)) {
 	    $ok1 = 1;
 	} else {
 		if (array_key_exists('iscdhcphwaddress',$attributes)) {
 			// Check MAC
 			$mac = $attributes['iscdhcphwaddress'];
-			$error_msg = checkMac($mac);
-			if ($error_msg != "")
+			if ($old_mac != $mac) {
+			    // list all current MACs
+			    $result = search($conn, $BASE_DN_DHCP, 'objectclass=iscdhcphost', array('iscdhcphwaddress'));
+			    $mac_statements = array();
+			    if ($result) {
+				$mac_statements = array();
+				// build list with all used MACs
+				for ($i=0; $i < $result["count"]; $i++) {
+				    $entry = cleanup($result[$i]);
+				    array_push($mac_statements, $entry['iscdhcphwaddress']);
+				}
+			    }
+			    $error_msg = checkMac($mac_statements, $mac);
+			    if ($error_msg != "")
 				return $error_msg;
+			}
 		}
 
 		if (isset($newcn)) {
