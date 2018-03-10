@@ -875,9 +875,11 @@ function groupDetail($conn, $cn) {
 		array_push($member, $entry['samaccountname']);
 	    }
 	} else {
-		$result = search($conn, $groupmember, 'objectclass=*', array('samaccountname'));
-		$entry = cleanup($result[0]);
-		array_push($member, $entry['samaccountname']);
+		if (!empty($groupmember)) {
+		    $result = search($conn, $groupmember, 'objectclass=*', array('samaccountname'));
+		    $entry = cleanup($result[0]);
+		    array_push($member, $entry['samaccountname']);
+		}
 	}
 
 	
