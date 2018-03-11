@@ -790,6 +790,22 @@ function userDelete($uid) {
 
 }
 
+// Generate a list of template directories
+// Stefan, mach mal...
+function templateList() {
+	$json = array();
+
+	array_push($json, "Template 1");
+	array_push($json, "Template 2");
+
+	return $json;
+}
+
+// Combine the two lists
+function userTemplateList() {
+    return array(userListShort(), templateList());
+}
+
 //--------------------
 // GROUP STUFF
 //--------------------
@@ -909,10 +925,10 @@ function groupCreate() {
 
 	// group type, fetch from POST var
 	// (default 0)
-	if (isset($_POST['t'])) {
-		//echo $_POST['t'];
+	if (isset($_POST['t']))
 		$grouptype = intval($_POST['t']); 
-	}
+	else
+		$grouptype = 0;
 
 	$cn = $cookie_data['cn'];
 	$ok = $adldap->group()->create($attributes);
@@ -955,6 +971,10 @@ function groupCreate() {
 	$resultmod = $adldap->group()->modify($cn,$attributes);
 
 	// Gruppenverzeichnis anlegen
+	// Uebergabewerte: 
+	// 1: $cn (Gruppenname)
+	// 2: $share (1/0) Soll ein Gruppenverzeichnis angelegt werden? (optional)
+	// 3: $template (Zu verwendendes Vorlageverzeichnis) (optional)
 	if ($ok) {
 		shell_exec("sudo /usr/bin/creategroupshare $cn;");
 	}
@@ -1581,6 +1601,9 @@ if (($cookie_auth['uid'] == $USR && (array_search($CMD, $ALLOWED_CMDS) !== false
 	}
 	elseif ($CMD == 'user_list_short') {
 		echo json_encode(userListShort($conn));
+	}
+	elseif ($CMD == 'user_template_list') {
+		echo json_encode(userTemplateList($conn));
 	}
 	elseif ($CMD == 'group_list') {
 		echo json_encode(groupList($conn));

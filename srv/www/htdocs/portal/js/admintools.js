@@ -249,7 +249,7 @@ function groupListResponse(request) {
 	// add group button
 	var node = new Element('table', {'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/group.png" /></td><td style="vertical-align: middle;">Gruppe anlegen</td></tr>');
 	node.observe('click', function(){
-			invis.request('script/adajax.php', groupAdd, {c: 'user_list_short'});
+			invis.request('script/adajax.php', groupAdd, {c: 'user_template_list'});
 		}
 	);
 	content.insert(node);
@@ -1218,7 +1218,8 @@ function userAddResponse(request) {
 function groupAdd(request) {
 	var group_type = 0;
 	lightbox.show(500, true);
-	var users_not = request.responseText.evalJSON();
+	var users_not = request.responseText.evalJSON()[0];
+	var templates = request.responseText.evalJSON()[1];
 	
 	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('Gruppendetails'));
 	
@@ -1337,6 +1338,12 @@ function groupAdd(request) {
 			select_not.insert(new Element('option').update(user));
 		}
 	);
+	// Test: Templates in User-Box schreiben. Kann wieder aus wenn wir fertig sind.
+	//templates.each(
+	//	function (template) {
+	//		select_not.insert(new Element('option').update(template));
+	//	}
+	//);
 	$('groupbox_right').insert(select_not);
 	
 	listSort($('grouplist_in'));
