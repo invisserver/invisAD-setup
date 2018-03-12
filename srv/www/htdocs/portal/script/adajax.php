@@ -224,7 +224,7 @@ function userDetail($uid) {
 }
 
 function userCreate($uid) {
-	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SMB_FILESERVER, $SFU_GUID_BASE, $GROUPWARE;
+	global $cookie_data, $adldap, $DOMAIN, $NISDOMAIN, $COMPANY, $mdrid, $SMB_HOSTNAME, $SMB_FILESERVER, $SMB_DEFAULT_LOGON_SCRIPT, $SFU_GUID_BASE, $GROUPWARE;
 	// read user data from cookie
 	//$attributes = $cookie_data;
 	$ok = false;
@@ -477,7 +477,7 @@ function userCreate($uid) {
 	    $attributes += ["home_drive"=>'u:'];
 	    $attributes += ["home_directory"=>"$smbhomepath"];
 	    $attributes += ["profile_path"=>"$profilepath"];
-	    $attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["script_path"=>"$SMB_DEFAULT_LOGON_SCRIPT"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -532,7 +532,7 @@ function userCreate($uid) {
 	    $attributes += ["home_drive"=>'u:'];
 	    $attributes += ["home_directory"=>"$smbhomepath"];
 	    $attributes += ["profile_path"=>"$profilepath"];
-	    $attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["script_path"=>"$SMB_DEFAULT_LOGON_SCRIPT"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -594,7 +594,7 @@ function userCreate($uid) {
 	    $attributes += ["home_drive"=>'u:'];
 	    $attributes += ["home_directory"=>"$smbhomepath"];
 	    $attributes += ["profile_path"=>"$profilepath"];
-	    $attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["script_path"=>"$SMB_DEFAULT_LOGON_SCRIPT"];
 	    // Benutzer anlegen
 	    try {
 		$ok = $adldap->user()->create($attributes);
@@ -663,7 +663,7 @@ function userCreate($uid) {
 	    $attributes += ["home_drive"=>'u:'];
 	    $attributes += ["home_directory"=>"$smbhomepath"];
 	    $attributes += ["profile_path"=>"$profilepath"];
-	    $attributes += ["script_path"=>"user.cmd"];
+	    $attributes += ["script_path"=>"$SMB_DEFAULT_LOGON_SCRIPT"];
 	    $attributes += ["zarafaaccount" => true];
 	    $attributes += ["zarafaadmin" => true];
 	    // Benutzer anlegen

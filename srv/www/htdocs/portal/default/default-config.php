@@ -69,6 +69,7 @@ $SMB_DOMAIN = strtoupper($DOMAIN_PARTS[1]);
 $SMB_HOSTNAME = strtoupper($DOMAIN_PARTS[0]);
 $SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "Archiv", "Verwaltung");
 $SMB_FILESERVER = strtoupper("null");
+$SMB_DEFAULT_LOGON_SCRIPT = ("user.cmd");
 
 // Services
 // Dienste muessen als Array in das globale Array eingetragen werden.
