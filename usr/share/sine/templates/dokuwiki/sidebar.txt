@@ -1,0 +1,12 @@
+=== Navigation ===
+**[[start|Zur Startseite]]**
+
+//Fügen Sie hier Ihre Inhaltsübersicht ein//
+
+**[[sidebar|Seitenleiste bearbeiten]]**
+
+=== Dokuwiki lernen ===
+
+**[[wiki:syntax|Dokuwiki Syntax]]**\\
+**[[playground:playground|Spielwiese]]**
+

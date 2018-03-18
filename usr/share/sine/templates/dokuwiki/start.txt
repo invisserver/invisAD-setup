@@ -1,0 +1,17 @@
+====== Ein Wiki für Ihr Unternehmen? ======
+
+//"Ein Wiki (hawaiisch für „schnell“) seltener auch WikiWiki oder WikiWeb genannt, ist eine Website, deren Inhalte von den Besuchern (also **Ihnen**) nicht nur gelesen, sondern auch direkt im Webbrowser geändert werden können. Das Ziel ist häufig, Erfahrung und Wissen gemeinschaftlich zu sammeln und in für die Zielgruppe verständlicher Form zu dokumentieren. Die Autoren erarbeiten hierzu gemeinschaftlich Texte, die ggf. durch Fotos oder andere Medien ergänzt werden."// \\
+Quelle: Wikipedia
+
+Für Sie bedeutet dies, dass Sie mit der hier installierten Software **"Dokuwiki"** eine Wissenssamlung für Ihr Unternehmen erstellen können, an dem alle Mitarbeiter, sei es als Leser oder Redakteur, teilhaben können. Verfassen Sie hier Arbeitsanleitungen oder erstellen Sie mit **Dokuwiki** etwa Ihr Qualitätssicherungshandbuch.
+
+**Dokuwiki** ist leicht erlernbar und Sie können es von Überall nutzen von wo Sie Zugriff auf Ihren Server haben.
+
+Für den Zugriff auf Ihr Wiki müssen Sie als Benutzer Mitglied in einer der folgenden Gruppen sein:
+  * **Wiki Nutzer** - Mitglieder dieser Gruppe haben im Wiki nur **Leserecht**.
+  * **Wiki Redakteure** - Mitglieder dieser Gruppe haben im Wiki **Schreibrecht**.
+  * **Wiki Chefredakteuere** - Mitglieder dieser Gruppe haben im Wiki **Schreibrecht** und dürfen im Wiki **Löschen**.
+
+Viel Spaß damit, 
+
+Ihr invis-Server.org Team

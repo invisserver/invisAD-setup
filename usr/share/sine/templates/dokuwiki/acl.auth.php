@@ -10,7 +10,4 @@
 *	@wiki%2dchefredakteure	16
 *	@wiki%2dredakteure	8
 *	@ALL	0
-#wiki:dokuwiki	@ALL	1
-#wiki:navigation	@ALL	1
-#start	@ALL	1
-#wiki:*	@ALL	1
+start	@ALL	1

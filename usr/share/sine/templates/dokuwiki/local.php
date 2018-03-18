@@ -6,7 +6,7 @@
  * Date: Sat, 13 Mar 2010 09:10:34 +0100
  */
 
-$conf['title'] = 'invis-Server.org';
+$conf['title'] = 'organization';
 $conf['lang'] = 'de';
 $conf['template'] = 'bootstrap3';
 $conf['useacl'] = 1;
@@ -40,5 +40,10 @@ $conf['plugin']['authad']['admin_username'] = 'ldap.admin';
 $conf['plugin']['authad']['admin_password'] = 'admin-secret';
 $conf['plugin']['authad']['use_tls'] = 1;
 $conf['plugin']['authad']['mapping']['name'] = 'displayname';
+
+// bootstrap Theme
+$conf['tpl']['bootstrap3']['sidebarOnNavbar'] = 1;
+$conf['tpl']['bootstrap3']['showEditBtn'] = 'logged';
+$conf['tpl']['bootstrap3']['individualTools'] = 1;
 
 ?>
