@@ -60,7 +60,7 @@ if [[ $cont == "0" ]];then
 
     # Dokuwiki Template Bootstrap3 herunterladen und installieren
     # Create download-url
-    url=`curl -s https://api.github.com/repos/LotarProject/dokuwiki-template-bootstrap3/releases/latest |grep tarball | tr -s " "| cut -d " " -f3 |cut -d "," -f1`
+    url=`curl -s https://api.github.com/repos/LotarProject/dokuwiki-template-bootstrap3/releases/latest |grep tarball | tr -s " "| cut -d " " -f3 |cut -d "," -f1 |tr -d '"'`
     wget -O $SINEWORKINGDIR/bootstrap3.tar.gz $url 2>&1 | tee -a $LOGFILE | pgbox
     getpath=`find $SINEWORKINGDIR -name "bootstrap3.tar.gz"`
     dwtemplatedir="/srv/www/htdocs/dokuwiki/lib/tpl/"
