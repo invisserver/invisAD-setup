@@ -8,7 +8,7 @@
 
 $conf['title'] = 'invis-Server.org';
 $conf['lang'] = 'de';
-$conf['template'] = 'monobook';
+$conf['template'] = 'bootstrap3';
 $conf['useacl'] = 1;
 #$conf['superuser'] = '@admin';
 $conf['superuser'] = 'administrator';

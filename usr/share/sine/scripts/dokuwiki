@@ -58,18 +58,28 @@ if [[ $cont == "0" ]];then
     zypper -n install -n dokuwiki 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
+    # Dokuwiki Template Bootstrap3 herunterladen und installieren
+    # Create download-url
+    url=`curl -s https://api.github.com/repos/LotarProject/dokuwiki-template-bootstrap3/releases/latest |grep tarball | tr -s " "| cut -d " " -f3 |cut -d "," -f1`
+    wget -O $SINEWORKINGDIR/bootstrap3.tar.gz $url 2>&1 | tee -a $LOGFILE | pgbox
+    getpath=`find $SINEWORKINGDIR -name "bootstrap3.tar.gz"`
+    dwtemplatedir="/srv/www/htdocs/dokuwiki/lib/tpl/"
+    tar -xzf $getpath -C $dwtemplatedir 2>&1 | tee -a $LOGFILE | pgbox
+    bootstrapdirname=`ls $dwtemplatedir|grep "Lotar"`
+    mv $dwtemplatedir/$bootstrapdirname $dwtemplatedir/bootstrap3
+
     # Display Wiki Page Plugin herunterladen
     # Vorübergehender Link fuer Displaywikipage
-    pgsubtitle="Dokuwiki-Erweiterungen werden heruntergeladen und installiert"
-    wget -P $SINEWORKINGDIR http://cloud.github.com/downloads/tatewake/dokuwiki-plugin-displaywikipage/displaywikipage-stable.tar.gz 2>&1 | tee -a $LOGFILE | pgbox
-    getpath=`find $SINEWORKINGDIR -name "display*.tar.gz"`
-    tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $LOGFILE | pgbox
+    #pgsubtitle="Dokuwiki-Erweiterungen werden heruntergeladen und installiert"
+    #wget -P $SINEWORKINGDIR http://cloud.github.com/downloads/tatewake/dokuwiki-plugin-displaywikipage/displaywikipage-stable.tar.gz 2>&1 | tee -a $LOGFILE | pgbox
+    #getpath=`find $SINEWORKINGDIR -name "display*.tar.gz"`
+    #tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/plugins/ 2>&1 | tee -a $LOGFILE | pgbox
 
     # Display Wiki Page Plugin herunterladen
     # Voruebergehender Link fuer Monobook Template
-    wget -O $SINEWORKINGDIR/monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $LOGFILE | pgbox
-    getpath=`find $SINEWORKINGDIR -name "monobook-stable.tar.gz"`
-    tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $LOGFILE | pgbox
+    #wget -O $SINEWORKINGDIR/monobook-stable.tar.gz https://andreashaerter.com/downloads/dokuwiki-template-monobook/latest 2>&1 | tee -a $LOGFILE | pgbox
+    #getpath=`find $SINEWORKINGDIR -name "monobook-stable.tar.gz"`
+    #tar -xzf $getpath -C /srv/www/htdocs/dokuwiki/lib/tpl/ 2>&1 | tee -a $LOGFILE | pgbox
 
     # Encrypt Password Plugin
     wget -P $SINEWORKINGDIR https://github.com/ssahara/dw-plugin-encryptedpasswords/archive/master.zip 2>&1 | tee -a $LOGFILE | pgbox
