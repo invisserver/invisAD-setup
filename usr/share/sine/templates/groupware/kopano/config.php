@@ -17,7 +17,7 @@
 	define("CONFIG_CHECK_COOKIES_SSL", FALSE);
 
 	// Depending on your setup, it might be advisable to change the lines below to one defined with your
-	// default socket location. 
+	// default socket location.
 	// Normally "default:" points to the default setting ("file:///var/run/kopano/server.sock")
 	// Examples: define("DEFAULT_SERVER", "default:");
 	//           define("DEFAULT_SERVER", "http://localhost:236/kopano");
@@ -35,15 +35,18 @@
 
 	// set to 'true' to strip domain from login name found from Single Sign-On webservers
 	define("LOGINNAME_STRIP_DOMAIN", false);
-	
+
 	// Name of the cookie that is used for the session
 	define("COOKIE_NAME", "KOPANO_WEBAPP");
+
+    // Set to 'true' to disable secure session cookies and to allow log-in without HTTPS.
+	define("INSECURE_COOKIES", false);
 
 	// The timeout (in seconds) for the session. User will be logged out of WebApp
 	// when he has not actively used the WebApp for this time.
 	// Set to 0 (or remove) for no timeout during browser session.
 	define('CLIENT_TIMEOUT', 0);
-	
+
 	// Defines the domains from which cross domain authentication requests
 	// are allowed. E.g. if WebMeetings runs under a different domain than
 	// the WebApp then add this domain here. Add http(s):// to the domains
@@ -53,6 +56,12 @@
 	// Set to "*" to allow authentication requests from any domain. (not
 	// recommended)
 	define('CROSS_DOMAIN_AUTHENTICATION_ALLOWED_DOMAINS', "");
+
+	// Defines the domains to which redirection after login is allowed.
+	// Add http(s):// to the domains and separate domains with spaces.
+	// Note: The domain under which WebApp runs, is always allowed and does
+	// not need to be added here.
+	define('REDIRECT_ALLOWED_DOMAINS', '');
 
 	// Defines the base url and end with a slash.
 	$base_url = dirname($_SERVER["PHP_SELF"]);
@@ -76,14 +85,14 @@
 	// Plugins should be seperated by a semicolon (;). A wildcard (*)
 	// can be used to identify multiple plugins.
 	define("ALWAYS_ENABLED_PLUGINS_LIST", '');
-	
+
 	// General WebApp theme. This will be loaded by default for every user
 	// (if the theme is installed as a plugin)
 	// Users can override the 'logged-in' theme in the settings.
 	define("THEME", '');
-	
+
 	// The title that will be shown in the title bar of the browser
-	define("WEBAPP_TITLE", 'Kopano WebApp');
+	define("WEBAPP_TITLE", 'invis-Server Kopano WebApp');
 
 	// Set addressbook for GAB not to show any users unless searching for a specific user
 	define("DISABLE_FULL_GAB", false);
@@ -99,8 +108,12 @@
 	// false will show shared contact folders in address-book folder list.
 	define("DISABLE_SHARED_CONTACT_FOLDERS", false);
 
+	// Set to true to give users the possiblity to edit, create, and delete mail filters on the store
+	// of other users. The user needs owner permissions on the store of the other user.
+	define('ENABLE_SHARED_RULES', false);
+
 	// Booking method (true = direct booking, false = send meeting request)
-	define('ENABLE_DIRECT_BOOKING', true);
+	define('ENABLE_DIRECT_BOOKING', false);
 
 	// Enable GZIP compression for responses
 	define('ENABLE_RESPONSE_COMPRESSION', true);
@@ -109,7 +122,7 @@
 	define('DISABLE_WELCOME_SCREEN', false);
 
 	// When set to false it will disable showing of advanced settings.
-	define('ENABLE_ADVANCED_SETTINGS', true);
+	define('ENABLE_ADVANCED_SETTINGS', false);
 
 	// Freebusy start offset that will be used to load freebusy data in appointments, number is subtracted from current time
 	define('FREEBUSY_LOAD_START_OFFSET', 7);
@@ -129,6 +142,19 @@
 	//			'name' => 'pink',
 	//			'displayName' => _('Pink'),
 	//			'base' => '#ff0099'
+	//		)
+	// )));
+
+	// Additional categories can be added by uncommenting and editing the following define.
+	// The format is the same as the format of DEFAULT_CATEGORIES which is defined in default.php
+	// To change the default categories, DEFAULT_CATEGORIES can also be defined here.
+	// Note: Every category should have a unique name, because it is used to identify the category
+	// define('ADDITIONAL_CATEGORIES', json_encode(array(
+	// 		array(
+	//			'name' => _('Family'),
+	//			'color' => '#000000',
+	//			'quickAccess' => true,
+	//			'sortIndex' => 10
 	//		)
 	// )));
 
@@ -187,7 +213,7 @@
 	// semicolon.  A list of available languages can be found in
 	// the manual or by looking at the list of directories in
 	// /usr/share/kopano-webapp/server/language .
-	define("ENABLED_LANGUAGES", "de_DE;en_GB;en_US;fr_FR;he_IL;it_IT;nl_NL;ru_RU;zh_CN;nb_NO;hu_HU");
+	define("ENABLED_LANGUAGES", "cs_CZ;da_DK;de_DE;en_GB;en_US;es_CA;es_ES;fi_FI;fr_FR;hu_HU;it_IT;ja_JP;nb_NO;nl_NL;pl_PL;pt_BR;ru_RU;sl_SI;tr_TR;zh_TW");
 
 	// Defines the default time zone, change e.g. to "Europe/London" when needed
 	if(!ini_get('date.timezone')) {
