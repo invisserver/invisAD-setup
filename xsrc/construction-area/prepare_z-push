@@ -26,7 +26,8 @@ VERSION=2.4.0
 rm -r -f z-push*
 git clone -b $VERSION https://stash.z-hub.io/scm/zp/z-push.git z-push-$VERSION/
 cd z-push-$VERSION
-rm -r -f .git
+sed -s "s/ZPUSHVERSION/$VERSION/" build/version.php.in > src/version.php
+rm -r -f .git0
 rm -r -f build
 rm -r -f man
 rm -r -f config
