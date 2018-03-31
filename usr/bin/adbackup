@@ -38,7 +38,7 @@ changevalues() {
 ## Sicherungsverzeichnis
 dasibase=`getconfdata $conffile "DasiDir" "2"`
 backupdir="$dasibase/vollsicherungen/ad"
-datum=$(date +%Y%m%d)
+datum=$(date +%Y%m%d-%H%M%S)
 
 if [[ ! -d $backupdir ]]; then
     mkdir -p $backupdir
