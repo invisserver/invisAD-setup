@@ -267,9 +267,9 @@ case "$whichgroupware" in
 
 	# Konfigurationsdateien kopieren und anpassen
 	path="/etc/roundcubemail/"
-	cp $TEMPLATEDIR/$modulename/roundcubemail/*.php $path
+	cp $TEMPLATEDIR/$modulename/roundcube/*.php $path
 	file="config.inc.php"
-	string="rcmdbpass%$rcmdbpass"
+	string="roundcube:pass%roundcube:$rcmdbpass"
 	changevalues $path $file "$string"
 
 	domain=`getconfdata "Domain" "2"`
