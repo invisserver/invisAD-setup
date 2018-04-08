@@ -66,6 +66,7 @@ mkdir /etc/skel/Downloads
 mkdir /etc/skel/Bilder
 mkdir /etc/skel/Musik
 mkdir /etc/skel/Videos
+mkdir /etc/skel/ownCloud
 mkdir /etc/skel/ics
 echo "umask 0002" >> /etc/skel/.profile
 
