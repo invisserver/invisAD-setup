@@ -40,7 +40,7 @@ if ($bind) {
 	// fetchcopy ausfuehren
 	sudocmd('fetchcopy');
 	// Am LDAP per SimpleBind anmelden
-	$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+	$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername@*))";
 	$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 	$entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 	// fetchmailrc erzeugen.

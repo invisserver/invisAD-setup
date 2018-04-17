@@ -7,7 +7,7 @@ Diese Seite ist die Schaltzentrale für alle Funktionen des Programms.</p>";
 site_info($margin, $info);
 // Status ausgeben
 if ($bind) {
-    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
+    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername@*))";
     $justthese = array("fspMainMailAddress");
     $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 
@@ -39,7 +39,7 @@ if ($bind) {
     $info = "<hr>";
 
     site_info($margin, $info);
-    $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+    $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername@*))";
     $justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
     $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 

@@ -6,15 +6,13 @@ $localaccount = $_REQUEST["localaddress"];
 # Am LDAP per SimpleBind anmelden
 if ($bind) {
     //$dn=("cn=$corusername,$COR_LDAP_SUFFIX");
-    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
+    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername@*))";
     $entries=search($ditcon, $coruserdn, $filter);
     if ($entries["count"] == 1) { 
 	// Löschen der alten primär Adresse
 	$dn2 = ("cn=$localaccount,$coruserdn");
 	ldap_delete($ditcon, $dn2);
     }
-    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
-    $entries=search($ditcon, $coruserdn, $filter);
     if ($entries["count"] == 0) { 
 	// Daten vorbereiten
 	$account2["fspLocalMailAddress"]="$luser";

@@ -6,7 +6,7 @@ if ($status == "Anwesend") {
 } else {
 	// Am LDAP per SimpleBind anmelden
 	if ($bind) {
-		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+		$filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername@*))";
 		$justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
 		$sr=ldap_search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 		$entries = ldap_get_entries($ditcon, $sr);
