@@ -46,7 +46,7 @@ if ($bind) {
     // hinzufügen der Daten zum Verzeichnis
     $r=ldap_add($ditcon, $dn2, $account);
 
-    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername*))";
+    $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername@*))";
     $entries=search($ditcon, "$coruserdn", $filter);
     if ($entries["count"] == 0) { 
 	// Daten vorbereiten
@@ -83,7 +83,7 @@ if ( $status == "Anwesend" ) {
     // fetchcopy ausfuehren
     sudocmd('fetchcopy');
 
-    $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername*))";
+    $filter="(&(fspExtMailServer=*)(fspLocalMailAddress=$corusername@*))";
     $justthese = array( "fspExtMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
     $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 
