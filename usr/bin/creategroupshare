@@ -24,7 +24,7 @@ templatepath="/srv/shares/media/ordnervorlagen"
 setrights() {
 	chmod g+rwxs,o-rwx $1
 	chgrp $2 $1
-	setfacl -d -m group:$2:rwx
+	setfacl -d -m group:$2:rwx $1
 }
 
 if (( $# == 1 )); then
