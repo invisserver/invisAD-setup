@@ -158,7 +158,7 @@ case "$whichgroupware" in
 	    zypper ar -f $REPODIR/kopano-limited.repo 2>&1| tee -a $LOGFILE | pgbox
 	    zypper ar -f $REPODIR/kopano-webapp-limited.repo 2>&1| tee -a $LOGFILE | pgbox
 	    msgbox "Die Kopano Limited Repositories benötigen Zugangsdaten, diese werden nachfolgend abgefragt." "Kopano Repository"
-	    zypper --gpg-auto-import-keys ref --repo Kopano-openSUSE-42.2_limited
+	    zypper --gpg-auto-import-keys ref --repo Kopano-openSUSE_limited
 	    zypper --gpg-auto-import-keys ref --repo Kopano-Webapp-Limited
 	    if [[ $? != 0 ]]; then
 		msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
