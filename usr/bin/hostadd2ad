@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: server
 # Script zum Einfuegen vieler DNS Eintraege anhand einer Liste
-# (c) 2016 Stefan Schaefer - invis-server.org
+# (c) 2016,2018 Stefan Schaefer - invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -32,7 +32,6 @@ getconfdata() {
 # Importliste
 liste="$1"
 
-
 # Pruefen, ob eine Liste genannt wurde
 if [[ -z $liste ]]; then
     echo "Bitte den Pfad zur Host-Liste angeben."
@@ -47,9 +46,7 @@ revzone=`getconfdata $conffile "revDomain" "2"`
 server=`getconfdata $conffile "ldapHost" "2"`
 user="ldap.admin"
 pw=`getconfdata $passfile "LDAPAdminPW" "2"`
-
-mask=`ifconfig intern |grep Mask |cut -d ":" -f4`
-maskcidr=`netcalc $mask`
+maskcidr=`ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f2 |cut -d " " -f1`
 
 case $maskcidr in
     24)

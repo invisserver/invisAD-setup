@@ -89,11 +89,11 @@ samba-tool dns add 127.0.0.1 $domain mail A $ipaddr -U ldap.admin --password $ld
 ## externe IP falls vorhanden aus DNS entfernen
 ips=(`dig $fqdn +short`)
 if (( ${#ips[*]} == 2 )); then
-    ## Sicherheitshalber Lokalisierung auf POSIX setzen, damit ifconfig berechenbar funktioniert
+    ## Sicherheitshalber Lokalisierung auf POSIX setzen
     ## Sollte eigentlich generell auf POSIX gesetzt sein....
     oldlang=$LANG
     LANG=POSIX
-    extip=`ifconfig extern | grep "inet addr" | cut -d ":" -f 2 |cut -d " " -f 1`
+    extip=`ip address show extern|tr -s " "|grep "inet "|cut -d "/" -f1 | cut -d " " -f3`
     samba-tool dns delete 127.0.0.1 $domain $fqdn A $extip -U ldap.admin --password $ldapadminpw 2>&1| tee -a $LOGFILE | pgbox
     LANG=$oldlang
 fi

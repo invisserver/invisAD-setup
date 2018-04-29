@@ -54,8 +54,9 @@ textbox "$INFODIR/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "
 # Vorgaben ermitteln
 vhn=`hostname -s`
 vdomname=`hostname -d`
-vipaddr=`ifconfig intern|grep "Bcast:"| cut -d ":" -f 2| cut -d " " -f 1`
-vlongnmask=`ifconfig intern|grep "Mask"| cut -d ":" -f 4`
+vipaddr=`ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f1 | cut -d " " -f3`
+cidrmask=`ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f2 |cut -d " " -f1`
+vlongnmask=`cdr2mask $cidrmask`
 country="DE"
 
 #---# openSSL
@@ -149,7 +150,7 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
     domain="${netvalues[1]}"
     ipaddr="${netvalues[2]}"
     longnmask="${netvalues[3]}"
-    shortnmask=`netcalc $longnmask`
+    shortnmask=`mask2cdr $longnmask`
     netaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Network:"|tr -s " "| cut -d " " -f2|cut -d "/" -f1`
     bcastaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Broadcast:"|tr -s " "| cut -d " " -f2`
     dp1=`echo "$domain" | cut -d "." -f 1`

@@ -1,5 +1,5 @@
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2018 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -180,7 +180,7 @@ Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzei
 
 revzone() {
     localip=$(hostname -i)
-    netmask=$(ifconfig intern | grep ask| cut -d ":" -f4)
+    netmask=$(ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f2 |cut -d " " -f1)
     netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
     # Neue QnD Loesung zum Bau der Reverse-Zone
     # funktioniert zumindest bei glatten Netzwerkmasken zuverlaessig.
@@ -196,4 +196,21 @@ revzone() {
 		;;
     esac
     echo "$revzone.in-addr.arpa"
+}
+
+# convert netmask cidr/long
+# (c) FriedZombie (OpenWRT Forum)
+mask2cdr() {
+   # Assumes there's no "255." after a non-255 byte in the mask
+   local x=${1##*255.}
+   set -- 0^^^128^192^224^240^248^252^254^ $(( (${#1} - ${#x})*2 )) ${x%%.*}
+   x=${1%%$3*}
+   echo $(( $2 + (${#x}/4) ))
+}
+
+cdr2mask() {
+   # Number of args to shift, 255..255, first non-255 byte, zeroes
+   set -- $(( 5 - ($1 / 8) )) 255 255 255 255 $(( (255 << (8 - ($1 % 8))) & 255 )) 0 0 0
+   [ $1 -gt 1 ] && shift $1 || shift
+   echo ${1-0}.${2-0}.${3-0}.${4-0}
 }
