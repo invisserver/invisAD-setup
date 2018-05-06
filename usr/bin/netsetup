@@ -54,6 +54,11 @@ if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
 	;;
     esac
 
+    if (( $count > 1 )); then
+	systemctl disable NetworkManager.service
+	systemctl enable wicked.service
+    fi
+
     echo -e "Es wurden Regeln zur Benennung der vorhandenen Netzwerkkarten erzeugt.\n\nBitte starten Sie den Server jetzt neu und konfigurieren\nSie Ihre Netzwerkkarten anschließend mit YaST."
     
 else
