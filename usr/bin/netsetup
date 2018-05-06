@@ -53,8 +53,10 @@ if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
 	echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ${udevcrit[2]}, ATTR{type}==\"1\", KERNEL==\"eth*\", NAME=\"intern\", OPTIONS=\"last_rule\"" >> $rulefile
 	;;
     esac
-
-    if (( $count > 1 )); then
+    
+    # Von Networkmanager zu wicked wechseln
+    nwm=`systemctl is-enabled NetworkManager.service`
+    if (( $count > 1 )) && [[ $nwm == "enabled" ]]; then
 	systemctl disable NetworkManager.service
 	systemctl enable wicked.service
     fi
