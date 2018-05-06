@@ -348,8 +348,8 @@ inviscerts extern 2>&1| tee -a $LOGFILE
 timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
 # PHP ini-Dateien anpassen
-cp $TEMPLATEDIR/$modulename/php5/apache2/php.ini /etc/php5/apache2/ 2>&1| tee -a $LOGFILE
-path="/etc/php5/apache2"
+cp $TEMPLATEDIR/$modulename/php5/apache2/php.ini /etc/php7/apache2/ 2>&1| tee -a $LOGFILE
+path="/etc/php7/apache2"
 file="php.ini"
 string="i6lib%$SYSLIBDIR"
 changevalues $path $file "$string"
@@ -357,8 +357,8 @@ changevalues $path $file "$string"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
-cp $TEMPLATEDIR/$modulename/php5/fcgid/php.ini /etc/php5/fastcgi/
-path="/etc/php5/fastcgi"
+cp $TEMPLATEDIR/$modulename/php7/fcgid/php.ini /etc/php5/fastcgi/
+path="/etc/php7/fastcgi"
 string="i6libdir%$SYSLIBDIR"
 changevalues $path $file "$string"
 
