@@ -8,12 +8,11 @@ perl-Jcode
 perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-MapUTF8
-apache2-worker
 apache2-mod_fcgid
-php5-pear-MIME_Type
-php5-fastcgi
-php5-fileinfo
-php5-opcache
+php7-pear-MIME_Type
+php7-fastcgi
+php7-fileinfo
+php7-opcache
 phpMyAdmin
 phpPgAdmin
 phpldapadmin

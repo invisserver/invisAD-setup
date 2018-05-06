@@ -125,7 +125,7 @@ changevalues $path $file "$string"
 ln -s $path/$file /srv/www/htdocs/portal/config.php
     
 # Erforderliche Apache Module aktivieren
-a2enmod php5 2>&1| tee -a $LOGFILE | pgbox
+a2enmod php7 2>&1| tee -a $LOGFILE | pgbox
 a2enmod headers 2>&1| tee -a $LOGFILE | pgbox
 #a2enmod xml2enc 2>&1| tee -a $LOGFILE | pgbox
 a2enmod proxy 2>&1| tee -a $LOGFILE | pgbox
@@ -154,8 +154,8 @@ ip=`getconfdata "IP" "2"`
 string="192.168.220.10%$ip"
 changevalues $path $file "$string"
 
-### aufraeumen -> PHP 5.5 verwendet internes opcache Modul und nicht mehr APC
-# php5-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
+### aufraeumen -> PHP > 5.5 verwendet internes opcache Modul und nicht mehr APC
+# php-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
 echo "apc.rfc1867 = On" >> /etc/php5/conf.d/apc.ini
 # die folgende Einstellung verhindert den Versuch die Klasse adLDAP mehrfach zu laden.
 # gefunden bei Stack Overflow
