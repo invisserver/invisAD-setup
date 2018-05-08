@@ -1,6 +1,6 @@
 samba
+samba-kdc
 samba-client
 samba-winbind
 samba-doc
-libsmbclient0
-libwbclient0
+samba-libs
