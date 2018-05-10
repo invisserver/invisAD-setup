@@ -69,7 +69,7 @@ if [[ $prepok == "0" ]]; then
 	
     # get upgrade packages from spins:invis:common
     pgsubtitle="Distributions-Upgrade wird durchgeführt" 
-    zypper -n dup --from spins_invis_common 2>&1| tee -a $LOGFILE | pgbox
+    zypper -n dup --from spins_invis_15_common 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
     # Patterns
