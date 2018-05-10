@@ -1,7 +1,7 @@
 #!/bin/bash
 ### MODUL-NR. 004 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2018 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -120,7 +120,7 @@ samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $LOGFILE | pgbox
 msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
 
 # stop samba temporarily
-systemctl stop samba.service 2>&1| tee -a $LOGFILE | pgbox
+systemctl stop samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
 
 # Samba Konfiguration anpassen
 smbworkingfile="$SINEWORKINGDIR/smb.conf"
@@ -265,7 +265,7 @@ pgsubtitle="LDAP Verzeichnis wird geprueft und etwaige Fehler behoben."
 samba-tool dbcheck --fix --yes 2>&1| tee -a $LOGFILE | pgbox
 
 # restart samba services
-systemctl start samba.service 2>&1| tee -a $LOGFILE | pgbox
+systemctl start samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
 
 # LDAP Client-Konfiguration anpassen
 cp $TEMPLATEDIR/$modulename/ldap/ldap-client/openldap/ldap.conf /etc/openldap

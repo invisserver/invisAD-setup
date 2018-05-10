@@ -172,7 +172,7 @@ if [[ $sambapackages == "sernet" ]]; then
     systemctl restart sernet-samba-ad.service 2>&1| tee -a $LOGFILE | pgbox
 else
     # Eigene Samba-Pakete neu starten
-    systemctl restart samba.service 2>&1| tee -a $LOGFILE | pgbox
+    systemctl restart samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
 fi
 
 # NFSv4 Server vorbereiten -- aber nicht starten
