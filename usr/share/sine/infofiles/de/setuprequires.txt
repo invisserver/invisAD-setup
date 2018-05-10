@@ -1,6 +1,6 @@
-Für die Installation eines invis Servers 13.1 AD müssen folgende Voraussetzungen erfüllt sein:
+Für die Installation eines invis Servers 14.0 AD müssen folgende Voraussetzungen erfüllt sein:
 
-    - Als Basis muss openSUSE Leap 42.3, möglichst ohne grafische Oberfläche installiert sein.
+    - Als Basis muss openSUSE Leap 15.0, möglichst ohne grafische Oberfläche installiert sein.
     
     - Der Server muss über zwei Netzwerkkarten (extern & intern) verfügen, die Netzwerk-
       schnittstellen müssen mit Hilfe von Udev-Regeln "extern" und "intern" benannt werden.
