@@ -1,0 +1,39 @@
+#!/bin/bash
+# Script zur Vorbereitung des invis-Server Setups
+# invis-Server 11/12/13
+
+# (c) 2015,2016.2017 Stefan Schaefer - invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# Invis-Repo installieren
+while [[ ! $iversion =~ [s,u] ]]; do
+	read -p "Soll eine 'stable' oder 'unstable' Version des invis-Servers installiert werden? (s,u) " iversion
+	iversion=`echo $iversion | tr [:upper:] [:lower:]`
+done
+# SUSE Release ermitteln - fuer unstable Installation
+suseversion=`cat /etc/SUSE-brand | grep VERSION |tr -d " " |cut -d "=" -f2`
+
+
+if [[ $iversion == s ]]; then
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/15:/stable/openSUSE_Leap_15.0/spins:invis:15:stable.repo
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/15:/common/openSUSE_Leap_15.0/spins:invis:15:common.repo
+else
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/15:/unstable/openSUSE_Leap_$suseversion/spins:invis:15:unstable.repo
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/15:/common/openSUSE_Leap_$suseversion/spins:invis:15:common.repo
+fi
+
+# Repository-Schluessel importieren
+zypper --gpg-auto-import-keys ref
