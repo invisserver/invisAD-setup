@@ -81,11 +81,14 @@ ad_server_role="dc"
 # Fuer UNIX UID/GID RFC2307 aktiv
 # --use-rfc2307
 
+# SUSEs smb.conf umbenennen
+mv /etc/samba/smb.conf /etc/samba/smb.conf.suse
 samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-backend="BIND9_DLZ" 2>&1 | tee -a $LOGFILE | pgbox
 provresult=${PIPESTATUS[0]}
 
 if [[ $provresult != 0 ]]; then
     echo "Provisioning meldet Fehler $provresult! Script wird beendet!" 2>&1| tee -a $LOGFILE | pgbox
+    exit 5
 fi
 
 # Neue config kopieren
