@@ -45,14 +45,14 @@ modulename=`basename $0`
 
 clear
 windowtitle="Groupware Setup"
-pgsubtitle="Kopano - Tine20 - SoGo - Roundcube"
+pgsubtitle="Kopano - eGroupware - Roundcube"
 
 whichgroupware=`getconfdata "Groupware" "2"`
 
 case "$whichgroupware" in
 
-    "tine20" )
-	windowtitle="tine20 Installation"
+    "egroupware" )
+	windowtitle="egroupware Installation"
 	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/tine20.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
 	cont=${?}
 
@@ -99,54 +99,6 @@ case "$whichgroupware" in
 	fi
 	;; 
 
-    "sogo" )
-	windowtitle="SOGo Installation"
-	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/sogo.txt" 38 90
-	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-	zypper -n install -n `cat $PACKAGELISTDIR/sogo` 2>&1 | tee -a $LOGFILE | pgbox
-	zyppercheck ${PIPESTATUS[0]}
-	
-	## Leere sogo-Datenbank anlegen
-	sogodbuserpw=`mkdbsilent sogo sogo a`
-
-	# Konfigurationsvorlagen kopieren
-	cp $TEMPLATEDIR/$modulename/sogo/SOGo /etc/sysconfig/SOGo
-	cp $TEMPLATEDIR/$modulename/sogo/SOGo.conf /etc/apache2/conf.d/
-	mkdir /etc/sogo
-	cp $TEMPLATEDIR/$modulename/sogo/sogo.conf /etc/sogo/	
-	
-	# Konfigurationsdaten einlesen
-	domain=`getconfdata "Domain" "2"`
-	basedn=`getconfdata "baseDN" "2"`
-	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
-
-	# LDAP-Konfiguration anpassen
-	path="/etc/sogo"
-	file="sogo.conf"
-
-	string="dc=i5-net,dc=loc%$basedn"
-	changevalues $path $file "$string"
-
-	string="invis-net.loc%$domain"
-	changevalues $path $file "$string"
-
-	string="admin-secret%$ldapmasterpw"
-	changevalues $path $file "$string"
-
-	# Nach den Aenderungen Rechte setzen
-	chown :sogo /etc/sogo/sogo.conf
-
-	# Datenbank-Konfiguration anpassen
-	string="dbuserpw%$sogodbuserpw"
-	changevalues $path $file "$string"
-
-	# SOGo starten
-	chkservice "sogod"
-
-	# SoGo im Portal aktivieren
-	swpestat SOGo TRUE 2>&1 | tee -a $LOGFILE | pgbox
-
-	;;
     "kopano" )
 	## Kopano
 	windowtitle="Kopano Konfiguration"
