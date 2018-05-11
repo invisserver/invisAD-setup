@@ -84,7 +84,7 @@ chkservice "amavis"
 # Kopieren der Postfix-Konfigurationsdateien
 cp $TEMPLATEDIR/$modulename/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
     
-## SOGo, Group-e, Zarafa oder Roundcube
+## SOGo, Group-e, Kopano oder Roundcube
 whichgroupware=`getconfdata "Groupware" "2"`
 case "$whichgroupware" in
 
@@ -143,7 +143,7 @@ case "$whichgroupware" in
 	chkservice "dovecot"
 
 	# Postfix konfiguration kopieren
-	rm -f `ls /etc/postfix/ |grep "main.zarafa"`
+	rm -f `ls /etc/postfix/ |grep "main.kopano"`
 	mv /etc/postfix/main.dovecot /etc/postfix/main.cf 2>&1| tee -a $LOGFILE | pgbox
 	
 	# Transportweg fuer lokale emails festlegen
@@ -181,7 +181,7 @@ case "$whichgroupware" in
 	ln -s /srv/www/htdocs/z-push2 /srv/www/htdocs/z-push
 	
 	rm -f `ls /etc/postfix/ |grep "main.[dovecot|cyrus]"` 2>&1| tee -a $LOGFILE | pgbox
-	mv /etc/postfix/main.zarafa /etc/postfix/main.cf 2>&1| tee -a $LOGFILE | pgbox
+	mv /etc/postfix/main.kopano /etc/postfix/main.cf 2>&1| tee -a $LOGFILE | pgbox
 	
 	;;
 esac
