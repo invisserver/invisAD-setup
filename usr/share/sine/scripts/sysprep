@@ -225,6 +225,9 @@ sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no 2>&1| tee -a $LOGFILE 
 echo "System wird so konfiguriert, dass Postfix-Konfiguration in einem Chroot-Jail läuft." 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes 2>&1| tee -a $LOGFILE | pgbox
+echo "System wird so konfiguriert, dass der Postfix-Daemon nicht in SLP registriert wird." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_REGISTER_SLP yes 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/postfix POSTFIX_REGISTER_SLP no 2>&1| tee -a $LOGFILE | pgbox
 
 sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes 2>&1| tee -a $LOGFILE | pgbox
