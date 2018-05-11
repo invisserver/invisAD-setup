@@ -164,9 +164,9 @@ case "$whichgroupware" in
 		msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
 		exit 1
 	    fi
-	    zypper -n install --from Kopano-openSUSE_limited -n `cat $PACKAGELISTDIR/kopanocorelimited` 2>&1| tee -a $LOGFILE | pgbox
+	    zypper -n install --oldpackage --from Kopano-openSUSE_limited -n `cat $PACKAGELISTDIR/kopanocorelimited` 2>&1| tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
-	    zypper -n install --from Kopano-Webapp-Limited -n `cat $PACKAGELISTDIR/kopanowebapplimited` 2>&1| tee -a $LOGFILE | pgbox
+	    zypper -n install --oldpackage --from Kopano-Webapp-Limited -n `cat $PACKAGELISTDIR/kopanowebapplimited` 2>&1| tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	else
 	    zypper -n install -n `cat $PACKAGELISTDIR/kopanoobs` 2>&1| tee -a $LOGFILE | pgbox
