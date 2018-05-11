@@ -154,13 +154,6 @@ ip=`getconfdata "IP" "2"`
 string="192.168.220.10%$ip"
 changevalues $path $file "$string"
 
-### aufraeumen -> PHP > 5.5 verwendet internes opcache Modul und nicht mehr APC
-# php-apc Modul konfigurieren - ermoeglicht Fortschrittsbalken beim Datei-Upload
-echo "apc.rfc1867 = On" >> /etc/php5/conf.d/apc.ini
-# die folgende Einstellung verhindert den Versuch die Klasse adLDAP mehrfach zu laden.
-# gefunden bei Stack Overflow
-echo "apc.include_once_override = 0" >> /etc/php5/conf.d/apc.ini
-
 # HTTPS-Port ändern
 cp $TEMPLATEDIR/$modulename/listen.conf /etc/apache2/
 file="listen.conf"
