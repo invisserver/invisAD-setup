@@ -45,7 +45,7 @@ modulename=`basename $0`
 
 clear
 windowtitle="SuSEfirewall2"
-pgsubtitle="Firewall Setup dor invis-server"
+pgsubtitle="Firewall Setup for invis-server"
 
 # Kopieren und anpassen der Firewall Konfiguration
 cp $TEMPLATEDIR/$modulename/SuSEfirewall2 /etc/sysconfig/
