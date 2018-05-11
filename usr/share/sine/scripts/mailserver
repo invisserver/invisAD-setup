@@ -171,9 +171,10 @@ case "$whichgroupware" in
 	else
 	    zypper -n install -n `cat $PACKAGELISTDIR/kopanoobs` 2>&1| tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
-	    # Propmap file is in /usr/share/kopano
-	    ln -s /usr/share/kopano/ldap.propmap.cfg /etc/kopano/
 	fi
+	# install common packages
+	zypper -n install -n `cat $PACKAGELISTDIR/kopanocommon` 2>&1| tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
 
 	# Kopano nur installieren, Konfigurieren und Starten der Dienste erfolgt im Groupware Abschnitt
 	# Symbolischen Link auf das z-push2 Verzeichnis anlegen
