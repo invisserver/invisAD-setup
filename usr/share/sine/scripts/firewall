@@ -48,18 +48,9 @@ windowtitle="SuSEfirewall2"
 pgsubtitle="Firewall Setup for invis-server"
 
 # Kopieren und anpassen der Firewall Konfiguration
-cp $TEMPLATEDIR/$modulename/SuSEfirewall2 /etc/sysconfig/
-file="SuSEfirewall2"
-path="/etc/sysconfig"
-nw=`getconfdata "Networkbase" "2"`
-netpart1=`echo "$nw" | cut -d "." -f 1`
-netpart2=`echo "$nw" | cut -d "." -f 2`
-netpart3=`echo "$nw" | cut -d "." -f 3`
-netpart4=`echo "$nw" | cut -d "." -f 4`
-netpart="$netpart1.$netpart2.$netpart3.$netpart4"
-shortnmask=`getconfdata "NMask-short" "2"`
-string="192.168.220.0/24%$netpart/$shortnmask"
-changevalues $path $file $string
+cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+file="external.xml"
+path="/etc/firewalld/zones"
 
 # geaenderten SSH-Port einfuegen
 sshport=`getconfdata "SSHPORT" "2"`
@@ -75,7 +66,26 @@ changevalues $path $file "$string"
 ocport=`getconfdata "OCPORT" "2"`
 string="ocport%$ocport"
 changevalues $path $file "$string"
-    
+
+cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+file="internal.xml"
+path="/etc/firewalld/zones"
+
+# geaenderten SSH-Port einfuegen
+sshport=`getconfdata "SSHPORT" "2"`
+string="sshport%$sshport"
+changevalues $path $file "$string"
+
+# geaenderten HTTPS-Port einfuegen
+httpsport=`getconfdata "HTTPSPORT" "2"`
+string="httpsport%$httpsport"
+changevalues $path $file "$string"
+
+# OwnCloud-Port einfuegen
+ocport=`getconfdata "OCPORT" "2"`
+string="ocport%$ocport"
+changevalues $path $file "$string"
+
 # SSH Port ändern
 cp $TEMPLATEDIR/$modulename/sshd_config /etc/ssh/
 path="/etc/ssh"
@@ -89,6 +99,13 @@ changevalues $path $file "$string"
 chkservice "sshd"
     
 # Firewall starten und in Runlevel eintragen
-chkservice "SuSEfirewall2_init"
-chkservice "SuSEfirewall2"
+chkservice "firewalld"
 
+# Default zone setzen per cmd
+firewall-cmd --set-default-zone=external 2>&1| tee -a $LOGFILE | pgbox
+
+# Logdenied aktivieren per cmd
+firewall-cmd --set-log-denied=all 2>&1| tee -a $LOGFILE | pgbox
+
+# Neustarten damit Änderungen aktiv sind
+chkservice "firewalld"
