@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kopano</short>
+  <description>Kopano Collaboration server</description>
+  <!-- SSL server socket -->
+  <port protocol="tcp" port="237"/>
+  <!-- SSL ical -->
+  <port protocol="tcp" port="8443"/>
+</service>

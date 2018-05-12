@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Samba</short>
+  <description>This option allows you to access and participate in Windows file and printer sharing networks. You need the samba package installed for this option to be useful.</description>
+  <!-- Siehe https://wiki.samba.org/index.php/Samba_AD_DC_Port_Usage,
+       Standard Ports wie DNS, Kerberos, Kerberos kpasswd, LDAP(S), NTP sind in der Zone-Konfiguration enthalten -->
+  <!-- Ein Nameservice, nicht mehr wirklich dokumentiert aber noch aktiv -->
+  <port protocol="tcp" port="42"/>
+  <!-- End Point Mapper -->
+  <port protocol="tcp" port="135"/>
+  <!-- NetBIOS -->
+  <port protocol="udp" port="137"/>
+  <port protocol="udp" port="138"/>
+  <port protocol="tcp" port="139"/>
+  <!-- LDAP per UDP ist nicht Standard, deshalb hier -->
+  <port protocol="udp" port="389"/>
+  <!-- SMB over TCP -->
+  <port protocol="tcp" port="445"/>
+  <!-- Global Catalog -->
+  <port protocol="tcp" port="3268"/>
+  <!-- Global Catalog SSL -->
+  <port protocol="tcp" port="3269"/>
+  <!-- Dynamic RPC Ports for Samba >= 4.7 -->
+  <port protocol="tcp" port="49152-65535"/>
+  <module name="nf_conntrack_netbios_ns"/>
+</service>
