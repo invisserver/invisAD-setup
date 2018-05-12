@@ -142,8 +142,8 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    zypper -n install -n `cat $PACKAGELISTDIR/wawision` 2>&1 |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Hier Datenbank installation einfügen
-	    wawipass=`mkdbsilent wawision1 wawision a`
-	    msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision1\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
+	    wawipass=`mkdbsilent wawision wawision a`
+	    msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
 	    
 	    # activate apache configuration
 	    cp $TEMPLATEDIR/$modulename/wawision/wawision.conf /etc/apache2/conf.d
@@ -156,6 +156,31 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 
 	else
 	    msgbox "waWision Installation übersprungenen" "$windowtitle"
+	fi
+	;;
+
+    "invoiceplane")
+	windowtitle="InvoicePlane Installation"
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/invoiceplane.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --defaultno --yesno "Möchten Sie waWision installieren?" 0 0
+	cont=${?}
+	
+	if [[ $cont == "0" ]]; then
+	    pgsubtitle="Zusätzliche Software wird installiert"
+	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
+	    zypper -n install -n `cat $PACKAGELISTDIR/invoiceplane` 2>&1 |pgbox
+	    zyppercheck ${PIPESTATUS[0]}
+	    # Hier Datenbank installation einfügen
+	    ippass=`mkdbsilent invoiceplane ip a`
+	    msgbox "Datenbank für InvoicePlane wurde angelegt.\n\nDatenbank: invoiceplane\nBenutzer: ip\nPasswort: $ippass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
+	    
+	    a2enflag INVOICEPLANE
+	
+	    chkservice apache2 r
+	    # Wawision im Portal aktivieren
+	    swpestat InvoicePlane TRUE 2>&1 | tee -a $LOGFILE | pgbox
+
+	else
+	    msgbox "InvoicePlane Installation übersprungenen" "$windowtitle"
 	fi
 	;;
 
