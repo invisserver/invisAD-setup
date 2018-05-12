@@ -99,6 +99,8 @@ changevalues $path $file "$string"
 chkservice "sshd"
     
 # Firewall starten und in Runlevel eintragen
+chkservice "SuSEfirewall2_init" d
+chkservice "SuSEfirewall2" d
 chkservice "firewalld"
 
 # Default zone setzen per cmd
