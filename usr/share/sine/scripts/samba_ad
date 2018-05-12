@@ -95,7 +95,7 @@ fi
 cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
 
 # activate samba services
-chkservice "samba"
+chkservice "samba-ad-dc"
 
 # Gruppen anlegen
 samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $LOGFILE | pgbox
