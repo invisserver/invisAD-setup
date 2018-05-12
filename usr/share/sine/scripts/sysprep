@@ -345,23 +345,19 @@ inviscerts extern 2>&1| tee -a $LOGFILE
 
 # Zeitzoneneinstellung des Servers ermitteln
 # php versteht CEST nicht mehr
-timezone=`cat /etc/sysconfig/clock|grep ^TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
+timezone=`cat /etc/sysconfig/clock|grep ^DEFAULT_TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
-# PHP ini-Dateien anpassen
-cp $TEMPLATEDIR/$modulename/php5/apache2/php.ini /etc/php7/apache2/ 2>&1| tee -a $LOGFILE
-path="/etc/php7/apache2"
+# set timezon in php.ini to local timezone
 file="php.ini"
-string="i6lib%$SYSLIBDIR"
-changevalues $path $file "$string"
-
+path="/etc/php7/apache2"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
-cp $TEMPLATEDIR/$modulename/php7/fcgid/php.ini /etc/php5/fastcgi/
-path="/etc/php7/fastcgi"
-string="i6libdir%$SYSLIBDIR"
+path="/etc/php7/cli"
+string="UTC%$timezone"
 changevalues $path $file "$string"
 
+path="/etc/php7/fastcgi"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
