@@ -41,6 +41,7 @@ $USER_UMASK = 'umask=002';
 $USER_PW_MIN_LENGTH = '7'; // 0 = Check disabled
 $USER_PW_COMPLEX = 'on';
 $SFU_GUID_BASE = '20000';
+$GROUP_DIR_TEMPLATE_PATH = '/srv/shares/media/portal/verzeichnisvorlagen';
 
 // LDAP
 $LDAP_TLS = "yes"; // ab 11.0 per default ON wegen neuer Policy bei Samba

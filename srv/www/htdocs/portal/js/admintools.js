@@ -2,8 +2,8 @@
  * js/admintools.js v1.2
  * functions for user/group/host administration
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010-2017 Stefan Schäfer, invis-server.org
- * (C) 2013,2015 Ingo Göppert, invis-server.org
+ * (C) 2010-2018 Stefan Schäfer, invis-server.org
+ * (C) 2013,2015,2018 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: http://wiki.invis-server.org
  */
@@ -18,7 +18,7 @@ var PAGE_CURRENT = 0;
 var PAGED_DATA = null;
 var PAGED_DATA_UNSORTED = null;
 var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Windows+Unix+Groupware', 'WinAdmin', ' WinAdmin+Unix', 'WinAdmin+Unix+Groupware', 'MasterAdmin' );
-var GROUP_TYPE = new Array('Windows+Unix', 'Windows+Unix+Groupware', 'Mail-Verteiler', 'Sonstige');
+var GROUP_TYPE = new Array('Team', 'Team+Gruppenmail', 'Mail-Verteiler', 'Sonstige');
 var USERLIST_FLAG = new Array (true,true,true,true,true,true,true,true,true);
 var GROUPLIST_BI_FLAG = false;
 var PINGER_FLAG = false;
@@ -1234,7 +1234,7 @@ function groupAdd(request) {
 	tmp_btn.observe('click', function () {
 		var cn = lightbox.data.get('cn');
 		invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-		invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn, t: group_type});
+		invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn, t: group_type, d: dir_type});
 	});
 
 	lightbox.addButton(tmp_btn);
@@ -1282,8 +1282,8 @@ function groupAdd(request) {
 	var line = new Element('div', {'class': 'line'});
 	line.insert(new Element('div', {'class': 'key'}).update('Gruppen-Typ'));
 	var sel = new Element('select', {'style': 'width: 60%'});
-	sel.insert(new Element('option', {'value': 0}).update('Windows+Unix'));
-	sel.insert(new Element('option', {'value': 1}).update('Windows+Unix+Groupware'));
+	sel.insert(new Element('option', {'value': 0}).update('Team'));
+	sel.insert(new Element('option', {'value': 1}).update('Team+Gruppenmail'));
 	sel.insert(new Element('option', {'value': 2}).update('Mail-Verteiler'));
 	sel.observe('change', function(e) { group_type = this.value; });
 	var value_div = new Element('div');
@@ -1291,6 +1291,28 @@ function groupAdd(request) {
 	//value_div.addClassName('value');
 	line.insert(value_div);
 	$('groupbox_content').insert(line);;
+
+	// Hier Pulldown fuer Gruppenverzeichnis
+	var line = new Element('div', {'class': 'line'});
+	line.insert(new Element('div', {'class': 'key'}).update('Verzeichnis'));
+	var sel1 = new Element('select', {'style': 'width: 60%'});
+	sel1.insert(new Element('option', {'value': 0}).update('Leeres Verzeichnis'));
+	sel1.insert(new Element('option', {'value': 1}).update('Kein Verzeichnis'));
+	// Test: Templates in User-Box schreiben. Kann wieder aus wenn wir fertig sind.
+	var template_index = 2;
+	templates.each(
+		function (template) {
+			sel1.insert(new Element('option', {'value': template_index}).update(template));
+			template_index++;
+		}
+	);
+	sel1.observe('change', function(e) { dir_type = this.value; });
+	var value_div = new Element('div');
+	value_div.insert(sel1);
+	//value_div.addClassName('value');
+	line.insert(value_div);
+	$('groupbox_content').insert(line);;
+
 	
 	// grouplists table
 	$('groupbox_content').insert('<table id="groupbox_table"><tr class="line"><td colspan="3" class="key">Gruppenmitglieder</td></tr><tr><td id="groupbox_left"></td><td id="groupbox_center"></td><td id="groupbox_right"></td></tr></table>');
@@ -1338,12 +1360,6 @@ function groupAdd(request) {
 			select_not.insert(new Element('option').update(user));
 		}
 	);
-	// Test: Templates in User-Box schreiben. Kann wieder aus wenn wir fertig sind.
-	//templates.each(
-	//	function (template) {
-	//		select_not.insert(new Element('option').update(template));
-	//	}
-	//);
 	$('groupbox_right').insert(select_not);
 	
 	listSort($('grouplist_in'));
@@ -1356,7 +1372,7 @@ function groupAdd(request) {
 function groupAddRequest() {
 	var cn = lightbox.data.get('cn');
 	invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
-	invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn, t: group_type});
+	invis.request('script/adajax.php', groupAddResponse, {c: 'group_create', u: cn, t: group_type, d: dir_type});
 }
 
 
