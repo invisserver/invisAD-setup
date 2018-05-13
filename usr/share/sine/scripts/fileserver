@@ -153,25 +153,13 @@ chmod 1777 /srv/shares/profiles 2>&1| tee -a $LOGFILE
 #Verzeichnisrechte anpassen - Druckertreiber Freigabe print$
 chmod -R g+ws /var/lib/samba/drivers 2>&1| tee -a $LOGFILE
 
-waitinfobox "Auf Ihrem Server wurde ein Samba-PDC eingerichtet.\n\n
-Es wurden grundlegende Gruppen und Systemaccounts angelegt.\nDer Server verfügt über die Freigaben:\n\n
-    - Gruppen: Mitglieder der jeweiligen Gruppe haben Zugriff auf das gleichnamige Verzeichnis.\n
-    - Portal: Freigabe für den Dateiaustausch über das invis-Portal.\n
-    - Verwaltung: Freigabe für Mitglieder der gleichnamigen Gruppe.\n
-    - Archiv: Ablageort für nicht mehr aktuelle Dateien.\n
-    - Aktuell: Ablageort für aktuelle Dateien.\n
-    - Service: Dateien für den Domänen-Administrator, wie Software, Treiber und Patches.\n
-    - Transfer: Freigabe für Dateiaustausch.\n
-    - & Media: Freigabe für Multimedia-Dateien.\n\n
-Es wurden die Gruppen Verwaltung, Archiv, mobilusers und maildummies angelegt.\n" "Samba Installation abgeschlossen."
-
-#Ermitteln, welche Samba-Pakete zum Einsatz kommen
+# Ermitteln, welche Samba-Pakete zum Einsatz kommen
 sambapackages=`getconfdata "SambaPakete" "2"`
 if [[ $sambapackages == "sernet" ]]; then
     # Sernet-Samba AD neu starten 
     systemctl restart sernet-samba-ad.service 2>&1| tee -a $LOGFILE | pgbox
 else
-    # Eigene Samba-Pakete neu starten
+    # Samba AD-DC neu starten
     systemctl restart samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
 fi
 
