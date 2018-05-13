@@ -124,13 +124,14 @@ prepstatnumber=`cat $STATUSFILE | cut -d ":" -f1`
 case $1 in
     "help")
 	# Hilfe ausgeben
-	echo -e "sine Aufrufe:\n"
-	echo "\"sine\" ohne weitere Argumente startet das Script regulär."
-	echo "\"sine status\" gibt das nächste zu startende Modul aus."
-	echo "\"sine log\" gibt das Logfile aus."
-	echo "\"sine showconf\" gibt die gespeicherten Konfigurationsdaten aus."
-	echo "\"sine showpws\" gibt die gespeicherten Passwörter aus."
-	echo -e "\"sine modulname\" ruft das angegebene Modul auf. Dies ist nur\nfür optionale Module möglich, nachdem sine einmal vollständig\ndurchgelaufen ist."
+	echo -e "sine2 Aufrufe:\n"
+	echo "\"sine2\" ohne weitere Argumente startet das Script regulär."
+	echo "\"sine2 status\" gibt das nächste zu startende Modul aus."
+	echo "\"sine2 log\" gibt das Logfile aus."
+	echo "\"sine2 showconf\" gibt die gespeicherten Konfigurationsdaten aus."
+	echo "\"sine2 showpws\" gibt die gespeicherten Passwörter aus."
+	echo "\"sine2 reset\" löscht die invis-Konfigurationsdaten und den Installationsstatus."
+	echo -e "\"sine2 modulname\" ruft das angegebene Modul auf. Dies ist nur\nfür optionale Module möglich, nachdem sine einmal vollständig\ndurchgelaufen ist."
 	echo -e "Optionale Module: monitoring, groupware, erp, faxgate, webcdwriter,\nopenvpn, dokuwiki, etherpad.\n"
 	exit 0
 	;;
@@ -168,6 +169,16 @@ case $1 in
 	else
 	    echo "Es ist noch keine Passwortdatei vorhanden."
 	fi
+	exit 0
+	;;
+    "reset")
+	read -p "Alle sine2 Konfigurationsdaten, Passwörter sowie der Installationsstatus werden gelöscht. Sind sie sicher? [j/n] " shure
+	    shure=`tolower $shure`
+	    if [[ $shure == "j" ]]; then
+		rm $SINEWORKINGDIR/invis_pws
+		rm $SINEWORKINGDIR/invis_confdata
+		rm $SINEWORKINGDIR/prepstat
+	    fi
 	exit 0
 	;;
     "")
