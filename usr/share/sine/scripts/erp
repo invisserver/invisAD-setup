@@ -167,7 +167,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
 	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
-	    zypper -n install -n `cat $PACKAGELISTDIR/invoiceplane` 2>&1 |pgbox
+	    zypper -n install -n invoiceplane 2>&1 |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Hier Datenbank installation einfügen
 	    ippass=`mkdbsilent invoiceplane ip a`
