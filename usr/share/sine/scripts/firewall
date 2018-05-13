@@ -44,11 +44,21 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="SuSEfirewall2"
+windowtitle="firwalld"
 pgsubtitle="Firewall Setup for invis-server"
 
+# OwnCloud-Port einfuegen
+ocport=`getconfdata "OCPORT" "2"`
+
 # Kopieren und anpassen der Firewall Konfiguration
-cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+if [[ -n $ocport ]]; then
+    cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+else
+    cp $TEMPLATEDIR/$modulename/external-oc.xml /etc/firewalld/zones/external.xml 2>&1| tee -a $LOGFILE | pgbox
+    string="ocport%$ocport"
+    changevalues $path $file "$string"
+fi
+
 file="external.xml"
 path="/etc/firewalld/zones"
 
@@ -60,11 +70,6 @@ changevalues $path $file "$string"
 # geaenderten HTTPS-Port einfuegen
 httpsport=`getconfdata "HTTPSPORT" "2"`
 string="httpsport%$httpsport"
-changevalues $path $file "$string"
-
-# OwnCloud-Port einfuegen
-ocport=`getconfdata "OCPORT" "2"`
-string="ocport%$ocport"
 changevalues $path $file "$string"
 
 cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
@@ -99,8 +104,11 @@ changevalues $path $file "$string"
 chkservice "sshd"
     
 # Firewall starten und in Runlevel eintragen
-chkservice "SuSEfirewall2_init" d
-chkservice "SuSEfirewall2" d
+sfw2=`rpm -qa SuSEfirewall2`
+if [[ -n $sfw2 ]]; then
+    chkservice "SuSEfirewall2_init" d
+    chkservice "SuSEfirewall2" d
+fi
 chkservice "firewalld"
 
 # Default zone setzen per cmd
