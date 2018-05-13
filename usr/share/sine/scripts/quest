@@ -507,7 +507,7 @@ if [[ $mailrelay == "none" ]]; then
 else
     echo "SMTPRELAY:$mailrelay" >> $SINEWORKINGDIR/invis_confdata 
     echo "SMTPRUN:$smtpun" >> $SINEWORKINGDIR/invis_confdata 
-    echo "SMTPRPW:$smtppw" >> $SINEWORKINGDIR/invis_confdata 
+    echo "SMTPRPW:$smtppw" >> $SINEWORKINGDIR/invis_pws 
 fi
 if [[ $cleantr == "0" ]]; then
     echo "cleanTR:j" >> $SINEWORKINGDIR/invis_confdata
