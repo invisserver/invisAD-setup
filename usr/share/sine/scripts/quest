@@ -444,7 +444,7 @@ if [[ $cleandasi == "0" ]]; then
 fi
 
 #   regelmässige Virenscans
-yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
+yesnono "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
 avcron=${?}
 
 #   Ports fuer SSH, HTTPS-Portal ermitteln.
