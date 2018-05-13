@@ -129,6 +129,7 @@ case $1 in
 	echo "\"sine status\" gibt das nächste zu startende Modul aus."
 	echo "\"sine log\" gibt das Logfile aus."
 	echo "\"sine showconf\" gibt die gespeicherten Konfigurationsdaten aus."
+	echo "\"sine showpws\" gibt die gespeicherten Passwörter aus."
 	echo -e "\"sine modulname\" ruft das angegebene Modul auf. Dies ist nur\nfür optionale Module möglich, nachdem sine einmal vollständig\ndurchgelaufen ist."
 	echo -e "Optionale Module: monitoring, groupware, erp, faxgate, webcdwriter,\nopenvpn, dokuwiki, etherpad.\n"
 	exit 0
