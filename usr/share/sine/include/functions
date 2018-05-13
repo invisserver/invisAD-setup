@@ -30,6 +30,10 @@ getconfdata() {
     cat $SINEWORKINGDIR/invis_confdata |grep "$1:" | cut -d ":" -f $2
 }
 
+getpassword() {
+    cat $SINEWORKINGDIR/invis_pws |grep "$1:" | cut -d ":" -f $2
+}
+
 # Konfigurationsparameter tauschen
 changevalues() {
     # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String

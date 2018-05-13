@@ -110,7 +110,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 		changevalues $path $file "$string"
 		string="module = DB%module = LDAP"
 		changevalues $path $file "$string"
-		ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+		ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 		string="admin_secret%$ldapadminpw"
 		changevalues $path $file "$string"
 	    fi

@@ -96,7 +96,7 @@ if [[ $cont == "0" ]];then
     string="organization%$organisation"
     changevalues $path $file "$string"
     
-    adminpw=`getconfdata "LDAPAdminPW" "2"`
+    adminpw=`getpassword "LDAPAdminPW" "3"`
     string="admin-secret%$adminpw"
     changevalues $path $file "$string"
     

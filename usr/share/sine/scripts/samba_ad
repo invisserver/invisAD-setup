@@ -104,14 +104,14 @@ samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Ve
 samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $LOGFILE | pgbox
 
 # User fuer LDAP-Lese-Zugang anlegen
-ldappw=`getconfdata "LDAPAdminPW" "2"`
+ldappw=`getpassword "LDAPAdminPW" "3"`
 samba-tool user create ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $LOGFILE | pgbox
 ## Passwort darf nicht ablaufen
 samba-tool user setexpiry --noexpiry ldap.admin
 samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $LOGFILE | pgbox
 
 # User fuer Junk-Postfach anlegen
-junkpw=`getconfdata "JunkPW" "2"`
+junkpw=`getpassword "JunkPW" "3"`
 samba-tool user create junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $LOGFILE | pgbox
 samba-tool user setexpiry --noexpiry junk
 samba-tool group addmembers "maildummies" junk 2>&1| tee -a $LOGFILE | pgbox

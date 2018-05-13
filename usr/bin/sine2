@@ -160,7 +160,15 @@ case $1 in
 	fi
 	exit 0
 	;;
-
+    "showpws")
+	# Konfigurationsdaten ausgeben
+	if [[ -f $SINEWORKINGDIR/invis_pws ]]; then
+	    less $SINEWORKINGDIR/invis_pws
+	else
+	    echo "Es ist noch keine Passwortdatei vorhanden."
+	fi
+	exit 0
+	;;
     "")
 	# building the module list
 	i=0

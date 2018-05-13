@@ -51,7 +51,7 @@ domain=`getconfdata "Domain" "2"`
 fqdn=`getconfdata "FQDN" "2"`
 forwarders=`getconfdata "Forwarders" "2"`
 ipaddr=`getconfdata "IP" "2"`
-ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 
 cp $TEMPLATEDIR/dns/named.conf /etc 2>&1| tee -a $LOGFILE | pgbox
 

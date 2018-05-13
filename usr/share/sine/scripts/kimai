@@ -66,7 +66,7 @@ if [[ $cont == "0" ]]; then
 
     fqdn=`getconfdata "FQDN" "2"`
     basedn=`getconfdata "baseDN" "2"`
-    ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
+    ldapmasterpw=`getpassword "LDAPAdminPW" "3"`
 
     # add and modify activeDirectory configuration
     path="/srv/www/htdocs/kimai/includes"

@@ -113,7 +113,7 @@ case "$whichgroupware" in
 	string="DC=invis-net,DC=loc%$basedn"
 	changevalues $path $file "$string"
 
-	ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+	ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 	string="admin-secret%$ldapadminpw"
 	changevalues $path $file "$string"
 
@@ -235,7 +235,7 @@ for datei in ${files[*]}; do
     string="DC=invis-net,DC=loc%$basedn"
     changevalues $path $datei "$string"
 
-    adminpw=`getconfdata "LDAPAdminPW" "2"`
+    adminpw=`getpassword "LDAPAdminPW" "3"`
     string="admin-secret%$adminpw"
     changevalues $path $datei "$string"
 

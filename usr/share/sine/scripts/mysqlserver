@@ -79,7 +79,7 @@ done
 systemctl restart mysql.service 2>&1|tee -a $LOGFILE |pgbox
 
 #MySQL Root-Passwort setzen
-mysqlpw=`getconfdata "MySQLpw" "2"`
+mysqlpw=`getpassword "MySQLPW" "3"`
 mysqladmin password $mysqlpw
 
 # Neuaufbau der Postfix chroot Umgebung zur Unsterstützung von mysql.sock 

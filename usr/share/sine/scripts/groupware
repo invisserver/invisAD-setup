@@ -119,7 +119,7 @@ case "$whichgroupware" in
 	# Konfigurationsdaten einlesen
 	domain=`getconfdata "Domain" "2"`
 	basedn=`getconfdata "baseDN" "2"`
-	ldapmasterpw=`getconfdata "LDAPAdminPW" "2"`
+	ldapmasterpw=`getpassword "LDAPAdminPW" "3"`
 
 	# Datenbank Zugang in Kopano Konfiguration einfuegen usw.
 	path="/etc/kopano"

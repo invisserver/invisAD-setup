@@ -56,7 +56,7 @@ domain=`getconfdata "Domain" "2"`
 string="invis-net.loc%$domain"
 changevalues $path $file "$string"
 
-ldappw=`getconfdata "LDAPAdminPW" "2"`
+ldappw=`getpassword "LDAPAdminPW" "3"`
 string="ldap-secret%$ldappw"
 changevalues $path $file "$string"
 

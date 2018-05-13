@@ -232,39 +232,39 @@ forwarders=`echo ${fdns[@]} | sed s/" "/"; "/g`";"
 #---#System Passwörter
 ok=0
 
-# MySQL root-Passwort 
-ok=0
-while (( $ok != "1" ));do
-    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
-    "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
-    "Kontrolle:" 2 36 "" 2 47 10 0\
-    2>$SINEWORKINGDIR/sine_temp
-    mysqlsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
+## MySQL root-Passwort 
+#ok=0
+#while (( $ok != "1" ));do
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+#Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
+#Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
+#    "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
+#    "Kontrolle:" 2 36 "" 2 47 10 0\
+#    2>$SINEWORKINGDIR/sine_temp
+#    mysqlsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
+#
+#    if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
+#	ok=1
+#    fi
+#done
+#mysqlpw="${mysqlsecrets[0]}"
 
-    if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
-	ok=1
-    fi
-done
-mysqlpw="${mysqlsecrets[0]}"
-
-# Ntop Admin-Passwort 
-ok=0
-while (( $ok != "1" ));do
-    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
-    "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
-    "Kontrolle:" 2 36 "" 2 47 10 0\
-    2>$SINEWORKINGDIR/sine_temp
-    ntopsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
-
-    if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
-	ok=1
-    fi
-done
-ntoppw="${ntopsecrets[0]}"
+## Ntop Admin-Passwort 
+#ok=0
+#while (( $ok != "1" ));do
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+#Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
+#Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
+#    "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
+#    "Kontrolle:" 2 36 "" 2 47 10 0\
+#    2>$SINEWORKINGDIR/sine_temp
+#    ntopsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
+#
+#    if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
+#	ok=1
+#    fi
+#done
+#ntoppw="${ntopsecrets[0]}"
 
 #---# MAIL & Groupware Server
 ## Dovecot oder Kopano?
@@ -461,10 +461,6 @@ SSH Port: $sshport\n\n
 HTTPS Port: $httpsport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
-# Passwort fuer LDAP-Admin und junk erzeugen
-ldappw=`pwgen -sBnc 8 1`
-junkpw=`pwgen -sBnc 8 1`
-
 # Alle Daten in Kontrolldatei Schreiben
 echo "Country:$country" > $SINEWORKINGDIR/invis_confdata
 echo "Region:$region" >> $SINEWORKINGDIR/invis_confdata
@@ -489,10 +485,6 @@ echo "Broadcast:$bcastaddr" >> $SINEWORKINGDIR/invis_confdata
 echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
 echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
-echo "LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_confdata
-echo "JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_confdata
-echo "MySQLpw:$mysqlpw" >> $SINEWORKINGDIR/invis_confdata
-echo "NtopPw:$ntoppw" >> $SINEWORKINGDIR/invis_confdata
 echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
 if [[ $whichgroupware == "kopano" ]]; then
     echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
@@ -530,6 +522,20 @@ if [[ $cleandasi == "0" ]]; then
 else
     echo "cleanDasi:n" >> $SINEWORKINGDIR/invis_confdata
 fi
+
+# Create passwords and write them in invis_pws
+# Passwort fuer LDAP-Admin und junk erzeugen
+ldappw=`pwgen -sBnc 10 1`
+junkpw=`pwgen -sBnc 10 1`
+mysqlpw=`pwgen -sBnc 10 1`
+ntoppw=`pwgen -sBnc 10 1`
+
+echo "LDAP Administrator:LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_pws
+echo "Spam owner:JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_pws
+echo "MySQL root:MySQLPW:$mysqlpw" >> $SINEWORKINGDIR/invis_pws
+echo "NTOP Administrator:NtopPW:$ntoppw" >> $SINEWORKINGDIR/invis_pws
+
+chmod 0600 $SINEWORKINGDIR/invis_pws
 
 # Trennzeichenvariable zurück auf alten Wert setzen
 IFS=$oldifs

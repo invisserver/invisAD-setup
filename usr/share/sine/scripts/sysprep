@@ -257,7 +257,7 @@ changevalues $path $file "$string"
 # Admin PW fuer ntop-user wwwrun setzen
 # Achtung Bug im ntop Paket: Das Verzeichnis in dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
 mkdir /var/lib/ntop
-ntoppw=`getconfdata "NtopPw" "2"`
+ntoppw=`getpassword "NtopPW" "3"`
 ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $LOGFILE | pgbox
 
 pgsubtitle="Es wird eine Zertifizierungsstelle erzeugt"
@@ -394,11 +394,11 @@ file="invis-pws.conf"
 hwclock --systohc 2>&1| tee -a $LOGFILE | pgbox 
 
 # invis Passwort-Datei anpassen
-ldappw=`getconfdata "LDAPAdminPW" "2"`
+ldappw=`getpassword "LDAPAdminPW" "3"`
 string="ldap-secret%$ldappw"
 changevalues $INVISCONFDIR $file "$string"
 
-mysqlpw=`getconfdata "MySQLpw" "2"`
+mysqlpw=`getpassword "MySQLPW" "3"`
 string="mysql-rootpw%$mysqlpw"
 changevalues $INVISCONFDIR $file "$string"
 

@@ -50,7 +50,7 @@ pgsubtitle="Apache Webserver and invis-Portal setup"
 waitinfobox "Ihr Webserver sowie das invis-Portal werden eingerichtet.
 Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
 fqdn=`getconfdata "FQDN" "2"`
-ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 company=`getconfdata "Organisation" "2"`
 path="/etc/invis/portal"
 cp $path/config.php.dist $path/config.php
