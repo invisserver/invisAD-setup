@@ -5,10 +5,10 @@
   <interface name="intern"/>
   <interface name="vpn"/>
   <interface name="wlan0"/>
-  <!-- Testumgebung: ssh über Standard-Port 22 -->
+  <!-- Intern: ssh über Standard-Port 22 -->
   <service name="ssh"/>
-  <!-- Produktiv: ssh über Zufallsport xxxxx -->
-  <port port="sshport" protocol="tcp"/>
+  <!-- Zusätzlich: ssh über Zufallsport xxxxx -->
+  <service name="invis-ssh"/>
   <forward-port port="22" protocol="tcp" to-port="sshport"/>
 
   <!-- Webserver -->
@@ -16,10 +16,10 @@
   <service name="http"/>
   <!-- https (443): Für den Rest --> 
   <service name="https"/>
-  <!-- In bestimmten Konfigurationen für das Portal -->
-  <port port="httpsport" protocol="tcp"/>
-  <!-- In bestimmten Konfigurationen für OwnCloud -->
-  <port port="ocport" protocol="tcp"/>
+  <!-- https (anderer Port): Für das invis-Server-Portal -->
+  <service name="invis-portal"/>
+  <!-- https (443/anderer Port): Für ownCloud --> 
+  <service name="owncloud"/>
 
   <!-- Mail, Groupware -->
   <!-- smtp (25): Für STARTTLS -->

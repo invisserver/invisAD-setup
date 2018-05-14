@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>invis-Server-Portal</short>
+  <description>invis-Server-Portal</description>
+  <port protocol="tcp" port="443"/>
+</service>

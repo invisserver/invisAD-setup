@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>ownCloud</short>
+  <description>Private cloud server</description>
+  <port protocol="tcp" port="443"/>
+</service>

@@ -47,57 +47,46 @@ clear
 windowtitle="firwalld"
 pgsubtitle="Firewall Setup for invis-server"
 
-# OwnCloud-Port einfuegen
-ocport=`getconfdata "OCPORT" "2"`
-
 # Kopieren und anpassen der Firewall Konfiguration
+# Vorbereitete Konfigurationen kopieren
+cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+
+# geaenderten Portal-HTTPS-Port einfuegen
+httpsport=`getconfdata "HTTPSPORT" "2"`
+if [[ -n $httpsport ]]; then
+  file="invis-portal.xml"
+  path="/etc/firewalld/services"
+  string="443%$httpsport"
+  changevalues $path $file "$string"
+fi
+
+# geaenderten OwnCloud-Port einfuegen
+ocport=`getconfdata "OCPORT" "2"`
 if [[ -n $ocport ]]; then
-    cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
-else
-    cp $TEMPLATEDIR/$modulename/external-oc.xml /etc/firewalld/zones/external.xml 2>&1| tee -a $LOGFILE | pgbox
-    string="ocport%$ocport"
+    file="owncloud.xml"
+    path="/etc/firewalld/services"
+    string="443%$ocport"
     changevalues $path $file "$string"
 fi
 
-file="external.xml"
-path="/etc/firewalld/zones"
-
 # geaenderten SSH-Port einfuegen
 sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
+file="invis-ssh.xml"
+path="/etc/firewalld/services"
+string="22%$sshport"
 changevalues $path $file "$string"
 
-# geaenderten HTTPS-Port einfuegen
-httpsport=`getconfdata "HTTPSPORT" "2"`
-string="httpsport%$httpsport"
-changevalues $path $file "$string"
-
-cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+# geaenderten SSH-Port einfuegen
 file="internal.xml"
 path="/etc/firewalld/zones"
-
-# geaenderten SSH-Port einfuegen
-sshport=`getconfdata "SSHPORT" "2"`
 string="sshport%$sshport"
-changevalues $path $file "$string"
-
-# geaenderten HTTPS-Port einfuegen
-httpsport=`getconfdata "HTTPSPORT" "2"`
-string="httpsport%$httpsport"
-changevalues $path $file "$string"
-
-# OwnCloud-Port einfuegen
-ocport=`getconfdata "OCPORT" "2"`
-string="ocport%$ocport"
 changevalues $path $file "$string"
 
 # SSH Port ändern
 cp $TEMPLATEDIR/$modulename/sshd_config /etc/ssh/
 path="/etc/ssh"
 file="sshd_config"
-
-sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
 changevalues $path $file "$string"
 
 # SSHd neu starten
