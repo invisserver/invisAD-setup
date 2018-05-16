@@ -45,7 +45,7 @@ setrights() {
 	setfacl -R -d -m group:$2:rwx $1
 }
 
-case share in
+case $share in
     0)
 	# leeres Verzeichnis
 	mkdir $groupdir
