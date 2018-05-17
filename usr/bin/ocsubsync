@@ -1,0 +1,208 @@
+#!/bin/bash
+# Kategorie: apps
+# script to manage headless owncloud synchronization
+# Version 14.0
+# (c) Mai 2018 Stefan Schäfer / invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Dieses Script verwaltet die Hintergrundsynchronisation verschiedener ownCloud
+# Konten. Es fuehrt sowohl die Synchronisation aus als auch die Verwaltung der
+# Konten.
+
+# This scrip manages the background synchronization of various ownCloud accounts.
+# It does the synchronization as well as the account management.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#Konfigurationsdaten
+confdir="/etc/invis"
+conffile="$confdir/invis.conf"
+
+#functions
+usage() {
+	echo -e "Bitte geben Sie ein, ob Sie ein Konto hinzufügen oder löschen möchten,\noder ob Sie einen Synchronisationslauf starten möchten:\n
+	linux:~ # ocsubsync (add|rem) [username] 
+Achtung: Zum Entfernen eines Kontos muss der entsprechende Benutzername angegeben werden.
+	linux:~ # ocsubsync sync [username]\n
+Achten Sie darauf, dass Sie keine manuelle Synchronisation starten, wenn bereits\nim Hintergrund Synchronisationsjobs aktiv sind.
+\nMit:
+	linux:~ # ocsubsync jobs\n
+können Sie kontrollieren, ob gerade eine Synchronisation aktiv ist.
+\nAlle eingerichteten Konten lassen sich mit:\n
+	linux:~ # ocsubsync accounts\n
+auflisten"
+}
+
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+msgbox() {
+    # Argument $1 = Ausgabedatei $2 = Dialogtitel
+    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$2" --msgbox "$1" 0 0
+}
+
+chkaccount() {
+    if [[ `grep "^$1:" $ocaccountdir/$ocaccountfile` ]]; then
+	return 0
+    else
+	return 1
+    fi
+}
+
+getfullname() {
+	getent passwd | grep "^$1:" | cut -d ":" -f 5
+}
+
+# ext Hostnamen lesen
+fqdn=`getconfdata "$conffile" "fqdn" 2`
+
+# configuration variables
+ocaccountdir="/var/lib/sine/oc"
+ocaccountfile="ocaccounts"
+ocsrvurl="https://$fqdn/remote.php/webdav"
+
+# Verzeichnis anlegen, wenn nicht vorhanden
+if [[ ! -d $ocaccountdir ]]; then
+    mkdir -p $ocaccountdir
+fi
+
+# requested function
+mode=$1
+user=$2
+
+case $mode in
+    "add")
+	# Daten abfragen
+	# wenn bereits ein Benutzer angegeben wurde, wird dieser uebernommen.
+	if [[ -n $user ]]; then
+	    ocacc[0]=$user
+	fi
+
+	ok=0
+	while (( $ok != "3" ));do
+	    dialog --backtitle "$dialogtitle" --title "Hintergrundsynchronisation ownCloud" --form "$dialogshorthelp\n
+Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation ein.\n\n" 16 70 7 \
+	"Benutzername:" 2 1 "${ocacc[0]}" 2 18 44 0\
+	"Passwort:" 4 1 "${ocacc[1]}" 4 18 44 0\
+	"Zielverzeichnis:" 6 1 "${ocacc[2]}" 6 18 44 0\
+	2>/tmp/sine_temp
+	    if [[ "$?" -ne "0" ]]; then
+		echo "Eingabe wurde abgebrochen."
+		exit
+	    fi
+	    ocacc=(`cat /tmp/sine_temp`)
+
+	    # Werte pruefen
+	    # Benutzer muss existieren und Mitglied der Gruppe owncloud sein
+	    if [[ `getent passwd |grep "^${ocacc[0]}:"` && `samba-tool group listmembers owncloud | grep "^${ocacc[0]}"` ]]; then
+		((ok=1))
+	    else
+		msgbox "Der Benutzer \"${ocacc[0]}\" existiert nicht oder ist nicht Mitglied der Gruppe \"owncloud\"."
+	    fi
+
+	    # Passworteingabe minimal pruefen, es kann nicht korrekt sein, wenn das eingegebene PW kuerzer ist als
+	    # die im AD gesetzte minimale Laenge. Ist nicht perfekt aber ein Anfang. Besser waere ein Loginversuch...
+	    minlength=`samba-tool domain passwordsettings show |tr -d " " |grep Minimumpasswordlength|cut -d ":" -f2`
+	    # Passwort muss laenger sein als die gesetzte minimale Laenge
+	    if (( ${#ocacc[1]} >= $minlength )); then
+		((ok=$ok + 1))
+	    fi
+
+	    # Zielverzeichnis muss existieren
+	    if [[ -d ${ocacc[2]} ]]; then
+		((ok=$ok + 1))
+	    else
+		msgbox "Das angegebene Verzeichnis existiert nicht."
+	    fi
+	    echo $ok > /tmp/ok
+	done
+	# Account nur anlegen, wenn nicht bereits geschehen.
+	chkaccount ${ocacc[0]} > /dev/null 2>&1
+	exist=$?
+	if [[ $exist == 0 ]]; then
+	    msgbox "Das angegebene Konto ist bereits aktiv."
+	else
+	    echo ${ocacc[0]}:${ocacc[1]}:${ocacc[2]} >> $ocaccountdir/$ocaccountfile
+	fi
+	;;
+    "rem")
+	if [[ -z $user ]]; then
+	    usage
+	else
+	    cat $ocaccountdir/$ocaccountfile | grep -v "^$user:" > $ocaccountdir/$ocaccountfile.tmp
+	    mv $ocaccountdir/$ocaccountfile.tmp $ocaccountdir/$ocaccountfile
+	    msgbox "Das Konto \"$user\" wurde aus der Hintergrundsynchronisation entfernt."
+	fi
+	;;
+    "sync")
+        if [[ -f $ocaccountdir/$ocaccountfile ]]; then
+	    if [[ -z $user ]]; then
+		for line in `cat $ocaccountdir/$ocaccountfile`; do
+		    IFS=':' read -r -a job <<< "$line"
+		    echo "owncloudcmd -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl"
+		done
+	    else
+		chkaccount $user > /dev/null 2>&1
+		exist=$?
+		if [[ $exist == 0 ]]; then
+		    line=`grep "^$user:" $ocaccountdir/$ocaccountfile`
+		    IFS=':' read -r -a job <<< "$line"
+		    echo "owncloudcmd -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl"
+		else
+		    msgbox "Das angegebene Konto \"$user\" ist unbekannt."
+		fi
+	    fi
+	fi
+	;;
+    "jobs")
+	jobactive=`ps ax | grep owncloudcmd`
+	if [[ -z $jobactive ]]; then
+	    useractive=`echo $jobactive | tr -s " " | cut -d " " -f 7`
+	    userfullname=`getfullname $useractive`
+	    msgbox "Derzeit wird das Konto von Benutzer \"$userfullname\" synchronisiert."
+	else
+	    msgbox "Derzeit ist keine Hintergrundsynchronisation aktiv."
+	fi
+	;;
+    "accounts")
+	if [[ -f $ocaccountdir/$ocaccountfile ]]; then
+	    for line in `cat $ocaccountdir/$ocaccountfile`; do
+		IFS=':' read -r -a job <<< "$line"
+		userfullname=`getfullname ${job[0]}`
+		echo -e "Aktiver Benutzer: \"$userfullname\" - Loginname: \"${job[0]}\" - Zielverzeichnis: \"${job[2]}\""
+	    done
+	fi
+	;;
+    *)
+	usage
+	;;
+esac
