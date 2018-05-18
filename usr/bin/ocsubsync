@@ -88,7 +88,7 @@ fqdn=`getconfdata "$conffile" "fqdn" 2`
 # configuration variables
 ocaccountdir="/var/lib/sine/oc"
 ocaccountfile="ocaccounts"
-ocsrvurl="https://$fqdn/remote.php/webdav"
+ocsrvurl="https://$fqdn/owncloud/remote.php/webdav"
 
 # Verzeichnis anlegen, wenn nicht vorhanden
 if [[ ! -d $ocaccountdir ]]; then
@@ -168,7 +168,7 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	    if [[ -z $user ]]; then
 		for line in `cat $ocaccountdir/$ocaccountfile`; do
 		    IFS=':' read -r -a job <<< "$line"
-		    echo "owncloudcmd -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl"
+		    owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
 		done
 	    else
 		chkaccount $user > /dev/null 2>&1
@@ -176,7 +176,7 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 		if [[ $exist == 0 ]]; then
 		    line=`grep "^$user:" $ocaccountdir/$ocaccountfile`
 		    IFS=':' read -r -a job <<< "$line"
-		    echo "owncloudcmd -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl"
+		    owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
 		else
 		    msgbox "Das angegebene Konto \"$user\" ist unbekannt."
 		fi
