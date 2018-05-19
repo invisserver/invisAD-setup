@@ -1212,8 +1212,6 @@ function userAddResponse(request) {
 	}
 }
 
-
-
 // show user add box
 function groupAdd(request) {
 	var group_type = 0;
@@ -1239,7 +1237,6 @@ function groupAdd(request) {
 
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
-
 	
 //	lightbox.addButton('<button onclick="groupAddRequest();">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
 	
@@ -1298,7 +1295,6 @@ function groupAdd(request) {
 	var sel1 = new Element('select', {'style': 'width: 60%'});
 	sel1.insert(new Element('option', {'value': 0}).update('Leeres Verzeichnis'));
 	sel1.insert(new Element('option', {'value': 1}).update('Kein Verzeichnis'));
-	// Test: Templates in User-Box schreiben. Kann wieder aus wenn wir fertig sind.
 	var template_index = 2;
 	templates.each(
 		function (template) {
@@ -1312,7 +1308,6 @@ function groupAdd(request) {
 	//value_div.addClassName('value');
 	line.insert(value_div);
 	$('groupbox_content').insert(line);;
-
 	
 	// grouplists table
 	$('groupbox_content').insert('<table id="groupbox_table"><tr class="line"><td colspan="3" class="key">Gruppenmitglieder</td></tr><tr><td id="groupbox_left"></td><td id="groupbox_center"></td><td id="groupbox_right"></td></tr></table>');
