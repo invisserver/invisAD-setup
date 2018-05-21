@@ -3,7 +3,7 @@
 /* index.php v1.2
  * portal building script
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010,2014 Stefan Schäfer, invis-server.org
+ * (C) 2010,2014,2018 Stefan Schäfer, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: stefan@.invis-server.org
@@ -145,7 +145,7 @@ echo <<<HEAD
 HEAD;
 
 echo "<div id='menu'>";
-echo '<b style="font-size: 0.6em; color: #ff3300;">Server: ' . $FQDN . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>';
+echo '<b style="font-size: 0.6em;color: #ff3300;padding-top: 6px;position: relative; left: -137px;">Server: ' . $FQDN . '</b>';
 
 $count = 0;
 // section menu
@@ -169,7 +169,6 @@ foreach ($CONF -> sections as $section) {
 	}
 	$count++;
 }
-//echo '<div id=\'servername\'align="right"><b style="font-size: 0.6em; color: #ff3300;">Server: ' . $FQDN . '</b></div>';
 echo "</div></div></div>";
 
 // section content container
