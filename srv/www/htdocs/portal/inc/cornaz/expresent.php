@@ -28,10 +28,8 @@ if ($status == "Anwesend") {
 }
 
 // Info Zeile
-$margin = "";
-$info = "<p><hr size=\"1\" noshade width=\"300\" center><p>
-<center>$vorgang</center><p><center>$ausgabe</center><p>
-<hr size=\"1\" noshade width=\"300\" center><p>";
+$margin = "Status";
+$info = "<p><p><center>$vorgang</center><p><center>$ausgabe</center><p><p>";
 site_info($margin, $info);
 
 ?>

@@ -62,8 +62,6 @@ if ($bind) {
 
 // Info Zeile
 $margin = "Mailkonten";
-$info = "<p><hr size=\"1\" noshade width=\"300\" center></p>
-<p><center>Der Account <b>$account</b> wurde gelöscht.</center></p>
-<p><hr size=\"1\" noshade width=\"300\" center></p>";
+$info = "<p></p><p><center>Der Account <b>$account</b> wurde gelöscht.</center></p><p></p>";
 site_info($margin, $info);
 ?>
