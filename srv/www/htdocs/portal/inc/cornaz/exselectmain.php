@@ -49,6 +49,6 @@ if ($bind) {
 
 // Info Zeile
 $margin = "Hauptadresse";
-$info = "<p><hr size=\"1\" noshade width=\"300\" center></p><p><center>Die Adresse <font color=\"#EE4000\"><b>$mainaccount</b></font> wurde als primäre Adresse für den Mailversand gewählt.</center></p><p><hr size=\"1\" noshade width=\"300\" center></p>";
+$info = "<p></p><p><center>Die Adresse <font color=\"#EE4000\"><b>$mainaccount</b></font> wurde als primäre Adresse für den Mailversand gewählt.</center></p><p></p>";
 site_info($margin, $info);
 ?>

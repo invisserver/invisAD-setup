@@ -16,6 +16,7 @@ $mailsubject = str_replace("Subject: ","",$mailsubject);
 $mailbody = fread($filehandle, 4096);
 fclose($filehandle);
 
+//Das kann noch nicht funktionieren
 $_SESSION['mailsubject'] = $mailsubject;
 $_SESSION['mailbody'] = $mailbody;
 

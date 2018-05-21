@@ -8,10 +8,8 @@
 		sudocmd('backhome');
 
 #Info Zeile
-$margin = "";
-$info = "</center><p><hr size=\"1\" noshade width=\"300\" center><p>
-<center>$vorgang</center><p><center>$ausgabe</center><p>
-<hr size=\"1\" noshade width=\"300\" center><p>";
+$margin = "Status";
+$info = "</center><p><p><center>$vorgang</center><p><center>$ausgabe</center><p><p>";
 site_info($margin, $info);
 
 ?>
