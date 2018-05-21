@@ -42,6 +42,8 @@
 		
 		<section name="?" linkname="help" title="Helpdesk" inc="inc/help.section.inc.php" />
 		
+		<section name="mail" linkname="mail" title="Mailkonten" inc="inc/mail.section.inc.php" />
+
 		<section name="administration" linkname="admin" title="Administration" restricted="yes" inc="inc/admin.section.inc.php">
 			<source type="css" src="css/admin.section.css" />
 			<source type="javascript" src="js/admintools.js" />
