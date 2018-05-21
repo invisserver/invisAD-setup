@@ -24,18 +24,18 @@ if ($status == "Abwesend") {
 	\$SUBJECT vollständig in Großbuchstaben geschrieben und es in Anführungszeichen gesetzt ist!<br><b>Beispiel:</b> <font color=\"#EE4000\">Ich habe Ihre Mail betreffend \"\$SUBJECT\" erhalten....</font></font>";
 	site_info($margin, $info);
 	//Formular oeffnen
-	$script = "./base.php";
+	$script = "/?sn=mail";
 	open_form($script);
 
 	// Eingabezeilen
 	$margin = ("Betreff");
-	$inhalt_s1 = array("<b>Betreff:</b> <br> <input type=\"text\" size=\"80\" name=\"mysubject\" value=\"$mysubject\">","100");
+	$inhalt_s1 = array("<b>Betreff:</b> <br> <input type=\"text\" size=\"106\" name=\"mysubject\" value=\"$mysubject\">","100");
 	$val_n = array($inhalt_s1);
 	table_row_n($val_n, $margin);
 
 	// Eingabezeilen
 	$margin = ("Text");
-	$inhalt_s1 = array("<b>Nachrichtentext:</b> <br> <Textarea name=\"mymessage\" cols=\"104\" rows=\"8\">$mymessage</Textarea>","100");
+	$inhalt_s1 = array("<b>Nachrichtentext:</b> <br> <Textarea name=\"mymessage\" cols=\"80\" rows=\"8\">$mymessage</Textarea>","100");
 	$val_n = array($inhalt_s1);
 	table_row_n($val_n, $margin);
 

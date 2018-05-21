@@ -57,7 +57,7 @@ site_info($margin, $info);
 
 
 // Formular oeffnen
-$script = "./base.php";
+$script = "/?sn=mail";
 open_form($script);
 
 $margin = ("Zugangsdaten");

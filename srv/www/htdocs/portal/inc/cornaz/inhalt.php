@@ -19,7 +19,7 @@ if ($bind) {
 
     // Schaltflächenleiste 1 für Funktionen
     $margin = "Funktionen";
-    $script = "base.php";
+    $script = "/?sn=mail";
     $val1 = array("Abwesend", "exabsent.php", "lightgrey");
     $val2 = array("Urlaubsbeginn", "invacationmsg.php", "lightgrey");
     $val3 = array("Konto hinzufügen", "increateacc.php", "lightgrey");
@@ -28,7 +28,7 @@ if ($bind) {
 
     // Schaltflächenleiste 2 für Funktionen
     $margin = "<font color=\"$COR_BG_COLOR\">Funktionen</font>";
-    $script = "base.php";
+    $script = "/?sn=mail";
     $val1 = array("Anwesend", "expresent.php", "lightgrey");
     $val2 = array("Urlaubsende", "exvacend.php", "lightgrey");
     $val3 = array("Konto entfernen", "indeleteacc.php", "lightgrey");
@@ -53,7 +53,7 @@ if ($bind) {
     $i=0;
     foreach ($entries as $val) {
 	//Formular oeffnen
-	$script = "./base.php";
+	$script = "/?sn=mail";
 	open_form($script);
 	echo "<input type=\"hidden\" name=\"file\" value=\"exselectmain.php\" />\n";
 	$Adresse = $entries[$i]["fspextmailaddress"][0];

@@ -7,8 +7,8 @@ include ("./inc/config.inc.php");
 // Dateinamen einlesen
 $myfile = $_FILES['myfile']['tmp_name'];
 
-session_start();
-session_name("cornaz");
+//session_start();
+//session_name("cornaz");
 
 $filehandle = fopen($myfile, "r");
 $mailsubject = fgets($filehandle,10000);

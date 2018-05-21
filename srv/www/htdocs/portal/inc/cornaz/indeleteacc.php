@@ -33,7 +33,7 @@ site_info($margin, $info);
 $i=0;
 foreach ($entries as $val) {
 	//Formular oeffnen
-	$script = "./base.php";
+	$script = "/?sn=mail";
 	open_form($script);
 	echo "<input type=\"hidden\" name=\"file\" value=\"exdeleteacc.php\" />\n";
 	$Adresse = $entries[$i]["fspextmailaddress"][0];

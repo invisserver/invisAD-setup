@@ -22,7 +22,7 @@ sort($mailproviders);
 $mailproviders[0] = "sonstiger";
 
 // Formular oeffnen
-$script = "./base.php";
+$script = "/?sn=mail";
 open_form($script);
 
 // Select-Code erzeugen
