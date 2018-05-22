@@ -48,7 +48,7 @@ fspMailProviderIMAP: imap.gmx.net
 fspMailProviderSMTP: mail.gmx.net
 fspMailProviderPOPSSL: TRUE
 fspMailProviderIMAPSSL: TRUE
-fspMailProviderSMTPPort: 25
+fspMailProviderSMTPPort: 587
 fspMailProviderSMTPTLS: FALSE
 fspMailProviderUsername: GMX-Kundennummer oder GMX-email-Adresse
 fspMailProviderDescription: IMAP ist nur in den Tarifen ProMail und TopMail verfügbar. SMTP-Auth oder Pop vor SMTP
@@ -80,26 +80,10 @@ fspMailProviderPOP: pop3.live.com
 fspMailProviderSMTP: smtp.live.com
 fspMailProviderPOPSSL: TRUE
 #fspMailProviderIMAPSSL: 
-fspMailProviderSMTPPort: 25
+fspMailProviderSMTPPort: 587
 fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: Hotmail-email-Adresse
 fspMailProviderDescription: SMTP-Auth. Funktioniert nur mit kostenpflichtigem Windows Live Hotmail Plus Zugang
-
-# Lycos
-dn: cn=lycos,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: fspMailProvider
-cn: lycos
-fspMailProviderVendor: Lycos Mail Plus
-fspMailProviderPOP: pop.lycos.com
-fspMailProviderIMAP: imap.lycos.com
-fspMailProviderSMTP: smtp.lycos.com
-fspMailProviderPOPSSL: FALSE
-fspMailProviderIMAPSSL: FALSE
-fspMailProviderSMTPPort: 587
-fspMailProviderSMTPTLS: FALSE
-fspMailProviderUsername: Lycos-email-Adresse
-fspMailProviderDescription: SMTP-Auth. SMTP und POP nur gegen Aufpreis verfügbar. Alternative Webmail-Erweiterung für Thunderbird (WebDAV)
 
 # Web.de
 dn: cn=web.de,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
@@ -128,7 +112,7 @@ fspMailProviderPOP: pop.mail.yahoo.de
 fspMailProviderSMTP: smtp.mail.yahoo.de
 fspMailProviderPOPSSL: FALSE
 #fspMailProviderIMAPSSL: 
-fspMailProviderSMTPPort: 25
+fspMailProviderSMTPPort: 587
 fspMailProviderSMTPTLS: FALSE
 fspMailProviderUsername: Benutzername
 fspMailProviderDescription: SMTP-Auth. SMTP und POP müssen erst vom Kunden aktiviert werden.
@@ -142,10 +126,10 @@ fspMailProviderVendor: AOL
 fspMailProviderPOP: pop.aol.com
 fspMailProviderIMAP: imap.de.aol.com
 fspMailProviderSMTP: smtp.de.aol.com
-fspMailProviderPOPSSL: FALSE
-fspMailProviderIMAPSSL: FALSE
+fspMailProviderPOPSSL: TRUE
+fspMailProviderIMAPSSL: TRUE
 fspMailProviderSMTPPort: 587
-fspMailProviderSMTPTLS: FALSE
+fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: AOL-Name
 fspMailProviderDescription: SMTP-Auth
 
@@ -172,12 +156,12 @@ objectClass: fspMailProvider
 cn: netcologne
 fspMailProviderVendor: Netcologne Gesellschaft für Telekommunikation mbH
 fspMailProviderPOP: pop3.netcologne.de
-#fspMailProviderIMAP: 
+fspMailProviderIMAP: imap.netcologne.de
 fspMailProviderSMTP: smtp.netcologne.de
-fspMailProviderPOPSSL: FALSE
-#fspMailProviderIMAPSSL: 
-fspMailProviderSMTPPort: 25
-fspMailProviderSMTPTLS: FALSE
+fspMailProviderPOPSSL: TRUE
+fspMailProviderIMAPSSL: TRUE
+fspMailProviderSMTPPort: 587
+fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: nc-Benutzername
 fspMailProviderDescription: Mailversand funktioniert nur, wenn der Kunde über NetCologne ins Internet eingewählt ist.
 
@@ -190,30 +174,30 @@ fspMailProviderVendor: Telefonica Germany GmbH und Co. OHG
 fspMailProviderPOP: pop.o2online.de
 fspMailProviderIMAP: imap.o2online.de
 fspMailProviderSMTP: mail.o2online.de
-fspMailProviderPOPSSL: FALSE
-fspMailProviderIMAPSSL: FALSE
+fspMailProviderPOPSSL: TRUE
+fspMailProviderIMAPSSL: TRUE
 fspMailProviderSMTPPort: 25
 fspMailProviderSMTPTLS: FALSE
 fspMailProviderUsername: Benutzername@o2online.de (Bei IMAP nur Beutzername)
 fspMailProviderDescription: SMTP-Auth, Als IMAP-Standard-Ordener muss "." oder nichts angegeben werden.
 
-# T-Online 
-dn: cn=t-online,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+# Telekom 
+dn: cn=telekom,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
 cn: t-online
 fspMailProviderVendor: Deutsche Telekom AG
-fspMailProviderPOP: pop.t-online.de
-#fspMailProviderIMAP: 
-fspMailProviderSMTP: mailto.t-online.de
+fspMailProviderPOP: securepop.t-online.de
+fspMailProviderIMAP: secureimap.t-online.de
+fspMailProviderSMTP: securesmtp.t-online.de
 fspMailProviderPOPSSL: TRUE
-#fspMailProviderIMAPSSL: 
-fspMailProviderSMTPPort: 25
+fspMailProviderIMAPSSL: TRUE
+fspMailProviderSMTPPort: 465
 fspMailProviderSMTPTLS: TRUE
-fspMailProviderUsername: Egal
-fspMailProviderDescription: Benutzername und Kennwort können Dummies sein, da diese Mailserver nur verwendet werden können, wenn der Kunde über T-Online ins Internet eingewählt ist.
+fspMailProviderUsername: ihr-account@t-onlinde.de
+fspMailProviderDescription: Standard-Mailserver. SMTP-Server schreiben Absendeadresse immer in die Telekom-Adresse um..
 
-# T-Online 2
+# T-Online
 dn: cn=t-online2,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
@@ -240,7 +224,7 @@ fspMailProviderIMAP: imap.1und1.de
 fspMailProviderSMTP: smtp.1und1.de
 fspMailProviderPOPSSL: TRUE
 fspMailProviderIMAPSSL: TRUE
-fspMailProviderSMTPPort: 25
+fspMailProviderSMTPPort: 465
 fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: Mailaccount@ihredomain.xyz
 fspMailProviderDescription: SMTP-Auth
@@ -256,7 +240,7 @@ fspMailProviderIMAP: imap.strato.de
 fspMailProviderSMTP: smtp.strato.de
 fspMailProviderPOPSSL: TRUE
 fspMailProviderIMAPSSL: TRUE
-fspMailProviderSMTPPort: 25
+fspMailProviderSMTPPort: 465
 fspMailProviderSMTPTLS: TRUE
 fspMailProviderUsername: Mailaccount@ihredomain.xyz
 fspMailProviderDescription: SMTP-Auth, POP vor SMTP
