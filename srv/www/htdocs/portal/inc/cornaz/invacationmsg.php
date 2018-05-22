@@ -1,8 +1,8 @@
 <?php
 
 # Vorgabetexte
-$mysubject = stripslashes($_SESSION['mailsubject']);
-$mymessage = stripslashes($_SESSION['mailbody']);
+//$mysubject = stripslashes($_SESSION['mailsubject']);
+//$mymessage = stripslashes($_SESSION['mailbody']);
 
 
 if ($status == "Abwesend") {
@@ -12,6 +12,12 @@ if ($status == "Abwesend") {
 	Solange Sie als <font color=\"#EE4000\"><b>\"Abwesend\"</b></font> geführt sind, werden Ihre eMails nicht abgeholt<br>
 	und können somit auch nicht automatisch beantwortet werden.<br>
 	Wechseln Sie auf der CorNAz-Hauptseite zunächst Ihren Status auf \"Anwesend\".</p>";
+	site_info($margin, $info);
+	site_back();
+} elseif ($status == "Urlaub"){
+	$margin = "Urlaub";
+	$info = "<p>Hallo <font color=\"#EE4000\"><b>$corusername</b></font>, Ihre Urlaubsbenachrichtigung ist bereits aktiviert.<br>
+	Wenn Sie das ändern möchten ändern Sie auf der CorNAz-Hauptseite zunächst Ihren Status auf \"Urlaubsende\".</p>";
 	site_info($margin, $info);
 	site_back();
 } else {
@@ -48,21 +54,6 @@ if ($status == "Abwesend") {
 
 	// Formular schliessen
 	close_form();
-
-	# Dateien Laden
-	$margin = ("Datei öffnen");
-	$inhalt_s1 = array("<form enctype=\"multipart/form-data\" action=\"exloadmessage.php\" method=\"post\">
-	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000\">
-	<b>Öffnen einer vorhandenen eigenen Datei</b>
-	<input name=\"myfile\" type=\"file\" size=\"65\">
-	<input type=\"submit\" name=\"vac\" value=\"Datei öffnen\">
-	<input type=\"reset\" name=\"reset\" value=\"Eingaben löschen\">
-	</form>","100");
-	$val_n = array($inhalt_s1);
-	table_row_n($val_n, $margin);
 	site_back();
-	// Geladenen Nachrichtentext löschen.
-//	session_unregister("mailsubject");
-//	session_unregister("mailbody");
 }
 ?>
