@@ -7,48 +7,6 @@ objectClass: container
 cn: invis-Portal
 description: Liste aller invis-Portal Einträge
 
-# Groupware Tine 2.0
-dn: cn=Tine-2.0,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-cn: Tine-2.0
-iPortEntryName: Tine-2.0
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/tine20
-iPortEntryDescription: Die Groupware "Tine 2.0" bietet unter anderem Zugriff auf Terminkalender, Kontakt- & Projektverwaltung, E-Mails, CRM und Zeiterfassung. 
-iPortEntryActive: FALSE
-iPortEntryPosition: Lokal
-iPortEntryButton: Groupware
-iPortEntryPriv:	user
-
-# Groupware SOGo
-dn: cn=SOGo,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-cn: SOGo
-iPortEntryName: SOGo
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/SOGo
-iPortEntryDescription: Die Groupware "SOGo" bietet unter anderem Zugriff auf E-Mails,Terminkalender und Kontakterwaltung. 
-iPortEntryActive: FALSE
-iPortEntryPosition: Lokal
-iPortEntryButton: Groupware
-iPortEntryPriv:	user
-
-# Groupware ZarafaAcc
-dn: cn=ZarafaAcc,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: ZarafaAcc
-cn: ZarafaAcc
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/webaccess
-iPortEntryDescription: Der klassische Webaccess der Groupware "Zarafa" bietet auf E-Mails, Terminkalender, Augabenverwaltung und Notizen im Oulook "Look & Feel". 
-iPortEntryActive: FALSE
-iPortEntryPosition: Lokal
-iPortEntryButton: Groupware
-iPortEntryPriv:	user
-
 # Groupware KopanoApp
 dn: cn=KopanoApp,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
@@ -160,48 +118,6 @@ iPortEntryActive: FALSE
 iPortEntryPosition: Lokal
 iPortEntryButton: Wissensdatenbank
 iPortEntryPriv:	user
-
-# Etherpad Lite
-dn: cn=Etherpad,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: Etherpad
-cn: Etherpad
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/etherpad/
-iPortEntryDescription: Das Etherpad Lite ist eine Form der Textverarbeitung, die es mehreren Benutzern erlaubt, gleichzeitig, an verschiedenen Rechnern an einem Text zu arbeiten.
-iPortEntryActive: FALSE
-iPortEntryPosition: Lokal
-iPortEntryButton: Etherpad Lite
-iPortEntryPriv:	user
-
-# CorNAz
-dn: cn=CorNAz,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: CorNAz
-cn: CorNAz
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/cornaz
-iPortEntryDescription: Mit CorNAz können Sie Ihre eMail-Konten selbst verwalten. Sie können Ihrem invis-Server externe Mailkonten bekannt machen, Abwesenheitsbenachrichtigungen erstellen usw.
-iPortEntryActive: TRUE
-iPortEntryPosition: Lokal
-iPortEntryButton: Mailkonten
-iPortEntryPriv:	user
-
-# WebCDwriter
-dn: cn=WebCDwriter,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: WebCDwriter
-cn: WebCDwriter
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/cdwriter
-iPortEntryDescription: WebCDwriter ermöglicht Ihnen das Brennen von CDs über den CD/DVD-Brenner Ihres invis-Servers.
-iPortEntryActive: FALSE
-iPortEntryPosition: Lokal
-iPortEntryButton: CDs brennen
-iPortEntryPriv:	guest
 
 # Faxgate Client
 dn: cn=FaxClient,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
@@ -400,36 +316,7 @@ iPortEntryPosition: Dokumentation
 iPortEntryButton: Anwenderhandbuch
 iPortEntryPriv:	user
 
-# openSuSE Handbuch
-dn: cn=openSUSEManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: openSUSEManual
-cn: openSUSEManual
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/handbuch
-iPortEntryDescription: Zugriff auf das openSUSE Linux Handbuch.
-iPortEntryActive: FALSE
-iPortEntryPosition: Dokumentation
-iPortEntryButton: openSUSE Handbuch
-iPortEntryPriv:	user
-
-# Apache Webserver Handbuch
-dn: cn=apacheManual,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
-objectClass: top
-objectClass: iPortEntry
-iPortEntryName: apacheManual
-cn: apacheManual
-iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/manual
-iPortEntryDescription: Zugriff auf das Apache Webserver Handbuch.
-iPortEntryActive: TRUE
-iPortEntryPosition: Dokumentation
-iPortEntryButton: Apache Webserver Handbuch
-iPortEntryPriv:	admin
-
 ## Links
-
 # Heise Online
 dn: cn=Heise,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
