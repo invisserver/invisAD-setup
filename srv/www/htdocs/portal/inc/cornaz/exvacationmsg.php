@@ -7,9 +7,9 @@ $subject = stripslashes($mysubject);
 $message = stripslashes($mymessage);
 
 // Erzeugen einer privaten Urlaubsantwort
-$margin = "Ihre Abwesenheitsnachricht";
+$margin = "Ihre<br>Abwesen-<br>heitsnach-<br>richt";
 $vorgang = "Sie treten Ihren Urlaub <b>an</b>. Wirklich?";
-$info = "<p>$vorgang</p><center><b>Ihr Betreff / Subject lautet:</b><p>$subject<p></center><center><b>Ihre Nachricht lautet:</b><p>$message<p></center>";
+$info = "<p>$vorgang</p><center><b>Ihr Betreff lautet:</b><p>$subject<p></center><center><b>Ihre Nachricht lautet:</b><p>$message<p></center>";
 site_info($margin, $info);
 site_back();
 // Erzeugen der Datei
