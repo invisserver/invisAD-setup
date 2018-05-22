@@ -107,5 +107,5 @@ if ( $status == "Anwesend" ) {
 $margin = "Ihre Mailkonten";
 $info = "<p></p><p><center><b>Ihr neuer Zugang wurde mit folgenden Daten angelegt:</b></center></p><p><center>Mail-Server: $mailserver</center></p><p><center>Protokoll: $protokoll</center></p><p><center>Benutzerkennung: $kennung</center></p><p><center>Passwort: $extpasswd</center></p><p><center>Lokale Adresse: $luser</center></p><p></p>";
 site_info($margin, $info);
-
+site_back();
 ?>

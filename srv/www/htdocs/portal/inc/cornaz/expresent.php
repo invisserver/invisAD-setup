@@ -31,5 +31,5 @@ if ($status == "Anwesend") {
 $margin = "Status";
 $info = "<p><p><center>$vorgang</center><p><center>$ausgabe</center><p><p>";
 site_info($margin, $info);
-
+site_back();
 ?>

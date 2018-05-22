@@ -64,4 +64,5 @@ if ($bind) {
 $margin = "Mailkonten";
 $info = "<p></p><p><center>Der Account <b>$account</b> wurde gelöscht.</center></p><p></p>";
 site_info($margin, $info);
+site_back();
 ?>

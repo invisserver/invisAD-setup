@@ -13,6 +13,7 @@ if ($status == "Abwesend") {
 	und können somit auch nicht automatisch beantwortet werden.<br>
 	Wechseln Sie auf der CorNAz-Hauptseite zunächst Ihren Status auf \"Anwesend\".</p><hr size=\"1\" noshade width=\"300\" center>";
 	site_info($margin, $info);
+	site_back();
 } else {
 	// Info Zeile
 	$margin = "Urlaub";
@@ -59,7 +60,7 @@ if ($status == "Abwesend") {
 	</form>","100");
 	$val_n = array($inhalt_s1);
 	table_row_n($val_n, $margin);
-	
+	site_back();
 	// Geladenen Nachrichtentext löschen.
 //	session_unregister("mailsubject");
 //	session_unregister("mailbody");

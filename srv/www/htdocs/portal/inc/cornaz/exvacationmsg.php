@@ -11,7 +11,7 @@ $margin = "Ihre Abwesenheitsnachricht";
 $vorgang = "Sie treten Ihren Urlaub <b>an</b>. Wirklich?";
 $info = "<p>$vorgang</p><center><b>Ihr Betreff / Subject lautet:</b><p>$subject<p></center><center><b>Ihre Nachricht lautet:</b><p>$message<p></center>";
 site_info($margin, $info);
-
+site_back();
 // Erzeugen der Datei
 $datei = "$COR_PATH/vacation/$corusername.msg";
 

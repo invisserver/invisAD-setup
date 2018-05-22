@@ -54,6 +54,7 @@ foreach ($entries as $val) {
 	$i++;
 	//Formular schliessen
 	close_form();
+	site_back();
 }
 
 ?>

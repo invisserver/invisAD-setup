@@ -9,7 +9,18 @@ function site_info($margin, $info) {
 	echo ("<tr>");
 	echo ("<td valign=\"top\" height=\"30\" width=\"110\" bgcolor=\"#fafafa\"><b><font color=darkgrey>$margin</font></b></td>");
 	echo ("</td>");
-	echo ("<td valign=\"middle\" height=\"30\"><center>$info</center>");
+	echo ("<td valign=\"middle\" height=\"30\"><center>$info</center></td>");
+	echo ("</tr>");
+	echo ("</tbody></table>");
+}
+
+function site_back() {
+	echo ("<table border=\"0\" width=\"100%\" cellpadding=\"3\" cellspacing=\"0\">");
+	echo ("<tbody>");
+	echo ("<tr>");
+	echo ("<td valign=\"top\" height=\"30\" width=\"110\" bgcolor=\"#fafafa\"><b><font color=darkgrey>Startseite</font></b></td>");
+	echo ("</td>");
+	echo ("<td valign=\"middle\" height=\"30\"><center><a href=\"./?sn=mail\"><font color=\"#EE4000\">Zurück</font></a></center></td>");
 	echo ("</tr>");
 	echo ("</tbody></table>");
 }
