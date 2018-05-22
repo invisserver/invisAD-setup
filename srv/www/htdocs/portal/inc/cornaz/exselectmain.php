@@ -51,4 +51,5 @@ if ($bind) {
 $margin = "Hauptadresse";
 $info = "<p></p><p><center>Die Adresse <font color=\"#EE4000\"><b>$mainaccount</b></font> wurde als primäre Adresse für den Mailversand gewählt.</center></p><p></p>";
 site_info($margin, $info);
+site_back();
 ?>
