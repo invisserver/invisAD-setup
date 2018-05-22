@@ -173,6 +173,13 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    ippass=`mkdbsilent invoiceplane ip a`
 	    msgbox "Datenbank für InvoicePlane wurde angelegt.\n\nDatenbank: invoiceplane\nBenutzer: ip\nPasswort: $ippass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
 	    
+	    # Konfiguration anpassen
+	    fqdn=`getconfdata "FQDN" "2"`
+	    file=ipconfig.php
+	    path="/etc/invoiceplane"
+	    string="IP_URL=%IP_URL=https://$fqdn/invoiceplane"
+	    changevalues $path $file "$string"
+
 	    a2enflag INVOICEPLANE
 	
 	    chkservice apache2 r
