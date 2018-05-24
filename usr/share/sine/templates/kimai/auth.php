@@ -11,6 +11,6 @@ return array(
     'commonNameAttribute' => 'displayName',
     'groupidAttribute' => 'cn',
     'mailAttribute' => 'mail',
-    'allowedGroupIds' => array('kimai')
+    'allowedGroupIds' => array('zeiterfassung')
 );
 ?>
