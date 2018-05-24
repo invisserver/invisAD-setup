@@ -174,13 +174,14 @@ if [[ $ddnshn != "none" ]]; then
     chown dehydrated "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
 
     # dehydrated Konfiguration sichern und anpassen
-    path="/etc/dehydrated/"
+    path="/etc/dehydrated/config.d"
     certmail=`getconfdata "certMail" "2"`
-    mv $path/config $path/config.ori
-    cp $TEMPLATEDIR/$modulename/dehydrated/config $path
-    file="config"
+    cp $TEMPLATEDIR/$modulename/dehydrated/invis-config.sh $path
+    file="invis-config.sh"
     string="adminmail%$certmail"
     changevalues $path $file "$string"
+
+    cp $TEMPLATEDIR/$modulename/dehydrated/apache2.hook /etc/dehydrated/postrun-hooks.d/
 
     ## DDNS Namen in Domain-Datei eintragen
     echo $ddnshn > $path/domains.txt
