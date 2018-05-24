@@ -420,8 +420,8 @@ cleantr=${?}
     
 if [[ $cleantr == "0" ]]; then
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Transferverzeichnis aufräumen" --radiolist "Wie alt dürfen Dateien und Verzeichnisse in der Transferfreigabe maximal werden?" 12 50 4\
-    "21 Tage" "3 Wochen" on\
-    "42 Tage" "6 Wochen" off\
+    "21 Tage" "3 Wochen" off\
+    "42 Tage" "6 Wochen" on\
     "90 Tage" "3 Monate" off\
     2>$SINEWORKINGDIR/sine_temp
     trdays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
@@ -436,8 +436,8 @@ cleandasi=${?}
     
 if [[ $cleandasi == "0" ]]; then
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Datensicherungen aufräumen" --radiolist "Wie alt sollen interne Datensicherungen maximal werden?" 12 50 4\
-    "21 Tage" "3 Wochen" on\
-    "42 Tage" "6 Wochen" off\
+    "21 Tage" "3 Wochen" off\
+    "42 Tage" "6 Wochen" on\
     "90 Tage" "3 Monate" off\
     2>$SINEWORKINGDIR/sine_temp
     dasidays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
@@ -457,8 +457,8 @@ done
 
 msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
 Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
-SSH Port: $sshport\n\n
-HTTPS Port: $httpsport\n\n
+SSH Port (Administration): $sshport\n\n
+HTTPS Port (invis-Portal): $httpsport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
 # Alle Daten in Kontrolldatei Schreiben
