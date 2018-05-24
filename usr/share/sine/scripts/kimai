@@ -58,8 +58,9 @@ if [[ $cont == "0" ]]; then
     zyppercheck ${PIPESTATUS[0]}
     # Hier Datenbank installation einfügen
     kimaipass=`mkdbsilent kimai kimai a`
+    echo "DB-User kimai:KIMAIDBPW:$kimaipass" >> $SINEWORKINGDIR/invis_pws 
 
-    msgbox "Datenbank für Kimai wurde angelegt.\n\nDatenbank: kimai\nBenutzer: kimai\nPasswort: $kimaipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf Kimai benötigt." "$windowtitle"
+    #msgbox "Datenbank für Kimai wurde angelegt.\n\nDatenbank: kimai\nBenutzer: kimai\nPasswort: $kimaipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf Kimai benötigt." "$windowtitle"
 
     # activate apache configuration
     cp $TEMPLATEDIR/$modulename/kimai.conf /etc/apache2/conf.d

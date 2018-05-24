@@ -58,7 +58,8 @@ if [[ $cont == "0" ]]; then
     zyppercheck ${PIPESTATUS[0]}
     # Hier Datenbank installation einfügen
     ocpass=`mkdbsilent owncloud owncloud a`
-    msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
+    # msgbox "Datenbank für ownCloud wurde angelegt.\n\nDatenbank: owncloud\nBenutzer: owncloud\nPasswort: $ocpass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf ownCloud benötigt." "$windowtitle"
+    echo "DB-User owncloud:OCDBPW:$ocpass" >> $SINEWORKINGDIR/invis_pws 
 
     # Gruppe "owncloud" anlegen
     samba-tool group add --description="Gruppe zur Beschränkung der ownCloud Nutzer" owncloud 2>&1| tee -a $LOGFILE | pgbox

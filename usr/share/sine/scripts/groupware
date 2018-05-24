@@ -106,6 +106,7 @@ case "$whichgroupware" in
 
 	## Leere Kopano-Datenbank anlegen
 	kopanodbuserpw=`mkdbsilent kopano kopano a`
+	echo "DB-User kopano:KOPANODBPW:$kopanodbuserpw" >> $SINEWORKINGDIR/invis_pws 
 
 	## hier gehts weiter....
         # Locales-Vorlage kopieren
@@ -221,6 +222,7 @@ case "$whichgroupware" in
 	
 	# Datenbank anlegen
 	rcmdbpass=`mkdbsilent roundcubemail roundcube a`
+	echo "DB-User roundcube:RCDBPW:$rcmdpass" >> $SINEWORKINGDIR/invis_pws 
 	mysql -u roundcube --password=$rcmdbpass roundcubemail < /usr/share/doc/packages/roundcubemail/SQL/mysql.initial.sql
 
 	# Konfigurationsdateien kopieren und anpassen
