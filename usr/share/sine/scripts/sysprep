@@ -368,6 +368,11 @@ changevalues $path $file "$string"
 windowtitle="Grundkonfiguration"
 pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
 
+# After testinstallation of ntp there was a file /var/run/ntp instead of a directory.
+# This file blocks the ntp daemons start. Workaround:
+if [[ -f /var/run/ntp ]]; then
+    rm -f /var/run/ntp
+fi
 cp $TEMPLATEDIR/$modulename/ntp/servers-netconfig /var/run/ntp
 
 # NTP-Dienst fuer AD anpassen
