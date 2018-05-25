@@ -183,7 +183,8 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    path="/etc/invoiceplane"
 	    string="IP_URL=%IP_URL=https://$fqdn/invoiceplane"
 	    changevalues $path $file "$string"
-
+	    chown .www $path/$file
+	    chmod g+w $path/$file
 	    a2enflag INVOICEPLANE
 	
 	    chkservice apache2 r
