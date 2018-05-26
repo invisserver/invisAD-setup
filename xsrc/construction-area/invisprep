@@ -1,8 +1,8 @@
 #!/bin/bash
 # Script zur Vorbereitung des invis-Server Setups
-# invis-Server 11/12/13
+# invis-Server 11/12/13/14
 
-# (c) 2015,2016.2017 Stefan Schaefer - invis-server.org
+# (c) 2015-2018 Stefan Schaefer - invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
