@@ -30,8 +30,8 @@ if [[ $iversion == s ]]; then
 	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable/openSUSE_Leap_42.3/spins:invis:stable.repo
 	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/stable:/samba46/openSUSE_Leap_42.3/spins:invis:stable:samba46.repo
 else
-	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable/openSUSE_Leap_$suseversion/spins:invis:unstable.repo
-	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable:/samba/openSUSE_Leap_$suseversion/spins:invis:unstable:samba.repo
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/15:/unstable/openSUSE_Leap_$suseversion/spins:invis:15:unstable.repo
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/15:/common/openSUSE_Leap_$suseversion/spins:invis:15:common.repo
 fi
 
 # Repository-Schluessel importieren
