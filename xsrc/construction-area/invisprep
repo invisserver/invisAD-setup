@@ -24,7 +24,7 @@ while [[ ! $iversion =~ [s,u] ]]; do
 	iversion=`echo $iversion | tr [:upper:] [:lower:]`
 done
 # SUSE Release ermitteln - fuer unstable Installation
-suseversion=`cat /etc/SuSE-release | grep VERSION |tr -d " " |cut -d "=" -f2`
+suseversion=`cat /etc/os-release | grep "^VERSION=" |tr -d " " |tr -d '"'|cut -d "=" -f2`
 
 if [[ $iversion == s ]]; then
 	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable/openSUSE_Leap_42.3/spins:invis:stable.repo
