@@ -1,8 +1,8 @@
 #!/bin/bash
 # Script zur Vorbereitung des invis-Server Setups
-# invis-Server 11/12
+# invis-Server 11/12/13
 
-# (c) 2015,2016 Stefan Schaefer - invis-server.org
+# (c) 2015,2016.2017 Stefan Schaefer - invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -27,8 +27,8 @@ done
 suseversion=`cat /etc/SuSE-release | grep VERSION |tr -d " " |cut -d "=" -f2`
 
 if [[ $iversion == s ]]; then
-	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable/openSUSE_Leap_42.2/spins:invis:stable.repo
-	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable:/samba/openSUSE_42.2/spins:invis:stable:samba.repo
+	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/stable/openSUSE_Leap_42.3/spins:invis:stable.repo
+	zypper ar -f https://download.opensuse.org/repositories/spins:/invis:/stable:/samba46/openSUSE_Leap_42.3/spins:invis:stable:samba46.repo
 else
 	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable/openSUSE_Leap_$suseversion/spins:invis:unstable.repo
 	zypper ar -f http://download.opensuse.org/repositories/spins:/invis:/unstable:/samba/openSUSE_Leap_$suseversion/spins:invis:unstable:samba.repo
