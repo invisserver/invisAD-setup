@@ -132,7 +132,7 @@ case $1 in
 	echo "\"sine2 showpws\" gibt die gespeicherten Passwörter aus."
 	echo "\"sine2 reset\" löscht die invis-Konfigurationsdaten und den Installationsstatus."
 	echo -e "\"sine2 modulname\" ruft das angegebene Modul auf. Dies ist nur\nfür optionale Module möglich, nachdem sine einmal vollständig\ndurchgelaufen ist."
-	echo -e "Optionale Module: monitoring, groupware, erp, faxgate, webcdwriter,\nopenvpn, dokuwiki, etherpad.\n"
+	echo -e "Optionale Module: apcupsd, groupware, erp, faxgate, dokuwiki, owncloud,\nkimai, virtualbox.\n"
 	exit 0
 	;;
     "status")
