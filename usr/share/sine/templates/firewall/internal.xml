@@ -46,7 +46,7 @@
   <service name="ldaps"/>
 
   <!-- Sonstige Infrastruktur -->
-	<service name="nfs"/>
+  <service name="nfs"/>
   <service name="syslog"/>
   <service name="mdns"/>
   <!-- MDNS zusätzlich auf TCP -->
