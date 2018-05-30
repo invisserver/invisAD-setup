@@ -49,6 +49,7 @@ pgsubtitle="Firewall Setup for invis-server"
 
 # Kopieren und anpassen der Firewall Konfiguration
 # Vorbereitete Konfigurationen kopieren
+echo "Kopiere Konfiguration..." | pgbox
 cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
 cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
 
@@ -91,7 +92,7 @@ changevalues $path $file "$string"
 
 # SSHd neu starten
 chkservice "sshd"
-    
+
 # Firewall starten und in Runlevel eintragen
 sfw2=`rpm -qa SuSEfirewall2`
 if [[ -n $sfw2 ]]; then
@@ -101,9 +102,11 @@ fi
 chkservice "firewalld"
 
 # Default zone setzen per cmd
+echo "Setze default zone..." | pgbox
 firewall-cmd --set-default-zone=external 2>&1| tee -a $LOGFILE | pgbox
 
 # Logdenied aktivieren per cmd
+echo "Aktiviere logging verworfener Pakete..." | pgbox
 firewall-cmd --set-log-denied=all 2>&1| tee -a $LOGFILE | pgbox
 
 # Neustarten damit Änderungen aktiv sind
