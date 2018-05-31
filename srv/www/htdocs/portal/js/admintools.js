@@ -1215,6 +1215,7 @@ function userAddResponse(request) {
 // show user add box
 function groupAdd(request) {
 	var group_type = 0;
+	var dir_type = 0;
 	lightbox.show(500, true);
 	var users_not = request.responseText.evalJSON()[0];
 	var templates = request.responseText.evalJSON()[1];
