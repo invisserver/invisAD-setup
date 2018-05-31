@@ -92,7 +92,7 @@ $SERVER_SERVICES = array(
 	array('ntpd', 'Zeitserver'),
 	array('postfix','Email-Versand'),
 	array('postgresql', 'PostgreSQL Datenbank'),
-	array('samba', 'Active Directory'),
+	array('samba-ad-dc', 'Active Directory'),
 	array('kopano-dagent', 'Kopano Empfang'),
 	array('kopano-gateway', 'Kopano Postfach'),
 	array('kopano-ical', 'Kopano Kalender'),
