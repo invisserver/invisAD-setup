@@ -91,7 +91,7 @@ case "$whichgroupware" in
     "roundcube"|"egroupware" )
 	# Dovecot einrichten 
 	pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
-	zypper -n install -n dovecot22 2>&1| tee -a $LOGFILE | pgbox
+	zypper -n install -n dovecot23 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	# copy own apparmo profiles
 	cp -r $TEMPLATEDIR/$modulename/dovecot/apparmor/* /etc/apparmor.d/ 2>&1| tee -a $LOGFILE
