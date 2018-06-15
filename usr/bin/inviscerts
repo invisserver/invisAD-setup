@@ -4,8 +4,8 @@
 # fuer Web-, Mail- und LDAP-Dienst bzw. VPN-Clients auf
 # invis-Servern 
 # Dieses Script ersetzt das fruehere Script "serverkeys"
-# Version 0.1
-# (C) 2011-2016 by Stefan Schäfer / invis-server.org
+# Version 0.5
+# (C) 2011-2018 by Stefan Schäfer / invis-server.org
 # License: GPLv3
 # Questions: stefan@invis-server.org
 
@@ -58,6 +58,15 @@ out() {
     exit
 }
 
+cleanfail() {
+    clear
+    if [[ -n $1 ]]; then
+	rm $ersadir/reqs/$1.req
+	rm $ersadir/private/$1.key
+    fi
+    echo -e "\nEs wurde ein falsches CA-Passwort eingegeben, bitte versuchen Sie es erneut."
+}
+
 deploycerts() {
     # Schluessel anpassen und verschieben
     case $stype in
@@ -91,7 +100,14 @@ deploycerts() {
 
 updatecrl() {
     # renew CRL and CRL Cahin file
-    easyrsa gen-crl
+    ok=1
+    while [[ $ok == 1 ]]; do
+	easyrsa gen-crl
+	ok=$?
+	if [[ $ok == 1 ]]; then
+	    cleanfail $cn
+	fi
+    done
     cp $ersadir/crl.pem $openvpndir
     # Aktuelles CRL-Chain-File erzeugen
     cat $ersadir/ca.crt $ersadir/crl.pem > $ersadir/crl-chain.pem
@@ -134,10 +150,24 @@ echo -e "\033[1;33mEs werden Schlüssel und Zertifikat für \"$cn\" erzeugt.\033
 
 if [[ ! -f $ersadir/issued/$cn.crt ]]; then
     if [[ $stype != "vpn" ]]; then
-	easyrsa build-server-full $cn nopass
+	ok=1
+	while [[ $ok == 1 ]]; do
+	    easyrsa build-server-full $cn nopass
+	    ok=$?
+	    if [[ $ok == 1 ]]; then
+		cleanfail $cn
+	    fi
+	done
 	deploycerts
     else
-	easyrsa build-client-full $cn nopass
+	ok=1
+	while [[ $ok == 1 ]]; do
+	    easyrsa build-client-full $cn nopass
+	    ok=$?
+	    if [[ $ok == 1 ]]; then
+		cleanfail $cn
+	    fi
+	done
 	easyrsa export-p12 $cn
 	deploycerts
     fi
@@ -152,7 +182,14 @@ else
 	fi
 	if [[ $revoke == "j" ]]; then
 	    echo -e "Das angeforderte Zertifikat wird widerrufen.\n"
-	    easyrsa revoke $cn
+	    ok=1
+	    while [[ $ok == 1 ]]; do
+		easyrsa revoke $cn
+		ok=$?
+		if [[ $ok == 1 ]]; then
+		    cleanfail
+		fi
+	    done
 	    updatecrl
 	else
 	    out
@@ -160,10 +197,24 @@ else
     else
 	echo -e "Das angeforderte Zertifikat wird erneuert.\n"
 	if [[ $stype == "vpn" ]]; then
-	    easyrsa sign-req client $cn
+	    ok=1
+	    while [[ $ok == 1 ]]; do
+		easyrsa sign-req client $cn
+		ok=$?
+		if [[ $ok == 1 ]]; then
+		    cleanfail
+		fi
+	    done
 	    easyrsa export-p12 $cn
 	else
-	    easyrsa sign-req server $cn
+	    ok=1
+	    while [[ $ok == 1 ]]; do
+		easyrsa sign-req server $cn
+		ok=$?
+		if [[ $ok == 1 ]]; then
+		    cleanfail
+		fi
+	    done
 	fi
 	deploycerts
 	out
