@@ -105,7 +105,7 @@ updatecrl() {
 	easyrsa gen-crl
 	ok=$?
 	if [[ $ok == 1 ]]; then
-	    cleanfail $cn
+	    cleanfail
 	fi
     done
     cp $ersadir/crl.pem $openvpndir
