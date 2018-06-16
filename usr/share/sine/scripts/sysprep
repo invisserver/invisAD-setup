@@ -317,7 +317,14 @@ openssl dhparam -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $LOGFILE | pgb
 cp $path/$domain/dh*.pem /etc/postfix
     
 # CRL Umgebung initialisieren
-easyrsa gen-crl
+ok=1
+while [[ $ok == 1 ]]; do
+    easyrsa gen-crl
+    ok=$?
+    if [[ $ok == 1 ]]; then
+	waitinfobox "Sie haben ein falsches CA-Schlüsselpasswort eingegeben. Bitte versuchen Sie es erneut" "Falsches CA Passwort"
+    fi
+done
 
 # CRL Chain Datei erzeugen
 cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
