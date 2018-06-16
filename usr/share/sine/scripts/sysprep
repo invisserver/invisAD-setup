@@ -302,6 +302,9 @@ easyrsa build-ca
 
 # Stop sine, in case of problems with building the CA
 if [[ $? != 0 ]];then
+    waitinfobox "Beim Bau der lokalen Zertifizierungsstelle (CA) ist ein Fehler aufgetreten. 
+Bitte löschen Sie das nach Ihrer Domain benannte Verzeichnis unter \"/etc/easy-rsa\" und
+starten Sie sine2 erneut." "Fehler beim Erstellen der CA"
     exit 5
 fi
 
