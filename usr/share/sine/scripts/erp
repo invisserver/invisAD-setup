@@ -52,7 +52,7 @@ case $whicherp in
 
     "kivitendo" )
 	# PostgreSQL in RL eintragen, wenn noch nicht geschehen
-	srvon=`chkconfig postgresql|grep " on"`
+	srvon=`systemctl is-enabled postgresql.service|grep "disabled"`
 	if [[ -z $srvon ]]; then 
 	    chkservice "postgresql"
 	fi
@@ -78,7 +78,6 @@ Sein Start wird solange fehlschlagen, bis Sie einen gültigen Kivitendo Benutzer
 
 	    msgbox "Es wird ein Postgresql-Benutzer - kivitendo - für Kivitendo angelegt. 
 Das zugehörige Passwort können Sie nach dem Abschluss der Installation mit sine2 showps abfragen." "$windowtitle"
-	    sudo -u postgres createuser -d -r -S -P kivitendo
 #	    ok=0
 #	    while (( $ok != "1" ));do
 #		dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kivitendo-DB Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
@@ -94,6 +93,9 @@ Das zugehörige Passwort können Sie nach dem Abschluss der Installation mit sin
 #	    lxpw="${lxpassword[0]}"
 	    lxpw=`pwgen -sBn 10 1`
 	    echo "DB-User kivitendo:KIWIDBPASS:$lxpw" >> $SINEWORKINGDIR/invis_pws 
+	    sudo -u postgres -i createuser -d -r -S kivitendo 2>&1 | tee -a $LOGFILE  |pgbox
+	    sqlstring="alter user kivitendo with password '$lxpw';"
+	    sudo -u postgres -i psql -U postgres -d postgres -c "$sqlstring" 2>&1 | tee -a $LOGFILE  |pgbox
 
 	    pgsubtitle="Datenbanken werden angelegt"
 	    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
@@ -141,7 +143,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
 	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
-	    zypper -n install -n `cat $PACKAGELISTDIR/wawision` 2>&1 |pgbox
+	    zypper -n install -n `cat $PACKAGELISTDIR/wawision` 2>&1 | tee -a $LOGFILE  |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Hier Datenbank installation einfügen
 	    wawipass=`mkdbsilent wawision wawision a`
