@@ -401,6 +401,9 @@ chmod 0750 $sockdir
 sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
 
+# stop chrony (default ntp service since leap 15)
+chkservice "chronyd"
+
 # start ntp daemon
 chkservice "ntpd"
 
