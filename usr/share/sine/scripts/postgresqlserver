@@ -76,7 +76,7 @@ chown -R postgres:postgres /var/lib/pgsql/ 2>&1 |tee -a $LOGFILE
 yesnono "Soll PostgreSQL automatisch gestartet werden? (Ist nur notwendig, wenn Kivitendo installiert wird.)" "Runlevel Eintrag für PostgreSQL wird konfiguriert."
 pgsqlrl=${?}
 if [[ $pgsqlrl == "1" ]]; then
-    chkservice "postgresql" disable
+    chkservice "postgresql" d
 else
     chkservice "postgresql"
 fi
