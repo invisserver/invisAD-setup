@@ -100,8 +100,9 @@ chkservice "samba-ad-dc"
 # Gruppen anlegen
 samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $LOGFILE | pgbox
 samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $LOGFILE | pgbox
-samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" Verwaltung 2>&1| tee -a $LOGFILE | pgbox
-samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" verwaltung 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" archiv 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder dürfen Vorlagen für Gruppenverzeichnisse verwalten" diradmins 2>&1| tee -a $LOGFILE | pgbox
 
 # User fuer LDAP-Lese-Zugang anlegen
 ldappw=`getpassword "LDAPAdminPW" "3"`

@@ -56,7 +56,7 @@ fi
 
 #Anpassen der Besitzrechte der Freigaben
 chown -R root:"Domain Users" /srv/shares/aktuell
-chown -R root:"Archiv" /srv/shares/archiv
+chown -R root:"archiv" /srv/shares/archiv
 chmod -R o-rx /srv/shares/archiv
 chown root:"Domain Users" /srv/shares/gruppen
 #chown -R root:"Domain Users" /srv/shares/projekte
@@ -65,18 +65,12 @@ chown -R root:"Domain Users" /srv/shares/media
 chown -R root:"Domain Admins" /srv/shares/service
 chown -R root:"Domain Guests" /srv/shares/transfer
 chmod -R o+w /srv/shares/transfer
-chown -R root:"Verwaltung" /srv/shares/verwaltung
+chown -R root:"verwaltung" /srv/shares/verwaltung
+chown -R root:"diradmins" /srv/shares/media/portal/verzeichnisvorlagen
 chown root:"Domain Users" /srv/shares/portal/uploads
 chown root:"Domain Users" /srv/shares/portal/downloads
 
 groupware=`getconfdata "$conffile" "usedGroupware" "2"`
-
-if [[ $groupware == "zarafa" ]]; then
-    #Anpassen der Besitzrechte des Zarafa Attachementverzeichnisses
-    chown -R zarafa.zarafa /srv/zarafa
-    #Anpassen der Zugriffsrechte der Zarafa-Konfiguration
-    chmod go+r /etc/zarafa/*.cfg
-fi
 
 if [[ $groupware == "kopano" ]]; then
     #Anpassen der Besitzrechte des Kopano Attachementverzeichnisses
