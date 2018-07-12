@@ -496,9 +496,9 @@ echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
 
 echo "AV:$av" >> $SINEWORKINGDIR/invis_confdata
 if [[ $avcron == "0" ]]; then
-    echo "AVCRON:j" >> $SINEWORKINGDIR/invis_confdata
+    echo "AVCRON:all" >> $SINEWORKINGDIR/invis_confdata
 else
-    echo "AVCRON:n" >> $SINEWORKINGDIR/invis_confdata
+    echo "AVCRON:none" >> $SINEWORKINGDIR/invis_confdata
 fi
 echo "DDNS:$ddnshn" >> $SINEWORKINGDIR/invis_confdata
     
