@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: setup
 # modularised invis AD 13 server setup script sine2
-# Version 13.1
+# Version 13.3
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
 # (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
