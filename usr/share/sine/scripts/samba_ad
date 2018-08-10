@@ -86,6 +86,7 @@ provresult=${PIPESTATUS[0]}
 
 if [[ $provresult != 0 ]]; then
     echo "Provisioning meldet Fehler $provresult! Script wird beendet!" 2>&1| tee -a $LOGFILE | pgbox
+    exit 5
 fi
 
 # Neue config kopieren
