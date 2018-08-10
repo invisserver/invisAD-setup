@@ -71,6 +71,9 @@ ad_ip=`getconfdata "IP" "2"`
 ad_adminpass="p@ssw0rd"
 msgbox "Das Passwort des Domänenadministrators lautet: $ad_adminpass\nBitte ändern Sie es später." "AD Administrator Passwort"
 
+# caused by an update of krb5.conf samba provisioning crashes, so we have to remove the kerberos client config.
+old /etc/krb5.conf
+
 # Bisher nur dc unterstuezt
 ad_server_role="dc"
 
