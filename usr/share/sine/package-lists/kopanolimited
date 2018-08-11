@@ -4,7 +4,6 @@ kopano-bash-completion
 z-push-kopano
 z-push-autodiscover
 z-push-kopano-gabsync
-z-push-ipc-memcached
 z-push-ipc-sharedmemory
 z-push-config-apache
 z-push-config-apache-autodiscover
