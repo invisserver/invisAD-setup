@@ -234,7 +234,8 @@ case "$whichgroupware" in
 	changevalues $path $file "$string"
     
 	# Kopano-Schluessel erzeugen
-	mkkopanokey
+	# ...ist jetzt in inviscerts integriert
+	# mkkopanokey
     
 	# Rechte am Zarafa Attachement-Verzeichnis anpassen
 	mkdir /srv/kopano

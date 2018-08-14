@@ -4,7 +4,7 @@
 # fuer Web-, Mail- und LDAP-Dienst bzw. VPN-Clients auf
 # invis-Servern 
 # Dieses Script ersetzt das fruehere Script "serverkeys"
-# Version 0.5
+# Version 0.6
 # (C) 2011-2018 by Stefan Schäfer / invis-server.org
 # License: GPLv3
 # Questions: stefan@invis-server.org
@@ -86,11 +86,20 @@ deploycerts() {
 	    cp $confdir/private/ldap-key.pem /etc/apache2/ssl.key/invis-sslint.key
 	    chown root.root $confdir/private/ldap-key.pem
 	    chmod 0600 $confdir/private/ldap-key.pem
+	    # NTOP
+	    # Internes Zertifikat und internen Schluessel in einer Datei kombinieren
+	    # und NTOP zur Verfuegung stellen.
+	    cp $confdir/private/ldap-key.pem /etc/ntop/ntop-cert.pem
+	    cat $confdir/certs/ldap-cert.pem >> /etc/ntop/ntop-cert.pem
 	    ;;
 	"ms")
 	    # Dadurch steht kein Klartext mehr im Zertifikat
 	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/mail-cert.pem
 	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/mail-key.pem
+	    # Kopano
+	    # Mail-Zertifikat und -Schluesel für Kopano in einer Datei kombinieren
+	    cp $confdir/private/mail-key.pem $confdir/private/kopano.pem
+	    cat $confdir/certs/mail-cert.pem >> $confdir/certs/kopano.pem
 	    ;;
 	"vpn")
 	    mv $ersadir/private/$cn.p12 /srv/shares/service/VPN-Clients/Zertifikate/
