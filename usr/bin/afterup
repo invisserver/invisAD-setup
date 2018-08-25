@@ -66,7 +66,10 @@ chown -R root:"Domain Admins" /srv/shares/service
 chown -R root:"Domain Guests" /srv/shares/transfer
 chmod -R o+w /srv/shares/transfer
 chown -R root:"verwaltung" /srv/shares/verwaltung
+# set access to dir-template dir
 chown -R root:"diradmins" /srv/shares/media/portal/verzeichnisvorlagen
+chmod	g+ws,o=rx /srv/shares/media/portal/verzeichnisvorlagen
+
 chown root:"Domain Users" /srv/shares/portal/uploads
 chown root:"Domain Users" /srv/shares/portal/downloads
 

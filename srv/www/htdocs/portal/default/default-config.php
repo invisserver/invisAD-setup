@@ -68,7 +68,7 @@ $BASE_DN_DHCP = "cn=DHCP Config,cn=DHCP-Server,$LDAP_INVIS_SUFFIX";
 // SAMBA
 $SMB_DOMAIN = strtoupper($DOMAIN_PARTS[1]);
 $SMB_HOSTNAME = strtoupper($DOMAIN_PARTS[0]);
-$SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "Archiv", "Verwaltung");
+$SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "Archiv", "Verwaltung", "diradmins");
 $SMB_FILESERVER = strtoupper("null");
 $SMB_DEFAULT_LOGON_SCRIPT = ("user.cmd");
 

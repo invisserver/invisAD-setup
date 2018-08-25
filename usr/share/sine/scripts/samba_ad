@@ -104,10 +104,6 @@ samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Ve
 samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" archiv 2>&1| tee -a $LOGFILE | pgbox
 samba-tool group add --description="Mitglieder dürfen Vorlagen für Gruppenverzeichnisse verwalten" diradmins 2>&1| tee -a $LOGFILE | pgbox
 
-# set access to dir-template dir
-chown .diradmins /srv/shares/media/portal/verzeichnisvorlagen
-chmod	g+ws,o=rx /srv/shares/media/portal/verzeichnisvorlagen
-
 # User fuer LDAP-Lese-Zugang anlegen
 ldappw=`getpassword "LDAPAdminPW" "3"`
 samba-tool user create ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $LOGFILE | pgbox
