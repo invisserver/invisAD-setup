@@ -42,6 +42,11 @@ if ($CMD == 'basic_info') {
 	    $invisversioncolor = 'red';
 	};
 
+	// if we use leap 15.x we have to calculate a little bit.
+	if ($opsuseversion < 421 && $opsuseversion > 132) {
+	    $opsuseversion = $opsuseversion * 10;
+	}
+
 	if ($opsuseversion == trim($file_versioninfo[2])) {
 	    // current version
 	    $suseversioncolor = 'green';
@@ -50,7 +55,7 @@ if ($CMD == 'basic_info') {
 	    $suseversioncolor = 'orange';
 	} elseif ( $opsuseversion < trim($file_versioninfo[3])) {
             // outdated version
-            $suseversioncolor = 'red';
+            $suseversioncolor = 'purple';
         };
 
 	echo '<b><span style="font-size: 0.9em;">Versionsinformationen:</span></b><br />';
