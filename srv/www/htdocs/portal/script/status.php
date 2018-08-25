@@ -53,10 +53,13 @@ if ($CMD == 'basic_info') {
 	} elseif ( $opsuseversion < trim($file_versioninfo[2]) && $opsuseversion >= trim($file_versioninfo[3])) {
 	    // maintained version
 	    $suseversioncolor = 'orange';
-	} elseif ( $opsuseversion < trim($file_versioninfo[3])) {
+	} elseif ( $opsuseversion > trim($file_versioninfo[3])) {
             // outdated version
             $suseversioncolor = 'purple';
-        };
+	} else {
+	    // outdated version
+	    $suseversioncolor = 'red';
+	};
 
 	echo '<b><span style="font-size: 0.9em;">Versionsinformationen:</span></b><br />';
 	echo '<span style="font-size: 0.8em;">invis-Server Version: <b style="color:' . $invisversioncolor . ';">' . $INVISVERSION . '</b></span><br />';
