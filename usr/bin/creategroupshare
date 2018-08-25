@@ -29,35 +29,33 @@ getconfdata() {
     cat $1 |grep "$2" | cut -d ":" -f $3
 }
 
-gruppe=$1
+gruppe="$1"
 share=$2
+dirnam="$3"
+
 # Template-Pfad erfragen
 templatedir=`getconfdata $conffile groupDirTemplatePath 2`
-groupdir=/srv/shares/gruppen/$gruppe
-
-# get templates
-templates=(`ls $templatedir`)
+groupdir="/srv/shares/gruppen/$gruppe"
 
 # function to set default acls
 setrights() {
-	chmod g+rwxs,o-rwx $1
-	chgrp -R $2 $1
-	setfacl -R -d -m group:$2:rwx $1
+	chmod -R g+rwxs,o-rwx "$1"
+	chgrp -R "$2" "$1"
+	setfacl -R -d -m group:"$2":rwx "$1"
 }
 
 case $share in
     0)
 	# leeres Verzeichnis
-	mkdir $groupdir
-	setrights $groupdir $gruppe
+	mkdir "$groupdir"
+	setrights "$groupdir" "$gruppe"
 	;;
     1)
 	# kein Verzeichnis
 	echo "nothing to do"
 	;;
     *)
-	((index=$share - 2))
-	cp -r $templatedir/${templates[$index]} $groupdir
-        setrights $groupdir $gruppe
+	cp -r "$templatedir/$dirnam" "$groupdir"
+        setrights "$groupdir" "$gruppe"
 	;;
 esac

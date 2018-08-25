@@ -806,6 +806,7 @@ function templateList() {
 	}
 	// Verzeichnis wieder schließen
 	$dirHandle->close();
+	sort($json);
 	return $json;
 }
 
@@ -945,8 +946,6 @@ function groupCreate() {
 	else
 		$dirtype = 0;
 
-	error_log("Dirtype: ".$dirtype);
-
 	$cn = $cookie_data['cn'];
 	$ok = $adldap->group()->create($attributes);
 	
@@ -987,12 +986,24 @@ function groupCreate() {
 	
 	$resultmod = $adldap->group()->modify($cn,$attributes);
 
+	if ($dirtype >= 2) {
+	    $templates = templateList();
+	    $index = $dirtype - 2;
+	    if (count($templates) < ($index + 1))
+		$template = "";
+	    else
+		$template = $templates[$index];
+	} else {
+	    $template = "";
+	}
+	
 	// Gruppenverzeichnis anlegen
 	// Uebergabewerte: 
 	// 1: $cn (Gruppenname)
-	// 2: $share (0,1,...) Soll ein Gruppenverzeichnis angelegt werden? (optional)
+	// 2: $dirtype (0,1,...) Soll ein Gruppenverzeichnis angelegt werden? (optional)
+	// 3: $template, Vorlagenverzeichnisname
 	if ($ok) {
-		shell_exec("sudo /usr/bin/creategroupshare $cn $share;");
+		shell_exec("sudo /usr/bin/creategroupshare ".escapeshellarg($cn)." ".escapeshellarg($dirtype)." ".escapeshellarg($template).";");
 	}
 	
 	$members = $cookie_data['memberuid'];
@@ -1587,6 +1598,7 @@ if (empty($collection->mssfu30nisdomain)) {
 foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
     $collection = $adldap->group()->infoCollection($extgroup,array('*'));
     $grouprid = ridfromsid(bin_to_str_sid($collection->objectsid));
+    //error_log($extgroup . ":" . $collection->mssfu30nisdomain);
     if (empty($collection->mssfu30nisdomain)) {
 	$attributes = array(
 	    "mssfu30nisdomain" => $NISDOMAIN,
