@@ -248,6 +248,10 @@ echo "System wird so konfiguriert, dass weder die Datei resolv.conf noch der NTP
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $LOGFILE | pgbox 
 
+# activate gssapi for nfs
+sysconf_addword -r /etc/sysconfig/nfs NFS_SECURITY_GSS no 2>&1| tee -a $LOGFILE | pgbox 
+sysconf_addword /etc/sysconfig/nfs NFS_SECURITY_GSS yes 2>&1| tee -a $LOGFILE | pgbox 
+
 # /etc/hosts anpassen
 file="hosts"
 path="/etc"

@@ -67,6 +67,14 @@ ad_domain=`getconfdata "Workgroup" "2"`
 # Interne IP fuer DNS
 ad_ip=`getconfdata "IP" "2"`
 
+# fqdn
+fqdn=`getconfdata "FQDN" "2"`
+
+# hostname
+hn=`getconfdata "Hostname" "2"`
+
+accountname=`echo $hn | tr [:lower:] [:upper:]`
+
 # Passwort vorher abfragen!
 ad_adminpass="p@ssw0rd"
 msgbox "Das Passwort des Domänenadministrators lautet: $ad_adminpass\nBitte ändern Sie es später." "AD Administrator Passwort"
@@ -96,6 +104,9 @@ cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
 
 # activate samba services
 chkservice "samba-ad-dc"
+
+# declare NFS servicprincipalename 
+samba-tool spn add nfs/$fqdn "$accountname\$"
 
 # Gruppen anlegen
 samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $LOGFILE | pgbox
@@ -284,6 +295,8 @@ changevalues $path $file "$string"
 hn=`hostname`
 # keytab erzeugen
 samba-tool domain exportkeytab /etc/krb5.keytab --principal="$hn\$" 2>&1| tee -a $LOGFILE | pgbox
+samba-tool domain exportkeytab /etc/krb5.keytab --principal="nfs/$fqdn" 2>&1| tee -a $LOGFILE | pgbox
+
 chmod 0600 /etc/krb5.keytab
 cp $TEMPLATEDIR/$modulename/sssd/sssd.conf /etc/sssd/
 cp $TEMPLATEDIR/$modulename/sssd/nsswitch.conf /etc/
