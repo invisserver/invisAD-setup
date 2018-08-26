@@ -46,8 +46,10 @@ nisdomain=`echo $domain | cut -d "." -f1`
 
 # RID der Maschine ermitteln
 rid=`pdbedit -Lv $membername$  2>/dev/null| grep "User SID" | cut -d "-" -f8`
-
 #echo $rid
+
+# Accountname
+accountname=`echo $membername | tr [:lower:] [:upper:]`
 
 if [[ -z $rid ]]; then
     exit 2
@@ -74,4 +76,7 @@ else
 
     #ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
     ldbmodify -H /var/lib/samba/private/sam.ldb $workfile
+
+    # ServicePrincipalName for NFS with GSSAPI
+    samba-tool spn add "nfs/$membername.$domain" "$accountname\$"
 fi
