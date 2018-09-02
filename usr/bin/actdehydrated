@@ -91,6 +91,8 @@ if [[ $prepok == "0" ]]; then
 	a2enflag LETSENCRYPT
         # Apache restart
 	systemctl restart apache2.service
+	# Timer Job aktivieren
+	systemctl enable dehydrated.timer
     else
 	echo "Programm wurde abgebrochen, da keine Zertifikate erzeugt wurden."
 	exit
