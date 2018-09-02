@@ -406,3 +406,7 @@ changevalues $INVISCONFDIR $file "$string"
 # cron & at-Daemon in Runlevel integrieren und starten
 chkservice "cron"
 chkservice "atd"
+
+# install dehydrated hook script
+cp $TEMPLATEDIR/$modulename/dehydrated/postrun-hooks.d/reloadservices /etc/dehydrated/postrun-hooks.d/
+chmod +x /etc/dehydrated/postrun-hooks.d/reloadservices
