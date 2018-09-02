@@ -1,0 +1,6 @@
+#!/bin/bash
+# Dehydrated Hook Script
+# add for each service which has to be reloaded after new certs are deployed a systemctl command
+
+# Webserver
+systemctl reload apache2.service
