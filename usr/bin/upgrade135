@@ -79,4 +79,7 @@ modfile="config.php"
 string="'13.2'%'13.5'"
 changevalues $path $modfile "$string"
 
+# Alten CorNAz Link entfernen
+swpestat CorNAz FALSE
+
 echo "Fertich"
