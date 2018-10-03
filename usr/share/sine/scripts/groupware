@@ -203,6 +203,9 @@ case "$whichgroupware" in
 	# Konfigurationsvorlagen kopieren
 	cp $TEMPLATEDIR/$modulename/kopano/apache2/kopano-webapp.conf /etc/apache2/conf.d
 
+	# Konfigurationsvorlagen kopieren
+	cp $TEMPLATEDIR/$modulename/kopano/z-push/*.conf /etc/z-push/
+
 	a2enflag KOPANO
 	chkservice apache2
     
