@@ -185,10 +185,8 @@ else
     ok=`openssl verify -crl_check -CAfile $ersadir/crl-chain.pem $ersadir/issued/$cn.crt|tr -d " "|cut -d ":" -f2`
     if [[ $ok == "OK" ]]; then
 	echo -e "Das angeforderte Zertifikat existiert bereits und ist noch gültig.\n"
-	# Widerruf nur bei VPN Client Zertifikaten ermoeglichen"
-	if [[ $stype == "vpn" ]]; then
-	    read -p "Möchten Sie es widerrufen? [j/N] " revoke
-	fi
+	# Widerruf wenn noch gueltig?"
+	read -p "Möchten Sie es widerrufen? [j/N] " revoke
 	if [[ $revoke == "j" ]]; then
 	    echo -e "Das angeforderte Zertifikat wird widerrufen.\n"
 	    ok=1
@@ -203,7 +201,10 @@ else
 	else
 	    out
 	fi
-    else
+    fi
+    # Gleich wieder erneuern?
+    read -p "Soll das soeben wiederrufene Zertifikat erneuert werden? [j/N] " renew
+    if [[ $renew == "j" ]]; then
 	echo -e "Das angeforderte Zertifikat wird erneuert.\n"
 	if [[ $stype == "vpn" ]]; then
 	    ok=1
@@ -226,6 +227,8 @@ else
 	    done
 	fi
 	deploycerts
+	out
+    else
 	out
     fi
 fi
