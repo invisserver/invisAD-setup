@@ -44,7 +44,7 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="firwalld"
+windowtitle="firewalld"
 pgsubtitle="Firewall Setup for invis-server"
 
 # Kopieren und anpassen der Firewall Konfiguration
