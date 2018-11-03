@@ -1,11 +1,10 @@
 <?php
-
 /*
- * script/adajax.php v0.6
+ * script/adajax.php
  * AJAX script, user/group/host administration functions
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2009, 2010, 2011, 2012, 2014, 2015 Stefan Schaefer, invis-server.org
- * (C) 2013 Ingo Göppert, invis-server.org
+ * (C) 2009-2018 Stefan Schaefer, invis-server.org
+ * (C) 2013-2018 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: stefan@invis-server.org
  */
@@ -793,11 +792,21 @@ function userDelete($uid) {
 // Generate a list of template directories
 // Stefan, mach mal...
 function templateList() {
+	global $GROUP_DIR_TEMPLATE_PATH;
 	$json = array();
 
-	array_push($json, "Template 1");
-	array_push($json, "Template 2");
-
+	// Gibt eine Instanz der Directory Klasse an $dirHandle zurück
+	$dirHandle = dir("$GROUP_DIR_TEMPLATE_PATH");
+	// Verzeichnis Datei für Datei lesen
+	while (($f = $dirHandle->read()) != false) {
+	    // Nur ausgeben, wenn nicht . oder ..
+	    if ($f != "." && $f != ".."){
+		array_push($json, "$f");
+	    }
+	}
+	// Verzeichnis wieder schließen
+	$dirHandle->close();
+	sort($json);
 	return $json;
 }
 
@@ -930,6 +939,13 @@ function groupCreate() {
 	else
 		$grouptype = 0;
 
+	// dir type, fetch from POST var
+	// (default 0)
+	if (isset($_POST['d']))
+		$dirtype = intval($_POST['d']); 
+	else
+		$dirtype = 0;
+
 	$cn = $cookie_data['cn'];
 	$ok = $adldap->group()->create($attributes);
 	
@@ -945,13 +961,13 @@ function groupCreate() {
 	switch ($grouptype) {
 
 	case 0:
-		// Typ Windows+Unix
+		// Typ Windows+Unix / Team
 		$attributes = array(
 		    "gidNumber"=>$gidnumber
 		);
 		break;
 	case 1:
-		// Typ Windows+Unix+Groupware
+		// Typ Windows+Unix+Groupware / Team+Gruppenmail
 		$attributes = array(
 		    "gidNumber"=>$gidnumber,
 		    "zarafaAccount"=>1
@@ -970,13 +986,24 @@ function groupCreate() {
 	
 	$resultmod = $adldap->group()->modify($cn,$attributes);
 
+	if ($dirtype >= 2) {
+	    $templates = templateList();
+	    $index = $dirtype - 2;
+	    if (count($templates) < ($index + 1))
+		$template = "";
+	    else
+		$template = $templates[$index];
+	} else {
+	    $template = "";
+	}
+	
 	// Gruppenverzeichnis anlegen
 	// Uebergabewerte: 
 	// 1: $cn (Gruppenname)
-	// 2: $share (1/0) Soll ein Gruppenverzeichnis angelegt werden? (optional)
-	// 3: $template (Zu verwendendes Vorlageverzeichnis) (optional)
+	// 2: $dirtype (0,1,...) Soll ein Gruppenverzeichnis angelegt werden? (optional)
+	// 3: $template, Vorlagenverzeichnisname
 	if ($ok) {
-		shell_exec("sudo /usr/bin/creategroupshare $cn;");
+		shell_exec("sudo /usr/bin/creategroupshare ".escapeshellarg($cn)." ".escapeshellarg($dirtype)." ".escapeshellarg($template).";");
 	}
 	
 	$members = $cookie_data['memberuid'];
@@ -1571,6 +1598,7 @@ if (empty($collection->mssfu30nisdomain)) {
 foreach ( $SMB_GROUPSTOEXTEND as $extgroup ) {
     $collection = $adldap->group()->infoCollection($extgroup,array('*'));
     $grouprid = ridfromsid(bin_to_str_sid($collection->objectsid));
+    //error_log($extgroup . ":" . $collection->mssfu30nisdomain);
     if (empty($collection->mssfu30nisdomain)) {
 	$attributes = array(
 	    "mssfu30nisdomain" => $NISDOMAIN,

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Internal</short>
+  <description>For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.</description>
+  <interface name="intern"/>
+  <interface name="vpn"/>
+  <interface name="wlan0"/>
+  <!-- Intern: ssh über Standard-Port 22 -->
+  <service name="ssh"/>
+  <!-- Zusätzlich: ssh über Zufallsport xxxxx -->
+  <service name="invis-ssh"/>
+  <forward-port port="22" protocol="tcp" to-port="sshport"/>
+
+  <!-- Webserver -->
+  <!-- http (80): Für Letsencrypt oder Portal intern (deprecated)-->
+  <service name="http"/>
+  <!-- https (443): Für den Rest --> 
+  <service name="https"/>
+  <!-- https (anderer Port): Für das invis-Server-Portal -->
+  <service name="invis-portal"/>
+  <!-- https (443/anderer Port): Für ownCloud --> 
+  <service name="owncloud"/>
+
+  <!-- Mail, Groupware -->
+  <!-- smtp (25): Für STARTTLS -->
+  <service name="smtp"/>
+  <service name="smtp-submission"/>
+  <!-- imap (25): Für STARTTLS -->
+  <service name="imap"/>
+  <service name="imaps"/>
+  <!-- Kopano spezifische Ports 237, 8443 -->
+  <service name="kopano"/>
+
+  <!-- CUPS -->
+  <service name="ipp"/>
+
+  <!-- Alles was mit dem AD und Infrastruktur zu tun hat -->
+  <service name="dhcp"/>
+  <service name="dns"/>
+  <service name="ntp"/>
+  <service name="kerberos"/>
+  <service name="kpasswd"/>
+  <service name="samba-ad-dc"/>
+  <!-- ldap (389): Für STARTTLS -->
+  <service name="ldap"/>
+  <service name="ldaps"/>
+
+  <!-- Sonstige Infrastruktur -->
+  <service name="nfs"/>
+  <service name="syslog"/>
+  <service name="mdns"/>
+  <!-- MDNS zusätzlich auf TCP -->
+  <port port="5353" protocol="tcp"/>
+  <service name="ntop"/>
+</zone>

@@ -41,6 +41,7 @@ $USER_UMASK = 'umask=002';
 $USER_PW_MIN_LENGTH = '7'; // 0 = Check disabled
 $USER_PW_COMPLEX = 'on';
 $SFU_GUID_BASE = '20000';
+$GROUP_DIR_TEMPLATE_PATH = '/srv/shares/media/portal/verzeichnisvorlagen';
 
 // LDAP
 $LDAP_TLS = "yes"; // ab 11.0 per default ON wegen neuer Policy bei Samba
@@ -71,7 +72,7 @@ $BASE_DN_DHCP = "cn=DHCP Config,cn=DHCP-Server,$LDAP_INVIS_SUFFIX";
 // SAMBA
 $SMB_DOMAIN = strtoupper($DOMAIN_PARTS[1]);
 $SMB_HOSTNAME = strtoupper($DOMAIN_PARTS[0]);
-$SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "Archiv", "Verwaltung");
+$SMB_GROUPSTOEXTEND = array("Domain Users", "Domain Admins", "Domain Guests", "Archiv", "Verwaltung", "diradmins");
 $SMB_FILESERVER = strtoupper("null");
 $SMB_DEFAULT_LOGON_SCRIPT = ("user.cmd");
 
@@ -95,7 +96,7 @@ $SERVER_SERVICES = array(
 	array('ntpd', 'Zeitserver'),
 	array('postfix','Email-Versand'),
 	array('postgresql', 'PostgreSQL Datenbank'),
-	array('samba', 'Active Directory'),
+	array('samba-ad-dc', 'Active Directory'),
 	array('kopano-dagent', 'Kopano Empfang'),
 	array('kopano-gateway', 'Kopano Postfach'),
 	array('kopano-ical', 'Kopano Kalender'),

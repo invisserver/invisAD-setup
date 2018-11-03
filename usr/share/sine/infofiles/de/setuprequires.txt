@@ -1,17 +1,16 @@
-Für die Installation eines invis Servers 13.5 AD müssen folgende Voraussetzungen erfüllt sein:
+Für die Installation eines invis Servers 14.0 AD müssen folgende Voraussetzungen erfüllt sein:
 
-    - Als Basis muss openSUSE Leap 42.3, möglichst ohne grafische Oberfläche installiert sein.
+    - Als Basis muss openSUSE Leap 15.0, möglichst ohne grafische Oberfläche installiert sein.
     
     - Der Server muss über zwei Netzwerkkarten (extern & intern) verfügen, die Netzwerk-
       schnittstellen müssen mit Hilfe von Udev-Regeln "extern" und "intern" benannt werden.
-      Zur Erzeugung von Udev-Regeln zur korrekten Bennenung der Netzwerkschnittstellen ist das
+      Zur Erzeugung der Udev-Regeln zur korrekten Bennenung der Netzwerkschnittstellen ist das
       Script "netsetup" anzuwenden. Nach Anwendung des Scripts muss der Server neu gestartet
       werden. Die anschließende Einrichtung der Netzwerkkarten muss per YaST vorgenommen werden.
-      Schnittstelle 1 muss als externe Schnittstelle zur Verbindung mit DSL-Modem oder Router
-      eingerichtet sein. Bei Verbindung mit einem Router empfielt es sich auf diesem einen 
-      DHCP-Server zu starten und "extern" als DHCP-Client einzurichten. Wird ein DSL-Modem 
-      verwendet, muss "extern" als DSL-Schnittstelle eingerichtet und die Internetverbindung
-      funktionstüchtig sein.
+      Schnittstelle 1 muss als externe Schnittstelle zur Verbindung einem vorgeschalteten Router
+      eingerichtet sein. Bei Verbindung mit dem Router empfielt es sich auf diesem einen 
+      DHCP-Server zu starten und "extern" als DHCP-Client einzurichten. Wenn möglich ist auf
+      dem Router eine feste IP-Adress-Reservierung für den invis-Server einzurichten.
       Schnittstelle 2 (intern) muss mit einer festen IP-Adresse versehen werden.
       Die Einrichtung der Netzwerkkarten muss vor der Ausführung des invis-Setup-Scripts "sine"
       erfolgt sein.
@@ -22,7 +21,7 @@ Für die Installation eines invis Servers 13.5 AD müssen folgende Voraussetzung
       
     - Sie benötigen bis zu drei (mindestens eine) IP Adressen von Nameservern, die Sie für den
       DNS-Dienst Ihres invis-Servers als Forward-Nameserver nutzen können. Dies können der DNS
-      eines vorgeschalteten Routers, die für Sie zuständigen DNS-Server Ihres Internet-Zugangs-
+      des vorgeschalteten Routers, die für Sie zuständigen DNS-Server Ihres Internet-Zugangs-
       Providers oder freie DNS-Server im Internet sein. Prüfen Sie bitte im Vorfeld der Instal-
       lation, ob die von Ihnen verwendeten DNS-Server auf Anfragen antworten. Antworten diese
       Server nicht auf Anfragen, beeinträchtig dies sowohl die Installation Ihres invis-Servers

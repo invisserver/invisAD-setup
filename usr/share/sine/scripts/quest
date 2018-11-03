@@ -54,8 +54,9 @@ textbox "$INFODIR/setupquestions.txt" "Wir hätten da ein paar Fragen an Sie." "
 # Vorgaben ermitteln
 vhn=`hostname -s`
 vdomname=`hostname -d`
-vipaddr=`ifconfig intern|grep "Bcast:"| cut -d ":" -f 2| cut -d " " -f 1`
-vlongnmask=`ifconfig intern|grep "Mask"| cut -d ":" -f 4`
+vipaddr=`ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f1 | cut -d " " -f3`
+cidrmask=`ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f2 |cut -d " " -f1`
+vlongnmask=`cdr2mask $cidrmask`
 country="DE"
 
 #---# openSSL
@@ -149,7 +150,7 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
     domain="${netvalues[1]}"
     ipaddr="${netvalues[2]}"
     longnmask="${netvalues[3]}"
-    shortnmask=`netcalc $longnmask`
+    shortnmask=`mask2cdr $longnmask`
     netaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Network:"|tr -s " "| cut -d " " -f2|cut -d "/" -f1`
     bcastaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Broadcast:"|tr -s " "| cut -d " " -f2`
     dp1=`echo "$domain" | cut -d "." -f 1`
@@ -231,39 +232,39 @@ forwarders=`echo ${fdns[@]} | sed s/" "/"; "/g`";"
 #---#System Passwörter
 ok=0
 
-# MySQL root-Passwort 
-ok=0
-while (( $ok != "1" ));do
-    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
-    "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
-    "Kontrolle:" 2 36 "" 2 47 10 0\
-    2>$SINEWORKINGDIR/sine_temp
-    mysqlsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
+## MySQL root-Passwort 
+#ok=0
+#while (( $ok != "1" ));do
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+#Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
+#Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
+#    "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
+#    "Kontrolle:" 2 36 "" 2 47 10 0\
+#    2>$SINEWORKINGDIR/sine_temp
+#    mysqlsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
+#
+#    if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
+#	ok=1
+#    fi
+#done
+#mysqlpw="${mysqlsecrets[0]}"
 
-    if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
-	ok=1
-    fi
-done
-mysqlpw="${mysqlsecrets[0]}"
-
-# Ntop Admin-Passwort 
-ok=0
-while (( $ok != "1" ));do
-    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
-Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
-    "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
-    "Kontrolle:" 2 36 "" 2 47 10 0\
-    2>$SINEWORKINGDIR/sine_temp
-    ntopsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
-
-    if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
-	ok=1
-    fi
-done
-ntoppw="${ntopsecrets[0]}"
+## Ntop Admin-Passwort 
+#ok=0
+#while (( $ok != "1" ));do
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+#Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
+#Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
+#    "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
+#    "Kontrolle:" 2 36 "" 2 47 10 0\
+#    2>$SINEWORKINGDIR/sine_temp
+#    ntopsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
+#
+#    if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
+#	ok=1
+#    fi
+#done
+#ntoppw="${ntopsecrets[0]}"
 
 #---# MAIL & Groupware Server
 ## Dovecot oder Kopano?
@@ -271,8 +272,7 @@ dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MAIL & Groupware
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
     kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
     roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
-    tine20 "tine2.0 in Kombination mit Dovecot IMAP (Experimentell)" off\
-    sogo "SOGo in Kombination mit Dovecot (noch nicht mit invisAD)" off\
+    egroupware "eGroupware in Kombination mit Dovecot IMAP (not yet implemented)" off\
     2>$SINEWORKINGDIR/sine_temp
     whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
 
@@ -289,9 +289,10 @@ fi
 #---# ERP-Software
 # Es kann zwischen Kivitendo, Wawisoon oder keiner ERP-Software entschieden werden
 dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Enterprise Ressource Planning Software" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 14 100 6 \
+Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 16 100 8 \
     Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
     waWision "Moderne ERP Lösung für Handel und Dienstleistung inkl. Webshop-Schnittstelle." on\
+    InvoicePlane "Schlanke Fakturierungssoftware, für Dientsleister und Freelancer." off\
     Keine "Sie verwenden ein eigenes System" off\
     2>$SINEWORKINGDIR/sine_temp
     whicherp=`cat $SINEWORKINGDIR/sine_temp`
@@ -419,8 +420,8 @@ cleantr=${?}
     
 if [[ $cleantr == "0" ]]; then
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Transferverzeichnis aufräumen" --radiolist "Wie alt dürfen Dateien und Verzeichnisse in der Transferfreigabe maximal werden?" 12 50 4\
-    "21 Tage" "3 Wochen" on\
-    "42 Tage" "6 Wochen" off\
+    "21 Tage" "3 Wochen" off\
+    "42 Tage" "6 Wochen" on\
     "90 Tage" "3 Monate" off\
     2>$SINEWORKINGDIR/sine_temp
     trdays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
@@ -435,15 +436,15 @@ cleandasi=${?}
     
 if [[ $cleandasi == "0" ]]; then
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Datensicherungen aufräumen" --radiolist "Wie alt sollen interne Datensicherungen maximal werden?" 12 50 4\
-    "21 Tage" "3 Wochen" on\
-    "42 Tage" "6 Wochen" off\
+    "21 Tage" "3 Wochen" off\
+    "42 Tage" "6 Wochen" on\
     "90 Tage" "3 Monate" off\
     2>$SINEWORKINGDIR/sine_temp
     dasidays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
 fi
 
 #   regelmässige Virenscans
-yesno "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
+yesnono "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
 avcron=${?}
 
 #   Ports fuer SSH, HTTPS-Portal ermitteln.
@@ -456,13 +457,9 @@ done
 
 msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
 Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
-SSH Port: $sshport\n\n
-HTTPS Port: $httpsport\n\n
+SSH Port (Administration): $sshport\n\n
+HTTPS Port (invis-Portal): $httpsport\n\n
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
-
-# Passwort fuer LDAP-Admin und junk erzeugen
-ldappw=`pwgen -sBnc 8 1`
-junkpw=`pwgen -sBnc 8 1`
 
 # Alle Daten in Kontrolldatei Schreiben
 echo "Country:$country" > $SINEWORKINGDIR/invis_confdata
@@ -488,10 +485,6 @@ echo "Broadcast:$bcastaddr" >> $SINEWORKINGDIR/invis_confdata
 echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
 echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
-echo "LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_confdata
-echo "JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_confdata
-echo "MySQLpw:$mysqlpw" >> $SINEWORKINGDIR/invis_confdata
-echo "NtopPw:$ntoppw" >> $SINEWORKINGDIR/invis_confdata
 echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
 if [[ $whichgroupware == "kopano" ]]; then
     echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
@@ -503,9 +496,9 @@ echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
 
 echo "AV:$av" >> $SINEWORKINGDIR/invis_confdata
 if [[ $avcron == "0" ]]; then
-    echo "AVCRON:j" >> $SINEWORKINGDIR/invis_confdata
+    echo "AVCRON:all" >> $SINEWORKINGDIR/invis_confdata
 else
-    echo "AVCRON:n" >> $SINEWORKINGDIR/invis_confdata
+    echo "AVCRON:none" >> $SINEWORKINGDIR/invis_confdata
 fi
 echo "DDNS:$ddnshn" >> $SINEWORKINGDIR/invis_confdata
     
@@ -514,7 +507,7 @@ if [[ $mailrelay == "none" ]]; then
 else
     echo "SMTPRELAY:$mailrelay" >> $SINEWORKINGDIR/invis_confdata 
     echo "SMTPRUN:$smtpun" >> $SINEWORKINGDIR/invis_confdata 
-    echo "SMTPRPW:$smtppw" >> $SINEWORKINGDIR/invis_confdata 
+    echo "Relayhost Benutzer:SMTPRPW:$smtppw" >> $SINEWORKINGDIR/invis_pws 
 fi
 if [[ $cleantr == "0" ]]; then
     echo "cleanTR:j" >> $SINEWORKINGDIR/invis_confdata
@@ -529,6 +522,20 @@ if [[ $cleandasi == "0" ]]; then
 else
     echo "cleanDasi:n" >> $SINEWORKINGDIR/invis_confdata
 fi
+
+# Create passwords and write them in invis_pws
+# Passwort fuer LDAP-Admin und junk erzeugen
+ldappw=`pwgen -sBnc 10 1`
+junkpw=`pwgen -sBnc 10 1`
+mysqlpw=`pwgen -sBnc 10 1`
+ntoppw=`pwgen -sBnc 10 1`
+
+echo "LDAP Administrator:LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_pws
+echo "Spam owner:JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_pws
+echo "MySQL root:MySQLPW:$mysqlpw" >> $SINEWORKINGDIR/invis_pws
+echo "NTOP Administrator:NtopPW:$ntoppw" >> $SINEWORKINGDIR/invis_pws
+
+chmod 0600 $SINEWORKINGDIR/invis_pws
 
 # Trennzeichenvariable zurück auf alten Wert setzen
 IFS=$oldifs

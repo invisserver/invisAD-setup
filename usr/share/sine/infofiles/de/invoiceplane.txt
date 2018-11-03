@@ -1,0 +1,13 @@
+Die Grundidee hinter der InvoicePlane-Software ist die Erstellung einer Anwendung, 
+die Sie auf Ihrem eigenen Server betreiben und für die grundlegende Rechnungsstellung
+sowie Kundenverwaltung verwenden können.
+Die Zielgruppen sind Freiberufler, Selbstständige und kleine bis mittlere Unternehmen, 
+die ein zuverlässiges und einfach zu bedienendes Rechnungsstellungssystem benötigen, 
+sich aber keine teure Software leisten können.
+
+Merkmale:
+- Freie Fakturierungssoftware
+- Einfache einfache und saubere Bedienoberfläche
+- Umfangreiche Funktionen, ohne die Software zu überladen
+- Enfach zu konfigurieren
+- Geringe Anforderungen an den Server

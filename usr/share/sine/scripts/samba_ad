@@ -1,7 +1,7 @@
 #!/bin/bash
 ### MODUL-NR. 004 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2018 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -67,6 +67,14 @@ ad_domain=`getconfdata "Workgroup" "2"`
 # Interne IP fuer DNS
 ad_ip=`getconfdata "IP" "2"`
 
+# fqdn
+fqdn=`getconfdata "FQDN" "2"`
+
+# hostname
+hn=`getconfdata "Hostname" "2"`
+
+accountname=`echo $hn | tr [:lower:] [:upper:]`
+
 # Passwort vorher abfragen!
 ad_adminpass="p@ssw0rd"
 msgbox "Das Passwort des Domänenadministrators lautet: $ad_adminpass\nBitte ändern Sie es später." "AD Administrator Passwort"
@@ -84,6 +92,8 @@ ad_server_role="dc"
 # Fuer UNIX UID/GID RFC2307 aktiv
 # --use-rfc2307
 
+# SUSEs smb.conf umbenennen
+mv /etc/samba/smb.conf /etc/samba/smb.conf.suse
 samba-tool domain provision --realm="$ad_realm" --domain="$ad_domain" --host-ip="$ad_ip" --adminpass="$ad_adminpass" --server-role="$ad_server_role" --use-rfc2307 --dns-backend="BIND9_DLZ" 2>&1 | tee -a $LOGFILE | pgbox
 provresult=${PIPESTATUS[0]}
 
@@ -96,32 +106,36 @@ fi
 cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
 
 # activate samba services
-chkservice "samba"
+chkservice "samba-ad-dc"
+
+# declare NFS servicprincipalename 
+samba-tool spn add nfs/$fqdn "$accountname\$"
 
 # Gruppen anlegen
 samba-tool group add --description="Mitglieder dürfen sich via Internet am Portal anmelden" mobilusers 2>&1| tee -a $LOGFILE | pgbox
 samba-tool group add --description="Nur Mailkonto" maildummies 2>&1| tee -a $LOGFILE | pgbox
-samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" Verwaltung 2>&1| tee -a $LOGFILE | pgbox
-samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" Archiv 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Verwaltung" verwaltung 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder haben Zugriff auf die Freigabe Archiv" archiv 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group add --description="Mitglieder dürfen Vorlagen für Gruppenverzeichnisse verwalten" diradmins 2>&1| tee -a $LOGFILE | pgbox
 
 # User fuer LDAP-Lese-Zugang anlegen
-ldappw=`getconfdata "LDAPAdminPW" "2"`
+ldappw=`getpassword "LDAPAdminPW" "3"`
 samba-tool user create ldap.admin "$ldappw" --surname="LDAP" --given-name="Admin" --description="Administrator fuer LDAP-Operationen" 2>&1| tee -a $LOGFILE | pgbox
 ## Passwort darf nicht ablaufen
 samba-tool user setexpiry --noexpiry ldap.admin
 samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $LOGFILE | pgbox
 
 # User fuer Junk-Postfach anlegen
-junkpw=`getconfdata "JunkPW" "2"`
+junkpw=`getpassword "JunkPW" "3"`
 samba-tool user create junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $LOGFILE | pgbox
 samba-tool user setexpiry --noexpiry junk
 samba-tool group addmembers "maildummies" junk 2>&1| tee -a $LOGFILE | pgbox
 samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $LOGFILE | pgbox
 
-msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
+#msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
 
 # stop samba temporarily
-systemctl stop samba.service 2>&1| tee -a $LOGFILE | pgbox
+systemctl stop samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
 
 # Samba Konfiguration anpassen
 smbworkingfile="$SINEWORKINGDIR/smb.conf"
@@ -266,7 +280,7 @@ pgsubtitle="LDAP Verzeichnis wird geprueft und etwaige Fehler behoben."
 samba-tool dbcheck --fix --yes 2>&1| tee -a $LOGFILE | pgbox
 
 # restart samba services
-systemctl start samba.service 2>&1| tee -a $LOGFILE | pgbox
+systemctl start samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
 
 # LDAP Client-Konfiguration anpassen
 cp $TEMPLATEDIR/$modulename/ldap/ldap-client/openldap/ldap.conf /etc/openldap
@@ -284,6 +298,8 @@ changevalues $path $file "$string"
 hn=`hostname`
 # keytab erzeugen
 samba-tool domain exportkeytab /etc/krb5.keytab --principal="$hn\$" 2>&1| tee -a $LOGFILE | pgbox
+samba-tool domain exportkeytab /etc/krb5.keytab --principal="nfs/$fqdn" 2>&1| tee -a $LOGFILE | pgbox
+
 chmod 0600 /etc/krb5.keytab
 cp $TEMPLATEDIR/$modulename/sssd/sssd.conf /etc/sssd/
 cp $TEMPLATEDIR/$modulename/sssd/nsswitch.conf /etc/

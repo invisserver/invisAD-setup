@@ -1,13 +1,5 @@
 kopano-server-packages
-sysstat
 kopano-bash-completion
-z-push-kopano
-z-push-autodiscover
-z-push-kopano-gabsync
-z-push-ipc-sharedmemory
-z-push-config-apache
-z-push-config-apache-autodiscover
-postfix-mysql
 kopano-webapp
 kopano-webapp-contactfax
 kopano-webapp-folderwidgets
@@ -15,4 +7,3 @@ kopano-webapp-gmaps
 kopano-webapp-pimfolder
 kopano-webapp-titlecounter
 kopano-webapp-webappmanual
-cyrus-sasl-saslauthd

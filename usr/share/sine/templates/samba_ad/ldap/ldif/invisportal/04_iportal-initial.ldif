@@ -77,6 +77,20 @@ iPortEntryPosition: Lokal
 iPortEntryButton: Warenwirtschaft
 iPortEntryPriv:	user
 
+# InvoicePlane
+dn: cn=InvoicePlane,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
+objectClass: top
+objectClass: iPortEntry
+iPortEntryName: InvoicePlane
+cn: InvoicePlane
+iPortEntrySSL: FALSE
+iPortEntryURL: [servername]/invoiceplane
+iPortEntryDescription: InvoicePlane ist eine Anwendung für die grundlegende Rechnungsstellung und Kundenverwaltung. Die Zielgruppen sind Freiberufler, Selbstständige und kleine bis mittlere Unternehmen, die ein zuverlässiges, einfach zu bedienendes Rechnungsstellungssystem benötigen.
+iPortEntryActive: FALSE
+iPortEntryPosition: Lokal
+iPortEntryButton: Fakturierung
+iPortEntryPriv:	user
+
 # ownCloud
 dn: cn=ownCloud,cn=invis-Portal,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top

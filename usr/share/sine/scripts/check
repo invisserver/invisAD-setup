@@ -69,7 +69,7 @@ if [[ $prepok == "0" ]]; then
 	
     # get upgrade packages from spins:invis:common
     pgsubtitle="Distributions-Upgrade wird durchgeführt" 
-    zypper -n dup --from spins_invis_common 2>&1| tee -a $LOGFILE | pgbox
+    zypper -n dup --from spins_invis_15_common 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
     # Patterns
@@ -81,7 +81,7 @@ if [[ $prepok == "0" ]]; then
     zypper -n install -n `cat $PACKAGELISTDIR/invis_base` 2>&1| tee -a $LOGFILE | pgbox 
     zyppercheck ${PIPESTATUS[0]}
 
-    # Basis Software
+    # ownCloud client
     pgsubtitle="ownCloud Client wird installiert" 
     zypper -n install -n --no-recommends owncloud-client 2>&1| tee -a $LOGFILE | pgbox 
     zyppercheck ${PIPESTATUS[0]}
@@ -91,12 +91,8 @@ if [[ $prepok == "0" ]]; then
 
     # Installation der invis-eigenen Samba-Pakete
     zypper refresh 2>&1| tee -a $LOGFILE | pgbox
-    # Samba Repo ermitteln
-    sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
-    # Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
-    zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
-    zypper -n install --from "$sambarepo" --force-resolution -n `cat $PACKAGELISTDIR/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
+    zypper -n install -n `cat $PACKAGELISTDIR/samba-ad` 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
 
     # NFS-Server

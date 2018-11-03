@@ -44,51 +44,70 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="SuSEfirewall2"
-pgsubtitle="Firewall Setup dor invis-server"
+windowtitle="firewalld"
+pgsubtitle="Firewall Setup for invis-server"
 
 # Kopieren und anpassen der Firewall Konfiguration
-cp $TEMPLATEDIR/$modulename/SuSEfirewall2 /etc/sysconfig/
-file="SuSEfirewall2"
-path="/etc/sysconfig"
-nw=`getconfdata "Networkbase" "2"`
-netpart1=`echo "$nw" | cut -d "." -f 1`
-netpart2=`echo "$nw" | cut -d "." -f 2`
-netpart3=`echo "$nw" | cut -d "." -f 3`
-netpart4=`echo "$nw" | cut -d "." -f 4`
-netpart="$netpart1.$netpart2.$netpart3.$netpart4"
-shortnmask=`getconfdata "NMask-short" "2"`
-string="192.168.220.0/24%$netpart/$shortnmask"
-changevalues $path $file $string
+# Vorbereitete Konfigurationen kopieren
+echo "Kopiere Konfiguration..." | pgbox
+cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+
+# geaenderten Portal-HTTPS-Port einfuegen
+httpsport=`getconfdata "HTTPSPORT" "2"`
+if [[ -n $httpsport ]]; then
+  file="invis-portal.xml"
+  path="/etc/firewalld/services"
+  string="443%$httpsport"
+  changevalues $path $file "$string"
+fi
+
+# geaenderten OwnCloud-Port einfuegen
+ocport=`getconfdata "OCPORT" "2"`
+if [[ -n $ocport ]]; then
+    file="owncloud.xml"
+    path="/etc/firewalld/services"
+    string="443%$ocport"
+    changevalues $path $file "$string"
+fi
 
 # geaenderten SSH-Port einfuegen
 sshport=`getconfdata "SSHPORT" "2"`
+file="invis-ssh.xml"
+path="/etc/firewalld/services"
+string="22%$sshport"
+changevalues $path $file "$string"
+
+# geaenderten SSH-Port einfuegen
+file="internal.xml"
+path="/etc/firewalld/zones"
 string="sshport%$sshport"
 changevalues $path $file "$string"
 
-# geaenderten HTTPS-Port einfuegen
-httpsport=`getconfdata "HTTPSPORT" "2"`
-string="httpsport%$httpsport"
-changevalues $path $file "$string"
-
-# OwnCloud-Port einfuegen
-ocport=`getconfdata "OCPORT" "2"`
-string="ocport%$ocport"
-changevalues $path $file "$string"
-    
 # SSH Port ändern
 cp $TEMPLATEDIR/$modulename/sshd_config /etc/ssh/
 path="/etc/ssh"
 file="sshd_config"
-
-sshport=`getconfdata "SSHPORT" "2"`
-string="sshport%$sshport"
 changevalues $path $file "$string"
 
 # SSHd neu starten
 chkservice "sshd"
-    
-# Firewall starten und in Runlevel eintragen
-chkservice "SuSEfirewall2_init"
-chkservice "SuSEfirewall2"
 
+# Firewall starten und in Runlevel eintragen
+sfw2=`rpm -qa SuSEfirewall2`
+if [[ -n $sfw2 ]]; then
+    chkservice "SuSEfirewall2_init" d
+    chkservice "SuSEfirewall2" d
+fi
+chkservice "firewalld"
+
+# Default zone setzen per cmd
+echo "Setze default zone..." | pgbox
+firewall-cmd --set-default-zone=external 2>&1| tee -a $LOGFILE | pgbox
+
+# Logdenied aktivieren per cmd
+echo "Aktiviere logging verworfener Pakete..." | pgbox
+firewall-cmd --set-log-denied=all 2>&1| tee -a $LOGFILE | pgbox
+
+# Neustarten damit Änderungen aktiv sind
+chkservice "firewalld"

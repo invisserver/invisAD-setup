@@ -47,7 +47,8 @@ clear
 windowtitle="Printserver"
 pgsubtitle="CUPS printserver setup"
 
-cp $TEMPLATEDIR/cups/cupsd.conf /etc/cups/cupsd.conf 
+cp $TEMPLATEDIR/cups/cupsd.conf /etc/cups/ 
+cp $TEMPLATEDIR/cups/cups-pdf.conf /etc/cups/ 
 
 ipaddr=`getconfdata "IP" "2"`
 path="/etc/cups"

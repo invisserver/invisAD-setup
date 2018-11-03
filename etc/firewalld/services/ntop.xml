@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>NTOP</short>
+  <description>Network monitoring</description>
+  <port protocol="tcp" port="3000"/>
+  <port protocol="tcp" port="3001"/>
+</service>

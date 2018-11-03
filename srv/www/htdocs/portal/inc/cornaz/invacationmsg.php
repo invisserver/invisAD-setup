@@ -7,11 +7,11 @@
 
 if ($status == "Abwesend") {
 	$margin = "Urlaub";
-	$info = "<hr size=\"1\" noshade width=\"300\" center><p>Hallo <font color=\"#EE4000\"><b>$corusername</b></font>, Sie möchten Urlaubsbenachrichtigungen verwalten, sind allerdings als <font color=\"#EE4000\"><b>\"Abwesend\"</b></font> geführt.<br>
+	$info = "<p>Hallo <font color=\"#EE4000\"><b>$corusername</b></font>, Sie möchten Urlaubsbenachrichtigungen verwalten, sind allerdings als <font color=\"#EE4000\"><b>\"Abwesend\"</b></font> geführt.<br>
 	Auch wenn es paradox erscheinen mag, ergibt diese Konstellation keinen Sinn.<br>
 	Solange Sie als <font color=\"#EE4000\"><b>\"Abwesend\"</b></font> geführt sind, werden Ihre eMails nicht abgeholt<br>
 	und können somit auch nicht automatisch beantwortet werden.<br>
-	Wechseln Sie auf der CorNAz-Hauptseite zunächst Ihren Status auf \"Anwesend\".</p><hr size=\"1\" noshade width=\"300\" center>";
+	Wechseln Sie auf der CorNAz-Hauptseite zunächst Ihren Status auf \"Anwesend\".</p>";
 	site_info($margin, $info);
 	site_back();
 } elseif ($status == "Urlaub"){

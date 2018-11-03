@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>invis-Server-SSH</short>
+  <description>invis-Server SSH-Port</description>
+  <port protocol="tcp" port="22"/>
+</service>

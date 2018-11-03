@@ -1,9 +1,8 @@
 #!/bin/bash
 # Kategorie: server
 # Script zur zyklischen Virenprüfung der Fileserver-Freigaben
-# (C) 2009 invis-server.org
-# Author: Stefan Schäfer <stefan@invis-server.org>
-# Questions: stefan@invis-server.org
+# (C) 2009,2018 Stefan Schäfer <stefan@invis-server.org>
+# (C) 2017 Ingo Goeppert <ingo@invis-server.org>
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -79,16 +78,19 @@ doavrun=`getconfdata $conffile "avCheck" "2"`
 doclean=`getconfdata $conffile "avClean" "2"`
 scanner=`getconfdata $conffile "AV" "2"`
 quardir=`getconfdata $conffile "quarDir" "2"`
+profiledir=`getconfdata $conffile "profileDir" "2"`
 AVLOG="/var/log/avrun.log"
 AVFUNDE="/var/log/avfunde.log"
 ESET_BIN="/opt/eset/esets/sbin/esets_scan"
 ESET_PARA="-f $AVLOG --unsafe --unwanted --adv-heur --ext-exclude iso --quarantine --quar-dir $quardir"
-
-if [[ $doavrun == "j" ]]; then
+echo $doavrun
+if [[ $doavrun != "none" ]]; then
     if [[ $scanner == "antivir" ]]; then
-	avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /var/lib/samba/profiles/
-	avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /srv/shares
-	avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /home
+	avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir $profiledir
+	if [[ $doavrun != "profiles" ]]; then
+	    avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /srv/shares
+	    avscan --allfiles --scan-in-archive -q -r1 -lang=DE -s --moveto=$quardir /home
+	fi
     else
 	if [[ $scanner == "eset" ]]; then
 	    if [[ $doclean == "j" ]]; then
@@ -98,10 +100,11 @@ if [[ $doavrun == "j" ]]; then
 	    fi
 	    
 	    # Die verschiedenen Verzeichnisse scannen
-	    doesetscan "/var/lib/samba/profiles"
-	    doesetscan "/srv/shares"
-	    doesetscan "/home"
-	    
+	    doesetscan "$profiledir"
+	    if [[ $doavrun != "profiles" ]]; then
+		doesetscan "/srv/shares"
+		doesetscan "/home"
+	    fi
 	    # Ausgabe der Zeilen mit Funden
 	    grep -v 'threat="is OK"' "$AVLOG" | grep -E 'threat="[^"]+"' > "$AVFUNDE"
 	    if [[ $? == "0" ]]; then
@@ -109,9 +112,11 @@ if [[ $doavrun == "j" ]]; then
 		cat "$AVFUNDE"
 	    fi
 	else
-	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /var/lib/samba/profiles/
-	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /srv/shares
-	    clamscan -r -i --log=/var/log/clamscan --move=$quardir /home
+	    clamscan -r -i --log=$AVLOG --move=$quardir $profiledir
+	    if [[ $doavrun != "profiles" ]]; then
+		clamscan -r -i --log=$AVLOG --move=$quardir /srv/shares
+		clamscan -r -i --log=$AVLOG --move=$quardir /home
+	    fi
 	fi
     fi
 fi

@@ -185,7 +185,7 @@ fspMailProviderDescription: SMTP-Auth, Als IMAP-Standard-Ordener muss "." oder n
 dn: cn=telekom,cn=Mailproviders,cn=Informationen,cn=invis-server,dc=invis-net,dc=loc
 objectClass: top
 objectClass: fspMailProvider
-cn: t-online
+cn: telekom
 fspMailProviderVendor: Deutsche Telekom AG
 fspMailProviderPOP: securepop.t-online.de
 fspMailProviderIMAP: secureimap.t-online.de

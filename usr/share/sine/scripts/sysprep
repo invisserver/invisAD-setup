@@ -225,6 +225,9 @@ sysconf_addword /etc/sysconfig/mail MAIL_CREATE_CONFIG no 2>&1| tee -a $LOGFILE 
 echo "System wird so konfiguriert, dass Postfix-Konfiguration in einem Chroot-Jail läuft." 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/postfix POSTFIX_CHROOT no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/postfix POSTFIX_CHROOT yes 2>&1| tee -a $LOGFILE | pgbox
+echo "System wird so konfiguriert, dass der Postfix-Daemon nicht in SLP registriert wird." 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword -r /etc/sysconfig/postfix POSTFIX_REGISTER_SLP yes 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/postfix POSTFIX_REGISTER_SLP no 2>&1| tee -a $LOGFILE | pgbox
 
 sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes 2>&1| tee -a $LOGFILE | pgbox
@@ -245,6 +248,10 @@ echo "System wird so konfiguriert, dass weder die Datei resolv.conf noch der NTP
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_DNS_POLICY auto 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword -r /etc/sysconfig/network/config NETCONFIG_NTP_POLICY auto 2>&1| tee -a $LOGFILE | pgbox 
 
+# activate gssapi for nfs
+sysconf_addword -r /etc/sysconfig/nfs NFS_SECURITY_GSS no 2>&1| tee -a $LOGFILE | pgbox 
+sysconf_addword /etc/sysconfig/nfs NFS_SECURITY_GSS yes 2>&1| tee -a $LOGFILE | pgbox 
+
 # /etc/hosts anpassen
 file="hosts"
 path="/etc"
@@ -254,7 +261,7 @@ changevalues $path $file "$string"
 # Admin PW fuer ntop-user wwwrun setzen
 # Achtung Bug im ntop Paket: Das Verzeichnis in dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
 mkdir /var/lib/ntop
-ntoppw=`getconfdata "NtopPw" "2"`
+ntoppw=`getpassword "NtopPW" "3"`
 ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $LOGFILE | pgbox
 
 pgsubtitle="Es wird eine Zertifizierungsstelle erzeugt"
@@ -299,6 +306,9 @@ easyrsa build-ca
 
 # Stop sine, in case of problems with building the CA
 if [[ $? != 0 ]];then
+    waitinfobox "Beim Bau der lokalen Zertifizierungsstelle (CA) ist ein Fehler aufgetreten. 
+Bitte löschen Sie das nach Ihrer Domain benannte Verzeichnis unter \"/etc/easy-rsa\" und
+starten Sie sine2 erneut." "Fehler beim Erstellen der CA"
     exit 5
 fi
 
@@ -308,13 +318,20 @@ chmod go+r /etc/invis/certs/ca.crt
     
 # DH-Parameterdatei erzeugen
 # 2048 und 512 Bit DH-Parameter direkt mit openssl 
-openssl gendh -out $path/$domain/dh.pem -2 2048 2>&1| tee -a $LOGFILE | pgbox
-openssl gendh -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $LOGFILE | pgbox
+openssl dhparam -out $path/$domain/dh.pem -2 2048 2>&1| tee -a $LOGFILE | pgbox
+openssl dhparam -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $LOGFILE | pgbox
 # Beide Dateien auch fuer Postfix bereit stellen
 cp $path/$domain/dh*.pem /etc/postfix
     
 # CRL Umgebung initialisieren
-easyrsa gen-crl
+ok=1
+while [[ $ok == 1 ]]; do
+    easyrsa gen-crl
+    ok=$?
+    if [[ $ok == 1 ]]; then
+	waitinfobox "Sie haben ein falsches CA-Schlüsselpasswort eingegeben. Bitte versuchen Sie es erneut" "Falsches CA Passwort"
+    fi
+done
 
 # CRL Chain Datei erzeugen
 cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
@@ -365,6 +382,11 @@ changevalues $path $file "$string"
 windowtitle="Grundkonfiguration"
 pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
 
+# After testinstallation of ntp there was a file /var/run/ntp instead of a directory.
+# This file blocks the ntp daemons start. Workaround:
+if [[ -f /var/run/ntp ]]; then
+    rm -f /var/run/ntp
+fi
 cp $TEMPLATEDIR/$modulename/ntp/servers-netconfig /var/run/ntp
 
 # NTP-Dienst fuer AD anpassen
@@ -383,6 +405,9 @@ chmod 0750 $sockdir
 sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
 
+# stop chrony (default ntp service since leap 15)
+chkservice "chronyd"
+
 # start ntp daemon
 chkservice "ntpd"
 
@@ -391,11 +416,11 @@ file="invis-pws.conf"
 hwclock --systohc 2>&1| tee -a $LOGFILE | pgbox 
 
 # invis Passwort-Datei anpassen
-ldappw=`getconfdata "LDAPAdminPW" "2"`
+ldappw=`getpassword "LDAPAdminPW" "3"`
 string="ldap-secret%$ldappw"
 changevalues $INVISCONFDIR $file "$string"
 
-mysqlpw=`getconfdata "MySQLpw" "2"`
+mysqlpw=`getpassword "MySQLPW" "3"`
 string="mysql-rootpw%$mysqlpw"
 changevalues $INVISCONFDIR $file "$string"
 

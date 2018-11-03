@@ -52,7 +52,7 @@ case $whicherp in
 
     "kivitendo" )
 	# PostgreSQL in RL eintragen, wenn noch nicht geschehen
-	srvon=`chkconfig postgresql|grep " on"`
+	srvon=`systemctl is-enabled postgresql.service|grep "disabled"`
 	if [[ -z $srvon ]]; then 
 	    chkservice "postgresql"
 	fi
@@ -77,21 +77,25 @@ Sein Start wird solange fehlschlagen, bis Sie einen gültigen Kivitendo Benutzer
 	    chkservice "kivitendo-task-server"
 
 	    msgbox "Es wird ein Postgresql-Benutzer - kivitendo - für Kivitendo angelegt. 
-Vergessen Sie bitte nicht das hierbei von Ihnen zu vergebende Passwort. ;-)" "$windowtitle"
-	    sudo -u postgres createuser -d -r -S -P kivitendo
-	    ok=0
-	    while (( $ok != "1" ));do
-		dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kivitendo-DB Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-Bitte geben Sie dass soeben vergebene Passwort für den Kivitendo Datenbankbenutzer zur weiteren Verwendung erneut ein.\n\n" 17 64 2 \
-		"Kivitendo-DB-Passwort:" 2 2 "" 2 23 10 0\
-		"Kontrolle:" 2 36 "" 2 47 10 0\
-		2>$SINEWORKINGDIR/sine_temp
-		lxpassword=(`cat $SINEWORKINGDIR/sine_temp`)
-		if [[ ${lxpassword[0]} == ${lxpassword[1]} ]];then
-		    ok=1
-		fi
-	    done
-	    lxpw="${lxpassword[0]}"
+Das zugehörige Passwort können Sie nach dem Abschluss der Installation mit sine2 showps abfragen." "$windowtitle"
+#	    ok=0
+#	    while (( $ok != "1" ));do
+#		dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kivitendo-DB Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
+#Bitte geben Sie dass soeben vergebene Passwort für den Kivitendo Datenbankbenutzer zur weiteren Verwendung erneut ein.\n\n" 17 64 2 \
+#		"Kivitendo-DB-Passwort:" 2 2 "" 2 23 10 0\
+#		"Kontrolle:" 2 36 "" 2 47 10 0\
+#		2>$SINEWORKINGDIR/sine_temp
+#		lxpassword=(`cat $SINEWORKINGDIR/sine_temp`)
+#		if [[ ${lxpassword[0]} == ${lxpassword[1]} ]];then
+#		    ok=1
+#		fi
+#	    done
+#	    lxpw="${lxpassword[0]}"
+	    lxpw=`pwgen -sBn 10 1`
+	    echo "DB-User kivitendo:KIWIDBPASS:$lxpw" >> $SINEWORKINGDIR/invis_pws 
+	    sudo -u postgres -i createuser -d -r -S kivitendo 2>&1 | tee -a $LOGFILE  |pgbox
+	    sqlstring="alter user kivitendo with password '$lxpw';"
+	    sudo -u postgres -i psql -U postgres -d postgres -c "$sqlstring" 2>&1 | tee -a $LOGFILE  |pgbox
 
 	    pgsubtitle="Datenbanken werden angelegt"
 	    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --radiolist "$DIALOGSHORTHELP\n\n
@@ -110,7 +114,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 		changevalues $path $file "$string"
 		string="module = DB%module = LDAP"
 		changevalues $path $file "$string"
-		ldapadminpw=`getconfdata "LDAPAdminPW" "2"`
+		ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 		string="admin_secret%$ldapadminpw"
 		changevalues $path $file "$string"
 	    fi
@@ -139,12 +143,13 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
 	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
-	    zypper -n install -n `cat $PACKAGELISTDIR/wawision` 2>&1 |pgbox
+	    zypper -n install -n `cat $PACKAGELISTDIR/wawision` 2>&1 | tee -a $LOGFILE  |pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Hier Datenbank installation einfügen
-	    wawipass=`mkdbsilent wawision1 wawision a`
-	    msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision1\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
-	    
+	    wawipass=`mkdbsilent wawision wawision a`
+	    #msgbox "Datenbank für waWision wurde angelegt.\n\nDatenbank: wawision\nBenutzer: wawision\nPasswort: $wawipass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
+	    echo "DB-User wawision:WAWIDBPASS:$wawipass" >> $SINEWORKINGDIR/invis_pws 
+
 	    # activate apache configuration
 	    cp $TEMPLATEDIR/$modulename/wawision/wawision.conf /etc/apache2/conf.d
 
@@ -156,6 +161,40 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 
 	else
 	    msgbox "waWision Installation übersprungenen" "$windowtitle"
+	fi
+	;;
+
+    "invoiceplane")
+	windowtitle="InvoicePlane Installation"
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/invoiceplane.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --defaultno --yesno "Möchten Sie waWision installieren?" 0 0
+	cont=${?}
+	
+	if [[ $cont == "0" ]]; then
+	    pgsubtitle="Zusätzliche Software wird installiert"
+	    zypper refresh 2>&1 | tee -a $LOGFILE  |pgbox
+	    zypper -n install -n invoiceplane 2>&1 |pgbox
+	    zyppercheck ${PIPESTATUS[0]}
+	    # Hier Datenbank installation einfügen
+	    ippass=`mkdbsilent invoiceplane ip a`
+	    #msgbox "Datenbank für InvoicePlane wurde angelegt.\n\nDatenbank: invoiceplane\nBenutzer: ip\nPasswort: $ippass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
+	    echo "DB-User ip:IPDBPASS:$ippass" >> $SINEWORKINGDIR/invis_pws 
+
+	    # Konfiguration anpassen
+	    fqdn=`getconfdata "FQDN" "2"`
+	    file=ipconfig.php
+	    path="/etc/invoiceplane"
+	    string="IP_URL=%IP_URL=https://$fqdn/invoiceplane"
+	    changevalues $path $file "$string"
+	    chown .www $path/$file
+	    chmod g+w $path/$file
+	    a2enflag INVOICEPLANE
+	
+	    chkservice apache2 r
+	    # Wawision im Portal aktivieren
+	    swpestat InvoicePlane TRUE 2>&1 | tee -a $LOGFILE | pgbox
+
+	else
+	    msgbox "InvoicePlane Installation übersprungenen" "$windowtitle"
 	fi
 	;;
 
