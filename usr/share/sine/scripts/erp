@@ -156,7 +156,8 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    a2enflag WAWISION
 	
 	    chkservice apache2 r
-	    # Wawision im Portal aktivieren
+	    # 
+	    Wawision im Portal aktivieren
 	    swpestat waWision TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
 	else
@@ -166,7 +167,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 
     "invoiceplane")
 	windowtitle="InvoicePlane Installation"
-	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/invoiceplane.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --defaultno --yesno "Möchten Sie waWision installieren?" 0 0
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/invoiceplane.txt" 20 90 --and-widget --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --defaultno --yesno "Möchten Sie InvoicePlane installieren?" 0 0
 	cont=${?}
 	
 	if [[ $cont == "0" ]]; then
