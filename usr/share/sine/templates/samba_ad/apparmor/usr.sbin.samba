@@ -1,0 +1,80 @@
+# Last Modified: Sun Nov  4 14:44:28 2018
+#include <tunables/global>
+
+/usr/sbin/samba {
+  #include <abstractions/base>
+  #include <abstractions/cups-client>
+  #include <abstractions/nameservice>
+  #include <abstractions/openssl>
+  #include <abstractions/postfix-common>
+  #include <abstractions/python>
+  #include <abstractions/samba>
+  #include <abstractions/user-tmp>
+  #include <local/usr.sbin.smbd>
+  #include <local/usr.sbin.smbd-shares>
+
+  capability dac_override,
+  capability dac_read_search,
+  capability sys_resource,
+
+  signal send set=kill peer=/usr/lib/mit/sbin/krb5kdc,
+  signal send set=kill peer=/usr/sbin/smbd,
+  signal send set=kill peer=/usr/sbin/winbindd,
+  signal send set=term peer=/usr/lib/mit/sbin/krb5kdc,
+
+  /bin/bash mrix,
+  /dev/urandom rw,
+  /etc/invis/certs/ca.crt r,
+  /etc/invis/certs/ldap-cert.pem r,
+  /etc/invis/private/ldap-key.pem r,
+  /run/samba/ncalrpc/ w,
+  /run/samba/ncalrpc/DEFAULT w,
+  /run/samba/ncalrpc/EPMAPPER w,
+  /run/samba/ncalrpc/np/ w,
+  /run/samba/ncalrpc/np/browser w,
+  /run/samba/ncalrpc/np/dnsserver w,
+  /run/samba/ncalrpc/np/epmapper w,
+  /run/samba/ncalrpc/np/lsarpc w,
+  /run/samba/ncalrpc/np/lsass w,
+  /run/samba/ncalrpc/np/netlogon w,
+  /run/samba/ncalrpc/np/ntsvcs w,
+  /run/samba/ncalrpc/np/protected_storage w,
+  /run/samba/ncalrpc/np/rpcecho w,
+  /run/samba/ncalrpc/np/samr w,
+  /run/samba/ncalrpc/np/unixinfo w,
+  /run/samba/ncalrpc/np/wkssvc w,
+  /run/samba/samba.pid rwk,
+  /sbin/ldconfig mrix,
+  /usr/bin/env r,
+  /usr/bin/python2.7 mrix,
+  /usr/lib/mit/sbin/krb5kdc Px,
+  /usr/lib64/samba/gensec/krb*.so mr,
+  /usr/lib64/samba/ldb/*.so mr,
+  /usr/lib64/samba/process_model/standard.so mr,
+  /usr/lib64/samba/service/*.so mr,
+  /usr/sbin/samba mr,
+  /usr/sbin/samba_dnsupdate rPx,
+  /usr/sbin/samba_kcc rPx,
+  /usr/sbin/samba_spnupdate rPx,
+  /usr/sbin/smbd Px,
+  /usr/sbin/winbindd Px,
+  /var/lib/ntp/var/lib/samba/ntp_signd/socket w,
+  owner /proc/*/fd/ r,
+  owner /proc/*/mounts r,
+  owner /proc/filesystems r,
+  owner /proc/sys/kernel/core_pattern r,
+  owner /run/samba/winbindd.pid rwk,
+  owner /run/samba/winbindd/pipe w,
+  owner /run/user/0/krb5cc/ w,
+  owner /run/user/0/krb5cc/* rw,
+  owner /usr/bin/env mr,
+  owner /usr/lib/mit/sbin/krb5kdc mr,
+  owner /usr/lib64/ r,
+  owner /usr/lib64/krb5/plugins/authdata/* mr,
+  owner /usr/lib64/krb5/plugins/kdb/* mr,
+  owner /usr/lib64/samba/auth/samba*.so mr,
+  owner /usr/lib64/samba/vfs/* mr,
+  owner /usr/sbin/winbindd mr,
+  owner /var/log/samba/mit_kdc.log w,
+
+}

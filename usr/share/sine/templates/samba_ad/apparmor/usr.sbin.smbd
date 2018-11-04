@@ -1,0 +1,60 @@
+# Last Modified: Sun Nov  4 14:44:28 2018
+#include <tunables/global>
+
+/usr/sbin/smbd {
+  #include <abstractions/authentication>
+  #include <abstractions/base>
+  #include <abstractions/consoles>
+  #include <abstractions/cups-client>
+  #include <abstractions/nameservice>
+  #include <abstractions/samba>
+  #include <abstractions/user-tmp>
+  #include <abstractions/wutmp>
+  #include <local/usr.sbin.smbd>
+  #include <local/usr.sbin.smbd-shares>
+
+  capability chown,
+  capability dac_override,
+  capability dac_read_search,
+  capability fowner,
+  capability lease,
+  capability net_bind_service,
+  capability setgid,
+  capability setuid,
+  capability sys_admin, # needed to store ACLS in the security.NTACL namespace
+  capability sys_resource,
+  capability sys_tty_config,
+
+  signal receive set=kill peer=/usr/sbin/samba,
+
+  /dev/urandom w,
+  /etc/mtab r,
+  /etc/netgroup r,
+  /etc/printcap r,
+  /usr/lib*/samba/auth/script.so mr,
+  /usr/lib*/samba/charset/*.so mr,
+  /usr/lib*/samba/ldb/*.so mr,
+  /usr/lib*/samba/pdb/*.so mr,
+  /usr/lib*/samba/vfs/*.so mr,
+  /usr/lib*/samba/{lowcase,upcase,valid}.dat r,
+  /usr/lib64/samba/auth/samba4.so mr,
+  /usr/lib64/samba/gensec/krb5.so mr,
+  /usr/sbin/smbd mr,
+  /usr/sbin/smbldap-useradd Px,
+  /var/cache/samba/** rwk,
+  /var/lib/samba/** rwk,
+  /var/lib/sss/mc/initgroups r,
+  /var/lib/sss/pubconf/kdcinfo.* r,
+  /var/spool/samba/** rw,
+  /var/{cache,lib}/samba/printing/printers.tdb mrw,
+  /{,var/}run/dbus/system_bus_socket rw,
+  /{,var/}run/samba/** rk,
+  /{,var/}run/samba/ncalrpc/ rw,
+  /{,var/}run/samba/ncalrpc/** rw,
+  /{,var/}run/samba/smbd.pid rw,
+  @{HOMEDIRS}/** rwlk,
+  @{PROC}/@{pid}/mounts r,
+  @{PROC}/sys/kernel/core_pattern r,
+  owner /usr/lib64/krb5/plugins/authdata/sssd_pac_plugin.so mr,
+
+}

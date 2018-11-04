@@ -1,0 +1,20 @@
+# Last Modified: Sun Nov  4 14:44:27 2018
+#include <tunables/global>
+
+/usr/lib/mit/sbin/krb5kdc {
+  #include <abstractions/base>
+  #include <abstractions/kerberosclient>
+  #include <abstractions/nameservice>
+  #include <abstractions/nis>
+  #include <abstractions/samba>
+
+  signal receive set=kill peer=/usr/sbin/samba,
+  signal receive set=term peer=/usr/sbin/samba,
+
+  /usr/lib/mit/sbin/krb5kdc mr,
+  owner /proc/filesystems r,
+  owner /usr/lib64/ r,
+  owner /usr/lib64/krb5/plugins/kdb/* mr,
+  owner /var/log/samba/mit_kdc.log w,
+
+}

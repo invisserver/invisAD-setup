@@ -51,13 +51,6 @@ pgsubtitle="Samba AD DC wird eingerichtet"
 cp $TEMPLATEDIR/$modulename/apparmor/* /etc/apparmor.d/
 systemctl restart apparmor.service 2>&1 | tee -a $LOGFILE | pgbox
 
-# Notfalls Apparmor deaktivieren
-#systemctl disable apparmor.service 2>&1 | tee -a $LOGFILE | pgbox
-#systemctl stop apparmor.service 2>&1 | tee -a $LOGFILE | pgbox
-    
-# nur zur Sicherheit ;-)
-#chkconfig -d boot.apparmor 2>&1 | tee -a $LOGFILE | pgbox
-
 # "realm" bei AD DC = "Domain" im sine
 ad_realm=`getconfdata "Domain" "2"`
 

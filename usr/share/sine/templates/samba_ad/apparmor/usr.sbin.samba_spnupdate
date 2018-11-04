@@ -1,0 +1,24 @@
+# Last Modified: Sun Nov  4 14:31:05 2018
+#include <tunables/global>
+
+/usr/sbin/samba_spnupdate {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/python>
+  #include <abstractions/samba>
+
+  /proc/meminfo r,
+  /usr/ r,
+  /usr/bin/ r,
+  /usr/bin/env rix,
+  /usr/bin/python r,
+  /usr/bin/python2.7 rix,
+  /usr/lib/ r,
+  /usr/lib64/samba/ldb/*.so mr,
+  /usr/local/lib/ r,
+  /usr/local/lib64/ r,
+  /usr/sbin/samba_spnupdate r,
+  owner /run/user/0/krb5cc/* w,
+  owner /run/user/0/krb5cc/primary r,
+
+}
