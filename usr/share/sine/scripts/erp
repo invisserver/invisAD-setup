@@ -156,8 +156,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    a2enflag WAWISION
 	
 	    chkservice apache2 r
-	    # 
-	    Wawision im Portal aktivieren
+	    # Wawision im Portal aktivieren
 	    swpestat waWision TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
 	else
@@ -191,7 +190,7 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    a2enflag INVOICEPLANE
 	
 	    chkservice apache2 r
-	    # Wawision im Portal aktivieren
+	    # InvoicePlane im Portal aktivieren
 	    swpestat InvoicePlane TRUE 2>&1 | tee -a $LOGFILE | pgbox
 
 	else
