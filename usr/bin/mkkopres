@@ -1,0 +1,84 @@
+#!/bin/bash
+# Kategorie: apps
+# Script zur Erweiterung von Kopano-Shared Stores zu Ressourcen
+# (C) 2009,2011,2018 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+workfile="/tmp/mkkopres.ldif"
+sam="/var/lib/samba/private/sam.ldb"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# check arguments
+if [[ -n $1 && -n $2 && $2 =~ ^(room|equipment)$ ]]; then
+    uid=$1
+    restype=$2
+else
+    echo -e "Usage: mkkopres username resourcetype"
+    echo -e "Für \"resourcetype\" werden nur die Werte room oder equipment akzeptiert"
+    exit
+fi
+#echo $uid $restype
+
+# in case of type equipment, ask for capacity
+if [[ $restype == "equipment" ]]; then
+    capacity=nix
+    until [[ $capacity =~ ^[0-9]+$ ]]; do
+	read -p "Geben Sie die Anzahl der vorhandenen Ressource ein: " capacity
+    done
+    #echo $capacity
+fi
+
+# get dn from ad and check if the user is a shared-store
+dn=`ldbsearch -H $sam "(&(samaccountname=$uid)(zarafasharedstoreonly=1))" dn |grep ^dn:`
+if [[ -n $dn ]]; then
+    #echo $dn
+    echo "$dn" > $workfile
+    echo "changetype: modify" >> $workfile
+    echo "add: zarafaResourceType" >> $workfile
+    echo "zarafaRessourceType: $restype" >> $workfile
+    if [[ -n $capacity ]]; then
+	echo "add: zarafaResourceCapacity" >> $workfile
+	echo "zarafaRessourceCapacity: $capacity" >> $workfile
+    fi
+    #cat $workfile
+    # modify account
+    ldbmodify -H $sam $workfile
+    
+    # modify store settings if ldbmodify was successfull
+    # --mr-accept=YESNO                     Auto-accept meeting requests
+    # --mr-accept-conflicts=YESNO           Auto-accept conflicting meeting
+    #                                      requests
+    # --mr-accept-recurring=YESNO           Auto-accept recurring meeting
+    #                                      requests
+    if [[ $? == 0 ]]; then
+	kopano-cli --mr-accept=YES -u $uid
+	kopano-cli --mr-accept-conflicts=NO -u $uid
+	kopano-cli --mr-accept-recurring=NO -u $uid
+    fi
+
+else
+    echo "Das angegebene Benutzerkonto ist kein Kopano Shared-Store"
+fi
