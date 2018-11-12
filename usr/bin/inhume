@@ -48,12 +48,15 @@ else
 fi
 
 # Store-ID ermitteln
-storeid=`kopano-admin --list-orphans |tr "\t" " " |grep " $loginname " |tr -s " "|cut -d " " -f2`
+# old
+#storeid=`kopano-admin --list-orphans |tr "\t" " " |grep " $loginname " |tr -s " "|cut -d " " -f2`
+# new
+storeid=`kopano-storeadm -O | tr "\t" " " | grep $loginname |cut -d " " -f1`
 
 if [[ -n $storeid ]]; then
     read -p "Soll der schlafende Kopano-Store \"$storeid\" des Benutzers \"$loginname\" endgültig gelöscht werden? [j/n] " delete
     if [[ $delete == "j" ]]; then
-        kopano-admin --remove-store $storeid
+        kopano-storeadm -R $storeid
     fi
 else
     echo "Für den angegebenen Benutzer \"$loginname\" existiert kein schlafender Kopano-Store."
