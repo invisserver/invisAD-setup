@@ -1,9 +1,10 @@
 #!/bin/bash
 # Kategorie: portal
 # Kleines Tool zur Ueberwachung aller Festplatten und SW-RAID Verbuende
-# diskcheker V. 1.2
+# diskcheker V. 1.3
 # (C) 2009 Stefan Schaefer -- invis-server.org
-# Qustions: stefan@invis-server.org
+# (C) 2018 Dimitri Asarowski -- invis-server.org
+# Qustions: stefan@invis-server.org, dimitri@invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -70,15 +71,16 @@ for x in /sys/block/*; do
 	    #echo $x
 	    # Festplatten testen
 	    if [[ `echo $x|cut -c1,2` == "sd" ]]; then
-		selftest=`smartctl -H /dev/$x|cut -d " " -f6|tail -n 2|head -n 1`
-		#echo $selftest
-		if [[ $selftest == "PASSED" ]]; then
-		    temp=`smartctl -A /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
+		atatest=`smartctl -H             /dev/$x|cut -d " " -f6|tail -n 2|head -n 1`
+		usbtest=`smartctl -H -d sat,auto /dev/$x|cut -d " " -f4|tail -n 2|head -n 1`
+		#echo $atatest $usbtest
+		if [[ $atatest == "PASSED" ]] || [[ $usbtest == "OK" ]]; then
+		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
 		    #echo "Festplatte \"$x\" ist OK - Aktuelle Festplattentemperatur ist $temp °C" >> $directory/status
 		    echo "$x OK $temp" >> $directory/status
 		else
 		    #echo "Festplatte \"$x\" ist Fehlerhaft - bitte sofort Ihrem Administrator melden!" >> $directory/status
-		    temp=`smartctl -A /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
+		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
 		    echo "$x nOK $temp" >> $directory/status
 		    echo "Festplatte $x auf Server $server meldet Fehler: $selftest" >> $directory/alarm 
 		fi
