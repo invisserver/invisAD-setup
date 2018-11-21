@@ -58,10 +58,10 @@ if [[ -n $dn ]]; then
     echo "$dn" > $workfile
     echo "changetype: modify" >> $workfile
     echo "add: zarafaResourceType" >> $workfile
-    echo "zarafaRessourceType: $restype" >> $workfile
+    echo "zarafaResourceType: $restype" >> $workfile
     if [[ -n $capacity ]]; then
 	echo "add: zarafaResourceCapacity" >> $workfile
-	echo "zarafaRessourceCapacity: $capacity" >> $workfile
+	echo "zarafaResourceCapacity: $capacity" >> $workfile
     fi
     #cat $workfile
     # modify account
@@ -74,9 +74,9 @@ if [[ -n $dn ]]; then
     # --mr-accept-recurring=YESNO           Auto-accept recurring meeting
     #                                      requests
     if [[ $? == 0 ]]; then
-	kopano-cli --mr-accept=YES -u $uid
-	kopano-cli --mr-accept-conflicts=NO -u $uid
-	kopano-cli --mr-accept-recurring=NO -u $uid
+	kopano-cli --mr-accept yes -u $uid
+	kopano-cli --mr-accept-conflicts no -u $uid
+	kopano-cli --mr-accept-recurring no -u $uid
     fi
 
 else
