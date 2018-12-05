@@ -21,7 +21,7 @@
   <!-- openvpn (1194/UDP) -->
   <service name="openvpn"/>
 
-  <!-- Blocken der icmp-Protkolle, funktioniert noch nicht wie früher sondern rejected anstatt droped -->
+  <!-- Blocken der icmp-Protokolle, funktioniert noch nicht wie früher sondern rejected anstatt droped -->
   <icmp-block name="address-unreachable"/>
   <icmp-block name="bad-header"/>
   <icmp-block name="beyond-scope"/>
