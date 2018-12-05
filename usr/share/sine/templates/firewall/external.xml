@@ -21,43 +21,8 @@
   <!-- openvpn (1194/UDP) -->
   <service name="openvpn"/>
 
-  <!-- Blocken der icmp-Protokolle, funktioniert noch nicht wie früher sondern rejected anstatt droped -->
-  <icmp-block name="address-unreachable"/>
-  <icmp-block name="bad-header"/>
-  <icmp-block name="beyond-scope"/>
-  <icmp-block name="communication-prohibited"/>
-  <icmp-block name="echo-reply"/>
-  <icmp-block name="echo-request"/>
-  <icmp-block name="failed-policy"/>
-  <icmp-block name="fragmentation-needed"/>
-  <icmp-block name="host-precedence-violation"/>
-  <icmp-block name="host-prohibited"/>
-  <icmp-block name="host-redirect"/>
-  <icmp-block name="host-unknown"/>
-  <icmp-block name="host-unreachable"/>
-  <icmp-block name="ip-header-bad"/>
-  <icmp-block name="neighbour-advertisement"/>
-  <icmp-block name="neighbour-solicitation"/>
-  <icmp-block name="network-prohibited"/>
-  <icmp-block name="network-redirect"/>
-  <icmp-block name="network-unknown"/>
-  <icmp-block name="network-unreachable"/>
-  <icmp-block name="no-route"/>
-  <icmp-block name="packet-too-big"/>
-  <icmp-block name="port-unreachable"/>
-  <icmp-block name="precedence-cutoff"/>
-  <icmp-block name="reject-route"/>
-  <icmp-block name="required-option-missing"/>
-  <icmp-block name="source-route-failed"/>
-  <icmp-block name="timestamp-request"/>
-  <icmp-block name="tos-host-redirect"/>
-  <icmp-block name="tos-host-unreachable"/>
-  <icmp-block name="tos-network-redirect"/>
-  <icmp-block name="tos-network-unreachable"/>
-  <icmp-block name="ttl-zero-during-reassembly"/>
-  <icmp-block name="ttl-zero-during-transit"/>
-  <icmp-block name="unknown-header-type"/>
-  <icmp-block name="unknown-option"/>
+  <!-- Blocken aller icmp-Protokolle -->
+  <icmp-block-inversion/>
 
   <!-- NAT für das Interne Netz und VPN -->
   <masquerade/>
