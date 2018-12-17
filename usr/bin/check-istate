@@ -1,0 +1,46 @@
+#!/bin/bash
+# Kategorie: server
+# Kleines Script zur Ueberpruefung wichtiger Software-Versionen, der invis-
+# Server Version sowie der zugrunde liegenden openSUSE Release.
+# (C) 2018 Stefan Schaefer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#openSUSE Release ermitteln
+osrelease=`cat /etc/os-release |grep ^VERSION=|cut -d "\"" -f2`
+
+#invis-Server Version ermitteln
+invisrelease=`rpm -qa "invisAD-setup-*"|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 3`
+
+#Kopano-Core Version ermitteln
+kcorerelease=`rpm -qa kopano-server|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+
+#Kopano-Webapp Version ermitteln
+kwarelease=`rpm -qa kopano-webapp|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+
+#z-push Version ermitteln 
+zpushrelease=`rpm -qa z-push-common|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+
+#ownCloud Version ermitteln
+ocrelease=`rpm -qa owncloud|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+
+# Zusammenfassung ausgeben
+echo "openSUSE Version: $osrelease"
+echo "invis-Server Version: $invisrelease"
+echo "Kopano-Core Version: $kcorerelease"
+echo "Kopano-Webapp Version: $kwarelease"
+echo "z-push Version: $zpushrelease"
+echo "ownCloud Version: $ocrelease"
