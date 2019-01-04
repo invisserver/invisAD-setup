@@ -210,7 +210,7 @@ case "$whichgroupware" in
 	chkservice apache2
     
 	# Oeffentlichen Speicher anlegen
-	kopano-admin -s
+	kopano-storeadm -h default: -P
 
 	## Stefan - LDIF anpassen
 	# Webapp im Portal aktivieren
