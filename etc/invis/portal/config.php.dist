@@ -89,6 +89,7 @@ $SERVER_SERVICES = array(
 	array('dhcpd','IP Adressvergabe'),
 	array('dovecot','IMAP/POP3-Mailserver'),
 	array('fetchmail','Emails abholen'),
+	array('firewalld','Firewall'),
 	array('freshclam', 'Virenscanner Updater'),
 	array('mysql', 'MariaDB Datenbank'),
 	array('named','DNS Namensauflösung'),
