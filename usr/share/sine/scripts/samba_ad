@@ -125,7 +125,12 @@ samba-tool user setexpiry --noexpiry junk
 samba-tool group addmembers "maildummies" junk 2>&1| tee -a $LOGFILE | pgbox
 samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $LOGFILE | pgbox
 
-#msgbox "Es wurde ein Benutzer \"junk\" angelegt. Dieser Benutzer fungiert als \"Spam-Owner\".\nSein Passwort lautet: $junkpw"
+# create postmaster account
+postmasterpw=`getpassword "PostmasterPW" "3"`
+samba-tool user create postmaster "$junkpw" --surname="Verwaltungspostfach" --given-name="Postmaster" --description="Postmaster Konto" 2>&1| tee -a $LOGFILE | pgbox
+samba-tool user setexpiry --noexpiry postmaster
+samba-tool group addmembers "maildummies" postmaster 2>&1| tee -a $LOGFILE | pgbox
+samba-tool group removemembers "Domain Users" postmaster 2>&1| tee -a $LOGFILE | pgbox
 
 # stop samba temporarily
 systemctl stop samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox

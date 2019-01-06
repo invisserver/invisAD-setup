@@ -50,31 +50,32 @@ fi
 
 # Basis-Variablen
 basedn=`getconfdata $conffile "baseDN" "2"`
-binddn="uid=admin,$basedn"
+localdomain=`getconfdata $conffile "intDomain" "2"`
+binddn="ldap.admin@$localdomain"
 
-bindpw=`getconfdata $passfile "MasterPW" "2"`
+bindpw=`getconfdata $passfile "LDAPAdminPW" "2"`
 ldaphost=`getconfdata $conffile "ldapHost" "2"`
 
 function lds { 
     ldapsearch -LLL -x -Z -h $ldaphost -D $binddn -w $bindpw -b $1 $2
 }
-# IFS so aendern, dass die nachfolgende for-Schleife nur noch "newlines" als Listentrenner akzeptiert.
-searchbase="ou=Users,ou=Benutzerverwaltung,$basedn"
-filter="(&(uid=$uid)(objectclass=posixAccount))"
+
+searchbase="cn=Users,$basedn"
+filter="(samAccountName=$uid)"
 
 # Ist das Konto bereits fuer Zarafa bekannt
 iszu=`lds $searchbase $filter|grep "zarafaAccount: 1"|cut -d " " -f2`
-echo $iszu
+#echo $iszu
 
-# DN des zu aendernden Benutzerknotens 
-udn="uid=$uid,$searchbase"
+# DN des zu aendernden Benutzerknotens ermitteln
+udn=`lds $searchbase $filter|grep "^dn:"| cut -d " " -f 2-`
 
 # Wenn die Eintraege noch nicht vorhanden sind, jetzt anlegen
 if [[ $iszu == "" ]]; then
     line1="dn: $udn\n"
     line2="changetype: modify\n"
     line3="add: objectclass\n"
-    line4="objectclass: zarafa-User\n"
+    line4="objectclass: zarafaUser\n"
     line5="-\n"
     line6="add: zarafaAccount\n"
     line7="zarafaAccount: 1\n"
