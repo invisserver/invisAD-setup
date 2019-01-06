@@ -128,7 +128,7 @@ case "$whichgroupware" in
 	string="dbuserpass%$kopanodbuserpw"
 	changevalues $path $file "$string"
 
-	string="postmaster@localhost%administrator@$domain"
+	string="postmaster@localhost%postmaster@$domain"
 	changevalues $path $file "$string"
 
 	# cache_cell_size anpassen, wenn zmemcalc mehr als 512M berechnet
@@ -212,6 +212,10 @@ case "$whichgroupware" in
 	# Oeffentlichen Speicher anlegen
 	kopano-storeadm -h default: -P
 
+	# extend accounts junk and postmaster with zarafa attributes
+	extzu junk 1
+	extzu postmaster 1
+	
 	## Stefan - LDIF anpassen
 	# Webapp im Portal aktivieren
 	swpestat KopanoApp TRUE 2>&1 | tee -a $LOGFILE | pgbox

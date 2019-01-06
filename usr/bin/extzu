@@ -2,7 +2,7 @@
 # Kategorie: apps
 # Script zur Erweiterung der posixAccount-Objekte im LDAP-DIT um Zarafa Attribute
 # und Objektklassen
-# (C) 2009,2011 invis-server.org
+# (C) 2009,2011,2019 invis-server.org
 # Author: Stefan Schäfer <stefan@invis-server.org>
 
 # License: GPLv3
@@ -46,7 +46,7 @@ else
     echo -e "Für \"sharedstore\" werden nur die Werte 0 oder 1 akzeptiert"
     exit
 fi
-# echo $uid $zsso
+#echo $uid $zsso
 
 # Basis-Variablen
 basedn=`getconfdata $conffile "baseDN" "2"`
@@ -86,5 +86,5 @@ if [[ $iszu == "" ]]; then
     line12="add: zarafaSharedStoreOnly\n"
     line13="zarafaSharedStoreOnly: $zsso\n"
     line14="\n"
-    echo -e $line1$line2$line3$line4$line5$line6$line7$line8$line9$line10$line11$line12$line13$line14 |ldapmodify -x -Z -h $ldaphost -D $binddn -w $bindpw 
+    echo -e "$line1$line2$line3$line4$line5$line6$line7$line8$line9$line10$line11$line12$line13$line14" |ldapmodify -x -Z -h $ldaphost -D $binddn -w $bindpw 
 fi
