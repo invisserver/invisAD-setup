@@ -2,7 +2,7 @@
 name=Kopano-Webapp-Limited
 enabled=1
 autorefresh=1
-baseurl=https://download.kopano.io/limited/webapp:/final/openSUSE_Leap_42.2/
+baseurl=https://download.kopano.io/supported/webapp:/final/SLE_12_PHP7/
 path=/
 type=rpm-md
 keeppackages=0
