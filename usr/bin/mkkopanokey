@@ -21,5 +21,5 @@ keypath="/etc/invis/private"
 certpath="/etc/invis/certs"
 
 # Standardschluessel kopieren
-cp $keypath/mail-key.pem $keypath/kopano.pem
-cat $certpath/mail-cert.pem >> $keypath/kopano.pem
+cp $keypath/mail-key.pem $certpath/kopano.pem
+cat $certpath/mail-cert.pem >> $certpath/kopano.pem

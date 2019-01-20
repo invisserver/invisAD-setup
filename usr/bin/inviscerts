@@ -98,8 +98,8 @@ deploycerts() {
 	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/mail-key.pem
 	    # Kopano
 	    # Mail-Zertifikat und -Schluesel für Kopano in einer Datei kombinieren
-	    cp $confdir/private/mail-key.pem $confdir/private/kopano.pem
-	    cat $confdir/certs/mail-cert.pem >> $confdir/private/kopano.pem
+	    cp $confdir/private/mail-key.pem $confdir/certs/kopano.pem
+	    cat $confdir/certs/mail-cert.pem >> $confdir/certs/kopano.pem
 	    ;;
 	"vpn")
 	    mv $ersadir/private/$cn.p12 /srv/shares/service/VPN-Clients/Zertifikate/
