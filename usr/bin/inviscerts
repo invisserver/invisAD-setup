@@ -161,7 +161,7 @@ if [[ ! -f $ersadir/issued/$cn.crt ]]; then
     if [[ $stype != "vpn" ]]; then
 	ok=1
 	while [[ $ok == 1 ]]; do
-	    easyrsa build-server-full $cn nopass
+	    easyrsa --subject-alt-name="DNS:$cn" build-server-full $cn nopass
 	    ok=$?
 	    if [[ $ok == 1 ]]; then
 		cleanfail $cn
