@@ -118,6 +118,7 @@ case "$whichgroupware" in
 	chmod g+r /etc/kopano/*.cfg
 	
 	# Konfigurationsdaten einlesen
+	fqdn=`getconfdata "FQDN" "2"`
 	domain=`getconfdata "Domain" "2"`
 	basedn=`getconfdata "baseDN" "2"`
 	ldapmasterpw=`getpassword "LDAPAdminPW" "3"`
@@ -146,6 +147,10 @@ case "$whichgroupware" in
 
 	# LDAP Konfiguration anpassen
 	file="ldap.cfg"
+
+	string="ldapuri%ldaps://$fqdn"
+	changevalues $path $file "$string"
+
 	string="admin-secret%$ldapmasterpw"
 	changevalues $path $file "$string"
 
