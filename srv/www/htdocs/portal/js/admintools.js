@@ -1104,6 +1104,8 @@ function userAdd() {
 	var tmp_btn = new Element('button').update('Speichern');
 	tmp_btn.observe('click', function () {
 		var uid = lightbox.data.get('uid');
+		//change login-names to lower case.
+		var uid = uid.toLowerCase();
 		invis.setCookie('invis-request', lightbox.data.getHash().toJSON());
 		invis.request('script/adajax.php', userAddResponse, {c: 'user_create', u: uid, t: account_type});
 	});
