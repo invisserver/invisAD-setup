@@ -11,7 +11,7 @@ lDAPDisplayName: iscDhcpClass
 description: Represents information about a collection of related clients.
 subClassOf: top
 mustContain: cn
-mayContain: iscDhcpSubClassesDN
+mayContain: iscDhcpSubclassesDN
 mayContain: iscDhcpOptionsDN
 mayContain: iscDhcpStatements
 mayContain: iscDhcpComments
@@ -99,7 +99,7 @@ subClassOf: top
 mustContain: cn
 mustContain: iscDhcpFailOverPrimaryServer
 mustContain: iscDhcpFailOverSecondaryServer
-mustContain: iscDhcpFailoverPrimaryPort
+mustContain: iscDhcpFailOverPrimaryPort
 mustContain: iscDhcpFailOverSecondaryPort
 mayContain: iscDhcpFailOverResponseDelay
 mayContain: iscDhcpFailOverUnackedUpdates
