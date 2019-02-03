@@ -169,18 +169,6 @@ case "$whichgroupware" in
 	string="GEHEIM%$secret"
 	changevalues $path $file "$string"
 
-	## Locales anpassen
-	path="/etc/kopano/userscripts"
-	string="en_US%de_DE.UTF-8"
-	file="companies_common.sh"
-	changevalues $path $file "$string"
-
-	file="groups_common.sh"
-	changevalues $path $file "$string"
-
-	file="users_common.sh"
-	changevalues $path $file "$string"
-
 	# Webapp
 	path="/etc/kopano/webapp"
 	file="config.php"
