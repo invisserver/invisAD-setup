@@ -1,3 +1,6 @@
+# Last Modified: Mon Feb 11 17:48:02 2019
+#include <tunables/global>
+
 # ------------------------------------------------------------------
 #
 #    Copyright (C) 2009-2013 Canonical Ltd.
@@ -10,9 +13,8 @@
 # ------------------------------------------------------------------
 # vim: ft=apparmor
 
-#include <tunables/global>
 
-/usr/sbin/dovecot flags=(attach_disconnected) {
+/usr/sbin/dovecot flags=(attach_disconnected,complain) {
   #include <abstractions/authentication>
   #include <abstractions/base>
   #include <abstractions/dovecot-common>
@@ -20,9 +22,11 @@
   #include <abstractions/nameservice>
   #include <abstractions/ssl_certs>
   #include <abstractions/ssl_keys>
+  #include <local/usr.sbin.dovecot>
 
   capability chown,
   capability dac_override,
+  capability dac_read_search,
   capability fsetid,
   capability kill,
   capability net_bind_service,
@@ -30,40 +34,45 @@
   capability sys_chroot,
   capability sys_resource,
 
+  signal send set=int peer=/usr/lib/dovecot/auth,
+  signal send set=int peer=/usr/lib/dovecot/lmtp,
+  signal send set=kill peer=/usr/lib/dovecot/lmtp,
+  signal send set=quit peer=/usr/lib/dovecot/lmtp,
+
+  link /{,var/}run/dovecot/** -> /var/lib/dovecot/**,
+
+  /etc/SuSE-release r,
   /etc/dovecot/** r,
-  /etc/mtab r,
   /etc/invis/certs/mail-cert.pem r,
   /etc/invis/private/mail-key.pem r,
   /etc/lsb-release r,
-  /etc/SuSE-release r,
-  @{PROC}/@{pid}/mounts r,
+  /etc/mtab r,
   /usr/bin/doveconf rix,
   /usr/lib/dovecot/anvil mrPx,
   /usr/lib/dovecot/auth mrPx,
   /usr/lib/dovecot/config mrPx,
   /usr/lib/dovecot/dict mrPx,
-  /usr/lib/dovecot/dovecot-auth Pxmr,
-  /usr/lib/dovecot/imap Pxmr,
-  /usr/lib/dovecot/imap-login Pxmr,
+  /usr/lib/dovecot/dovecot-auth mrPx,
+  /usr/lib/dovecot/imap mrPx,
+  /usr/lib/dovecot/imap-login mrPx,
   /usr/lib/dovecot/lmtp mrPx,
   /usr/lib/dovecot/log mrPx,
   /usr/lib/dovecot/managesieve mrPx,
-  /usr/lib/dovecot/managesieve-login Pxmr,
+  /usr/lib/dovecot/managesieve-login mrPx,
   /usr/lib/dovecot/pop3 mrPx,
-  /usr/lib/dovecot/pop3-login Pxmr,
+  /usr/lib/dovecot/pop3-login mrPx,
   /usr/lib/dovecot/ssl-build-param rix,
   /usr/lib/dovecot/ssl-params mrPx,
+  /usr/lib/dovecot/stats mrix,
   /usr/sbin/dovecot mrix,
-  /usr/share/dovecot/protocols.d/   r,
+  /usr/share/dovecot/protocols.d/ r,
   /usr/share/dovecot/protocols.d/** r,
   /var/lib/dovecot/ w,
-  /var/lib/dovecot/* rwkl,
+  /var/lib/dovecot/* rwlk,
   /var/spool/postfix/private/auth w,
   /var/spool/postfix/private/dovecot-lmtp w,
   /{,var/}run/dovecot/ rw,
   /{,var/}run/dovecot/** rw,
-  link /{,var/}run/dovecot/** -> /var/lib/dovecot/**,
+  @{PROC}/@{pid}/mounts r,
 
-  # Site-specific additions and overrides. See local/README for details.
-  #include <local/usr.sbin.dovecot>
 }
