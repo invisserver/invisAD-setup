@@ -121,6 +121,9 @@ case "$whichgroupware" in
 	string="ldaphostname%$ldaphost"
 	changevalues $path $file "$string"
 
+	# copy dh-parameters file from postfix to dovecot
+	cp /etc/postfix/dh.pem /etc/dovecot
+
 	# Benutzerkonto fuer das Mailhandling anlegen
 	groupadd -r -g 399 vmail| tee -a $LOGFILE | pgbox
 	useradd -r -u 399 -d /var/spool/mail -c "Benutzerkonto fuer Dovecot Mailhandling" -s /bin/false -g vmail vmail| tee -a $LOGFILE | pgbox
