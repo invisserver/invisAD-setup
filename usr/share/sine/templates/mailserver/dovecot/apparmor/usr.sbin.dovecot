@@ -1,4 +1,4 @@
-# Last Modified: Mon Feb 11 17:48:02 2019
+# Last Modified: Mon Feb 18 08:32:28 2019
 #include <tunables/global>
 
 # ------------------------------------------------------------------
@@ -74,5 +74,6 @@
   /{,var/}run/dovecot/ rw,
   /{,var/}run/dovecot/** rw,
   @{PROC}/@{pid}/mounts r,
+  owner /etc/invis/certs/ca.crt r,
 
 }
