@@ -6,6 +6,8 @@ apache2-mod_fcgid
 php7-fastcgi
 php7-fileinfo
 php7-opcache
+php7-posix
+php7-pcntl
 phpMyAdmin
 phpPgAdmin
 phpldapadmin
