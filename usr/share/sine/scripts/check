@@ -105,9 +105,16 @@ if [[ $prepok == "0" ]]; then
     tar -xf $TEMPLATEDIR/$modulename/grub/invis8.tar.gz -C /boot/grub2/themes/ 2>&1| tee -a $LOGFILE | pgbox 25 110 
         
     # Grub2 Konfiguration erstellen
+    # get Root FS-type
+    rootfs=`cat /etc/fstab | grep "/\s"|tr -s " "|cut -d " " -f3`
     path="/etc/default"
     mv $path/grub $path/grub.opensuse
-    cp $TEMPLATEDIR/$modulename/grub/grub $path/
+    # copy grub config in dependency of FS-Type
+    if [[ $rootfs == "btrfs" ]] ; then
+	cp $TEMPLATEDIR/$modulename/grub/grub.btrfs $path/grub
+    else
+	cp $TEMPLATEDIR/$modulename/grub/grub.nobtrfs $path/grub
+    fi
     string="invisversion%$INVISVERSION"
     changevalues "$path" grub "$string"
     grub2-mkconfig -o /boot/grub2/grub.cfg  2>&1| tee -a $LOGFILE | pgbox 25 110 
