@@ -139,12 +139,6 @@ case "$whichgroupware" in
 	    changevalues $path $file "$string"
 	fi
 	
-	## Plugin-Path bei Bedarf anpassen
-	if [[ $SYSLIBDIR == "/usr/lib64" ]]; then
-	    string="/usr/lib/kopano%$SYSLIBDIR/kopano"
-	    changevalues $path $file "$string"
-	fi
-
 	# LDAP Konfiguration anpassen
 	file="ldap.cfg"
 
