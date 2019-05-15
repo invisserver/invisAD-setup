@@ -956,7 +956,9 @@ function groupCreate() {
 	$result = $adldap->group()->infoCollection($cookie_data['cn'],array('*'));
 	$rid = ridfromsid(bin_to_str_sid($result->objectsid));
 	$gidnumber = $SFU_GUID_BASE + $rid;
-	
+	// Gruppen-Mailadresse festlegen
+	$email = $cn."@".$DOMAIN;
+
 	// Gruppe, je nach Gruppentyp modifizieren
 	switch ($grouptype) {
 
@@ -970,12 +972,12 @@ function groupCreate() {
 		// Typ Windows+Unix+Groupware / Team+Gruppenmail
 		$attributes = array(
 		    "gidNumber"=>$gidnumber,
-		    "zarafaAccount"=>1
+		    "zarafaAccount"=>1,
+		    "mail"=>$email
 		);
 		break;
 	case 2:
 		// Typ Verteiler
-		$email = $cn."@".$DOMAIN;
 		$attributes = array(
 		    "zarafaAccount"=>1,
 		    "groupType"=>2,
