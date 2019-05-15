@@ -43,6 +43,8 @@ if ($bind) {
     $justthese = array( "fspExtMailAddress", "fspLocalMailAddress", "fspExtMailProto", "fspExtMailUsername", "fspExtMailServer", "fspExtMailUserPw", "fspMailfetchOpts");
     $entries=search($ditcon, $LDAP_SUFFIX_AUI, $filter, $justthese);
 
+    
+
     // Warum auch immer, ich musste das erste Element des entries-Arrays löschen.
     array_shift($entries);
 
@@ -61,7 +63,11 @@ if ($bind) {
 	$extuser = $entries[$i]["fspextmailusername"][0];
 	$localaddress = $entries[$i]["fsplocalmailaddress"][0];
 	$margin = ("&nbsp;");
-	$inhalt_s1 = array("<input type=submit value=Auswählen>","60");
+	if (count($entries) > 1) { 
+		$inhalt_s1 = array("<input type=submit value=Auswählen>","60");
+	} else {
+		$inhalt_s1 = array("&nbsp;","60");
+	}
 	$inhalt_s2 = array("<input type=hidden name=account value=$Adresse><input type=hidden name=localaddress value=$localaddress>","10");
 	$inhalt_s3 = array("Account: <font color=\"#EE4000\"><b>$Adresse</b></font> - $Server - $extuser<p>","100%");
 	$val_n = array($inhalt_s1, $inhalt_s2, $inhalt_s3);
