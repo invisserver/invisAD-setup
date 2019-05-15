@@ -8,12 +8,12 @@ if ($bind) {
     //$dn=("cn=$corusername,$COR_LDAP_SUFFIX");
     $filter="(&(fspMainMailAddress=*)(fspLocalMailAddress=$corusername@*))";
     $entries=search($ditcon, $coruserdn, $filter);
-    if ($entries["count"] == 1) { 
+    //if ($entries["count"] == 1) { 
 	// Löschen der alten primär Adresse
 	$dn2 = ("cn=$localaccount,$coruserdn");
 	ldap_delete($ditcon, $dn2);
-    }
-    if ($entries["count"] == 0) { 
+    //}
+    //if ($entries["count"] == 0) { 
 	// Daten vorbereiten
 	$account2["fspLocalMailAddress"]="$luser";
 	$account2["fspLocalMailHost"]="$COR_LOCAL_IMAP_SERVER";
@@ -23,7 +23,7 @@ if ($bind) {
 	$dn3 = ("cn=$luser,$coruserdn");
 	// hinzufügen der neuen primär Adresse
 	$r=ldap_add($ditcon, $dn3, $account2);
-    }
+    //}
 
     // Alles folgende muss evtl. ins vorherige if.
     // Attribut otherMailBox anpassen
