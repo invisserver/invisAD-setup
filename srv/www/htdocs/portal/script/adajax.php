@@ -1004,7 +1004,7 @@ function groupCreate() {
 	// 1: $cn (Gruppenname)
 	// 2: $dirtype (0,1,...) Soll ein Gruppenverzeichnis angelegt werden? (optional)
 	// 3: $template, Vorlagenverzeichnisname
-	if ($ok) {
+	if ($ok and $grouptype < 2) {
 		shell_exec("sudo /usr/bin/creategroupshare ".escapeshellarg($cn)." ".escapeshellarg($dirtype)." ".escapeshellarg($template).";");
 	}
 	
