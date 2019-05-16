@@ -1279,7 +1279,8 @@ function hostList($conn) {
 					$type = 'Client';
 			}
 			$entry['TYPE'] = $type;
-			
+			// Host Typ protokollieren
+			error_log("Host-Type:".$type);
 			array_push($json, $entry);
 		}
 		return $json;

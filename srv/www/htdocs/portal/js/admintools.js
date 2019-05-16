@@ -2,7 +2,7 @@
  * js/admintools.js v1.2
  * functions for user/group/host administration
  * (C) 2009 Daniel T. Bender, invis-server.org
- * (C) 2010-2018 Stefan Schäfer, invis-server.org
+ * (C) 2010-2019 Stefan Schäfer, invis-server.org
  * (C) 2013,2015,2018 Ingo Göppert, invis-server.org
  * License GPLv3
  * Questions: http://wiki.invis-server.org
@@ -21,6 +21,8 @@ var ACCOUNT_TYPE = new Array('Gast', 'Mailkonto', 'Windows', 'Windows+Unix', 'Wi
 var GROUP_TYPE = new Array('Team', 'Team+Gruppenmail', 'Mail-Verteiler', 'Sonstige');
 var USERLIST_FLAG = new Array (true,true,true,true,true,true,true,true,true);
 var GROUPLIST_BI_FLAG = false;
+var HOST_TYPE = new Array('Client', 'Drucker', 'Server', 'IP-Gerät');
+var HOSTLIST_FLAG = new Array(true,true,true,true);
 var PINGER_FLAG = false;
 var PINGER_REQUEST = [];
 
@@ -74,7 +76,7 @@ function hostsort(a, b) {
 	    return (a['iscdhcpstatements'] < b['iscdhcpstatements']) ? -1 : (a['iscdhcpstatements'] > b['iscdhcpstatements'])? 1 : 0;
 } 
 
-// filter paged data
+// filter paged data users
 function filterData(data) {
 	if (data != null)
 		PAGED_DATA_UNSORTED = data;
@@ -82,6 +84,7 @@ function filterData(data) {
 	PAGED_DATA = new Array();
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
+		    console.log(item['TYPE']);
 		    if (item['TYPE'] < USERLIST_FLAG.length)
 		    {
 			if (USERLIST_FLAG[item['TYPE']])
@@ -108,6 +111,42 @@ function filterGroups(data) {
 	
 	PAGED_DATA.sort(groupsort);
 }
+
+// filter paged data hosts
+function filterHosts(data) {
+	if (data != null)
+		PAGED_DATA_UNSORTED = data;
+	
+	PAGED_DATA = new Array();
+	//PAGED_DATA = data;
+	// Hier geht es schief. Das filtern nach "item['TYPE']" funktioniert nicht.
+	// Im Moment steht die Typenbezeichnung im Idex, es muss zum Filtern aber eine Nummer sein...
+	// ... also Typen uebersetzen.
+	PAGED_DATA_UNSORTED.each(
+		function (item) {
+		//Typenzuordnung Quick'n'Dirty
+		if (item['TYPE'] == 'Client')
+		    var typnr = 0;
+		if (item['TYPE'] == 'Drucker')
+		    var typnr = 1;
+		if (item['TYPE'] == 'Server')
+		    var typnr = 2;
+		if (item['TYPE'] == 'IP-Gerät')
+		    var typnr = 3;
+		    console.log(item['TYPE']);
+		    //if (item['TYPE'] < HOSTLIST_FLAG.length)
+		    if ( typnr < HOSTLIST_FLAG.length)
+		    {
+			console.log(HOSTLIST_FLAG[item['TYPE']]);
+			if (HOSTLIST_FLAG[typnr])
+			    PAGED_DATA.push(item);
+		    }
+		}
+	);
+	
+	PAGED_DATA.sort(hostsort);
+}
+
 
 //**********************************************************************
 // display lists
@@ -143,8 +182,6 @@ function userListResponse(request) {
 	content.insert(node);
 	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><tfoot><tr><td>Alle mit "*" gekennzeichneten Felder sind Pflichtfelder beim Anlegen eines Benutzers.<br>Sie können eine gültige Email-Adresse angeben. Geben Sie keine Email-Adresse an, wird die interne Adresse, bestehend aus "benutzername@lokale.domain" als Email-Adresse gesetzt.</td></tr></tfoot><tbody id="result-body"></tbody></table>');
 }
-
-
 
 // populate userlist
 function populateUserList(event, page) {
@@ -215,15 +252,13 @@ function populateUserList(event, page) {
 	}
 }
 
-
 // build grouplist
 
 function groupListResponse(request) {
 	var title = $('admin-content-title');
 	var content = $('admin-content-content');
 	content.innerHTML = "";
-	
-	stopAllPingers();
+		stopAllPingers();
 	
 	//PAGED_DATA = request.responseText.evalJSON();
 	//PAGED_DATA.sort(groupsort);
@@ -655,8 +690,6 @@ function doodat(request) {
 	} 
 }
 
-
-
 // create entry mod request
 function build_user_mod_request() {
 	var node = $('userbox_content');
@@ -679,14 +712,14 @@ function build_user_mod_request() {
 // 
 
 function hostListResponse(request) {
-	PAGED_DATA = request.responseText.evalJSON();
-	PAGED_DATA.sort(hostsort);
+	//PAGED_DATA = request.responseText.evalJSON();
+	//PAGED_DATA.sort(hostsort);
 	
 	var title = $('admin-content-title');
 	var content = $('admin-content-content');
 	content.innerHTML = "";
 	
-	//filterData(request.responseText.evalJSON());
+	filterHosts(request.responseText.evalJSON());
 	PAGE_CURRENT = 0;
 	
 	// header
@@ -761,10 +794,9 @@ function populateHostList(event, page) {
 		td_ip.insert(ip[1]);
 		
 		var td_type = new Element('td');
+		// Hier ist der Unterschied zu populateUsersList:
 		td_type.insert(host['TYPE']);
-		
-		// Versuch eine neue Spalte in die Tabelle einfuegen fuer den Wert: Standort
-		// Array-Index "LOCATION" exitstiert noch nicht in der Array-Variable "host"
+		//td_type.insert(HOST_TYPE[host.TYPE]);
 		var td_location = new Element('td');
 		td_location.insert(host['iscdhcpcomments']);
 
@@ -785,6 +817,31 @@ function populateHostList(event, page) {
 		
 		$('result-body').insert(tr);
 	}
+
+	// Versuch Checkboxen einzufuegen
+	var check2 = new Array (HOSTLIST_FLAG.length);
+	
+	for (i = 0; i < check2.length; i++)
+	{
+	    // host type selector
+	    check2[i] = new Element('input', {'type': 'checkbox'});
+	    check2[i].checked = HOSTLIST_FLAG[i];
+	    check2[i].indexNum = i;
+	    
+	    check2[i].observe('click',
+	    	function(e) {
+	    		HOSTLIST_FLAG[this.indexNum] = this.checked;
+	    		filterHosts();
+	    		populateHostList(null, 0);
+	    	}
+	    )
+	
+	    $('result-paging').insert(check2[i]);
+	    $('result-paging').insert(HOST_TYPE[i] + ' einblenden');
+	    if ((i > 0) && ((i%3 == 0) || (i == check2.length - 1)))
+		$('result-paging').insert('<br/>');
+	}
+
 	// host pinger selector
 	var check = new Element('input', {'type': 'checkbox'});
 	check.checked = PINGER_FLAG;
@@ -797,6 +854,7 @@ function populateHostList(event, page) {
 
 	$('result-paging').insert(check);
 	$('result-paging').insert(' Ping-Test aktivieren<br/>');
+
 
 	// table with current page data
 	var n_entries = PAGED_DATA.length;
@@ -825,7 +883,6 @@ function stopAllPingers() {
 	}
     }
 }
-
 
 //
 // Dienste
@@ -1364,8 +1421,6 @@ function groupAdd(request) {
 	listSort($('grouplist_out'));
 	lightbox.update();
 }
-
-
 
 function groupAddRequest() {
 	var cn = lightbox.data.get('cn');
