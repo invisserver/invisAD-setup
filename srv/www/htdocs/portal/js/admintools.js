@@ -1620,6 +1620,8 @@ function hostDiscoverResponse(request) {
 	lightbox.update();
 }
 
+// invis-Portal Spezialfunktionen
+
 function functionListResponse(request) {
 	var title = $('admin-content-title');
 	var content = $('admin-content-content');
@@ -1635,4 +1637,12 @@ function functionListResponse(request) {
 	var node = new Element('table', {'onclick': 'exec_fixgsacls();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Fix Groupshare ACLs</td><td style="vertical-align: middle; font-weight: normal;">Die Zugriffs- und Besitzrechte der Gruppenverzeichnisse werden zurückgesetzt.</td></tr>');
 	content.insert(node);
 
+}
+
+function exec_membermod() {
+	invis.request('script/scriptexecuter.php', functionListResponse, {c: 'membermod'});
+}
+
+function exec_fixgsacls() {
+	invis.request('script/scriptexecuter.php', functionListResponse, {c: 'fixgsacls'});
 }
