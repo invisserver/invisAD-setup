@@ -22,6 +22,7 @@
 				<li onclick="invis.request('script/adajax.php', groupListResponse, {c: 'group_list'});" title="Gruppen ... naja">Gruppen</li>
 				<li onclick="invis.request('script/adajax.php', hostListResponse, {c: 'host_list'});" title="Netzwerk ... ach hör doch auf ...!!">Netzwerk</li>
 				<li onclick="invis.request('script/adajax.php', serviceListResponse, {c: 'service_list'});" title="Dienste ... was es nicht alles gibt ;-)">Dienste</li>
+				<li onclick="invis.request('script/adajax.php', functionListResponse, {c: 'function_list'});" title="Spezialfunktionen ... Finger weg!">Funktionen</li>
 			</ul>
 			<br /><b style="color: #b0b0b0;">externe Tools</b><br />
 			<ul>

@@ -1619,3 +1619,10 @@ function hostDiscoverResponse(request) {
 	lightbox.addButton('<button onclick="lightbox.hide();">Beenden</button>');
 	lightbox.update();
 }
+
+function functionListResponse(request) {
+	var title = $('admin-content-title');
+	var content = $('admin-content-content');
+	content.innerHTML = "";
+
+}
