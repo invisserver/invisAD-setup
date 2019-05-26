@@ -1,0 +1,79 @@
+#!/bin/bash
+# Kategorie: portal
+# Script zur Ergaenzung von Maschinen-Konten um SFU-Attribute
+# (C) 2019 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+sam="/var/lib/samba/private/sam.ldb"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Daten aus Konfiguration holen
+basedn=`getconfdata $conffile "baseDN" "2"`
+domain=`getconfdata $conffile "intDomain" "2"`
+nisdomain=`echo $domain | cut -d "." -f1`
+
+# get server hostname
+hn=`hostname`
+
+# create hostlist
+hosts=(`pdbedit -L |grep "$:" |grep -v ${hn^^} |cut -d ":" -f 1`)
+
+for host in ${hosts[@]} ; do
+    name=`ldbsearch -H $sam "(&(samaccountname=$host)(objectclass=posixAccount))" name |grep ^name:| cut -d " " -f2`
+    if [[ -z $name ]]; then
+
+    # RID der Maschine ermitteln
+    rid=`pdbedit -Lv $host  2>/dev/null| grep "User SID" | cut -d "-" -f8`
+	membername=`echo $host |tr -d '$'`
+	echo $membername
+	# Arbeitsdatei anlegen
+	workfile="/tmp/machineattributes.ldif"
+	#echo "Maschinenkonto erweitern"
+	echo "dn: CN=$membername,CN=Computers,$basedn" > $workfile
+	echo "changetype: modify" >> $workfile
+	echo "add: objectclass" >> $workfile
+	echo "objectclass: posixAccount" >> $workfile
+	echo "add: uidNumber" >> $workfile
+	echo "uidNumber: $rid" >> $workfile
+	echo "add: gidNumber" >> $workfile
+	echo "gidNumber: 515" >> $workfile
+	echo "add: mssfu30nisDomain" >> $workfile
+	echo "mssfu30nisDomain: $nisdomain" >> $workfile
+	echo "add: loginShell" >> $workfile
+	echo "loginShell: /bin/false" >> $workfile
+	echo "add: unixHomeDirectory" >> $workfile
+	echo "unixHomeDirectory: /dev/null" >> $workfile
+	echo "add: description" >> $workfile
+	echo "description: Computer" >> $workfile
+
+	#ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
+	ldbmodify -H /var/lib/samba/private/sam.ldb $workfile
+
+	# ServicePrincipalName for NFS with GSSAPI
+	samba-tool spn add "nfs/$membername.$domain" "$host"
+    fi
+done
+
