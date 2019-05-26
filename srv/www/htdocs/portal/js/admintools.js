@@ -1625,4 +1625,14 @@ function functionListResponse(request) {
 	var content = $('admin-content-content');
 	content.innerHTML = "";
 
+	content.insert('<table id="result-table" cellspacing="0" cellpadding="0"><thead><tr><th class="name">Funktion</th><th class="name">Beschreibung</th></tr></thead><tbody id="result-body"></tbody></table>');
+
+	// Funktionsschaltflaechen einfuegen
+	// membermod button
+	var node = new Element('table', {'onclick': 'exec_membermod();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Maschinenkonten erweitern</td><td style="vertical-align: middle; font-weight: normal;">Allen Maschinenkonten werden UNIX-Attribute hinzugefügt.</td></tr>');
+	content.insert(node);
+
+	var node = new Element('table', {'onclick': 'exec_fixgsacls();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Fix Groupshare ACLs</td><td style="vertical-align: middle; font-weight: normal;">Die Zugriffs- und Besitzrechte der Gruppenverzeichnisse werden zurückgesetzt.</td></tr>');
+	content.insert(node);
+
 }
