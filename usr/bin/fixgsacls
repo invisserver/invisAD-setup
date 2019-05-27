@@ -37,16 +37,25 @@ setrights() {
 	setfacl -R -m group:"$2":rwx "$1"
 }
 
-# Gruppenverzeichnis
+# Variablen
 groupsharepath="/srv/shares/gruppen"
 dasipath=`getconfdata $conffile "DasiDir" "2"`
 aclsafepath="$dasipath/vollsicherungen/acls"
 datestring=`date "+%Y%m%d-%N"`
+tmpfile="/tmp/iportal.tmp"
+
+# remove tempfile, if exists
+if [[ -f $tmpfile ]]; then
+    rm $tmpfile
+fi
 
 # Zielverzeichnis anlegen, wenn nicht existent
 if [[ ! -d $aclsafepath ]]; then
     mkdir -p $aclsafepath
 fi
+
+# returncode
+ok=0
 
 # Alle ACLs unter /srv/shares/gruppen sichern, dann loeschen
 getfacl -Rn $groupsharepath > $aclsafepath/groupshare-$datestring.acl 2> /dev/null
@@ -63,6 +72,7 @@ for dir in `find $groupsharepath -type d`; do
 	# Absolute ACLs setzen
 	#echo "Gruppe: $isgroup"
 	setrights $dir $isgroup
+	(( ok=$ok + $? ))
     else
 	# wenn nicht, dann Verzeichnis umbenennen z.B. xyz.nogroup
 	if [[ $dir != $groupsharepath ]]; then
@@ -72,3 +82,6 @@ for dir in `find $groupsharepath -type d`; do
 	fi
     fi
 done
+
+# writing returncode to tempfile
+echo $ok > $tmpfile
