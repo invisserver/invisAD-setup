@@ -8,6 +8,9 @@
  */
 if (!isset($_COOKIE['invis'])) die();
 
+// returncode file
+$rtcfile = 'tmp/iportal.tmp';
+
 // siwtch GET/POST
 // !!REMOVE!!
 if (isset($_GET['c'])) {
@@ -44,7 +47,10 @@ if ( $CMD == "membermod" )
 if ( $CMD == "fixgsacls" )
     $val = shell_exec("sudo /usr/bin/fixgsacls");
 
-error_log("Shell-Rueckgabe: $CMD - $val");
+// read return code of the executed command
+$returncode = file_get_contents("$rtcfile");
+
+error_log("Shell-Rueckgabe: $CMD - $returncode");
 
 //	echo json_encode(array_values($gibtsnochnicht));
 ?>

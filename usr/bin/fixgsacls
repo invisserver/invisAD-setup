@@ -42,7 +42,7 @@ groupsharepath="/srv/shares/gruppen"
 dasipath=`getconfdata $conffile "DasiDir" "2"`
 aclsafepath="$dasipath/vollsicherungen/acls"
 datestring=`date "+%Y%m%d-%N"`
-tmpfile="/tmp/iportal.tmp"
+tmpfile="/srv/www/htdocs/portal/tmp/iportal.tmp"
 
 # remove tempfile, if exists
 if [[ -f $tmpfile ]]; then

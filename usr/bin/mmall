@@ -24,7 +24,7 @@ passfile="/etc/invis/invis-pws.conf"
 sam="/var/lib/samba/private/sam.ldb"
 
 # Tempfile
-tmpfile="/tmp/iportal.tmp"
+tmpfile="/srv/www/htdocs/portal/tmp/iportal.tmp"
 
 # remove tempfile, if exists
 if [[ -f $tmpfile ]]; then
