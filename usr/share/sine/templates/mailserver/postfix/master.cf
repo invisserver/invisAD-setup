@@ -110,7 +110,3 @@ proxywrite unix -       -       n       -       1       proxymap
 dovecot	  unix	-	n	n	-	-	pipe
     flags=DRhu user=vmail:vmail	argv=/usr/lib/dovecot/deliver
     -f $sender -d $recipient
-
-## Zarafa Transport -- FSP -- Stefan Schaefer -- 14.08.2011
-zarafa	  unix	-	n	n	-	10	pipe
-    flags= user=vmail argv=/usr/sbin/zarafa-dagent ${user}
