@@ -302,6 +302,8 @@ changevalues $path $file "$string"
 # PKI initialisieren
 easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
 
+clear
+
 # CA aufbauen
 easyrsa build-ca
 
@@ -342,6 +344,8 @@ cat $path/$domain/ca.crt $path/$domain/crl.pem > $path/$domain/crl-chain.pem
 msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren LDAP-Server erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des LDAP-Server Schlüsselsatzes"
 
+clear
+
 inviscerts intern 2>&1| tee -a $LOGFILE
 chown -R :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE
 chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $LOGFILE
@@ -349,6 +353,8 @@ chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $LOGFILE
 # internal mailserver cert and key
 msgbox "Es wird jetzt ein SSL-Schlüsselsatz für Ihren Mailserver erzeugt.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Mailserver Schlüsselsatzes"
+
+clear
 
 inviscerts ms 2>&1| tee -a $LOGFILE
 usermod -a -G pkeys postfix 2>&1| tee -a $LOGFILE | pgbox
@@ -358,6 +364,8 @@ usermod -a -G mail postfix 2>&1| tee -a $LOGFILE | pgbox
 # external key and cert, only needed if let's encrypt certs are not used
 msgbox "Es wird jetzt ein SSL-Schlüsselsatz für den externen Server-Zugriff erzeugt.\nDieses Schlüsselpaar kann später durch echte Zertifikate von Let's Encrypt ersetzt werden.\n\n
 Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." "Erzeugen des Schlüsselsatzes für externen Zugriff"
+
+clear
 
 inviscerts extern 2>&1| tee -a $LOGFILE
 
