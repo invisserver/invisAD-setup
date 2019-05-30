@@ -1,4 +1,4 @@
-# Last Modified: Sun Nov  4 14:44:28 2018
+# Last Modified: Thu May 30 15:30:02 2019
 #include <tunables/global>
 
 /usr/sbin/samba {
@@ -52,6 +52,7 @@
   /usr/lib64/samba/ldb/*.so mr,
   /usr/lib64/samba/process_model/standard.so mr,
   /usr/lib64/samba/service/*.so mr,
+  /usr/sbin/rndc mrix,
   /usr/sbin/samba mr,
   /usr/sbin/samba_dnsupdate rPx,
   /usr/sbin/samba_kcc rPx,
@@ -68,7 +69,6 @@
   owner /run/user/0/krb5cc/ w,
   owner /run/user/0/krb5cc/* rw,
   owner /usr/bin/env mr,
-  owner /usr/lib/mit/sbin/krb5kdc mr,
   owner /usr/lib64/ r,
   owner /usr/lib64/krb5/plugins/authdata/* mr,
   owner /usr/lib64/krb5/plugins/kdb/* mr,
@@ -76,5 +76,6 @@
   owner /usr/lib64/samba/vfs/* mr,
   owner /usr/sbin/winbindd mr,
   owner /var/log/samba/mit_kdc.log w,
+  owner /{usr/,}lib{,32,64}/** mr,
 
 }

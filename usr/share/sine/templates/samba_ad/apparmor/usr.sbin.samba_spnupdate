@@ -1,4 +1,4 @@
-# Last Modified: Sun Nov  4 14:31:05 2018
+# Last Modified: Thu May 30 14:36:51 2019
 #include <tunables/global>
 
 /usr/sbin/samba_spnupdate {
@@ -20,5 +20,7 @@
   /usr/sbin/samba_spnupdate r,
   owner /run/user/0/krb5cc/* w,
   owner /run/user/0/krb5cc/primary r,
+  owner /usr/bin/python3.6 mr,
+  owner /usr/sbin/ r,
 
 }
