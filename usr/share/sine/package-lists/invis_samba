@@ -4,3 +4,4 @@ samba-client
 samba-winbind
 samba-doc
 samba-libs
+ldb-tools
