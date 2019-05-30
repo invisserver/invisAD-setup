@@ -266,13 +266,23 @@ path="$SINEWORKINGDIR/ldif"
 done } 2>&1| tee -a $LOGFILE | pgbox
 
 # LDAP fuellen
+sam="/var/lib/samba/private/sam.ldb"
 pgsubtitle="Ergänzende LDAP Daten werden eingepflegt"
 { for x in $path/*; do
     #echo $x
-    ldbadd -v -H /var/lib/samba/private/sam.ldb $x
+    ldbadd -v -H  $sam $x
 done } 2>&1| tee -a $LOGFILE | pgbox
     
-    
+# Extend DHCP Server node 
+# Henne und Ei Problem
+dn=`ldbsearch -H $sam "$fqdn" dn |grep ^dn:`
+workfile="$SINEWORKINGDIR/dhcpserver.ldif"
+echo $dn > $workfile
+echo "changetype: modify" >> $workfile
+echo "add: iscDhcpServiceDN" >> $workfile
+echo "iscDhcpServiceDN: CN=DHCP Config,CN=DHCP-Server,CN=invis-server,$basedn" >> $workfile
+ldbmodify -v -H $sam $workfile 2>&1| tee -a $LOGFILE | pgbox
+
 # run dbcheck for ad
 pgsubtitle="LDAP Verzeichnis wird geprueft und etwaige Fehler behoben."
 samba-tool dbcheck --fix --yes 2>&1| tee -a $LOGFILE | pgbox

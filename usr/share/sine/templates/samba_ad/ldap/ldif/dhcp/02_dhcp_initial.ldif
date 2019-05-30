@@ -6,7 +6,8 @@ dn: CN=invisfqdn,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
 cn: invisfqdn
 objectClass: top
 objectClass: iscDhcpServer
-iscDhcpServiceDN: CN=DHCP Config,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
+# Wird via ldbmodify nachgefuettert, Henne und Ei Problem
+#iscDhcpServiceDN: CN=DHCP Config,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
 
 # Basis Konfiguration
 dn: CN=DHCP Config,CN=DHCP-Server,CN=invis-server,DC=invis-net,DC=loc
