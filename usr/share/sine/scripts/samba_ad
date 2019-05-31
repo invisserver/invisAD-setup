@@ -275,7 +275,7 @@ done } 2>&1| tee -a $LOGFILE | pgbox
     
 # Extend DHCP Server node 
 # Henne und Ei Problem
-dn=`ldbsearch -H $sam "$fqdn" dn |grep ^dn:`
+dn=`ldbsearch -H $sam "CN=$fqdn" dn |grep ^dn:`
 workfile="$SINEWORKINGDIR/dhcpserver.ldif"
 echo $dn > $workfile
 echo "changetype: modify" >> $workfile
