@@ -3,15 +3,11 @@ Sie haben die Installation Ihres invis-Servers abgeschlossen.
 
 Sollte etwas schief gegangen sein, ist ab hier leider Handarbeit
 angesagt. Wenn Sie bei der Fehlersuche Hilfe benötigen oder Fehler
-im Setup-Script feststellen, wenden Sie sich bitte an unsere Mailing-
-listen:
-    Anwender:
-    https://ml.invis-server.org/mailman/listinfo/invis-user
-    Entwickler:
-    https://ml.invis-server.org/mailman/listinfo/invis-dev
-Alternativ können Sie sich auch unter:
-    https://progress.opensuse.org
-registrieren und uns dort kontaktieren.
+im Setup-Script feststellen nutzen Sie bitte unsere Foren unter:
+
+    https://progress.opensuse.org/projects/invis-server/boards
+
+Die Nutzung der Foren erfordert eine kostenfreie Registrierung.
 
 Im Anschluss an die Installation sollten Sie beginnen die installierten
 Applikationen (Kopano, WaWision, openVPN, Dokuwiki usw.) einzurichten.
