@@ -9,7 +9,7 @@
 if (!isset($_COOKIE['invis'])) die();
 
 // returncode file
-$rtcfile = 'tmp/iportal.tmp';
+$rtcfile = '../tmp/iportal.tmp';
 
 // siwtch GET/POST
 // !!REMOVE!!
@@ -52,5 +52,5 @@ $returncode = file_get_contents("$rtcfile");
 
 error_log("Shell-Rueckgabe: $CMD - $returncode");
 
-//	echo json_encode(array_values($gibtsnochnicht));
+echo json_encode($returncode);
 ?>

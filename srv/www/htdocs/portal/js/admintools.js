@@ -1639,10 +1639,58 @@ function functionListResponse(request) {
 
 }
 
+// Script ausfuehren
 function exec_membermod() {
-	invis.request('script/scriptexecuter.php', functionListResponse, {c: 'membermod'});
+	lightbox.show(500, true);
+	lightbox.setWaitStatus(true);
+	invis.request('script/scriptexecuter.php', exec_membermodResponse, {c: 'membermod'});
 }
 
+// Ergebnis azeigen
+function exec_membermodResponse(request) {
+	lightbox.setWaitStatus(false);
+	var data = request.responseText.evalJSON(true);
+	
+	lightbox.setTitle(new Element('div', {
+		'class': 'section-title'
+	}).update('Ergebnis'));
+
+	var box = new Element('text');
+	lightbox.getContent().insert(box);
+	if (data == 0) {
+	    box.insert('<div align="center"><b>Das Script wurde erfolgreich ausgeführt.</b></div>');
+	} else {
+	    box.insert('<div align="center"><b>Das Script meldet Fehler.</b><br>Bitte wenden Sie sich an Ihren Administrator.<br>Fehlercode: ' + data + '</div>');
+	}
+
+	lightbox.addButton('<button onclick="lightbox.hide();">OK</button>');
+	lightbox.update();
+}
+
+// Script ausfuehren
 function exec_fixgsacls() {
-	invis.request('script/scriptexecuter.php', functionListResponse, {c: 'fixgsacls'});
+	lightbox.show(500, true);
+	lightbox.setWaitStatus(true);
+	invis.request('script/scriptexecuter.php', exec_fixgsaclsResponse, {c: 'fixgsacls'});
+}
+
+// Ergebnis anzeigen
+function exec_fixgsaclsResponse(request) {
+	lightbox.setWaitStatus(false);
+	var data = request.responseText.evalJSON(true);
+	
+	lightbox.setTitle(new Element('div', {
+		'class': 'section-title'
+	}).update('Ergebnis'));
+
+	var box = new Element('text');
+	lightbox.getContent().insert(box);
+	if (data == 0) {
+	    box.insert('<div align="center"><b>Das Script wurde erfolgreich ausgeführt.</b></div>');
+	} else {
+	    box.insert('<div align="center"><b>Das Script meldet Fehler.</b><br>Bitte wenden Sie sich an Ihren Administrator.<br>Fehlercode: ' + data + '</div>');
+	}
+
+	lightbox.addButton('<button onclick="lightbox.hide();">OK</button>');
+	lightbox.update();
 }
