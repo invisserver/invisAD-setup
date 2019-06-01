@@ -84,7 +84,7 @@ function filterData(data) {
 	PAGED_DATA = new Array();
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
-		    console.log(item['TYPE']);
+		    //console.log(item['TYPE']);
 		    if (item['TYPE'] < USERLIST_FLAG.length)
 		    {
 			if (USERLIST_FLAG[item['TYPE']])
@@ -133,11 +133,11 @@ function filterHosts(data) {
 		    var typnr = 2;
 		if (item['TYPE'] == 'IP-Gerät')
 		    var typnr = 3;
-		    console.log(item['TYPE']);
+		    //console.log(item['TYPE']);
 		    //if (item['TYPE'] < HOSTLIST_FLAG.length)
 		    if ( typnr < HOSTLIST_FLAG.length)
 		    {
-			console.log(HOSTLIST_FLAG[item['TYPE']]);
+			//console.log(HOSTLIST_FLAG[item['TYPE']]);
 			if (HOSTLIST_FLAG[typnr])
 			    PAGED_DATA.push(item);
 		    }

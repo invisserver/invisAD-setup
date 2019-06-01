@@ -85,3 +85,5 @@ done
 
 # writing returncode to tempfile
 echo $ok > $tmpfile
+# make the file writeable for apache
+chown .www $tmpfile && chmod g+w $tmpfile

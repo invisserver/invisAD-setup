@@ -49,8 +49,10 @@ if ( $CMD == "fixgsacls" )
 
 // read return code of the executed command
 $returncode = file_get_contents("$rtcfile");
+// and delete tmp-file
+unlink("$rtcfile");
 
-error_log("Shell-Rueckgabe: $CMD - $returncode");
+//error_log("Shell-Rueckgabe: $CMD - $returncode");
 
 echo json_encode($returncode);
 ?>
