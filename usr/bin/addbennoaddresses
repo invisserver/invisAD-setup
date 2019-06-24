@@ -1,0 +1,94 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Erweitern eines um das Attribut bennoEmailAdress inkl. Daten.
+# (c) 2019 Stefan Schaefer - invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+confdir="/etc/invis"
+passfile="/etc/invis/invis-pws.conf"
+
+sam="/var/lib/samba/private/sam.ldb"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Importliste
+liste="$1"
+
+# Pruefen, ob eine Liste genannt wurde
+if [[ -z $liste ]]; then
+    echo "Bitte den Pfad zur Host-Liste angeben."
+    echo "adbennoaddress /pfad/zur/liste.txt"
+    exit
+fi
+
+# Daten aus Konfiguration holen
+basedn=`getconfdata $conffile "baseDN" "2"`
+
+# IFS auf Zeilenumbruch umstellen
+oldifs=$IFS
+IFS=$'\n'
+
+# Liste verarbeiten.
+for entry in `cat $liste`; do
+    echo "----------------"
+    user=`echo $entry|cut -d ";" -f1`
+    # Existiert der User?
+    if [[ ! `getent passwd|grep "^$user:"` ]]; then
+	echo "Der Benutzer $user existiert nicht"
+	continue
+    fi
+    # DN ermitteln
+    dn=`ldbsearch -H $sam samaccountname=$user dn| grep "dn:"`
+    # Gehoert der User bereits der Objektklasse "bennoMailArchivUser" an?
+    if [[ ! `ldbsearch -H $sam samaccountname=$user objectclass| grep bennoMailArchivUser` ]]; then
+	echo "$user benötigt Objektklasse"
+	
+	# Arbeitsdatei anlegen
+	workfile="/tmp/addbennooc.ldif"
+	echo "$dn" > $workfile
+	echo "changetype: modify" >> $workfile
+	echo "add: objectclass" >> $workfile
+	echo "objectclass: bennoMailArchivUser" >> $workfile
+
+	cat $workfile
+	#ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
+	ldbmodify -H $sam $workfile
+    fi
+
+    # Adressen einfuegen
+    workfile="/tmp/addbennoma.ldif"
+    echo "$dn" > $workfile
+    echo "changetype: modify" >> $workfile
+    echo "add: bennoEmailAddress" >> $workfile
+    
+    addresses=(`echo $entry|cut -d ";" -f2`)
+    IFS=$oldifs
+    for address in ${addresses[@]}; do
+	echo "bennoEmailAddress: $address" >> $workfile
+    done
+    IFS=$'\n'
+    cat $workfile
+    ldbmodify -H $sam $workfile
+
+done
+rm -rf $workfile

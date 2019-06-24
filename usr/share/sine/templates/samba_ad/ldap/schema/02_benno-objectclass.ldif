@@ -1,0 +1,15 @@
+dn: CN=bennoMailarchivUser,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
+objectClass: top
+objectClass: classSchema
+governsID: 1.3.6.1.4.1.30259.1.1.2.2
+schemaIdGuid:: JS5rKqVwWU+UKmzsxxMueQ==
+cn: bennoMailarchivUser
+name: bennoMailarchivUser
+lDAPDisplayName: bennoMailarchivUser
+description: Per user configuration data of Benno Mailarchiv
+subClassOf: top
+objectClassCategory: 3
+mayContain: bennoContainer
+mayContain: bennoEmailAddress
+mayContain: bennoRole
+defaultObjectCategory: CN=bennoMailarchivUser,CN=Schema,CN=Configuration,dc=invis-net,dc=loc
