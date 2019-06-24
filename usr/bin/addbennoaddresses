@@ -1,5 +1,5 @@
 #!/bin/bash
-# Kategorie: server
+# Kategorie: 
 # Script zum Erweitern eines um das Attribut bennoEmailAdress inkl. Daten.
 # (c) 2019 Stefan Schaefer - invis-server.org
 
@@ -22,6 +22,7 @@ conffile="/etc/invis/invis.conf"
 confdir="/etc/invis"
 passfile="/etc/invis/invis-pws.conf"
 
+logfile="./addbennoaddresses.log"
 sam="/var/lib/samba/private/sam.ldb"
 
 # Funktionen
@@ -89,6 +90,8 @@ for entry in `cat $liste`; do
     IFS=$'\n'
     cat $workfile
     ldbmodify -H $sam $workfile
-
+    if [[ $? != 0 ]]; then
+	echo "Fehler bei Benutzer: $user" >> $logfile
+    fi
 done
 rm -rf $workfile
