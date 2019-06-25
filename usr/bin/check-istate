@@ -36,6 +36,12 @@ zpushrelease=`rpm -qa z-push-common|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
 
 #ownCloud Version ermitteln
 ocrelease=`rpm -qa owncloud|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+if [[ -z $ocrelease ]]; then
+    ocrelease=`rpm -qa owncloud-files|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+fi
+
+# Samba Version ermitteln
+sambarelease=`rpm -qa samba|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
 
 # Zusammenfassung ausgeben
 echo "openSUSE Version: $osrelease"
@@ -44,3 +50,4 @@ echo "Kopano-Core Version: $kcorerelease"
 echo "Kopano-Webapp Version: $kwarelease"
 echo "z-push Version: $zpushrelease"
 echo "ownCloud Version: $ocrelease"
+echo "Samba Version: $sambarelease"
