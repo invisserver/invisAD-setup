@@ -47,6 +47,9 @@ if ( $CMD == "membermod" )
 if ( $CMD == "fixgsacls" )
     $val = shell_exec("sudo /usr/bin/fixgsacls");
 
+if ( $CMD == "check-istate" )
+    $val = shell_exec("sudo /usr/bin/check-istate");
+
 // read return code of the executed command
 $returncode = file_get_contents("$rtcfile");
 // and delete tmp-file

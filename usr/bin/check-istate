@@ -19,6 +19,14 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
+# Tempfile
+tmpfile="/srv/www/htdocs/portal/tmp/iportal.tmp"
+
+# remove tempfile, if exists
+if [[ -f $tmpfile ]]; then
+    rm $tmpfile
+fi
+
 #openSUSE Release ermitteln
 osrelease=`cat /etc/os-release |grep ^VERSION=|cut -d "\"" -f2`
 
@@ -44,10 +52,13 @@ fi
 sambarelease=`rpm -qa samba|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
 
 # Zusammenfassung ausgeben
-echo "openSUSE Version: $osrelease"
-echo "invis-Server Version: $invisrelease"
-echo "Kopano-Core Version: $kcorerelease"
-echo "Kopano-Webapp Version: $kwarelease"
-echo "z-push Version: $zpushrelease"
-echo "ownCloud Version: $ocrelease"
-echo "Samba Version: $sambarelease"
+echo -e "\topenSUSE Version:      $osrelease" | tee $tmpfile
+echo -e "\tinvis-Server Version:  $invisrelease" | tee -a $tmpfile
+echo -e "\tKopano-Core Version:   $kcorerelease" | tee -a $tmpfile
+echo -e "\tKopano-Webapp Version: $kwarelease" | tee -a $tmpfile
+echo -e "\tz-push Version:        $zpushrelease" | tee -a $tmpfile
+echo -e "\townCloud Version:      $ocrelease" | tee -a $tmpfile
+echo -e "\tSamba Version:         $sambarelease" | tee -a $tmpfile
+
+# make the file writeable for apache
+chown .www $tmpfile && chmod g+w $tmpfile
