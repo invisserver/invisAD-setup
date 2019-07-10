@@ -117,7 +117,7 @@ function bfmrc($account,$corusername) {
 	$extuser = $account[$i]["fspextmailusername"][0];
 	$passwd = $account[$i]["fspextmailuserpw"][0];
 	$opts = $account[$i]["fspmailfetchopts"][0];
-	$zeile = ("poll $server proto $proto user $extuser pass $passwd is $corusername $opts\n");
+	$zeile = ("poll $server proto $proto user $extuser pass '" . $passwd . "' is $corusername $opts\n");
 	fwrite($fh, "$zeile");
 	fclose($fh);
 	$i++;
