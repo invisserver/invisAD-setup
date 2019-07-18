@@ -17,6 +17,6 @@ virtueller Maschinen im Browser.
 Weiterhin wird ein einfaches init-System zum automatischen Start virtueller Maschinen in vor-
 gegebener Reihenfolge installiert. Virtuelle Maschinen müssen dazu lediglich in:
 
-/etc/vbinit/vboxinit.conf
+/etc/invis/vboxinit.conf
 
 eingetragen werden.
