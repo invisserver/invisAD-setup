@@ -37,11 +37,15 @@ changevalues() {
 
 ## Sicherungsverzeichnis
 dasibase=`getconfdata $conffile "DasiDir" "2"`
-backupdir="$dasibase/vollsicherungen/ad"
-datum=$(date +%Y%m%d-%H%M%S)
+datum=$(date +%Y%m%d)
+datetime=$(date +%Y%m%d-%H%M%S)
+backupdir="$dasibase/vollsicherungen/ad/$datum"
 
+# Sicherungsverzeichnis anlegen
 if [[ ! -d $backupdir ]]; then
     mkdir -p $backupdir
 fi
 
-tar -czf $backupdir/Samba_$datum.tar.gz --exclude=profiles --exclude=msg.* --exclude=ldapi --exclude=pipe --exclude=socket --exclude=ldapi -C / var/lib/samba
+# Samba Verzeichnisse und Keytab sichern
+tar -czf $backupdir/Samba_$datetime.tar.gz --exclude=profiles --exclude=msg.* --exclude=ldapi --exclude=pipe --exclude=socket --exclude=ldapi -C / var/lib/samba
+cp /etc/krb5.keytab $backupdir/krb5.keytab-$datetime
