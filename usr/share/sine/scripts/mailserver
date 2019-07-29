@@ -185,7 +185,7 @@ case "$whichgroupware" in
 	
 	rm -f `ls /etc/postfix/ |grep "main.[dovecot|cyrus]"` 2>&1| tee -a $LOGFILE | pgbox
 	mv /etc/postfix/main.kopano /etc/postfix/main.cf 2>&1| tee -a $LOGFILE | pgbox
-	
+	usermod -a -G pkeys kopano 2>&1| tee -a $LOGFILE | pgbox
 	;;
 esac
 pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"
