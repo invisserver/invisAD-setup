@@ -2,8 +2,7 @@
 name=Kopano-openSUSE_limited
 enabled=1
 autorefresh=1
-baseurl=https://download.kopano.io/limited/core:/final/SLE_15/
+baseurl=https://download.kopano.io/limited/core:/final/openSUSE_Leap_15.0/
 path=/
 type=rpm-md
 keeppackages=0
-
