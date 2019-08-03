@@ -75,16 +75,15 @@ for x in /sys/block/*; do
 	    if [[ `echo $x|cut -c1,2` == "sd" ]]; then
 		atatest=`smartctl -H             /dev/$x|cut -d " " -f6|tail -n 2|head -n 1`
 		usbtest=`smartctl -H -d sat,auto /dev/$x|cut -d " " -f4|tail -n 2|head -n 1`
+		pwronhrs=`smartctl --all /dev/$x |grep "Power_On_Hours"|tr -d " "|cut -d "-" -f2`
 		#echo $atatest $usbtest
-		if [[ $atatest == "PASSED" ]] || [[ $usbtest == "OK" ]]; then
+		if [[ $atatest == "PASSED" ]] || [[ $usbtest == "OK" ]] || (( $pwronhrs <= $dwt )); then
 		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
-		    pwronhrs=`smartctl --all /dev/$x |grep "Power_On_Hours"|tr -d " "|cut -d "-" -f2`
 		    #echo "Festplatte \"$x\" ist OK - Aktuelle Festplattentemperatur ist $temp °C" >> $directory/status
 		    echo "$x OK $temp $pwronhrs $dwt" >> $directory/status
 		else
 		    #echo "Festplatte \"$x\" ist Fehlerhaft - bitte sofort Ihrem Administrator melden!" >> $directory/status
 		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
-		    pwronhrs=`smartctl --all /dev/$x |grep "Power_On_Hours"|tr -d " "|cut -d "-" -f2`
 		    echo "$x nOK $temp $pwronhrs $dwt" >> $directory/status
 		    echo "Festplatte $x auf Server $server meldet Fehler: $selftest" >> $directory/alarm 
 		fi
