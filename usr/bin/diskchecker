@@ -61,6 +61,8 @@ echo "$datum" > $directory/status
 
 # No SMART Support
 nosmart=`getconfdata $conffile "noSMART" "2"`
+# Disk WarrantyTime
+dwt=`getconfdata $conffile "diskWarrantyTime" "2"`
 
 # Alle Festplatten finden
 for x in /sys/block/*; do
@@ -76,12 +78,14 @@ for x in /sys/block/*; do
 		#echo $atatest $usbtest
 		if [[ $atatest == "PASSED" ]] || [[ $usbtest == "OK" ]]; then
 		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
+		    pwronhrs=`smartctl --all /dev/$x |grep "Power_On_Hours"|tr -d " "|cut -d "-" -f2`
 		    #echo "Festplatte \"$x\" ist OK - Aktuelle Festplattentemperatur ist $temp °C" >> $directory/status
-		    echo "$x OK $temp" >> $directory/status
+		    echo "$x OK $temp $pwronhrs $dwt" >> $directory/status
 		else
 		    #echo "Festplatte \"$x\" ist Fehlerhaft - bitte sofort Ihrem Administrator melden!" >> $directory/status
 		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
-		    echo "$x nOK $temp" >> $directory/status
+		    pwronhrs=`smartctl --all /dev/$x |grep "Power_On_Hours"|tr -d " "|cut -d "-" -f2`
+		    echo "$x nOK $temp $pwronhrs $dwt" >> $directory/status
 		    echo "Festplatte $x auf Server $server meldet Fehler: $selftest" >> $directory/alarm 
 		fi
 	    fi

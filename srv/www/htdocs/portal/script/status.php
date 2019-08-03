@@ -105,7 +105,6 @@ elseif ($CMD == 'hd_info') {
 		// RAID or HD
 		$data = explode(' ', $file_raid[$i]);
 		$tmp = substr($data[0], 0, 2);
-		
 		if ($tmp == 'md') {
 			echo '<span style="font-size: 0.8em;">RAID-Verbund </span><b style="font-size: 0.8em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'nOK') {
@@ -114,9 +113,10 @@ elseif ($CMD == 'hd_info') {
 			} else
 				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1] . '</b><br>';
 		} else if ($tmp == 'sd') {
-			echo '<span style="font-size: 0.8em;">Festplatte </span><b style="font-size: 0.8em;"><i>' . $data[0] . '</i></b>';
+			echo '<span style="font-size: 0.8em;">Festplatte: </span><br>';
+			echo '<b style="font-size: 0.8em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'OK') {
-				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] . '°C</b><br>';
+				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] . '°C Laufzeit: ' . $data[3] . ' / ' . $data[4].'h</b><br>';
 			} else {
 				$raid_error = true;
 				echo ': <b style="font-size: 0.75em; color: red;">Smart-Fehler ' . $data[2] . '°C</b><br>';
