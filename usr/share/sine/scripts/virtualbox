@@ -65,6 +65,10 @@ if [[ $cont == "0" ]]; then
     useradd -c "Dummy Benutzer fuer phpVirtualBox" vbox 2>&1 | tee -a $LOGFILE | pgbox
     pwvbox=`pwgen -sBnc 8 1`
     echo "vbox:$pwvbox" | chpasswd | tee -a $LOGFILE | pgbox
+
+    # VBox UDEV-Regeln installieren
+    cp $TEMPLATEDIR/$modulename/60-vboxdrv.rules /etc/udev/rules.d/
+    
     # phpvirtualbox Konfiguration anpassen
     path="/etc/phpvirtualbox"
     file="config.php"
