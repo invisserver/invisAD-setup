@@ -287,7 +287,7 @@ Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
 fi
 
 #---# ERP-Software
-# Es kann zwischen Kivitendo, Wawisoon oder keiner ERP-Software entschieden werden
+# Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
 dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Enterprise Ressource Planning Software" --radiolist "$DIALOGSHORTHELP\n\n
 Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 16 100 8 \
     Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
@@ -297,6 +297,18 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
     2>$SINEWORKINGDIR/sine_temp
     whicherp=`cat $SINEWORKINGDIR/sine_temp`
     whicherp=`tolower $whicherp`
+
+#---# Typ der eingesetzten Festplatten
+# Es kann zwischen 24/7, Consumer und Consumer low budget gewählt werden
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fepstplatten" --radiolist "$DIALOGSHORTHELP\n\n
+Wählen Sie den von Ihnen eingesetzten Festplattentyp Ihres Servers aus." 16 100 8 \
+    Server "Server Festplatten für 24/7 Dauerbetrieb mit 5 Jahren Garantie" off\
+    Consumer "PC/Server Festplatten mit 3 Jahren Garantie" on\
+    LowBudget "PC-Festplatten mit 1 Jahr Garantie" off\
+    Keine "Der Server ist eine virtuelle Maschine" off\
+    2>$SINEWORKINGDIR/sine_temp
+    whichhd=`cat $SINEWORKINGDIR/sine_temp`
+    whichhd=`tolower $whichhd`
 
 #---# Virenscanner Radiobutton
 #    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Virenscanner" --radiolist "$DIALOGSHORTHELP\n\n
@@ -491,6 +503,7 @@ if [[ $whichgroupware == "kopano" ]]; then
 fi
 echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
+echo "HDType:$whichhd" >> $SINEWORKINGDIR/invis_confdata
 echo "SSHPORT:$sshport" >> $SINEWORKINGDIR/invis_confdata
 echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
 
