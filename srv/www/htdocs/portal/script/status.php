@@ -116,7 +116,11 @@ elseif ($CMD == 'hd_info') {
 			echo '<span style="font-size: 0.8em;">Festplatte: </span><br>';
 			echo '<b style="font-size: 0.8em;"><i>' . $data[0] . '</i></b>';
 			if ($data[1] == 'OK') {
-				echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] . '°C Laufzeit: ' . $data[3] . ' / ' . $data[4].'h</b><br>';
+				if (empty($data[3])) {
+				    echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] .'°C</b><br>';
+				} else {
+				    echo ': <b style="font-size: 0.8em; color: green;">' . $data[1]. ' ' . $data[2] . '°C Laufzeit: ' . $data[3] . ' / ' . $data[4].'h</b><br>';
+				}
 			} else {
 				$raid_error = true;
 				echo ': <b style="font-size: 0.75em; color: red;">Smart-Fehler ' . $data[2] . '°C</b><br>';
