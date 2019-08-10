@@ -302,8 +302,8 @@ Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus."
 # Es kann zwischen 24/7, Consumer und Consumer low budget gewählt werden
 dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fepstplatten" --radiolist "$DIALOGSHORTHELP\n\n
 Wählen Sie den von Ihnen eingesetzten Festplattentyp Ihres Servers aus." 16 100 8 \
-    Server "Server Festplatten für 24/7 Dauerbetrieb mit 5 Jahren Garantie" off\
-    Consumer "PC/Server Festplatten mit 3 Jahren Garantie" on\
+    Server "Server Festplatten für 24/7 Dauerbetrieb mit 5 Jahren Garantie" on\
+    Consumer "PC/Server Festplatten mit 3 Jahren Garantie" off\
     LowBudget "PC-Festplatten mit 1 Jahr Garantie" off\
     Keine "Der Server ist eine virtuelle Maschine" off\
     2>$SINEWORKINGDIR/sine_temp
