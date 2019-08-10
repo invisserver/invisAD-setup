@@ -71,7 +71,7 @@ mkdir /etc/skel/ics
 echo "umask 0002" >> /etc/skel/.profile
 
 # configure hd-warranty-lifetime
-hdtype=`getconfdata "HDTemp" "2"`
+hdtype=`getconfdata "HDType" "2"`
 case $hdtype in 
     server)
 	    string="diskWarrantyTime:0%diskWarrantyTime:43800"
