@@ -1117,6 +1117,12 @@ function groupDelete($cn) {
 // HOST HELPERS
 //--------------------
 
+// Namen für die verschiedenen Typen
+define ( "CLIENT_TYPE",           0);
+define ( "PRINTER_TYPE",          1);
+define ( "SERVER_TYPE",           2);
+define ( "DEVICE_TYPE",           3);
+
 // Macht aus der IP "1.2" (z.B. bei einer /16 Netzmaske) die Zahl 258 (1 * 256) + 2
 function hostIpCombine($ipstring) {
 	if (strpos($ipstring,'.') == true) {
@@ -1272,11 +1278,11 @@ function hostList($conn) {
 			
 			// 0: client, 1: printer, 2: server, 3: ip-device
 			switch(true) {
-				case ($ip >= $DHCP_RANGE_SERVER[0] && $ip <= $DHCP_RANGE_SERVER[1]): $type = 'Server'; break;
-				case ($ip >= $DHCP_RANGE_IPDEV[0] && $ip <= $DHCP_RANGE_IPDEV[1]): $type = 'IP-Gerät'; break;
-				case ($ip >= $DHCP_RANGE_PRINTER[0] && $ip <= $DHCP_RANGE_PRINTER[1]): $type = 'Drucker'; break;
+				case ($ip >= $DHCP_RANGE_SERVER[0] && $ip <= $DHCP_RANGE_SERVER[1]): $type = SERVER_TYPE; break;
+				case ($ip >= $DHCP_RANGE_IPDEV[0] && $ip <= $DHCP_RANGE_IPDEV[1]): $type = DEVICE_TYPE; break;
+				case ($ip >= $DHCP_RANGE_PRINTER[0] && $ip <= $DHCP_RANGE_PRINTER[1]): $type = PRINTER_TYPE; break;
 				default:
-					$type = 'Client';
+					$type = CLIENT_TYPE;
 			}
 			$entry['TYPE'] = $type;
 			// Host Typ protokollieren
@@ -1346,11 +1352,11 @@ function hostCreate($conn, $cn) {
 		
 		// next free ip
 		switch($type) {
-			case 1:
+			case PRINTER_TYPE:
 				$free = array_values($free_printer); break;
-			case 2:
+			case SERVER_TYPE:
 				$free = array_values($free_server); break;
-			case 3:
+			case DEVICE_TYPE:
 				$free = array_values($free_ipdev); break;
 			default:
 				$free = array_values($free_client); break;

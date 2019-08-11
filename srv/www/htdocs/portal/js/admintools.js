@@ -84,7 +84,6 @@ function filterData(data) {
 	PAGED_DATA = new Array();
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
-		    //console.log(item['TYPE']);
 		    if (item['TYPE'] < USERLIST_FLAG.length)
 		    {
 			if (USERLIST_FLAG[item['TYPE']])
@@ -118,27 +117,11 @@ function filterHosts(data) {
 		PAGED_DATA_UNSORTED = data;
 	
 	PAGED_DATA = new Array();
-	//PAGED_DATA = data;
-	// Hier geht es schief. Das filtern nach "item['TYPE']" funktioniert nicht.
-	// Im Moment steht die Typenbezeichnung im Idex, es muss zum Filtern aber eine Nummer sein...
-	// ... also Typen uebersetzen.
 	PAGED_DATA_UNSORTED.each(
 		function (item) {
-		//Typenzuordnung Quick'n'Dirty
-		if (item['TYPE'] == 'Client')
-		    var typnr = 0;
-		if (item['TYPE'] == 'Drucker')
-		    var typnr = 1;
-		if (item['TYPE'] == 'Server')
-		    var typnr = 2;
-		if (item['TYPE'] == 'IP-Gerät')
-		    var typnr = 3;
-		    //console.log(item['TYPE']);
-		    //if (item['TYPE'] < HOSTLIST_FLAG.length)
-		    if ( typnr < HOSTLIST_FLAG.length)
+		    if (item['TYPE'] < HOSTLIST_FLAG.length)
 		    {
-			//console.log(HOSTLIST_FLAG[item['TYPE']]);
-			if (HOSTLIST_FLAG[typnr])
+			if (HOSTLIST_FLAG[item['TYPE']])
 			    PAGED_DATA.push(item);
 		    }
 		}
@@ -794,9 +777,7 @@ function populateHostList(event, page) {
 		td_ip.insert(ip[1]);
 		
 		var td_type = new Element('td');
-		// Hier ist der Unterschied zu populateUsersList:
-		td_type.insert(host['TYPE']);
-		//td_type.insert(HOST_TYPE[host.TYPE]);
+		td_type.insert(HOST_TYPE[host['TYPE']]);
 		var td_location = new Element('td');
 		td_location.insert(host['iscdhcpcomments']);
 
