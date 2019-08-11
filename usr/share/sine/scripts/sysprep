@@ -342,7 +342,8 @@ openssl dhparam -out $path/$domain/dh.pem -2 2048 2>&1| tee -a $LOGFILE | pgbox
 openssl dhparam -out $path/$domain/dh_512.pem -2 512 2>&1| tee -a $LOGFILE | pgbox
 # Beide Dateien auch fuer Postfix bereit stellen
 cp $path/$domain/dh*.pem /etc/postfix
-    
+
+clear
 # CRL Umgebung initialisieren
 ok=1
 while [[ $ok == 1 ]]; do
