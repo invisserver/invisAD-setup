@@ -1,0 +1,113 @@
+#!/bin/bash
+# Kategorie: server
+# Script to upgrade an ActiveDirectory Structure from Samba 4.6.x to 4.10.x
+
+# Copyright (C) 2019 Stefan Schäfer -- invis-server.org
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# AD base dir
+basedir="/var/lib/samba"
+tempdir="/tmp/samba"
+
+echo -e "Dieses Script ist gedacht um ein ActiveDirectory aus einer Samba-Umgebung\nkleiner Version 4.8. nach 4.10. auf Basis einer AD-Sicherung zu aktualisieren.\nFahren Sie nur fort, wenn Sie genau das tun möchten."
+read -p "Wollen Sie fortfahren? [j/n] " go
+if [[ $go != "j" ]];then
+    echo "Na gut, dann nicht. Tschüss!"
+    exit
+fi
+
+if [[ -z $1 ]]; then
+    echo "Bitte Pfad zur AD-Sicherungsdatei angeben."
+    exit 1
+else
+    dasifile=$1
+fi
+
+# stop samba ad
+systemctl stop samba-ad-dc.service
+
+# do a backup from the existing ad-structure
+adbackup
+
+## clean samba directory structure
+# delete all files inside the base-dir
+find $basedir -maxdepth 1 -type f -exec rm -f {} \;
+
+# delete all files inside the private subdir
+find $basedir/private -maxdepth 1 -type f -exec rm -f {} \;
+
+# delete all files in the bind-dns subdir
+find $basedir/bind_dns/ -maxdepth 1 -type f -exec rm -f {} \;
+
+# cleanup folders
+rm -rf $basedir/private/ldap_priv
+rm -rf $basedir/private/sam.ldb.d
+rm -rf $basedir/private/smbd.tmp
+
+rm -rf $basedir/bind_dns/dns
+
+rm -rf $basedir/drivers
+rm -rf $basedir/lock
+rm -rf $basedir/netlogon
+rm -rf $basedir/printing
+rm -rf $basedir/profiles
+rm -rf $basedir/sysvol
+
+# ectract the backup file to /tmp/samba
+if [[ ! -d $tempdir ]]; then
+    mkdir $tempdir
+fi
+tar -xzf $dasifile -C $tempdir
+
+tmpbase="$tempdir/var/lib/samba"
+# move dns subdir
+mv $tmpbase/private/dns $basedir/bind_dns
+mv $tmpbase/private/dns.keytab $basedir/private/
+ln $basedir/private/dns.keytab $basedir/bind_dns/dns.keytab
+mv $tmpbase/private/named.txt $basedir/bind_dns/
+
+# move subdirs first layer
+mv $tmpbase/drivers $basedir
+mv $tmpbase/lock $basedir
+mv $tmpbase/netlogon $basedir
+mv $tmpbase/printing $basedir
+if [[ -d $tmpbase/profiles ]]; then
+    mv $tmpbase/profiles $basedir
+else
+    mkdir $basedir/profiles
+fi
+mv $tmpbase/sysvol $basedir
+# move files from base layer
+find $tmpbase -maxdepth 1 -type f -exec mv {} $basedir \;
+
+# move subdirs private layer
+mv $tmpbase/private/ldap_priv $basedir/private/
+mv $tmpbase/private/sam.ldb.d $basedir/private/
+mv $tmpbase/private/smbd.tmp $basedir/private/
+
+# move files to private layer
+find $tmpbase/private -maxdepth 1 -type f -exec mv {} $basedir/private/ \;
+
+# check and repair AD
+samba-tool dbcheck --cross-ncs --reset-well-known-acl --fix --yes
+samba-tool dbcheck --cross-ncs --fix --yes
+samba-tool ntacl sysvolreset
+
+# start samba ad
+systemctl start samba-ad-dc.service
+
+# cleanup
+rm -rf $tmpbase
