@@ -22,6 +22,7 @@
 resultdir="/var/spool/results/certs"
 # Zertifikate
 cacert="/etc/invis/certs/ca.crt"
+crl="/etc/openvpn/keys/crl.pem"
 certs=("/etc/invis/certs/ca.crt" "/etc/invis/certs/ldap-cert.pem" "/etc/invis/certs/mail-cert.pem" "/etc/apache2/ssl.crt/invis-server.crt")
 
 diffdays() {
@@ -72,6 +73,11 @@ for cert in ${certs[*]}; do
 	    echo "Das $certtype Zertifikat läuft am $datum aus. Bitte erneuern!" >> $resultdir/alarm
 	fi
 done
+
+# Check crl
+nextcrldateunformated=`openssl crl -inform PEM -text -noout -in $crl |grep "Next Update"|tr -s " "| cut -d " " -f 4-`
+nextcrldate=`date -d "$nextcrldateunformated" "+%d.%m.%Y"`
+echo "crl:$nextcrldate" >> $resultdir/crlstatus
 
 # Bei Bedarf Alarm per email versenden
 if [[ -f $resultdir/alarm ]]; then
