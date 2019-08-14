@@ -78,6 +78,11 @@ done
 nextcrldateunformated=`openssl crl -inform PEM -text -noout -in $crl |grep "Next Update"|tr -s " "| cut -d " " -f 4-`
 nextcrldate=`date -d "$nextcrldateunformated" "+%d.%m.%Y"`
 echo "crl:$nextcrldate" >> $resultdir/crlstatus
+daysleft=`diffdays "$nextcrldateunformated"`
+# Warnung generieren, wenn Erneuerung der CRL in weniger als 7 Tagen ansteht.
+if (( $daysleft <= 7 )); then
+	echo "Die Erneuerung der CRL steht spätestens am $datum an. Bitte erneuern!" >> $resultdir/alarm
+fi
 
 # Bei Bedarf Alarm per email versenden
 if [[ -f $resultdir/alarm ]]; then
