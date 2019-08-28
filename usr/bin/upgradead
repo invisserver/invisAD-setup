@@ -50,7 +50,9 @@ find $basedir -maxdepth 1 -type f -exec rm -f {} \;
 find $basedir/private -maxdepth 1 -type f -exec rm -f {} \;
 
 # delete all files in the bind-dns subdir
-find $basedir/bind_dns/ -maxdepth 1 -type f -exec rm -f {} \;
+if [[ -d $basedir/bind_dns/ ]]; then
+    find $basedir/bind_dns/ -maxdepth 1 -type f -exec rm -f {} \;
+fi
 
 # cleanup folders
 rm -rf $basedir/private/ldap_priv
