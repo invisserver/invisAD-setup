@@ -1,0 +1,154 @@
+#!/bin/bash
+### MODUL-NR. 024 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2014,2019 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Terminalserver Installation
+
+# Terminal Server install
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="Terminalserver"
+pgsubtitle="Terminalserver und Desktop Setup"
+
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/terminalserver.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Terminalserver installieren?" 0 0
+cont=${?}
+
+
+if [[ $cont == "0" ]];then
+
+whichterminalserver=`getconfdata "TerminalServer" "2"`
+windowtitle="Terminalserver Installation"
+
+case $whichterminalserver in
+    "xrdp" )
+	pgsubtitle="Xrdp Terminalserver wird installiert."
+	zypper ref 2>&1|tee -a $LOGFILE |pgbox
+	zypper -n install -n xrdp 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#	groupadd -g 9000 nagios 2>&1 | tee -a $LOGFILE | pgbox
+#	useradd -u 9000 -g nagios -d /home/nagios -m -c "Nagios Admin" nagios 2>&1 | tee -a $LOGFILE | pgbox
+#	usermod -a -G mysql nagios 2>&1| tee -a $LOGFILE
+#	mkdir /home/nagios/.ssh 2>&1 | tee -a $LOGFILE
+#	chown -R nagios:nagios /home/nagios/ 2>&1 | tee -a $LOGFILE
+#	cp $TEMPLATEDIR/monitoring/nagios/sudoers.d/nagios_sudoers /etc/sudoers.d
+#	
+	;;
+    "x2go" )
+	pgsubtitle="X2Go Terminalserver wird installiert."
+	zypper ar -f $REPODIR/x2go-extras.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper --gpg-auto-import-keys ref --repo x2go-extras
+	zypper ar -f $REPODIR/x2go-release.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper --gpg-auto-import-keys ref --repo x2go-main
+	zypper ref 2>&1|tee -a $LOGFILE |pgbox
+#	zypper -n install -n 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#        chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $LOGFILE
+#        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-agentd.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+#        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-proxy.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+#        confdir="/etc/zabbix"
+#        file="zabbix-proxy.conf"
+#        string="zabbixdbpw%$zabbixdbpw"
+#        changevalues $confdir $file "$string"
+#        chkservice "zabbix-proxy"
+#        chkservice "zabbix-agentd"
+	;;
+    "kein")
+	;;
+esac
+
+whichdesktop=`getconfdata "Desktop" "2"`
+windowtitle="Desktop Installation"
+
+case $whichdesktop in
+    "enlightenment" )
+	pgsubtitle="Enlightenment Desktop wird installiert."
+	zypper -n install -n enlightenment 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#	groupadd -g 9000 nagios 2>&1 | tee -a $LOGFILE | pgbox
+#	useradd -u 9000 -g nagios -d /home/nagios -m -c "Nagios Admin" nagios 2>&1 | tee -a $LOGFILE | pgbox
+#	usermod -a -G mysql nagios 2>&1| tee -a $LOGFILE
+#	mkdir /home/nagios/.ssh 2>&1 | tee -a $LOGFILE
+#	chown -R nagios:nagios /home/nagios/ 2>&1 | tee -a $LOGFILE
+#	cp $TEMPLATEDIR/monitoring/nagios/sudoers.d/nagios_sudoers /etc/sudoers.d
+#	
+	;;
+    "lxde" )
+	pgsubtitle="LXDE Desktop wird installiert."
+	zypper -n install -n lxde 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#        chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $LOGFILE
+#        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-agentd.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+#        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-proxy.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+#        confdir="/etc/zabbix"
+#        file="zabbix-proxy.conf"
+#        string="zabbixdbpw%$zabbixdbpw"
+#        changevalues $confdir $file "$string"
+#        chkservice "zabbix-proxy"
+#        chkservice "zabbix-agentd"
+	;;
+    "mate" )
+	pgsubtitle="MATE Desktop wird installiert."
+	zypper -n install -n mate 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#	groupadd -g 9000 nagios 2>&1 | tee -a $LOGFILE | pgbox
+#	useradd -u 9000 -g nagios -d /home/nagios -m -c "Nagios Admin" nagios 2>&1 | tee -a $LOGFILE | pgbox
+#	usermod -a -G mysql nagios 2>&1| tee -a $LOGFILE
+#	mkdir /home/nagios/.ssh 2>&1 | tee -a $LOGFILE
+#	chown -R nagios:nagios /home/nagios/ 2>&1 | tee -a $LOGFILE
+#	cp $TEMPLATEDIR/monitoring/nagios/sudoers.d/nagios_sudoers /etc/sudoers.d
+#	
+	;;
+    "xfce" )
+	pgsubtitle="Xfce Desktop wird installiert."
+	zypper -n install -n xfce 2>&1 | tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+#        chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $LOGFILE
+#        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-agentd.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+#        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-proxy.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+#        confdir="/etc/zabbix"
+#        file="zabbix-proxy.conf"
+#        string="zabbixdbpw%$zabbixdbpw"
+#        changevalues $confdir $file "$string"
+#        chkservice "zabbix-proxy"
+#        chkservice "zabbix-agentd"
+	;;
+esac
+
+fi
