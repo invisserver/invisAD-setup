@@ -1,0 +1,7 @@
+[x2go-release]
+name=X2Go-openSUSE-42.3-main
+enabled=1
+autorefresh=1
+baseurl=http://packages.x2go.org/opensuse/42.3/main/
+type=NONE
+keeppackages=0
