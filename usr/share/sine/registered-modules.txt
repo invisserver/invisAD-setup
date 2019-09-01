@@ -21,3 +21,4 @@
 21:o:owncloud
 22:o:kimai
 23:o:virtualbox
+24:o:terminalserver
