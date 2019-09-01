@@ -1,0 +1,20 @@
+Terminal Server für Fernsteuerung
+
+Dieses Modul des invis Server-Setups installiert Terminal Server Dienste
+und eine grafische Oberfläche für Remote-Desktop Zugriffe.
+
+Xrdp Terminalserver
+
+Das am weitesten verbreitete Protokoll für Remote-Desktop ist das 
+Remote Desktop Protocol (RDP). Bei Windows ist die Software für 
+RDP-Client eingebaut bzw. mitgeliefert. Daneben gibt es verschiedene
+andere Programme, die das Protokoll unterstützen. Für Linux gibt es z.B.
+Client-Software wie rdesktop oder Remmina.
+
+X2Go Terminalserver
+
+Diese Lösung nutzt ssh als Transportprotokoll. Der Zugriff auf den
+Server kann entweder mit einem normalen Client von einem Windows- oder
+Linux-System erfolgen oder über eine Thin-Client-Lösung, die mittels
+Preboot Execution Environment (PXE) bootet und die Client-Software via
+Network File System (NFS) vom Server lädt.
