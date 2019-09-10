@@ -187,6 +187,8 @@ case "$whichgroupware" in
 	mv /etc/postfix/main.kopano /etc/postfix/main.cf 2>&1| tee -a $LOGFILE | pgbox
 	usermod -a -G pkeys kopano 2>&1| tee -a $LOGFILE | pgbox
 	chown kopano $INVISCONFDIR/certs/kopano.pem
+	# Workaround, damit kopano-gabsync funktioniert
+	ln -s /srv/www/htdocs/z-push/backend/ /srv/www/htdocs/z-push/tools/gab-sync/lib/
 	;;
 esac
 pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"
