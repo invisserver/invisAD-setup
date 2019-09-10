@@ -71,3 +71,6 @@ MAILTO=/dev/null
 
 # ICS Importer
 5 * * * * root /usr/bin/importics
+
+# Kopano GAB synchronisieren
+5 0 * * * root test -f /usr/bin/z-push-gabsync && /usr/bin/z-push-gabsync -a sync
