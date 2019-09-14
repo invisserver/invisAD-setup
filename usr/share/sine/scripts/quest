@@ -337,6 +337,31 @@ Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
     2>$SINEWORKINGDIR/sine_temp
     whichmonitoring=`cat $SINEWORKINGDIR/sine_temp`
 
+#---# Terminalserver
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Terminalsever" --radiolist "$DIALOGSHORTHELP\n\n
+Planen Sie auf eine grafische Oberfläche des invis-Servers zuzugreifen? \n
+Es werden einen Terminalserver und eine grafische Oberfläche auf dem invis-Server installiert.
+\n\n
+Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
+    xrdp "Xrdp - Terminalserver mit RDP-Protokoll von Microsoft" off\
+    x2go "X2Go - Terminalserver mit ssh-Protokoll" off\
+    kein "Terminalserver nicht installieren" on\
+    2>$SINEWORKINGDIR/sine_temp
+    whichterminalserver=`cat $SINEWORKINGDIR/sine_temp`
+
+#---# Desktop
+if [[ $whichterminalserver != "kein" ]]; then
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Terminalsever" --radiolist "$DIALOGSHORTHELP\n\n
+Zur Wahl stehen mehrere grafische Oberflächen. \n\n
+Welche bevorzugen Sie?\n\n" 17 80 7 \
+    enlightenment "erleuchtend" off\
+    lxde "leicht und schön" off\
+    mate "traditionell" on\
+    xfce "rattenschnell" off\
+    2>$SINEWORKINGDIR/sine_temp
+    whichdesktop=`cat $SINEWORKINGDIR/sine_temp`
+fi
+
 #---# HTTPS    
 yesno "Soll Ihr invis Server via Internet (HTTPS) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
 exthttps=${?}
