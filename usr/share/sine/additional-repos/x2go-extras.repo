@@ -1,0 +1,7 @@
+[x2go-extras]
+name=X2Go-openSUSE-15.1-extras
+enabled=1
+autorefresh=1
+baseurl=http://packages.x2go.org/opensuse/15.1/extras/
+type=NONE
+keeppackages=0
