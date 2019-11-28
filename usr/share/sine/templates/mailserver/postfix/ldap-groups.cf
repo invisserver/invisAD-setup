@@ -5,6 +5,6 @@ version = 3
 bind = yes
 bind_dn = ldap.admin@invis-net.loc
 bind_pw = admin-secret
-query_filter = (&(objectclass=group)(cn=%u))
+query_filter = (|(&(objectclass=group)(cn=%s))(mail=%s))
 leaf_result_attribute = mail
 special_result_attribute = member
