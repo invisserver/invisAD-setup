@@ -61,7 +61,7 @@ ok=0
 getfacl -Rn $groupsharepath > $aclsafepath/groupshare-$datestring.acl 2> /dev/null
 setfacl -Rb $groupsharepath
 
-for dir in `find $groupsharepath -type d`; do
+for dir in `find "$groupsharepath" -maxdepth 1 -type d`; do
     # kontrollieren, ob es zu einem Verzeichnis eine korrespondierende Gruppe gibt
     isgroup=`basename $dir`
     if [[ `getent group |grep ^"$isgroup:"` ]]; then 
@@ -75,9 +75,9 @@ for dir in `find $groupsharepath -type d`; do
 	(( ok=$ok + $? ))
     else
 	# wenn nicht, dann Verzeichnis umbenennen z.B. xyz.nogroup
-	if [[ $dir != $groupsharepath ]]; then
+	if [[ "$dir" != "$groupsharepath" ]]; then
 	    if [[ ! `echo $dir | grep "_anrufen"$` ]]; then
-		mv $dir "$dir-bitte_Support_anrufen"
+		mv "$dir" "$dir-bitte_Support_anrufen"
 	    fi
 	fi
     fi
