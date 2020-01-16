@@ -77,7 +77,7 @@ udnraw=`lds $searchbase $filter|grep "^dn:"| cut -d " " -f 2-`
 
 # In Klartext umwandeln, falls DN in base64 codiert ist.
 if [[ $udnraw =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
-    udn=`echo $udnbraw |base64 -d`
+    udn=`echo $udnraw |base64 -d`
 else
     udn=$udnraw
 fi
