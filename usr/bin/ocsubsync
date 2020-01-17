@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: apps
 # script to manage headless owncloud synchronization
-# Version 1.0
+# Version 14.0
 # (c) Mai 2018 Stefan Schäfer / invis-server.org
 
 # License: GPLv3
@@ -185,10 +185,10 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	;;
     "jobs")
 	jobactive=`ps ax | grep owncloudcmd`
-	if [[ -z $jobactive ]]; then
-	    useractive=`echo $jobactive | tr -s " " | cut -d " " -f 7`
+	if [[ -n $jobactive ]]; then
+	    useractive=`echo $jobactive | tr -s " " | cut -d " " -f 8`
 	    userfullname=`getfullname $useractive`
-	    msgbox "Derzeit wird das Konto von Benutzer \"$userfullname\" synchronisiert."
+	    msgbox "Derzeit wird das Konto von Benutzer \"$useractive ($userfullname)\" synchronisiert."
 	else
 	    msgbox "Derzeit ist keine Hintergrundsynchronisation aktiv."
 	fi
