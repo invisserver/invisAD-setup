@@ -167,16 +167,21 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
         if [[ -f $ocaccountdir/$ocaccountfile ]]; then
 	    if [[ -z $user ]]; then
 		for line in `cat $ocaccountdir/$ocaccountfile`; do
-		    IFS=':' read -r -a job <<< "$line"
-		    owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
+			IFS=':' read -r -a job <<< "$line"
+			owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
 		done
 	    else
 		chkaccount $user > /dev/null 2>&1
 		exist=$?
 		if [[ $exist == 0 ]]; then
 		    line=`grep "^$user:" $ocaccountdir/$ocaccountfile`
-		    IFS=':' read -r -a job <<< "$line"
-		    owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
+		    jobactive=`ps ax | grep owncloudcmd |grep $user`
+		    echo $jobactive
+		    sleep 4
+		    if [[ -z $jobactive ]]; then
+			IFS=':' read -r -a job <<< "$line"
+			owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
+		    fi
 		else
 		    msgbox "Das angegebene Konto \"$user\" ist unbekannt."
 		fi
@@ -184,11 +189,13 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	fi
 	;;
     "jobs")
-	jobactive=`ps ax | grep owncloudcmd`
+	jobs=`ps ax  | grep owncloudcmd| grep -v 'grep' wc -l`
+	jobactive=`ps ax | grep owncloudcmd | grep -v 'grep' |tail -n 1`
 	if [[ -n $jobactive ]]; then
 	    useractive=`echo $jobactive | tr -s " " | cut -d " " -f 8`
 	    userfullname=`getfullname $useractive`
-	    msgbox "Derzeit wird das Konto von Benutzer \"$useractive ($userfullname)\" synchronisiert."
+	    msgbox "Derzeit wird (evtl. u. A. das Konto von Benutzer \"$useractive ($userfullname)\" synchronisiert."
+	    msgbox "Derzeit sind insgesamt $jobs Synchronisationsjobs aktiv."
 	else
 	    msgbox "Derzeit ist keine Hintergrundsynchronisation aktiv."
 	fi
