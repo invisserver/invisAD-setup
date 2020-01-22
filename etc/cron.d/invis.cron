@@ -74,3 +74,8 @@ MAILTO=/dev/null
 
 # Kopano GAB synchronisieren
 5 0 * * * root test -f /usr/bin/z-push-gabsync && /usr/bin/z-push-gabsync -a sync
+
+# Spamassassin Signaturen aktualisieren
+0 10 * * * root /usr/bin/sa-update
+10 10 * * * root /usr/bin/sa-update --nogpg --channel spamassassin.heinlein-support.de
+#20 10 * * * root sa-compile
