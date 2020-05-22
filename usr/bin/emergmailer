@@ -1,8 +1,8 @@
 #!/bin/bash
 # Kategorie: portal
 # Kleines Tool zum Versenden von Warn-Mails aller Art
-# emergmailer V. 0.1
-# (C) 2017 Stefan Schaefer -- invis-server.org
+# emergmailer V. 0.2
+# (C) 2017,2020 Stefan Schaefer -- invis-server.org
 # Qustions: stefan@invis-server.org
 
 # License: GPLv3
@@ -42,9 +42,8 @@ adminmail=`getconfdata $conffile "adMail" "2"`
 # Absender der Warnmails
 sender=`getconfdata $conffile "mailSender" "2"`
 
-echo $adminmail
-echo $sender
-
+#echo $adminmail
+#echo $sender
 
 # aktuelles Datum ermitteln
 datum=`date +%d.%m.%Y" "%R`
@@ -63,7 +62,7 @@ fi
 
 # email senden, wenn Alarm vorliegt und noch keine Mail gesendet wurde
 if [[ -f $directory/alarm && $sent == 1 ]]; then
-    cat $directory/alarm|mailx -s "$datum - Alarm auf Server: $server" -r $sender $adminmail 
+    cat $directory/alarm|mailx -s "$datum - Alarm auf Server: $server" -c $sender -r $sender $adminmail
     echo $datum > $directory/sent
 fi
 
