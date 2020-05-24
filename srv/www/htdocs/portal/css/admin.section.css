@@ -15,6 +15,14 @@
 	border-color: #ff9999;
 }
 
+
+.section-subtitle {
+	color: #ff0000;
+	border-color: #ff9999;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
 /*
  *
  */

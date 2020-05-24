@@ -37,6 +37,8 @@ if (isset($_COOKIE['invis']))
 if (isset($_COOKIE['invis-request']))
 	$cookie_data = json_decode($_COOKIE['invis-request'], true);
 
+	error_log("Cookie-Data: $cookie_data");
+	
 // unset request cookie
 setcookie('invis-request', '', time() - 3600, '/');
 
@@ -51,7 +53,7 @@ if ( $CMD == "check-istate" )
     $val = shell_exec("sudo /usr/bin/check-istate");
 
 if ( $CMD == "inhume" )
-    $val = shell_exec("sudo /usr/bin/inhume");
+    $val = shell_exec("sudo /usr/bin/inhume $cookie_data");
 
 // read return code of the executed command
 $returncode = file_get_contents("$rtcfile");

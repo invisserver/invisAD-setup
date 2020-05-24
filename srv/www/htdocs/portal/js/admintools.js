@@ -1666,7 +1666,7 @@ function exec_fixgsaclsResponse(request) {
 	var data = request.responseText.evalJSON(true);
 	
 	lightbox.setTitle(new Element('div', {
-		'class': 'section-title'
+		'class': 'section-subtitle'
 	}).update('Ergebnis'));
 
 	var box = new Element('text');
@@ -1694,7 +1694,7 @@ function exec_checkistateResponse(request) {
 	var data = request.responseText.evalJSON(true);
 	
 	lightbox.setTitle(new Element('div', {
-		'class': 'section-title'
+		'class': 'section-subtitle'
 	}).update('Ergebnis'));
 
 	var box = new Element('text');
@@ -1705,20 +1705,43 @@ function exec_checkistateResponse(request) {
 	lightbox.update();
 }
 
-// Script ausfuehren
+
+function getUsername() {
+	var data = document.getElementById('un').value.toJSON();
+	console.log(data);
+	invis.setCookie('invis-request', data);
+}
+
+// Usernamen erfragen und Script ausfuehren
 function exec_inhume() {
 	lightbox.show(500, true);
-	lightbox.setWaitStatus(true);
-	invis.request('script/scriptexecuter.php', exec_inhumeResponse, {c: 'inhume'});
+//	lightbox.setWaitStatus(true);
+
+	lightbox.setTitle(new Element('div', {
+		'class': 'section-subtitle'
+	}).update('Benutzerdaten bereinigen'));
+
+	var box = new Element('text');
+	lightbox.getContent().insert(box);
+	box.insert('<br><label>Benutzernamen eingeben: </label>');
+
+	var box = new Element('input', {'name': "un", 'id': "un", 'size': 2, 'maxlength': 20, 'style': 'width: 99%; text-align: center;'});
+	lightbox.getContent().insert(box);
+
+	lightbox.addButton('<button onclick="getUsername();lightbox.hide();invis.request(\'script/scriptexecuter.php\', exec_inhumeResponse, {c: \'inhume\'});">OK</button><button onclick="lightbox.hide();">Abbrechen</button>');
+	lightbox.update();
+
+//	invis.request('script/scriptexecuter.php', exec_inhumeResponse, {c: 'inhume'});
 }
 
 // Ergebnis anzeigen
 function exec_inhumeResponse(request) {
-	lightbox.setWaitStatus(false);
+	lightbox.show(500, true);
+//	lightbox.setWaitStatus(false);
 	var data = request.responseText.evalJSON(true);
 	
 	lightbox.setTitle(new Element('div', {
-		'class': 'section-title'
+		'class': 'section-subtitle'
 	}).update('Ergebnis'));
 
 	var box = new Element('text');
