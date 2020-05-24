@@ -1736,7 +1736,7 @@ function exec_inhume() {
 
 // Ergebnis anzeigen
 function exec_inhumeResponse(request) {
-	lightbox.show(500, true);
+	lightbox.show(800, true);
 //	lightbox.setWaitStatus(false);
 	var data = request.responseText.evalJSON(true);
 	
@@ -1746,7 +1746,11 @@ function exec_inhumeResponse(request) {
 
 	var box = new Element('text');
 	lightbox.getContent().insert(box);
-	box.insert('<div align="left"><pre><b>' + data + '</b></pre></div>');
+	if (data == 0) {
+	    box.insert('<div align="center"><b>Das Script wurde erfolgreich ausgeführt.</b></div>');
+	} else {
+	    box.insert('<div align="center"><b>Das Script meldet Fehler.</b><br>Bitte wenden Sie sich an Ihren Administrator.<br>Fehlercode: ' + data + '</div>');
+	}
 
 	lightbox.addButton('<button onclick="lightbox.hide();">OK</button>');
 	lightbox.update();

@@ -53,7 +53,7 @@ if ( $CMD == "check-istate" )
     $val = shell_exec("sudo /usr/bin/check-istate");
 
 if ( $CMD == "inhume" )
-    $val = shell_exec("sudo /usr/bin/inhume $cookie_data");
+    $val = shell_exec("sudo /usr/bin/inhume $cookie_data 1");
 
 // read return code of the executed command
 $returncode = file_get_contents("$rtcfile");
