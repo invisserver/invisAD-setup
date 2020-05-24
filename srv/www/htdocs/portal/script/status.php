@@ -205,8 +205,12 @@ elseif ($CMD == 'cert_info') {
 		    $statestyle = '<b style="font-size: 0.6em; color: red;">';
 		}
 		echo '<b style="font-size: 0.6em;">' . $type . ': </b>';
-		echo $datestyle . $enddate . ': </b>';
-		echo $statestyle . $certstate . '</b>&nbsp;';
+		if ( $type == 'CRL' ) {
+		    echo $datestyle . $enddate .'</b>';
+		} else {
+		    echo $datestyle . $enddate . ': </b>';
+		    echo $statestyle . $certstate . '</b>&nbsp;';
+		}
 	}
 
 }
