@@ -39,11 +39,18 @@
 #Pfade
 ocpath="/srv/www/htdocs/owncloud"
 #ocdatapath="/srv/www/htdocs/owncloud/data"
+tmpfile="/srv/www/htdocs/portal/tmp/iportal.tmp"
+
+# remove tempfile, if exists
+if [[ -f $tmpfile ]]; then
+    rm $tmpfile
+fi
+
 
 if [[ -n $1 ]]; then
     loginname="$1"
 else
-    echo "Bitte Benutzernamen angeben!"
+    echo "Bitte Benutzernamen angeben!" | tee $tmpfile
     exit
 fi
 
@@ -74,3 +81,9 @@ if [[ -n $ocid ]]; then
 else
     echo "Für den angegebenen Benutzer \"$loginname\" existieren keine verwaisten ownCloud-Daten."
 fi
+
+
+# writing returncode to tempfile
+#echo $ok > $tmpfile
+# make the file writeable for apache
+chown .www $tmpfile && chmod g+w $tmpfile

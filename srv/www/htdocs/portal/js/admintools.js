@@ -1620,6 +1620,9 @@ function functionListResponse(request) {
 
 	var node = new Element('table', {'onclick': 'exec_checkistate();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Software-Versionen prüfen</td><td style="vertical-align: middle; font-weight: normal;">Es werden die Versionen relevanter Programme des Servers angezeigt.</td></tr>');
 	content.insert(node);
+
+	var node = new Element('table', {'onclick': 'exec_inhume();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Benutzerdaten bereinigen</td><td style="vertical-align: middle; font-weight: normal;">Verwaiste Daten gelöschter Benutzer aus Kopano und ownCloud löschen.</td></tr>');
+	content.insert(node);
 }
 
 // Script ausfuehren
@@ -1687,6 +1690,30 @@ function exec_checkistate() {
 
 // Ergebnis anzeigen
 function exec_checkistateResponse(request) {
+	lightbox.setWaitStatus(false);
+	var data = request.responseText.evalJSON(true);
+	
+	lightbox.setTitle(new Element('div', {
+		'class': 'section-title'
+	}).update('Ergebnis'));
+
+	var box = new Element('text');
+	lightbox.getContent().insert(box);
+	box.insert('<div align="left"><pre><b>' + data + '</b></pre></div>');
+
+	lightbox.addButton('<button onclick="lightbox.hide();">OK</button>');
+	lightbox.update();
+}
+
+// Script ausfuehren
+function exec_inhume() {
+	lightbox.show(500, true);
+	lightbox.setWaitStatus(true);
+	invis.request('script/scriptexecuter.php', exec_inhumeResponse, {c: 'inhume'});
+}
+
+// Ergebnis anzeigen
+function exec_inhumeResponse(request) {
 	lightbox.setWaitStatus(false);
 	var data = request.responseText.evalJSON(true);
 	
