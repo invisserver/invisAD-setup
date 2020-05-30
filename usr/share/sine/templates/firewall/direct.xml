@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- With masquerading -->
+<!--
+<direct>
+  <rule ipv="ipv4" table="nat" chain="POSTROUTING" priority="0">-o intern -j MASQUERADE</rule>
+  <rule ipv="ipv4" table="filter" chain="FORWARD" priority="0">-i vpn -o intern -j ACCEPT</rule>
+  <rule ipv="ipv4" table="filter" chain="FORWARD" priority="0">-i intern -o vpn -m state --state RELATED,ESTABLISHED -j ACCEPT</rule>
+</direct>
+-->
+
+<!-- Without masquerading -->
+<direct>
+  <rule ipv="ipv4" table="filter" chain="FORWARD" priority="0">-i vpn -o intern -j ACCEPT</rule>
+  <rule ipv="ipv4" table="filter" chain="FORWARD" priority="0">-i intern -o vpn -j ACCEPT</rule>
+</direct>
+

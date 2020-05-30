@@ -50,8 +50,9 @@ pgsubtitle="Firewall Setup for invis-server"
 # Kopieren und anpassen der Firewall Konfiguration
 # Vorbereitete Konfigurationen kopieren
 echo "Kopiere Konfiguration..." | pgbox
-cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
-cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/external.xml /etc/firewalld/zones/ 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/internal.xml /etc/firewalld/zones/ 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/direct.xml /etc/firewalld/ 2>&1| tee -a $LOGFILE | pgbox
 
 # geaenderten Portal-HTTPS-Port einfuegen
 httpsport=`getconfdata "HTTPSPORT" "2"`
