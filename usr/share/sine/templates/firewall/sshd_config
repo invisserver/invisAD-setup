@@ -10,7 +10,7 @@
 # possible, but leave them commented.  Uncommented options change a
 # default value.
 
-#Port 22
+Port 22
 Port sshport
 Protocol 2
 #AddressFamily any
