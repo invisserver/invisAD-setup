@@ -106,7 +106,6 @@ $SERVER_SERVICES = array(
 	array('kopano-server', 'Kopano Server'),
 	array('kopano-spooler', 'Kopano Versand'),
 	array('kopano-presence', 'Kopano Anwesenheitsprüfung'),
-	array('sogod', 'SOGo-Groupwareserver')
 	);
 
 // WEBSITE SPECIFIC

@@ -1,6 +1,6 @@
 # invis-server.org
 # Stefan Schaefer - 2016
-# Wenn sssd mit den Serent Samba Paketen kombiniert werden soll
+# Wenn sssd mit den Sernet Samba Paketen kombiniert werden soll
 # bringt Samba eine eigene libldb1 Bibliothek mit, wird diese anstelle
 # der openSUSE eigenen verwendet, findet sssd den Pfad zu seinem 
 # memberof Modul nicht. Dieser muss als Umgebungsvariable gesetzt werden.
