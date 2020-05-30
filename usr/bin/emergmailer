@@ -37,8 +37,10 @@ else
     exit 1
 fi
 
-# Empfänger der Warnmails
+# Empfaenger der Warnmails
 adminmail=`getconfdata $conffile "adMail" "2"`
+# cc-Empfaenger
+localadminmail=`getconfdata $conffile "localAdMail" "2"`
 # Absender der Warnmails
 sender=`getconfdata $conffile "mailSender" "2"`
 
@@ -62,7 +64,7 @@ fi
 
 # email senden, wenn Alarm vorliegt und noch keine Mail gesendet wurde
 if [[ -f $directory/alarm && $sent == 1 ]]; then
-    cat $directory/alarm|mailx -s "$datum - Alarm auf Server: $server" -c $sender -r $sender $adminmail
+    cat $directory/alarm|mailx -s "$datum - Alarm auf Server: $server" -c $sender -r $localadminmail $adminmail
     echo $datum > $directory/sent
 fi
 
