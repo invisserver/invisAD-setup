@@ -68,7 +68,7 @@ if (isset($_COOKIE['invis-request']))
 	$cookie_data = json_decode($_COOKIE['invis-request'], true);
 
 // unset request cookie
-setcookie('invis-request', '', time() - 3600, '/');
+setcookie('invis-request', '', time() - 3600, '/', '', true);
 
 //--------------------
 // USER STUFF

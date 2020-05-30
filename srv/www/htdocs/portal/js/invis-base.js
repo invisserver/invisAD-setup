@@ -15,7 +15,7 @@ var InvisBase = Class.create({
 			expires = "; expires=" + date.toGMTString();
 		}
 		//document.cookie = cookie_name + "=" + escape(value) + expires + "; path=/";
-		document.cookie = cookie_name + "=" + this.urlEncode(value) + expires + ';path=/';
+		document.cookie = cookie_name + "=" + this.urlEncode(value) + expires + ';path=/; secure=true';
 	},
 
 	getCookie : function (cookie_name) {
