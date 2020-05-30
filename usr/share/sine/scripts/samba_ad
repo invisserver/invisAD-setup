@@ -120,7 +120,7 @@ samba-tool group addmembers "Administrators" ldap.admin 2>&1| tee -a $LOGFILE | 
 
 # User fuer Junk-Postfach anlegen
 junkpw=`getpassword "JunkPW" "3"`
-samba-tool user create junk "$junkpw" --surname="Junk Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $LOGFILE | pgbox
+samba-tool user create junk "$junkpw" --surname="Owner" --given-name="Junk" --description="Benutzer für Junk-Postfach" 2>&1| tee -a $LOGFILE | pgbox
 samba-tool user setexpiry --noexpiry junk
 samba-tool group addmembers "maildummies" junk 2>&1| tee -a $LOGFILE | pgbox
 samba-tool group removemembers "Domain Users" junk 2>&1| tee -a $LOGFILE | pgbox
