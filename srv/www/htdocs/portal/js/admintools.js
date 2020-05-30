@@ -1221,7 +1221,7 @@ function userAdd() {
 	sel.insert(new Element('option', {'value': 0}).update('Gast'));
 	sel.insert(new Element('option', {'value': 1}).update('Mailkonto'));
 	sel.insert(new Element('option', {'value': 3}).update('Windows+Unix'));
-	sel.insert(new Element('option', {'value': 4}).update('Windows+Unix+Groupware'));
+	sel.insert(new Element('option', {'value': 4, 'selected': 'selected'}).update('Windows+Unix+Groupware'));
 	sel.insert(new Element('option', {'value': 6}).update('WinAdmin+Unix'));
 	sel.insert(new Element('option', {'value': 7}).update('WinAdmin+Unix+Groupware'));
 	sel.observe('change', function(e) { account_type = this.value; });
