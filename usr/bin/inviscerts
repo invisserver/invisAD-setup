@@ -121,6 +121,8 @@ updatecrl() {
     cp $ersadir/crl.pem $openvpndir
     # Aktuelles CRL-Chain-File erzeugen
     cat $ersadir/ca.crt $ersadir/crl.pem > $ersadir/crl-chain.pem
+    # openvpn neu starten
+    systemctl restart openvpn@invis-server.service
 }
 
 if [[ -z $1 ]]; then
