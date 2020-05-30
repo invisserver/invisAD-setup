@@ -58,7 +58,7 @@ if [[ $2 == 1 ]];then
 fi
 
 # Ist der Benutzer noch aktiv?
-if [[ `getent passwd | grep "^$loginname:"` ]]; then
+if [[ `wbinfo -u| grep "\\\\$loginname$"` ]]; then
     echo "Der Benutzer $loginname ist ein aktiver Nutzer." | tee $tmpfile
     exit
 fi

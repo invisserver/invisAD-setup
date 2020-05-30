@@ -1725,7 +1725,7 @@ function exec_inhume() {
 	lightbox.getContent().insert(box);
 	box.insert('<br><label>Benutzernamen eingeben: </label>');
 
-	var box = new Element('input', {'name': "un", 'id': "un", 'size': 2, 'maxlength': 20, 'style': 'width: 99%; text-align: center;'});
+	var box = new Element('input', {'name': "un", 'id': "un", 'size': 2, 'style': 'width: 99%; text-align: center;'});
 	lightbox.getContent().insert(box);
 
 	lightbox.addButton('<button onclick="getUsername();lightbox.hide();invis.request(\'script/scriptexecuter.php\', exec_inhumeResponse, {c: \'inhume\'});">OK</button><button onclick="lightbox.hide();">Abbrechen</button>');
