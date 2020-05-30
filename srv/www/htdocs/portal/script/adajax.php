@@ -143,6 +143,7 @@ function userList() {
 		case MAIL_FLAG:
 		case (MAIL_FLAG | GW_FLAG):
 		case (WINDOWS_FLAG | GW_FLAG):
+		case (MAIL_FLAG | WINDOWS_FLAG | GW_FLAG):
 		    $type = MAIL_TYP;
 		    break;
 		case WINDOWS_FLAG:
