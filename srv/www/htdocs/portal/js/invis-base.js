@@ -68,8 +68,6 @@ var InvisBase = Class.create({
 		return ret.replace(/(\%([a-z0-9]{2}))/g, function(full, m1, m2) {
 		    return "%"+m2.toUpperCase();
 		});
-		
-		return ret;
 	},
 	
 	urlDecode : function (str) {
