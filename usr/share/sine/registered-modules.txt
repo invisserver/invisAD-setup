@@ -16,7 +16,6 @@
 16:o:apcupsd
 17:o:groupware
 18:o:erp
-19:o:faxgate
 20:o:dokuwiki
 21:o:owncloud
 22:o:kimai
