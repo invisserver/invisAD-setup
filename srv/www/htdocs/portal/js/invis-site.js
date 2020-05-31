@@ -64,7 +64,11 @@ function initUserblock() {
 }
 
 function showLogin(event) {
-	lightbox.show(300, true);
+	if (location.protocol == "https:") {
+	    lightbox.show(300, true);
+	} else {
+	    lightbox.show(500, true);
+	}
 	var div = new Element('div', {'id': 'login-block'});
 	var div_cancel = new Element('div', {'class': 'cancel'}).update('x');
 	div.insert(div_cancel);
@@ -77,18 +81,24 @@ function showLogin(event) {
 	
 	div.insert(new Element('div', {'class': 'section-title center'}).update('invis Login'));
 	
-	var str = '<form onsubmit="doLogin(); return false;" autocomplete="off"><table cellspacing="0" cellpadding="0">' +
+	if (location.protocol == "https:") {
+	    var str = '<form onsubmit="doLogin(); return false;" autocomplete="off"><table cellspacing="0" cellpadding="0">' +
 				'<tr><td class="label">login</td><td class="input"><input id="login_user" /></td></tr>' +
 				'<tr><td class="label">passwort</td><td class="input"><input type="password" id="login_pwd" /></td></tr>' +
 				'<tr><td colspan="2"><button type="submit">Anmelden</button></td></tr>' +
 			'</table></form>';
-	div.insert(str);
+	    div.insert(str);
 	
-	div.insert(new Element('div', {'id': 'login-message'}));
+	    div.insert(new Element('div', {'id': 'login-message'}));
 	
-	lightbox.getContent().insert(div);
-	lightbox.update();
-	$('login_user').focus();
+	    lightbox.getContent().insert(div);
+	    lightbox.update();
+	    $('login_user').focus();
+	} else {
+	    div.insert('<p style="text-align:center" class="red">Bitte auf <a href="https://' + location.hostname + '">https://' + location.hostname + '</a> anmelden!</p>');
+	    lightbox.getContent().insert(div);
+	    lightbox.update();
+	}
 }
 
 function doLogin() {
