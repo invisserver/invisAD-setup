@@ -136,7 +136,7 @@ function linksModResponse(request) {
 	global $LDAP_SUFFIX;
 	
 	// global links
-	echo '<h3>Global</h3><span>Die hier aufgeführten Links können an Ihre Anforderungen angepasst werden.</span>';
+	echo '<h3>Global</h3><span id="int_section_infotext">Die hier aufgeführten Links können an Ihre Anforderungen angepasst werden.</span>';
 	echo '<ul id="global-links">';
 	$result1 = search($conn, "$LDAP_SUFFIX_PORTAL", 'iPortEntryPosition=Internet');
 	if ($result1) {
