@@ -60,8 +60,7 @@ if [[ $cont == "0" ]];then
 
     # Dokuwiki Template Bootstrap3 herunterladen und installieren
     # Create download-url
-    latesttag=`curl -s https://github.com/giterlizzi/dokuwiki-template-bootstrap3/releases/latest|grep releases|cut -d "=" -f2|cut -d '"' -f2|cut -d '/' -f8`
-    url="https://github.com/giterlizzi/dokuwiki-template-bootstrap3/archive/$latesttag.tar.gz"
+    url=`curl -si https://api.github.com/repos/giterlizzi/dokuwiki-template-bootstrap3/releases/latest|grep tarball_url|tr -d " "|tr -d ","|tr -d '"'|cut -d ":" -f2-`
     wget -O $SINEWORKINGDIR/bootstrap3.tar.gz $url 2>&1 | tee -a $LOGFILE | pgbox
     getpath=`find $SINEWORKINGDIR -name "bootstrap3.tar.gz"`
     dwtemplatedir="/srv/www/htdocs/dokuwiki/lib/tpl/"
