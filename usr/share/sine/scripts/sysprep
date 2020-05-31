@@ -452,10 +452,10 @@ chkservice "chronyd"
 chkservice "ntpd"
 
 # enable ntp and set hardware clock
-file="invis-pws.conf"
 hwclock --systohc 2>&1| tee -a $LOGFILE | pgbox 
 
 # invis Passwort-Datei anpassen
+file="invis-pws.conf"
 ldappw=`getpassword "LDAPAdminPW" "3"`
 string="ldap-secret%$ldappw"
 changevalues $INVISCONFDIR $file "$string"

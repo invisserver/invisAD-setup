@@ -1,4 +1,13 @@
-kopano-server-packages
+kopano-server
+kopano-search
+kopano-gateway
+kopano-spooler
+kopano-spamd
+kopano-dagent
+kopano-indexer
+kopano-monitor
+kopano-statsd
+kopano-backup
 kopano-bash-completion
 kopano-webapp
 kopano-webapp-contactfax
