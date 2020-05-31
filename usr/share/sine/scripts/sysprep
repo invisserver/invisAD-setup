@@ -75,15 +75,15 @@ hdtype=`getconfdata "HDType" "2"`
 case $hdtype in 
     server)
 	    string="diskWarrantyTime:0%diskWarrantyTime:43800"
-	    changevalues=$INVISCONFDIR "invis.conf" "$string"
+	    changevalues $INVISCONFDIR "invis.conf" "$string"
 	;;
     consumer)
 	    string="diskWarrantyTime:0%diskWarrantyTime:26280"
-	    changevalues=$INVISCONFDIR "invis.conf" "$string"
+	    changevalues $INVISCONFDIR "invis.conf" "$string"
 	;;
     lowbudget)
 	    string="diskWarrantyTime:0%diskWarrantyTime:14140"
-	    changevalues=$INVISCONFDIR "invis.conf" "$string"
+	    changevalues $INVISCONFDIR "invis.conf" "$string"
 	;;
 esac
 
