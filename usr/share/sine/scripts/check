@@ -102,9 +102,9 @@ if [[ $prepok == "0" ]]; then
     # chrony aus dem invis-Repo installieren
     # stable oder unstable?
     if [[ `zypper repos |grep "_unstable "` ]];then
-	zypper -n install --from spins_invis_15_unstable --force-resolution -n chrony
+	zypper -n install --from spins_invis_15_unstable --force-resolution -n chrony 2>&1| tee -a $LOGFILE | pgbox
     else
-	zypper -n install --from spins_invis_15_stable --force-resolution -n chrony
+	zypper -n install --from spins_invis_15_stable --force-resolution -n chrony 2>&1| tee -a $LOGFILE | pgbox
     fi
     
     # NFS-Server
