@@ -104,7 +104,7 @@ if [[ $prepok == "0" ]]; then
     if [[ `zypper repos |grep "_unstable "` ]];then
 	zypper -n install --from spins_invis_15_unstable --force-resolution -n chrony
     else
-	zypper -n install --from spins_invis_15_unstable --force-resolution -n chrony
+	zypper -n install --from spins_invis_15_stable --force-resolution -n chrony
     fi
     
     # NFS-Server
