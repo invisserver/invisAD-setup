@@ -1128,9 +1128,8 @@ function hostModResponse(request) {
 // show user add box
 
 function userAdd() {
-	var account_type = 0; // 0: user, 1: admin, 2: gast, 3: mail, 4: groupware
+	var account_type = 4; // 0: gast, 1: mail, 2: not used, 3: win+unix, 4: win+unix+gw, 5: not used, 6: winadmin+unix, 7: winadmin+unix+gw
 	lightbox.show(500, true);
-	//var data = request.responseText.evalJSON();
 	lightbox.setTitle(new Element('div', {'class': 'section-title'}).update('Benutzerdetails'));
 	
 	var box = new Element('table', {'id': 'userbox', 'cellpadding': '0', 'cellspacing': '0'});
@@ -1151,11 +1150,8 @@ function userAdd() {
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
 
-//	lightbox.addButton('<button onclick="userAddRequest();">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
-
 	var rows = $H({
 					'uid': true,
-//					'rid': false,
 					'email': true,
 					'display_name': true,
 					'firstname': true,
@@ -1170,7 +1166,6 @@ function userAdd() {
 	// attribute description
 	var row_names = $H({
 					'uid': 'Login*',
-//					'rid': 'RID',
 					'email': 'Email extern',
 					'display_name': 'Anzeigename',
 					'userpassword': 'Passwort*',
@@ -1227,7 +1222,6 @@ function userAdd() {
 	sel.observe('change', function(e) { account_type = this.value; });
 	var value_div = new Element('div');
 	value_div.insert(sel);
-	//value_div.addClassName('value');
 	line.insert(value_div);
 	$('userbox_content').insert(line);
 	
@@ -1279,7 +1273,6 @@ function groupAdd(request) {
 	lightbox.addButton(tmp_btn);
 	lightbox.addButton('<button onclick="lightbox.hide();">Abbrechen</button>');
 	
-//	lightbox.addButton('<button onclick="groupAddRequest();">Speichern</button><button onclick="lightbox.hide();">Abbrechen</button>');
 	
 	var rows = $H({
 					'cn': true,
@@ -1326,7 +1319,6 @@ function groupAdd(request) {
 	sel.observe('change', function(e) { group_type = this.value; });
 	var value_div = new Element('div');
 	value_div.insert(sel);
-	//value_div.addClassName('value');
 	line.insert(value_div);
 	$('groupbox_content').insert(line);;
 
@@ -1346,7 +1338,6 @@ function groupAdd(request) {
 	sel1.observe('change', function(e) { dir_type = this.value; });
 	var value_div = new Element('div');
 	value_div.insert(sel1);
-	//value_div.addClassName('value');
 	line.insert(value_div);
 	$('groupbox_content').insert(line);;
 	
