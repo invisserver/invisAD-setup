@@ -128,11 +128,11 @@ fi
 ## invis-Konfigurationsdatei anpassen
 path="/etc/invis"
 file="invis.conf"
-adminmail=`getconfdata "Admail" "2"`
+adminmail=`getconfdata "ExtAdmail" "2"`
 string="administrator@invis-net.loc%$adminmail"
 changevalues $path $file "$string"
 
-admin=`getconfdata "Admin" "2"`
+admin=`getconfdata "ExtAdmin" "2"`
 string="Heinz Becker%$admin"
 changevalues $path $file "$string"
 

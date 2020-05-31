@@ -526,10 +526,10 @@ echo "Organisation:$organisation" >> $SINEWORKINGDIR/invis_confdata
 echo "certMail:$certmail" >> $SINEWORKINGDIR/invis_confdata
 echo "certOwner:$certowner" >> $SINEWORKINGDIR/invis_confdata
 
-echo "Admail:$admail" >> $SINEWORKINGDIR/invis_confdata
-echo "Admin:$admin" >> $SINEWORKINGDIR/invis_confdata
+echo "ExtAdmail:$admail" >> $SINEWORKINGDIR/invis_confdata
+echo "ExtAdmin:$admin" >> $SINEWORKINGDIR/invis_confdata
 
-echo "LocalAdminMail:$localadminmail" >> $SINEWORKINGDIR/invis_confdata
+echo "LocalAdMail:$localadminmail" >> $SINEWORKINGDIR/invis_confdata
 echo "LocalAdmin:$localadmin" >> $SINEWORKINGDIR/invis_confdata
 
 echo "Hostname:$hn" >> $SINEWORKINGDIR/invis_confdata
