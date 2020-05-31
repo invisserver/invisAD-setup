@@ -418,38 +418,58 @@ path="/etc/php7/fastcgi"
 string="UTC%$timezone"
 changevalues $path $file "$string"
 
-# NTP Dienst wird konfiguriert
+# Chronyd Dienst wird konfiguriert
 windowtitle="Grundkonfiguration"
 pgsubtitle="Die Systemuhr wird gestellt und Zeit-Server wird gestartet." 
 
-# After testinstallation of ntp there was a file /var/run/ntp instead of a directory.
-# This file blocks the ntp daemons start. Workaround:
-if [[ -f /var/run/ntp ]]; then
-    rm -f /var/run/ntp
-fi
-cp $TEMPLATEDIR/$modulename/ntp/servers-netconfig /var/run/ntp
+network=`getconfdata "Networkbase" "2"`
+netmask=`getconfdata "NMask-short" "2"`
 
-# NTP-Dienst fuer AD anpassen
-ntpconf="/etc/ntp.conf"
-echo -e "\n" >> $ntpconf
-echo '# Signed Socket for Samba 4 AD DC' >> $ntpconf
-echo 'ntpsigndsocket /var/lib/samba/ntp_signd' >> $ntpconf
-echo 'restrict default mssntp' >> $ntpconf
+path="/etc/chrony.d"
+file="invis_chrony.conf"
+cp $TEMPLATEDIR/$modulename/chrony/$file $path
+string="192.168.220.10%$ipaddr"
+changevalues $path $file "$string"
 
-sockdir="/var/lib/ntp/var/lib/samba/ntp_signd"
+string="192.168.0.0/24%$network/$netmask"
+changevalues $path $file "$string"
+
+sockdir="/var/lib/samba/ntp_signd"
 mkdir -p $sockdir
-chown .ntp $sockdir
+chown .chrony $sockdir
 chmod 0750 $sockdir
 
-# ntp must run chrooted
-sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
-
-# stop chrony (default ntp service since leap 15)
+# Restart chronyd
 chkservice "chronyd"
 
+# After testinstallation of ntp there was a file /var/run/ntp instead of a directory.
+# This file blocks the ntp daemons start. Workaround:
+#if [[ -f /var/run/ntp ]]; then
+#    rm -f /var/run/ntp
+#fi
+#cp $TEMPLATEDIR/$modulename/ntp/servers-netconfig /var/run/ntp
+
+# NTP-Dienst fuer AD anpassen
+#ntpconf="/etc/ntp.conf"
+#echo -e "\n" >> $ntpconf
+#echo '# Signed Socket for Samba 4 AD DC' >> $ntpconf
+#echo 'ntpsigndsocket /var/lib/samba/ntp_signd' >> $ntpconf
+#echo 'restrict default mssntp' >> $ntpconf
+
+#sockdir="/var/lib/ntp/var/lib/samba/ntp_signd"
+#mkdir -p $sockdir
+#chown .ntp $sockdir
+#chmod 0750 $sockdir
+
+# ntp must run chrooted
+#sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
+#sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
+
+# stop chrony (default ntp service since leap 15)
+#chkservice "chronyd"
+
 # start ntp daemon
-chkservice "ntpd"
+#chkservice "ntpd"
 
 # enable ntp and set hardware clock
 hwclock --systohc 2>&1| tee -a $LOGFILE | pgbox 
