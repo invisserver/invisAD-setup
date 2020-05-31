@@ -324,6 +324,11 @@ certmail=`getconfdata "certMail" "2"`
 string="me@example.net%$certmail"
 changevalues $path $file "$string"
 
+# Safe CA-Dir if exist
+if [[ -d $path/$domain ]]; then
+    old $path/$domain
+fi
+
 # PKI initialisieren
 easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
 
