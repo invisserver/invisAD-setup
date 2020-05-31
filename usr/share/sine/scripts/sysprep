@@ -136,7 +136,7 @@ admin=`getconfdata "Admin" "2"`
 string="Heinz Becker%$admin"
 changevalues $path $file "$string"
 
-localadminmail=`getconfdata "LocalAdminMail" "2"`
+localadminmail=`getconfdata "LocalAdMail" "2"`
 string="localadmin@invis-net.loc%$localadminmail"
 changevalues $path $file "$string"
 
