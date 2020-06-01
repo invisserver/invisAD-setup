@@ -431,7 +431,7 @@ cp $TEMPLATEDIR/$modulename/chrony/$file $path
 string="192.168.220.10%$ipaddr"
 changevalues $path $file "$string"
 
-string="192.168.0.0/24%$network/$netmask"
+string="192.168.220.0/24%$network/$netmask"
 changevalues $path $file "$string"
 
 sockdir="/var/lib/samba/ntp_signd"
