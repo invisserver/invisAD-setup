@@ -38,6 +38,18 @@ changevalues() {
     mv $1/$2.new $1/$2
 }
 
+gettemp() {
+    # Welcher Temepratur Parameter wird von der Platte verwendet
+    if [[ `smartctl -A -d sat /dev/$1|grep 194` ]]; then
+	# Temprature_Celsius
+	temp=`smartctl -A -d sat /dev/$1|grep 194|tr -s " "|cut -d " " -f 10`
+    else
+	# Airflow_Temprature_Cels
+	temp=`smartctl -A -d sat /dev/$1|grep 190|tr -s " "|cut -d " " -f 10`
+    fi
+    echo $temp
+}
+
 # Verzeichnis für Testergebnisse
 directory="/var/spool/results/diskchecker"
 
@@ -80,7 +92,7 @@ for x in /sys/block/*; do
 		fi
 		#echo $atatest $usbtest
 		if [[ $atatest == "PASSED" ]] || [[ $usbtest == "OK" ]] || (( $pwronhrs <= $dwt )); then
-		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
+		    temp=`gettemp $x`
 		    #echo "Festplatte \"$x\" ist OK - Aktuelle Festplattentemperatur ist $temp °C" >> $directory/status
 		    if [[ $dwt == 0 ]]; then
 			echo "$x OK $temp" >> $directory/status
@@ -89,7 +101,7 @@ for x in /sys/block/*; do
 		    fi
 		else
 		    #echo "Festplatte \"$x\" ist Fehlerhaft - bitte sofort Ihrem Administrator melden!" >> $directory/status
-		    temp=`smartctl -A -d sat /dev/$x|grep 194|tr -s " "|cut -d " " -f 10`
+		    temp=`gettemp $x`
 		    if [[ $dwt == 0 ]]; then
 			echo "$x nOK $temp" >> $directory/status
 		    else
