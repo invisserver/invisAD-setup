@@ -2,7 +2,7 @@
 # Kategorie: server
 # Script zum Neusetzen von Zugriffs-, Beseitrechten und ACLs der Gruppen-
 # verzeichnisse unter /srv/shares/gruppen
-# (c) 2019 Stefan Schaefer - invis-server.org
+# (c) 2019,2020 Stefan Schaefer - invis-server.org
 # Questions: info@invis-server.org
 
 # License: GPLv3
@@ -31,10 +31,12 @@ getconfdata() {
 
 # function to set default acls, acls, ownership and posix rights
 setrights() {
-	chmod -R g+rwxs,o-rwx "$1"
+	find "$1" -type d -exec chmod g+rwxs,o-rwx {} \;
+	find "$1" -type f -exec chmod g=rw,o-rwx {} \;
 	chgrp -R "$2" "$1"
 	setfacl -R -d -m group:"$2":rwx "$1"
-	setfacl -R -m group:"$2":rwx "$1"
+	find "$1" -type d -exec setfacl -m group:"$2":rwx {} \;
+	find "$1" -type f -exec setfacl -m group:"$2":rw {} \;
 }
 
 # Variablen
