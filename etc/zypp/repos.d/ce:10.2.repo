@@ -1,7 +1,0 @@
-[ce_10.2]
-name=Owncloud Server 10.2 (openSUSE_Leap_15.1)
-type=rpm-md
-baseurl=https://download.owncloud.org/download/repositories/10.2/openSUSE_Leap_15.1/
-gpgcheck=1
-gpgkey=https://download.owncloud.org/download/repositories/10.2/openSUSE_Leap_15.1//repodata/repomd.xml.key
-enabled=1
