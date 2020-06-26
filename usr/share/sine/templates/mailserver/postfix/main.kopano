@@ -763,3 +763,7 @@ smtpd_tls_dh512_param_file = /etc/postfix/dh_512.pem
 smtpd_tls_eecdh_grade = strong
 
 tls_preempt_cipherlist = yes
+
+smtpd_relay_restrictions = permit_mynetworks, 
+                            permit_sasl_authenticated, 
+                            defer_unauth_destination
