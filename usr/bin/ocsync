@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: apps
 # script to manage headless owncloud synchronization
-# Version 14.0
+# Version 1.0
 # (c) Mai 2018 Stefan Schäfer / invis-server.org
 
 # License: GPLv3
@@ -82,13 +82,16 @@ getfullname() {
 	getent passwd | grep "^$1:" | cut -d ":" -f 5
 }
 
+# RegEx fuer eine URL:
+urlregex='(https?)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+
 # ext Hostnamen lesen
 fqdn=`getconfdata "$conffile" "fqdn" 2`
 
 # configuration variables
 ocaccountdir="/var/lib/sine/oc"
 ocaccountfile="ocaccounts"
-ocsrvurl="https://$fqdn/owncloud/remote.php/webdav"
+ocurllocal="https://$fqdn/owncloud/remote.php/webdav"
 
 # Verzeichnis anlegen, wenn nicht vorhanden
 if [[ ! -d $ocaccountdir ]]; then
@@ -110,10 +113,11 @@ case $mode in
 	ok=0
 	while (( $ok != "3" ));do
 	    dialog --backtitle "$dialogtitle" --title "Hintergrundsynchronisation ownCloud" --form "$dialogshorthelp\n
-Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation ein.\n\n" 16 70 7 \
-	"Benutzername:" 2 1 "${ocacc[0]}" 2 18 44 0\
-	"Passwort:" 4 1 "${ocacc[1]}" 4 18 44 0\
-	"Zielverzeichnis:" 6 1 "${ocacc[2]}" 6 18 44 0\
+Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation ein.\n\n" 18 70 9 \
+	"Benutzername:" 2 1 "${ocacc[0]}" 2 18 60 0\
+	"Passwort:" 4 1 "${ocacc[1]}" 4 18 60 0\
+	"Zielverzeichnis:" 6 1 "${ocacc[2]}" 6 18 60 0\
+	"Remote-URL:" 8 1 "${ocacc[3]}" 8 18 60 0\
 	2>/tmp/sine_temp
 	    if [[ "$?" -ne "0" ]]; then
 		echo "Eingabe wurde abgebrochen."
@@ -122,13 +126,16 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	    ocacc=(`cat /tmp/sine_temp`)
 
 	    # Werte pruefen
-	    # Benutzer muss existieren und Mitglied der Gruppe owncloud sein
-	    if [[ `getent passwd |grep "^${ocacc[0]}:"` && `samba-tool group listmembers owncloud | grep "^${ocacc[0]}"` ]]; then
+	    # Wenn keine URL angegeben wurde, muss der Benutzer lokal existieren und in der Gruppe owncloud sein
+	    if [[ -z ${ocacc[3]} ]]; then
+		# Benutzer muss existieren und Mitglied der Gruppe owncloud sein
+		if [[ `getent passwd |grep "^${ocacc[0]}:"` && `samba-tool group listmembers owncloud | grep "^${ocacc[0]}"` ]]; then
 		((ok=1))
-	    else
-		msgbox "Der Benutzer \"${ocacc[0]}\" existiert nicht oder ist nicht Mitglied der Gruppe \"owncloud\"."
+		else
+		    msgbox "Der Benutzer \"${ocacc[0]}\" existiert nicht oder ist nicht Mitglied der Gruppe \"owncloud\"."
+		fi
 	    fi
-
+	    
 	    # Passworteingabe minimal pruefen, es kann nicht korrekt sein, wenn das eingegebene PW kuerzer ist als
 	    # die im AD gesetzte minimale Laenge. Ist nicht perfekt aber ein Anfang. Besser waere ein Loginversuch...
 	    minlength=`samba-tool domain passwordsettings show |tr -d " " |grep Minimumpasswordlength|cut -d ":" -f2`
@@ -143,15 +150,31 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	    else
 		msgbox "Das angegebene Verzeichnis existiert nicht."
 	    fi
+
+	    if [[ "https://${ocacc[3]}" =~ $urlregex ]];then
+		((ok=$ok + 1))
+	    else
+		msgbox "Die angegebene URL ist nicht valide."
+	    fi
+
 	    echo $ok > /tmp/ok
 	done
+	
+	# URL festlegen
+	if [[ -z ${ocacc[3]} ]]; then
+	    ocsrvurl=`echo $oclocalurl|base64`
+	else
+	    ocsrvurl=`echo ${ocacc[3]}|base64`
+	fi 
+	
 	# Account nur anlegen, wenn nicht bereits geschehen.
 	chkaccount ${ocacc[0]} > /dev/null 2>&1
 	exist=$?
 	if [[ $exist == 0 ]]; then
 	    msgbox "Das angegebene Konto ist bereits aktiv."
 	else
-	    echo ${ocacc[0]}:${ocacc[1]}:${ocacc[2]} >> $ocaccountdir/$ocaccountfile
+	    pwenc=`echo ${ocacc[1]}|base64`
+	    echo ${ocacc[0]}:$pwenc:${ocacc[2]}:$ocsrvurl >> $ocaccountdir/$ocaccountfile
 	fi
 	;;
     "rem")
@@ -167,21 +190,20 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
         if [[ -f $ocaccountdir/$ocaccountfile ]]; then
 	    if [[ -z $user ]]; then
 		for line in `cat $ocaccountdir/$ocaccountfile`; do
-			IFS=':' read -r -a job <<< "$line"
-			owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
+		    IFS=':' read -r -a job <<< "$line"
+		    pw=`echo ${job[1]}|base64 -d`
+		    url=`echo ${job[3]}|base64 -d`
+		    owncloudcmd -s -u ${job[0]} -p $pw ${job[2]} $url
 		done
 	    else
 		chkaccount $user > /dev/null 2>&1
 		exist=$?
 		if [[ $exist == 0 ]]; then
 		    line=`grep "^$user:" $ocaccountdir/$ocaccountfile`
-		    jobactive=`ps ax | grep owncloudcmd |grep $user`
-		    echo $jobactive
-		    sleep 4
-		    if [[ -z $jobactive ]]; then
-			IFS=':' read -r -a job <<< "$line"
-			owncloudcmd -s -u ${job[0]} -p ${job[1]} ${job[2]} $ocsrvurl
-		    fi
+		    IFS=':' read -r -a job <<< "$line"
+		    pw=`echo ${job[1]}|base64 -d`
+		    url=`echo ${job[3]}|base64 -d`
+		    owncloudcmd -s -u ${job[0]} -p $pw ${job[2]} $url
 		else
 		    msgbox "Das angegebene Konto \"$user\" ist unbekannt."
 		fi
@@ -189,13 +211,11 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	fi
 	;;
     "jobs")
-	jobs=`ps ax  | grep owncloudcmd| grep -v 'grep' wc -l`
-	jobactive=`ps ax | grep owncloudcmd | grep -v 'grep' |tail -n 1`
-	if [[ -n $jobactive ]]; then
-	    useractive=`echo $jobactive | tr -s " " | cut -d " " -f 8`
+	jobactive=`ps ax | grep owncloudcmd`
+	if [[ -z $jobactive ]]; then
+	    useractive=`echo $jobactive | tr -s " " | cut -d " " -f 7`
 	    userfullname=`getfullname $useractive`
-	    msgbox "Derzeit wird (evtl. u. A. das Konto von Benutzer \"$useractive ($userfullname)\" synchronisiert."
-	    msgbox "Derzeit sind insgesamt $jobs Synchronisationsjobs aktiv."
+	    msgbox "Derzeit wird das Konto von Benutzer \"$userfullname\" synchronisiert."
 	else
 	    msgbox "Derzeit ist keine Hintergrundsynchronisation aktiv."
 	fi
