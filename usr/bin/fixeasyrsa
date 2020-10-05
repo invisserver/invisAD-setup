@@ -1,0 +1,58 @@
+#!/bin/bash
+# Kategorie: server
+# Script zur Reparatur der easy-rsa Umgebung nach Server-Upgrade auf 14.x
+# Version 0.1
+# (C) 2020 by Stefan Schäfer / invis-server.org
+# License: GPLv3
+# Questions: stefan@invis-server.org
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+
+eadir="/etc/easy-rsa"
+domain=`hostname -d`
+cadir="$eadir/$domain"
+
+# Konfigurationsparameter tauschen
+changevalues() {
+    # Arg1 = Pfad, Arg2 = Datei, Arg3 = sed String
+    cat $1/$2|sed "s%$3%g" > $1/$2.new
+    mv $1/$2.new $1/$2
+}
+
+read -p "Wurde der Server soeben von Version 13.5 auf 14.1 oder später aktualisiert? [j/n] " yesno
+
+if [[ $yesno == "j" ]]; then
+    # vars-Datei wiederherstellen
+    cp "$eadir/vars.rpmsave" "$eadir/vars"
+
+    # vars anpassen
+    string="openssl-1.0.cnf%openssl-easyrsa.cnf"
+    changevalues $eadir vars "$string"
+
+    string="#set_var EASYRSA_SSL_CONF%set_var EASYRSA_SSL_CONF"
+    changevalues $eadir vars "$string"
+
+
+    # Fehlende Unterverzeichnisse erstellen
+    mkdir -p "$cadir/revoke/certs_by_serial/"
+    mkdir -p "$cadir/revoke/private_by_serial/"
+    mkdir -p "$cadir/revoke/reqs_by_serial/"
+
+    mkdir -p "$cadir/renew/certs_by_serial/"
+    mkdir -p "$cadir/renew/private_by_serial/"
+    mkdir -p "$cadir/renew/reqs_by_serial/"
+
+else
+    echo "Es ist nicht erforderlich das Script auszuführen."
+fi
