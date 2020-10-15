@@ -45,13 +45,13 @@ if [[ $yesno == "j" ]]; then
 
 
     # Fehlende Unterverzeichnisse erstellen
-    mkdir -p "$cadir/revoke/certs_by_serial/"
-    mkdir -p "$cadir/revoke/private_by_serial/"
-    mkdir -p "$cadir/revoke/reqs_by_serial/"
+    mkdir -p "$cadir/revoked/certs_by_serial/"
+    mkdir -p "$cadir/revoked/private_by_serial/"
+    mkdir -p "$cadir/revoked/reqs_by_serial/"
 
-    mkdir -p "$cadir/renew/certs_by_serial/"
-    mkdir -p "$cadir/renew/private_by_serial/"
-    mkdir -p "$cadir/renew/reqs_by_serial/"
+    mkdir -p "$cadir/renewed/certs_by_serial/"
+    mkdir -p "$cadir/renewed/private_by_serial/"
+    mkdir -p "$cadir/renewed/reqs_by_serial/"
 
 else
     echo "Es ist nicht erforderlich das Script auszuführen."
