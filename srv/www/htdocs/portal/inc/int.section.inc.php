@@ -170,7 +170,11 @@ function linksModResponse(request) {
 	
 	// user specific links
 	if (isset($_COOKIE['invis'])) {
+	    if ( $CVE20207070 == true ) {
+		$data = json_decode(urldecode($_COOKIE['invis']));
+	    } else {
 		$data = json_decode($_COOKIE['invis']);
+	    }
 		$name = $data -> displayname;
 		if ($name == '') $name = $data -> uid;
 		echo "<h3>Links für $name</h3>";

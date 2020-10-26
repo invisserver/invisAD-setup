@@ -23,6 +23,7 @@ $HOSTNAME = $DOMAIN_PARTS[0];
 $GROUPWARE = 'usedgroupware';
 $INVISVERSION = 'invisversion';
 $OPENSUSEVERSION = 'opensuseversion';
+$CVE20207070 = false;
 
 // DHCP
 $IP_NETBASE_ADDRESS = 'ipnetbase';
