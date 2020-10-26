@@ -34,7 +34,11 @@ if ($result) {
 	error_log("Unauthorized access: User \"" . $data['uid'] . "\" has no cookie set (1, ../login.php).");
     } else {
 	// pull JSON object from cookie
-	$data = json_decode($_COOKIE['invis'], true);
+	if ( $CVE20207070 == true ) {
+	    $data = json_decode(urldecode($_COOKIE['invis']), true);
+	} else {
+	    $data = json_decode($_COOKIE['invis'], true);
+	}
 
 	// get user information
 	$corusername = $data['uid'];

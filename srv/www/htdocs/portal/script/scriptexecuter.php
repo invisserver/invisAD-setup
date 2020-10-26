@@ -32,13 +32,20 @@ if (isset($_GET['c'])) {
 //--------------------
 
 if (isset($_COOKIE['invis']))
-	$cookie_auth = json_decode($_COOKIE['invis'], true);
+	if ( $CVE20207070 == true ) {
+	    $cookie_auth = json_decode(urldecode($_COOKIE['invis']), true);
+	} else {
+	    $cookie_auth = json_decode($_COOKIE['invis'], true);
+	}
 
 if (isset($_COOKIE['invis-request']))
-	$cookie_data = json_decode($_COOKIE['invis-request'], true);
+	if ( $CVE20207070 == true ) {
+	    $cookie_data = json_decode(urldecode($_COOKIE['invis-request']), true);
+	} else {
+	    $cookie_data = json_decode($_COOKIE['invis-request'], true);
+	}
+	//error_log("Cookie-Data: $cookie_data");
 
-	error_log("Cookie-Data: $cookie_data");
-	
 // unset request cookie
 setcookie('invis-request', '', time() - 3600, '/');
 

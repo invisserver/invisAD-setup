@@ -44,7 +44,15 @@ if (!isset($_COOKIE['invis-login'])) {
 	error_log("Unauthorized access: User \"" . $data['uid'] . "\" has no cookie set (1, login.php).");
 } else {
 	// pull JSON object from cookie
-	$data = json_decode(urldecode($_COOKIE['invis-login']), true);
+
+	if ( $CVE20207070 == true ) {
+	    $data = json_decode(urldecode($_COOKIE['invis-login']), true);
+	    error_log('CVE20207070 Patch is active');
+	    
+	} else {
+	    $data = json_decode($_COOKIE['invis-login'], true);
+	    error_log('CVE20207070 Patch is not active');
+	}
 
 	// get user information
 	$response = $adldap->user()->infoCollection($data['uid'], array("*"));

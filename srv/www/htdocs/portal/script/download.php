@@ -14,7 +14,13 @@ require_once('../config.php');
 require_once('MIME/Type.php');
 
 if (isset($_COOKIE['invis']))
-	$USER = json_decode($_COOKIE['invis'], true);
+
+	if ( $CVE20207070 == true ) {
+	    $USER = json_decode(urldecode($_COOKIE['invis']), true);
+	} else {
+	    $USER = json_decode($_COOKIE['invis'], true);
+	}
+
 else
 {
 	error_log("Unauthorized access (1, download.php).");
