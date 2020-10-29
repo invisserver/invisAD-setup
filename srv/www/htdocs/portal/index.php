@@ -58,7 +58,11 @@ $USER_IS_ADMIN = false;
 // load cookie for user-details
 // Pruefen, ob angemeldeter User Admin ist.
 if (isset($_COOKIE['invis'])) {
-	$USER_DATA = json_decode($_COOKIE['invis']);
+	if ( $CVE20207070 == true ) {
+	    $USER_DATA = json_decode(urldecode($_COOKIE['invis']));
+	} else {
+	    $USER_DATA = json_decode($_COOKIE['invis']);
+	}
 	$USER_IS_ADMIN = $adldap->user()->inGroup($USER_DATA -> uid,"Domain Admins");
 }
 
