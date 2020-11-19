@@ -1,0 +1,85 @@
+#!/bin/bash
+# Kategorie:
+# Script zum Erweitern eines um die Objektklasse bennoMailarchivUser und das Attribut bennoRole.
+# (c) 2020 Stefan Schaefer - invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+confdir="/etc/invis"
+conffile="$confdir/invis.conf"
+passfile="$confdir/invis-pws.conf"
+
+logfile="./addbennorole.log"
+sam="/var/lib/samba/private/sam.ldb"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Pruefen, ob eine Liste genannt wurde
+if (( $#  != 2 )); then
+    echo "Bitte einen Benutzernamen und die Benno-Rolle angeben."
+    echo "adbennoaddress user [ADMIN|USER|REVISOR]"
+    exit 1
+else
+    # Rolle korrekt?
+    if [[ "$2" =~ ^(ADMIN|USER|REVISOR)$ ]]; then
+	role="$2"
+    else 
+	echo "Geben Sie die Rolle bitte vollständig in Großbuchstaben an: ADMIN, USER oder REVISOR."
+	exit 1
+    fi
+
+    # Existiert der Benutzer?
+    if [[ ! `ldbsearch -H $sam samaccountname=$user dn` ]]; then
+	echo "Der Benutzer $user existiert nicht" | tee $logfile
+	exit 1
+    else
+	user="$1"
+	# DN ermitteln
+	dn=`ldbsearch -H $sam samaccountname=$user dn| grep "dn:"`
+    fi
+fi
+
+# Daten aus Konfiguration holen
+basedn=`getconfdata $conffile "baseDN" "2"`
+
+# Objektklasse ergaenzen
+# Arbeitsdatei anlegen
+workfile="/tmp/addbennooc.ldif"
+echo "$dn" > $workfile
+echo "changetype: modify" >> $workfile
+echo "add: objectclass" >> $workfile
+echo "objectclass: bennoMailArchivUser" >> $workfile
+# LDAP Objekt modifizieren
+ldbmodify -H $sam $workfile
+# Arbeitsdatei loeschen
+rm -rf $workfile
+
+# Benno Rolle ergaenzen
+# Arbeitsdatei anlegen
+workfile="/tmp/addbennoma.ldif"
+echo "$dn" > $workfile
+echo "changetype: modify" >> $workfile
+echo "add: bennoRole" >> $workfile
+echo "bennoRole: $role" >> $workfile
+# LDAP Objekt modifizieren
+ldbmodify -H $sam $workfile
+# Arbeitsdatei loeschen
+rm -rf $workfile

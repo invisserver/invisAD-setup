@@ -18,9 +18,9 @@
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
 #Konfigurationsdaten
-conffile="/etc/invis/invis.conf"
 confdir="/etc/invis"
-passfile="/etc/invis/invis-pws.conf"
+conffile="$confdir/invis.conf"
+passfile="$confdir/invis-pws.conf"
 
 logfile="./addbennoaddresses.log"
 sam="/var/lib/samba/private/sam.ldb"
@@ -54,7 +54,7 @@ for entry in `cat $liste`; do
     echo "----------------"
     user=`echo $entry|cut -d ";" -f1`
     # Existiert der User?
-    if [[ ! `getent passwd|grep "^$user:"` ]]; then
+    if [[ ! `ldbsearch -H $sam samaccountname=$user` ]]; then
 	echo "Der Benutzer $user existiert nicht"
 	continue
     fi
