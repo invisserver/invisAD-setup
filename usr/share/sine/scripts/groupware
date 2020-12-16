@@ -113,6 +113,8 @@ case "$whichgroupware" in
 	cp $TEMPLATEDIR/$modulename/kopano/kopano /etc/sysconfig/
 
 	# Konfigurationsvorlagen kopieren
+	# Create Clientkey directory
+	mkdir /etc/kopano/sslkeys
 	cp $TEMPLATEDIR/$modulename/kopano/*.cfg /etc/kopano/
 	chown -R .kopano /etc/kopano/
 	chmod g+r /etc/kopano/*.cfg
