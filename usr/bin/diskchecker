@@ -114,7 +114,8 @@ for x in /sys/block/*; do
 	# RAID Verbuende testen
 	if [[ `echo $x|cut -c1,2` == "md" ]]; then
 	    status=`mdadm -D /dev/$x|grep "State :"|tr -d " "|cut -d ":" -f 2`
-	    if [[ $status == "active" || $status == "clean" ]]; then
+	    ## sts - new state "active, checking" added as ok.
+	    if [[ $status == "active" || $status == "clean" || 'active, checking' ]]; then
 		#echo "RAID Verbund \"$x\" ist OK" >> $directory/status
 		echo "$x OK" >> $directory/status
 	    else 
