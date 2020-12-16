@@ -488,6 +488,23 @@ changevalues $INVISCONFDIR $file "$string"
 chkservice "cron"
 chkservice "atd"
 
+## Setup dehydrated
+# install and prepare config
+path="/etc/dehydrated/"
+file="config"
+cp $TEMPLATEDIR/$modulename/dehydrated/config $path
+string="adminmailaddress%$adminmail"
+changevalues $INVISCONFDIR $file "$string"
+
+# create domains.txt
+old $path/domains.txt
+fqdn=`getconfdata "DDNS" "2"`
+echo $fqdn >  $path/domains.txt
+
 # install dehydrated hook script
-cp $TEMPLATEDIR/$modulename/dehydrated/postrun-hooks.d/reloadservices /etc/dehydrated/postrun-hooks.d/
-chmod +x /etc/dehydrated/postrun-hooks.d/reloadservices
+cp $TEMPLATEDIR/$modulename/dehydrated/postrun-hooks.d/reloadservices $path/postrun-hooks.d/
+chmod +x $path/postrun-hooks.d/reloadservices
+
+# set permissions
+chown -R dehydrated.dehydrated $path
+
