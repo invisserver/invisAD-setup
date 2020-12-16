@@ -56,7 +56,7 @@ if [[ $prepok == "0" ]]; then
     # Dehydrated aktivieren
     # Externe IP ermitteln und in vHosts Datei eintragen
     LANG=POSIX
-    extip=`ifconfig extern| grep "inet addr" | cut -d ":" -f 2 |cut -d " " -f1`
+    extip=`ip address show extern|tr -s " "|grep "inet\s"|cut -d "/" -f1|cut -d " " -f3`
     path="/etc/apache2/vhosts.d"
     file="vh-dehydrated.conf"
     strings="10.10.10.10%$extip"
