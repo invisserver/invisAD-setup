@@ -494,7 +494,7 @@ path="/etc/dehydrated/"
 file="config"
 cp $TEMPLATEDIR/$modulename/dehydrated/config $path
 string="adminmailaddress%$adminmail"
-changevalues $INVISCONFDIR $file "$string"
+changevalues $path $file "$string"
 
 # create domains.txt
 old $path/domains.txt
