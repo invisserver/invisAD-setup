@@ -40,7 +40,7 @@ if ($CMD == 'basic_info') {
 	} else {
 	    // outdated version
 	    $invisversioncolor = 'red';
-	};
+	}
 
 	// if we use leap 15.x we have to calculate a little bit.
 	if ($opsuseversion < 421 && $opsuseversion > 132) {
@@ -59,7 +59,7 @@ if ($CMD == 'basic_info') {
 	} else {
 	    // outdated version
 	    $suseversioncolor = 'red';
-	};
+	}
 
 	echo '<b><span style="font-size: 0.9em;">Versionsinformationen:</span></b><br />';
 	echo '<span style="font-size: 0.8em;">invis-Server Version: <b style="color:' . $invisversioncolor . ';">' . $INVISVERSION . '</b></span><br />';

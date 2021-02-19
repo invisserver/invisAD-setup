@@ -134,7 +134,7 @@ function button_row_n($val_n, $margin, $script){
 		echo ("<tr align=\"justify\">");
 		foreach ($val_n as $button) {
 			echo ("<td width=\"200\" align=\"center\" valign=\"middle\"><form action=\"$script\" method=\"post\"><input type=\"hidden\" name=\"file\" value=\"$button[1]\"></input><input type=\"hidden\" name=\"bgcolor\" value=\"$button[2]\"></input><input type=\"submit\" value=\"$button[0]\"></input></form></td>");
-		};
+		}
 		echo ("</tr>");
 		echo ("</tbody></table>");
 	echo ("</td>");
