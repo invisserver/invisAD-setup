@@ -67,7 +67,16 @@ fi
 ddnsup=`getconfdata $conffile "ddnsOn" "2"`
 nameserver=`getconfdata $conffile "nameServer" "2"`
 fqdn=`getconfdata $conffile "fqdn" "2"`
-keynumber=`getconfdata $conffile "keyNumber" "2"`
+version=`getconfdata $conffile "invisVersion" "2"`
+version=`echo $version|tr -d "."`
+
+if (($version < 142)); then
+    keynumber=`getconfdata $conffile "keyNumber" "2"`
+else
+    secret=`getconfdata $conffile "keySecret" "2"`
+    algorithm=`getconfdata $conffile "keyAlgorithm" "2"`
+fi
+
 
 # Wenn noch nicht vorhanden die Datei lastip anlegen.
 if [[ ! -f $resultdir/lastip ]]; then
@@ -139,12 +148,21 @@ if [[ $ddnsup == "j" ]]; then
     # Aktualisierung nur vornehmen, wenn eine Abfrage beim zuständigen Nameserver eine andere IP ergibt als die Abfrage der DSL-Schnittstelle.
     if [[ $ownip != `dig @$nameserver +short $fqdn` ]]; then
 	# jetzt updaten
-	(
-	    echo "server $nameserver"
-	    echo "update delete $fqdn A"
-	    echo "update add $fqdn 60 A $ownip"
-	    echo "send"
-	) | nsupdate -k /etc/invis/ddns/K$fqdn.+157+$keynumber.private
+	if (($version < 142)); then
+	    (
+		echo "server $nameserver"
+		echo "update delete $fqdn A"
+		echo "update add $fqdn 60 A $ownip"
+		echo "send"
+	    ) | nsupdate  -k /etc/invis-client/ddns/K$fqdn.+157+$keynumber.private
+	else
+	    (
+		echo "server $nameserver"
+		echo "update delete $fqdn A"
+		echo "update add $fqdn 60 A $ownip"
+		echo "send"
+	    ) | nsupdate -y "$algorithm:$fqdn:$secret"
+	fi
 	echo $ownip > $resultdir/lastip
     fi
 fi
