@@ -1,0 +1,97 @@
+#!/bin/bash
+# Kategorie: apps
+# Script zur Erweiterung von Kopano-Shared Stores zu Ressourcen
+# (C) 2021 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+tmpfile="/tmp/account"
+sam="/var/lib/samba/private/sam.ldb"
+wdir="/var/lib/cornaz"
+buildfrcfile="$wdir/build/.fetchmailrc"
+actfrcfile="$wdir/inuse/.fetchmailrc"
+
+# PortalTempfile
+iptmpfile="/srv/www/htdocs/portal/tmp/iportal.tmp"
+
+# remove tempfiles, if exists
+if [[ -f $iptmpfile ]]; then
+    rm $iptmpfile
+fi
+if [[ -f $tmpfile ]]; then
+    rm $tmpfile
+fi
+
+ok=0
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# LDAP Basisknoten fuer invis-Server auslesen
+invisadnode=`getconfdata $conffile invisADNode 2` 
+# Searchbase generieren
+ldbbase="CN=AdditionalUserInformation,$invisadnode"
+
+# alle Mailkontenknoten finden:
+#for user in `ldbsearch -H /var/lib/samba/private/sam.ldb -b $ldbbase -s one "(cn=*)" cn |grep ^cn: |cut -d " " -f2`; do
+
+# Nur ausfuehren, wenn aktive fetchmailrc abzueglich der Zeile "junk" mindestens eine Zeile hat
+if (( `cat $actfrcfile|grep -v " junk "|wc -l` >= 1 )); then
+    rm $buildfrcfile
+    # Nur "anwesende" Benutzer
+    for user in `cat $actfrcfile |cut -d " " -f 10`; do
+	# Benutzerinformationen aus AD lesen
+	ldbsearch -H /var/lib/samba/private/sam.ldb -b "CN=$user,$ldbbase" -s one "(objectclass=fspFetchMailAccount)" "fspExtMailAddress" "fspExtMailProto" "fspExtMailUserName" "fspExtMailServer" "fspExtMailUserPw" "fspMailFetchOpts"|grep ":" > $tmpfile
+	if [[ ! `grep "search error" $tmpfile` ]]; then
+	    # Variablen generieren
+	    server=`grep fspExtMailServer $tmpfile |cut -d " " -f2`
+	    proto=`grep fspExtMailProto $tmpfile |cut -d " " -f2`
+	    extuser=`grep fspExtMailUserName $tmpfile |cut -d " " -f2`
+	    password=`grep fspExtMailUserPW $tmpfile |cut -d " " -f2`
+	    opts=`grep fspMailFetchOpts $tmpfile |cut -d " " -f2-`
+	    # fetchmailrc-Vorlage erzeugen
+	    echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
+	fi
+    done
+
+    # fetchcopy ausfueren um echte fetchmailrc zu generieren.
+    if [[ -f $actfrcfile ]]; then
+	mv -f $actfrcfile $wdir/bu/fetchmailrc
+    fi
+    cp $buildfrcfile $actfrcfile
+    sudo chown fetchmail.root $actfrcfile
+    sudo chmod 0710 $actfrcfile
+
+    (( ok=$ok+0 ))
+
+else
+    (( ok=$ok+1 ))
+fi
+
+# writing returncode to tempfile
+echo $ok > $iptmpfile
+# make the file writeable for apache
+chown .www $iptmpfile && chmod g+w $iptmpfile
+
+# alte Dateien loeschen
+rm $tmpfile
