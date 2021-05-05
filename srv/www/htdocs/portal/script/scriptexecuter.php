@@ -8,6 +8,8 @@
  */
 if (!isset($_COOKIE['invis'])) die();
 
+require_once('../config.php');
+
 // returncode file
 $rtcfile = '../tmp/iportal.tmp';
 
@@ -61,6 +63,9 @@ if ( $CMD == "check-istate" )
 
 if ( $CMD == "inhume" )
     $val = shell_exec("sudo /usr/bin/inhume $cookie_data 1");
+
+if ( $CMD == "refreshfrc" )
+    $val = shell_exec("sudo /usr/bin/refreshfrc");
 
 // read return code of the executed command
 $returncode = file_get_contents("$rtcfile");

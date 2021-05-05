@@ -11,6 +11,7 @@ Cmnd_Alias      BACKHOME = /var/lib/cornaz/bin/backhome
 Cmnd_Alias      MDNSREC = /usr/bin/moddnsrecords
 Cmnd_Alias      IPSSTAT = /usr/bin/ipservicestate
 Cmnd_Alias      IPSCONT = /usr/bin/ipservicecontrol
+Cmnd_Alias      RFFRC = /usr/bin/refreshfrc
 
 wwwrun  ALL = (root) NOPASSWD:CREATEHOME
 wwwrun  ALL = (root) NOPASSWD:DELETEHOME
@@ -25,3 +26,4 @@ wwwrun  ALL = (root) NOPASSWD:BACKHOME
 wwwrun  ALL = (root) NOPASSWD:MDNSREC
 wwwrun  ALL = (root) NOPASSWD:IPSSTAT
 wwwrun  ALL = (root) NOPASSWD:IPSCONT
+wwwrun  ALL = (root) NOPASSWD:RFFRC

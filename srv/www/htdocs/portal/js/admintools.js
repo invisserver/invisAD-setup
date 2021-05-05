@@ -1614,6 +1614,9 @@ function functionListResponse(request) {
 
 	var node = new Element('table', {'onclick': 'exec_inhume();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Benutzerdaten bereinigen</td><td style="vertical-align: middle; font-weight: normal;">Verwaiste Daten gelöschter Benutzer aus Kopano und ownCloud löschen.</td></tr>');
 	content.insert(node);
+
+	var node = new Element('table', {'onclick': 'exec_refreshfrc();', 'style': 'font-size: 0.8em; font-weight: bold; cursor: pointer; padding: 5px;'}).update('<tr><td><img src="images/sysadmin.png" /></td><td style="vertical-align: middle;" width="250">Steuerdatei Mailabruf auffrischen</td><td style="vertical-align: middle; font-weight: normal;">Die Datei fetchmailrc zum Abruf aktiver Mailkonten wird neu geschrieben.</td></tr>');
+	content.insert(node);
 }
 
 // Script ausfuehren
@@ -1696,6 +1699,33 @@ function exec_checkistateResponse(request) {
 	lightbox.update();
 }
 
+// Script ausfuehren
+function exec_refreshfrc() {
+	lightbox.show(500, true);
+	lightbox.setWaitStatus(true);
+	invis.request('script/scriptexecuter.php', exec_refreshfrcResponse, {c: 'refreshfrc'});
+}
+
+// Ergebnis anzeigen
+function exec_refreshfrcResponse(request) {
+	lightbox.setWaitStatus(false);
+	var data = request.responseText.evalJSON(true);
+	
+	lightbox.setTitle(new Element('div', {
+		'class': 'section-subtitle'
+	}).update('Ergebnis'));
+
+	var box = new Element('text');
+	lightbox.getContent().insert(box);
+	if (data == 0) {
+	    box.insert('<div align="center"><b>Das Script wurde erfolgreich ausgeführt.</b></div>');
+	} else {
+	    box.insert('<div align="center"><b>Das Script meldet Fehler.</b><br>Bitte wenden Sie sich an Ihren Administrator.<br>Fehlercode: ' + data + '</div>');
+	}
+
+	lightbox.addButton('<button onclick="lightbox.hide();">OK</button>');
+	lightbox.update();
+}
 
 function getUsername() {
 	var data = document.getElementById('un').value.toJSON();
