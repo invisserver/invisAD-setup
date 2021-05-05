@@ -47,6 +47,10 @@ ocrelease=`rpm -qa owncloud|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
 if [[ -z $ocrelease ]]; then
     ocrelease=`rpm -qa owncloud-files|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
 fi
+if [[ -z $ocrelease ]]; then
+    ocrelease=`rpm -qa owncloud-complete-files|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
+    ocrelease="$ocrelease Enterprise"
+fi
 
 # Samba Version ermitteln
 sambarelease=`rpm -qa samba|tr -d "a-zA-Z"|tr -s "-"|cut -d "-" -f 2`
