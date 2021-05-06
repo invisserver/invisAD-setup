@@ -1,0 +1,52 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Setzen von individuellen Quotas von Kopano-Konten
+# und Objektklassen
+# (C) 2021 invis-server.org
+# Author: Stefan Schäfer <stefan@invis-server.org>
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+sam="/var/lib/samba/private/sam.ldb"
+domain=`hostname -d`
+
+clear
+echo "Dieses Script löscht alle im ActiveDirectory eingetragenen festen DHCP-Reservierungen unwiderruflich!"
+echo -e "Sie sollten es nur ausführen, wenn Sie eine aktuelle Sicherung des ActiveDirectory haben und sich der Konsequenzen vollkomen bewusst sind!"
+echo -e "Sie sollten zusätzlich zunächst mit \"createhostlist\" eine CSV-Datei des Bestandes generieren."
+
+read -p "Möchten Sie das Script ausführen (ja/nein)? " yesno
+
+# Trennzeichen für Arrays auf \n (Zeilenumbruch setzen.
+oldifs=$IFS
+IFS=$'\n'
+
+if [[ $yesno == "ja" ]]; then
+    # AD abfragen
+    for hostdn in `ldbsearch -H $sam "(objectclass=iscDhcpHost)" dn |grep "^dn:"|cut -d " " -f2- `; do
+	# DNS Records loeschen
+	# hostname ermitteln
+	hn=`echo $hostdn |cut -d "," -f1|cut -d "=" -f2`
+	ip=`dig @localhost "$hn.$domain" +short`
+	echo $hn
+	echo $ip
+	moddnsrecords r A $hn $ip
+	moddnsrecords r PTR $ip "$hn.$domain"
+	ldbdel -H $sam "$hostdn"
+    done
+else
+    echo "Script wurde nicht ausgeführt."
+    exit
+fi
