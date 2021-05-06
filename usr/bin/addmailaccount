@@ -1,0 +1,185 @@
+#!/bin/bash
+# Kategorie: apps
+# Script zum Hinzufügen eines externen Mailkontos für einen bestehenden invis-Benutzer.
+# (C) 2021 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+workfile="/tmp/account.ldif"
+sam="/var/lib/samba/private/sam.ldb"
+localmailhost="localhost"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# LDAP Basisknoten fuer invis-Server auslesen
+invisadnode=`getconfdata $conffile invisADNode 2` 
+# Searchbase generieren
+ldbbase="CN=AdditionalUserInformation,$invisadnode"
+
+# ToDo
+# 1. Als Parameter muss der Name des Users übergeben werden für den ein Konto eingerichtet werden soll -> Argument prüfen
+# check arguments
+if [[ -n $1 && `ldbsearch -H $sam "(samaccountname=$1)" dn |grep ^dn:` ]]; then
+    uid=$1
+else
+    echo -e "Entweder wurde kein Benutzername angegeben oder der Benutzer existiert nicht"
+    echo -e "Usage: addmailaccount username"
+    exit 1
+fi
+
+# 2. Prüfen, ob es für den user bereits einen LDAP-Knoten unter CN=AdditionalUserInformation,CN=invis-Server,DC=142-net,DC=loc gibt -> wenn nicht, anlegen.
+if [[ ! `ldbsearch -H $sam -b $ldbbase "(&(cn=$uid)(objectclass=container))" dn |grep ^dn:` ]]; then
+    echo "dn: CN=$uid,$ldbbase" > $workfile
+    echo "objectClass: top" >> $workfile
+    echo "objectClass: container" >> $workfile
+    echo "cn: $uid" >> $workfile
+    echo "description: Maikonten von $uid" >> $workfile
+    echo "name: $uid" >> $workfile
+    # LDIF ausgeben
+    cat $workfile
+    # Eintrag anlegen
+    ldbadd -v -H $sam $workfile
+else
+    echo "Knoten existiert bereits"
+fi
+
+# 3. Abfrage der Kontendaten via dialog
+# Trennzeichen für Arrays auf \n (Zeilenumbruch setzen.
+oldifs=$IFS
+IFS=$'\n'
+
+mailacc[0]=$uid
+ok=0
+while (( $ok != "5" ));do
+    dialog --backtitle "$dialogtitle" --title "Mailkonto einrichten" --form "$dialogshorthelp\n
+Geben Sie bitte die erforderlichen Mailkontendaten ein.\n\n" 20 70 12 \
+    "Benutzername:" 2 1 "${mailacc[0]}" 2 18 60 0\
+    "Mailadresse:" 4 1 "$mailaddress" 4 18 60 0\
+    "Mailserver:" 6 1 "$mailserver" 6 18 60 0\
+    "Protokoll:" 8 1 "$protocol" 8 18 60 0\
+    "Benutzerkennung:" 10 1 "$username" 10 18 60 0\
+    "Passwort:" 12 1 "$password" 12 18 60 0\
+    2>/tmp/sine_temp
+    if [[ "$?" -ne "0" ]]; then
+	echo "Eingabe wurde abgebrochen."
+	exit
+    fi
+    mailacc=(`cat /tmp/sine_temp`)
+    # Eingaben pruefen
+
+    if [[ "${mailacc[1]}" =~ ^[a-zA-Z0-9-]+([._a-zA-Z0-9.-]+)*@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4}) ]];then
+	mailaddress="${mailacc[1]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    mscheck=`dig ${mailacc[2]} +short`
+    if [[ -n $mscheck ]]; then
+	mailserver=${mailacc[2]}
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ "${mailacc[3]}" == "pop3" || "${mailacc[3]}" == "pop3s" || "${mailacc[3]}" == "imap" || "${mailacc[3]}" == "imaps" ]]; then
+	protocol=${mailacc[3]}
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ -n "${mailacc[4]}" && ! `echo "${mailacc[4]}" | grep "\s"` ]]; then
+	username="${mailacc[4]}"
+	(( ok=$ok + 1 ))
+    fi
+
+    if [[ -n "${mailacc[5]}" && ! `echo "${mailacc[5]}" | grep "\s"` ]]; then
+	password="${mailacc[5]}"
+	(( ok=$ok + 1 ))
+    fi
+    # OK zurueksetzen, wenn nicht erfolgreich
+    if (( $ok!=5 )); then
+	ok=0
+    fi
+done
+IFS=$oldifs
+clear
+
+# Protokolle und Fetchmail Optionen anpassen
+if [[ $protocol == "imaps" ]];then
+    protocol="imap"
+    fmopts="here ssl fetchall"
+fi
+
+if [[ $protocol == "pop3s" ]];then
+    protocol="pop3"
+    fmopts="here ssl fetchall"
+fi
+
+if [[ $protocol == "imap" ]];then
+    fmopts="here fetchall"
+fi
+
+if [[ $protocol == "pop3" ]];then
+    fmopts="here fetchall"
+fi
+
+# Lokale Adresse generieren
+domain=`hostname -d`
+localaddress="$uid@$domain"
+
+# 4. Konto-Objekt anlegen: CN=karl.napp@fsproductions.de,CN=Administrator,CN=AdditionalUserInformation,CN=invis-Server,DC=142-net,DC=loc
+if [[ ! `ldbsearch -H $sam -b $ldbbase "(&(cn=$mailaddress)(objectclass=fspFetchMailAccount))" dn |grep ^dn:` ]]; then
+    echo "dn: cn=$mailaddress,CN=$uid,$ldbbase" > $workfile
+    echo "objectClass: top" >> $workfile
+    echo "objectClass: fspFetchmailAccount" >> $workfile
+    echo "cn: $mailaddress" >> $workfile
+    echo "name: $mailaddress" >> $workfile
+    echo "fspExtMailAddress: $mailaddress" >> $workfile
+    echo "fspExtMailServer: $mailserver" >> $workfile
+    echo "fspExtMailProto: $protocol" >> $workfile
+    echo "fspExtMailUserName: $username" >> $workfile
+    echo "fspExtMailUserPW: $password" >> $workfile
+    echo "fspLocalMailAddress: $localaddress" >> $workfile
+    echo "fspMailFetchOpts: $fmopts" >> $workfile
+    # LDIF ausgeben
+    cat $workfile
+    # Eintrag anlegen
+    ldbadd -v -H $sam $workfile
+else
+    echo "Konto existiert bereits"
+fi
+
+# 5. Wenn es den Knoten unter Punkt 2 nicht gibt den Knoten für die Adress-Übersetzung anlegen: CN=Administrator@142-net.loc,CN=Administrator,CN=AdditionalUserInformation,CN=invis-Server,DC=142-net,DC=loc
+if [[ ! `ldbsearch -H $sam -b $ldbbase "(&(cn=$localaddress)(objectclass=fspLocalMailRecipient))" dn |grep ^dn:` ]]; then
+    echo "dn: cn=$localaddress,CN=$uid,$ldbbase" > $workfile
+    echo "objectClass: top" >> $workfile
+    echo "objectClass: fspLocalMailRecipient" >> $workfile
+    echo "cn: $localaddress" >> $workfile
+    echo "name: $localaddress" >> $workfile
+    echo "fspMainMailAddress: $mailaddress" >> $workfile
+    echo "fspLocalMailHost: $localmailhost" >> $workfile
+    echo "fspLocalMailAddress: $localaddress" >> $workfile
+    # LDIF ausgeben
+    cat $workfile
+    # Eintrag anlegen
+    ldbadd -v -H $sam $workfile
+else
+    echo "Knoten existiert bereits"
+fi
