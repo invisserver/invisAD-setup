@@ -1,0 +1,17 @@
+#!/bin/bash
+sam="/var/lib/samba/private/sam.ldb"
+resultfile="./hostlist.csv"
+tmpfile="/tmp/host"
+
+# Datei anlegen
+echo "MAC-Adresse,IP-Adresse,Hostname,Standort" > $resultfile
+
+# AD abfragen
+for host in `ldbsearch -H $sam "(objectclass=iscDhcpHost)" cn |grep "^cn:"|cut -d " " -f2 `; do
+    # Hostinfos ermitteln
+    ldbsearch -H $sam "(&(cn=$host)(objectclass=iscDhcpHost))" iscDhcpHWAddress iscDhcpComments iscDhcpStatements | grep -v '^#' |grep -v "^ref:"| grep -v "^dn:" > $tmpfile
+    mac=`grep iscDhcpHWAddress $tmpfile|cut -d " " -f3`
+    ip=`grep iscDhcpStatements $tmpfile|cut -d " " -f3`
+    comment=`grep iscDhcpComments $tmpfile|cut -d " " -f2-`
+    echo "$mac,$ip,$host,$comment" >> $resultfile
+done
