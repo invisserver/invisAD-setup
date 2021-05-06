@@ -77,20 +77,20 @@ for entry in `cat $liste`; do
     name=`echo $entry |cut -d "," -f2 | cut -d "." -f$fields`
     case $maskcidr in
 	24)
-	    echo "dns add $server $revzone $name $type $hname.$fwzone. -U $user --password=$pw"
+	    #echo "dns add $server $revzone $name $type $hname.$fwzone. -U $user --password=$pw"
 	    samba-tool dns add $server $revzone $name $type $hname.$fwzone. -U $user --password=$pw
 	    ;;
 	16)
 	    name1=`echo $name |cut -d "." -f2`
 	    name2=`echo $name |cut -d "." -f1`
-	    echo "dns add $server $revzone $name1.$name2 $type $hname.$fwzone. -U $user --password=$pw"
+	    #echo "dns add $server $revzone $name1.$name2 $type $hname.$fwzone. -U $user --password=$pw"
 	    samba-tool dns add $server $revzone $name1.$name2 $type $hname.$fwzone. -U $user --password=$pw
 	    ;;
 	8)
 	    name1=`echo $name |cut -d "." -f3`
 	    name2=`echo $name |cut -d "." -f2`
 	    name3=`echo $name |cut -d "." -f1`
-	    echo "dns add $server $revzone $name1.$name2.$name3 $type $hname.$fwzone. -U $user --password=$pw"
+	    #echo "dns add $server $revzone $name1.$name2.$name3 $type $hname.$fwzone. -U $user --password=$pw"
 	    samba-tool dns add $server $revzone $name1.$name2.$name3 $type $hname.$fwzone. -U $user --password=$pw
 	    ;;
     esac
@@ -100,7 +100,7 @@ for entry in `cat $liste`; do
     name=`echo $entry |cut -d "," -f3 | cut -d "." -f3`
     ip=`echo $entry |cut -d "," -f2`
     samba-tool dns add $server $fwzone $name $type $ip -U $user --password=$pw
-    echo dns add $server $fwzone $name $type $ip -U $user --password=$pw
+    #echo dns add $server $fwzone $name $type $ip -U $user --password=$pw
 
     # DHCP Record hinzufuegen
     mac=`echo $entry |cut -d "," -f1`
