@@ -1,0 +1,100 @@
+#!/bin/bash
+# Kategorie: 
+# Script zum Erweitern eines um das Attribut bennoEmailAdress inkl. Daten.
+# (c) 2019 Stefan Schaefer - invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+confdir="/etc/invis"
+conffile="$confdir/invis.conf"
+passfile="$confdir/invis-pws.conf"
+
+#logfile="./addbennoaddresses.log"
+sam="/var/lib/samba/private/sam.ldb"
+workfile="/tmp/addroute"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Daten aus Konfiguration holen
+basedn=`getconfdata $conffile "baseDN" "2"`
+
+# Zieldaten abfragen
+ok=0
+while (( $ok != "3" ));do
+    dialog --title "Route hinzufügen" --form "Dieses Script fügt eine statische Route zum AD hinzu, so dass diese per DHCP verteilt wird.\n\n
+Geben Sie Daten der Route ein (Netzwerkmaske in Kurzschreibweise).\n\n" 18 50 6 \
+    "Zielnetz:" 2 2 "${route[0]}" 2 14 30 0\
+    "Netzmaske:" 4 2 "${route[1]}" 4 14 30 0\
+    "Gateway:" 6 2 "${route[2]}" 6 14 30 0\
+    2>$SINEWORKINGDIR/sine_temp
+    route=(`cat $SINEWORKINGDIR/sine_temp`)
+
+    # Pruefen ob die eingegebenen Werte korrekte IP-Adressen sind.
+    if [[ ${route[0]} =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ && ! $dns =~ ^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$ ]]; then
+	targetnet="${route[0]}"
+	((ok=$ok + 1))
+    fi
+
+    # Moegliche Netzwerkmaske angegeben?
+    if (( ${route[1]} >= 0 && ${route[1]} <= 32 )); then
+	netmask=${route[1]}
+	((ok=$ok + 1))
+    fi
+
+    # Pruefen ob die eingegebenen Werte korrekte IP-Adressen sind.
+    if [[ ${route[2]} =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ && ! $dns =~ ^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$ ]]; then
+	gateway="${route[2]}"
+	((ok=$ok + 1))
+    fi
+    
+done
+
+# Option Strings konstruieren
+targetstring=`echo $targetnet |sed -e "s/\./, /g"`
+gatewaystring=`echo $gateway |sed -e "s/\./, /g"`
+
+echo $targetstring
+
+optionstring1="rfc3442-classless-static-routes $netmask, $targetstring, $gatewaystring"
+optionstring2="ms-classless-static-routes $netmask, $targetstring, $gatewaystring"
+
+#echo $optionstring1
+#echo $optionstring2
+
+# zu modifizierenden DN ermitteln
+netbase=`ip route show|grep intern |cut -d "/" -f1`
+dn=`ldbsearch -H $sam "(CN=$netbase)" dn |grep ^dn:`
+
+# Arbeitsdatei aufbauen
+echo $dn > $workfile
+echo "changetype: modify" >> $workfile
+echo "add: iscDhcpOption" >> $workfile
+echo "iscDhcpOption: $optionstring1" >> $workfile
+echo "-" >> $workfile
+echo "add: iscDhcpOption" >> $workfile
+echo "iscDhcpOption: $optionstring2" >> $workfile
+
+# Route hinzufuegen
+ldbmodify -H $sam $workfile
+
+# Arbeitsdatei loeschen
+rm $workfile
+
