@@ -1,7 +1,8 @@
 #!/bin/bash
 # Kategorie: Server
-# Script zum Erweitern eines um das Attribut bennoEmailAdress inkl. Daten.
-# (c) 2019 Stefan Schaefer - invis-server.org
+# Dieses Script fügt eine statische Route zum AD hinzu, so dass diese per DHCP verteilt wird.
+# (c) 2021 Stefan Schaefer - invis-server.org
+# (c) 2021 Ingo Goeppert - invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
