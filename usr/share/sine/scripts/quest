@@ -296,15 +296,16 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
     2>$SINEWORKINGDIR/sine_temp
     whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
 
-if [[ $whichgroupware == "kopano" ]]; then
-    # Welche Kopano Version
-    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
-    limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
-    opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
-    2>$SINEWORKINGDIR/sine_temp
-    whichkopanorep=`cat $SINEWORKINGDIR/sine_temp`
-fi
+## Stefan - Dank eigener Pakete keine Auswahl mehr erforderlich.
+#if [[ $whichgroupware == "kopano" ]]; then
+#    # Welche Kopano Version
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
+#Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
+#    limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
+#    opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
+#    2>$SINEWORKINGDIR/sine_temp
+#    whichkopanorep=`cat $SINEWORKINGDIR/sine_temp`
+#fi
 
 #---# ERP-Software
 # Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
@@ -546,9 +547,10 @@ echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
 echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
 echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
-if [[ $whichgroupware == "kopano" ]]; then
-    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
-fi
+## Stefan - Keine Auswahl der Kopano-Version mehr erforderlich, da eigene Pakete.
+#if [[ $whichgroupware == "kopano" ]]; then
+#    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
+#fi
 echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
 echo "HDType:$whichhd" >> $SINEWORKINGDIR/invis_confdata
