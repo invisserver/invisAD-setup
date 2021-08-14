@@ -155,27 +155,15 @@ case "$whichgroupware" in
 	;;
     "kopano" )
 	pgsubtitle="Kopano Groupware und Mailserver wird installiert und eingerichtet"
-	# Festlegen, welche Pakete installiert werden sollen.
-	kopanorepo=`getconfdata "KopanoRepo" "2"`
-	if [[ $kopanorepo == "limited" ]]; then
-	    zypper ar -f $REPODIR/kopano-limited.repo 2>&1| tee -a $LOGFILE | pgbox
-	    zypper ar -f $REPODIR/kopano-webapp-limited.repo 2>&1| tee -a $LOGFILE | pgbox
-	    msgbox "Die Kopano Limited Repositories benötigen Zugangsdaten, diese werden nachfolgend abgefragt." "Kopano Repository"
-	    zypper --gpg-auto-import-keys ref --repo Kopano-openSUSE_limited
-	    zypper --gpg-auto-import-keys ref --repo Kopano-Webapp-Limited
-	    if [[ $? != 0 ]]; then
-		msgbox "Ohne gültige Zugangsdaten kann das Kopano Limited Repository nicht hinzugefügt werden. Die weitere Installation des Servers wird abgebrochen." "Ungültige Zugangsdaten"
-		exit 1
-	    fi
-	    zypper -n install --oldpackage --from Kopano-openSUSE_limited -n kopano-dagent-pytils 2>&1| tee -a $LOGFILE | pgbox
-	    zypper -n install --oldpackage --from Kopano-openSUSE_limited -n `cat $PACKAGELISTDIR/kopanocorelimited` 2>&1| tee -a $LOGFILE | pgbox
-	    zyppercheck ${PIPESTATUS[0]}
-	    zypper -n install --oldpackage --from Kopano-Webapp-Limited -n `cat $PACKAGELISTDIR/kopanowebapplimited` 2>&1| tee -a $LOGFILE | pgbox
-	    zyppercheck ${PIPESTATUS[0]}
-	else
-	    zypper -n install -n `cat $PACKAGELISTDIR/kopanoobs` 2>&1| tee -a $LOGFILE | pgbox
-	    zyppercheck ${PIPESTATUS[0]}
-	fi
+	# Installieren der Kopano Pakete.
+	zypper ar -f $REPODIR/invis-kopano.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper ar -f $REPODIR/invis-kopano.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper -n install --oldpackage --from spins_invis_15_kopano -n kopano-dagent-pytils 2>&1| tee -a $LOGFILE | pgbox
+	zypper -n install --oldpackage --from spins_invis_15_kopano -n `cat $PACKAGELISTDIR/kopanocorelimited` 2>&1| tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+	zypper -n install --oldpackage --from spins_invis_15_kopano -n `cat $PACKAGELISTDIR/kopanowebapplimited` 2>&1| tee -a $LOGFILE | pgbox
+	zyppercheck ${PIPESTATUS[0]}
+	
 	# install common packages
 	zypper -n install -n `cat $PACKAGELISTDIR/kopanocommon` 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
