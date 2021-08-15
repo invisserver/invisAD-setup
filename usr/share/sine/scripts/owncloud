@@ -54,7 +54,7 @@ cont=${?}
 if [[ $cont == "0" ]]; then
     pgsubtitle="Software wird installiert"
     zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-    zypper -n install owncloud-files php7-intl 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install owncloud-complete-files php7-intl 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # Hier Datenbank installation einfügen
     ocpass=`mkdbsilent owncloud owncloud a`

@@ -157,7 +157,7 @@ case "$whichgroupware" in
 	pgsubtitle="Kopano Groupware und Mailserver wird installiert und eingerichtet"
 	# Installieren der Kopano Pakete.
 	zypper ar -f $REPODIR/invis-kopano.repo 2>&1| tee -a $LOGFILE | pgbox
-	zypper ar -f $REPODIR/invis-kopano.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper ref 2>&1| tee -a $LOGFILE | pgbox
 	zypper -n install --oldpackage --from spins_invis_15_kopano -n kopano-dagent-pytils 2>&1| tee -a $LOGFILE | pgbox
 	zypper -n install --oldpackage --from spins_invis_15_kopano -n `cat $PACKAGELISTDIR/kopanocorelimited` 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
