@@ -62,6 +62,7 @@ country="DE"
 #---# openSSL
 ok=0
 while (( $ok != "6" ));do
+    ok=0
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fragen zur openSSL Umgebung" --form "$DIALOGSHORTHELP\n\n
 Die eingegebenen Daten sollten der Realität entsprechen, da sie beim Bau von SSL-Zertifikaten verwendet werden.
 Vor allem die email-Adresse des für die Zertifikate Verantwortlichen (Feld: Name) muss erreichbar sein.\n\n
@@ -109,6 +110,7 @@ done
 
 ok=0
 while (( $ok != "2" ));do
+    ok=0
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "IT Dienstleister" --form "$DIALOGSHORTHELP\n\n
 Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Administrators an." 15 74 4 \
     "email:" 2 2 "$admail" 2 20 45 0\
@@ -129,6 +131,7 @@ done
 
 ok=0
 while (( $ok != "2" ));do
+    ok=0
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Lokal Verantwortlicher" --form "$DIALOGSHORTHELP\n\n
 Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Mitarbeiter vor Ort an." 15 74 4 \
     "email:" 2 2 "$localadminmail" 2 20 45 0\
@@ -150,6 +153,7 @@ done
 #---# Netzwerk
 ok=1
 while (( $ok != "0" ));do
+    ok=1
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fragen zur Netzwerkumgebung" --form "$DIALOGSHORTHELP\n\n
 Die Vorgabewerte wurden aus der Systemkonfiguration ermittelt und sollten somit richtig sein. \nPrüfen Sie vor allem,
 ob der angezeigte Domänenname aus Domain und Top-Level-Domain besteht; also zweiteilig ist. Domänennamen wie der bei
@@ -216,6 +220,7 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
 # DNS Forwarder
 ok=3
 while (( $ok != "0" ));do
+    ok=3
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Forward DNS Server" --form "$DIALOGSHORTHELP\n\n
 Auf Ihrem invis Server wird ein DNS-Dienst eingerichtet. Zur Beschleunigung von DNS Anfragen ist es sinnvoll
 diesem bis zu drei \"Forward Nameserver\" zu nennen. Dies können beispielsweise der DNS eines vorgeschalteten
