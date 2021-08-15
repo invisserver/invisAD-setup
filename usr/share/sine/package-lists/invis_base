@@ -11,6 +11,7 @@ php7-pcntl
 phpMyAdmin
 phpPgAdmin
 phpldapadmin
+postfix-ldap
 shellinabox
 dos2unix
 psmisc
