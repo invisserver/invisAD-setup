@@ -35,7 +35,7 @@ username="$1"
 # Pruefen, ob eine Liste genannt wurde
 if [[ -z $username ]]; then
     echo "Bitte den Anmeldenamen des zu erweiternden Benutzer-Kontos angeben."
-    echo "addposixattrs hostname"
+    echo "addposixattrs username"
     exit
 fi
 
