@@ -8,6 +8,7 @@ php7-fileinfo
 php7-opcache
 php7-posix
 php7-pcntl
+php7-zlib
 phpMyAdmin
 phpPgAdmin
 phpldapadmin
