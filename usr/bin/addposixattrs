@@ -51,11 +51,20 @@ guidbase=`cat /etc/invis/portal/config.php|grep '$SFU_GUID_BASE'| cut -d \' -f2`
 rid=`pdbedit -Lv $username  2>/dev/null| grep "User SID" | cut -d "-" -f8`
 gid=`pdbedit -Lv $username  2>/dev/null| grep "Primary Group SID" | cut -d "-" -f8`
 #echo $rid
+
 # Attribute festlegen
 (( uidnumber=$rid + $guidbase ))
+(( gidnumber=$gid + $guidbase ))
+
 # Accountname
 accountname=`echo $username | tr [:upper:] [:lower:]`
 homedir="/home/$accountname"
+
+if [[ $accountname == "administrator" ]]; then
+    scriptpath="admin.cmd"
+else
+    scriptpath="user.cmd"
+fi
 
 if [[ -z $rid ]]; then
     exit 2
@@ -70,13 +79,17 @@ else
     echo "add: uidNumber" >> $workfile
     echo "uidNumber: $uidnumber" >> $workfile
     echo "add: gidNumber" >> $workfile
-    echo "gidNumber: $gid" >> $workfile
+    echo "gidNumber: $gidnumber" >> $workfile
     echo "add: mssfu30nisDomain" >> $workfile
     echo "mssfu30nisDomain: $nisdomain" >> $workfile
+    echo "add: msSFU30Name" >> $workfile
+    echo "msSFU30Name: $accountname" >> $workfile
     echo "add: loginShell" >> $workfile
     echo "loginShell: /bin/bash" >> $workfile
     echo "add: unixHomeDirectory" >> $workfile
     echo "unixHomeDirectory: $homedir" >> $workfile
+    echo "add: scriptPath" >> $workfile
+    echo "scriptPath: $scriptpath" >> $workfile
 
     #cat $workfile
     ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
@@ -85,7 +98,7 @@ else
     # Home-Directory anlegen, wenn nicht vorhanden
     if [[ ! -d $homedir ]] ; then
 	cp -r /etc/skel $homedir
-	chown -R $uidnumber:$gid $homedir
+	chown -R $accountname:$gidnumber $homedir
 	chmod o-rx $homedir
     fi
 fi

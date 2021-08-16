@@ -335,7 +335,7 @@ chkservice "sssd"
 pam-config --add --sss
 
 # Administrator-Konto um Posix-Attribute und ein Homeverzeichnis erweitern
-addposixattrs administrator
+addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
 
 # phpldapadmin konfigurieren
 cp $TEMPLATEDIR/$modulename/ldap/phpldapadmin/config.php /srv/www/htdocs/phpldapadmin/config/
