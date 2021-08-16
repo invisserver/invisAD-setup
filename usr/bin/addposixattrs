@@ -99,6 +99,6 @@ else
     if [[ ! -d $homedir ]] ; then
 	cp -r /etc/skel $homedir
 	chown -R $accountname:$gidnumber $homedir
-	chmod o-rx $homedir
+	chmod og-rx $homedir
     fi
 fi
