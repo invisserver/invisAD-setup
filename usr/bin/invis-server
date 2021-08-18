@@ -82,5 +82,6 @@ all)   printline $1 ;;
 server) printline $1;;
 portal) printline $1;;
 apps) printline $1;;
+mailaccounts) printline $1;;
 setup) printline $1;;
 esac
