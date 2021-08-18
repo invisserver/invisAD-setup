@@ -1,5 +1,5 @@
 #!/bin/bash
-# Kategorie: apps
+# Kategorie: mailaccounts
 # Script zum Setzen von individuellen Quotas von Kopano-Konten
 # und Objektklassen
 # (C) 2009,2011,2019,2020 invis-server.org

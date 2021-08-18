@@ -1,5 +1,5 @@
 #!/bin/bash
-# Kategorie:
+# Kategorie: mailaccounts
 # Script zum Erweitern eines um die Objektklasse bennoMailarchivUser und das Attribut bennoRole.
 # (c) 2020 Stefan Schaefer - invis-server.org
 

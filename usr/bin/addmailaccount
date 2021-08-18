@@ -1,5 +1,5 @@
 #!/bin/bash
-# Kategorie: apps
+# Kategorie: mailaccounts
 # Script zum Hinzufügen eines externen Mailkontos für einen bestehenden invis-Benutzer.
 # (C) 2021 Stefan Schäfer invis-server.org
 # Questions: stefan@invis-server.org
