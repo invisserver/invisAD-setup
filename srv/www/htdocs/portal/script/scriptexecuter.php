@@ -3,6 +3,7 @@
  * script/scriptexecuter.php v1.0
  * AJAX script, Execute Shell-commands and respond
  * (C) 2019 Stefan Schaefer, invis-server.org
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: stefan@invis-server.org
  */
@@ -33,6 +34,9 @@ if (isset($_GET['c'])) {
 // COOKIE STUFF
 //--------------------
 
+if(! isset($CVE20207070))
+  $CVE20207070=false;
+
 if (isset($_COOKIE['invis']))
 	if ( $CVE20207070 == true ) {
 	    $cookie_auth = json_decode(urldecode($_COOKIE['invis']), true);
@@ -40,6 +44,7 @@ if (isset($_COOKIE['invis']))
 	    $cookie_auth = json_decode($_COOKIE['invis'], true);
 	}
 
+$cookie_data = '';
 if (isset($_COOKIE['invis-request']))
 	if ( $CVE20207070 == true ) {
 	    $cookie_data = json_decode(urldecode($_COOKIE['invis-request']), true);
@@ -75,4 +80,3 @@ unlink("$rtcfile");
 //error_log("Shell-Rueckgabe: $CMD - $returncode");
 
 echo json_encode($returncode);
-?>

@@ -43,8 +43,8 @@ if ($CMD == 'basic_info') {
 	}
 
 	// if we use leap 15.x we have to calculate a little bit.
-	if ($opsuseversion < 421 && $opsuseversion > 132) {
-	    $opsuseversion = $opsuseversion * 10;
+	if ( (int) $opsuseversion < 421 && (int) $opsuseversion > 132) {
+	    (int) $opsuseversion = (int) $opsuseversion * 10;
 	}
 
 	if ($opsuseversion == trim($file_versioninfo[2])) {
@@ -313,4 +313,3 @@ elseif ($CMD == 'usv_status') {
 	}
 }
 
-?>

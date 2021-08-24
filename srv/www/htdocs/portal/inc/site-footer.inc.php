@@ -8,6 +8,10 @@
  */
 require_once('default/default-config.php');
 require_once('config.php');
+
+if(! isset($PORTAL_FOOTER ))
+  $PORTAL_FOOTER = '';
+
 ?>
 
 <div id='footer_bg'>

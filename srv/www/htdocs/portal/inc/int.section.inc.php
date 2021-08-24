@@ -4,6 +4,7 @@
  * portal drop-in, displaying portal wide and user specifig links
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2012 Ingo Goeppert, invis-server.org
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
@@ -169,6 +170,9 @@ function linksModResponse(request) {
 	echo '</ul>';
 	
 	// user specific links
+if(! isset($CVE20207070))
+    $CVE20207070=false;
+
 	if (isset($_COOKIE['invis'])) {
 	    if ( $CVE20207070 == true ) {
 		$data = json_decode(urldecode($_COOKIE['invis']));
@@ -197,4 +201,3 @@ function linksModResponse(request) {
 	}
 	
 	unbind($conn);
-?>

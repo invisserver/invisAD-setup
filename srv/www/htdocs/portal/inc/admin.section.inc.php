@@ -5,6 +5,7 @@
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2014 Stefan Schäfer, invis-server.org
  * (C) 2009 "wurzel" -- anonyme Spende aus unserem Forum -- Danke dafuer
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
@@ -32,6 +33,8 @@ echo '<li onclick="window.location=\'' . $_SERVER['SCRIPT_NAME'] . '?sn=admin\'"
 // 0:guest, 1:user, 2:admin
 $usertype = 0;
 if (isset($USER_DATA)) $usertype = 1;
+if(! isset($USER_IS_ADMIN))
+    $USER_IS_ADMIN=false;
 if ($USER_IS_ADMIN) $usertype = 2;
 
 $conn = connect();
@@ -90,5 +93,3 @@ if ($result) {
 
 </table>
 
-<?php
-?>

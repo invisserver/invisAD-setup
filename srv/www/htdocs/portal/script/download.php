@@ -5,6 +5,7 @@
  * download requested file
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2013 Ingo Göppert, invis-server.org
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
@@ -12,6 +13,9 @@
 require_once('../default/default-config.php');
 require_once('../config.php');
 require_once('MIME/Type.php');
+
+if(! isset($CVE20207070))
+  $CVE20207070=false;
 
 if (isset($_COOKIE['invis']))
 
@@ -77,4 +81,3 @@ error_log("User \"" . $usr . "\" downloaded file \"" . $path . "\" (4, download.
 
 // track downloads in logfile
 // i.e.: append($log, "entry");
-?>

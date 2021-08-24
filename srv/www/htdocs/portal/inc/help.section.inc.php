@@ -4,6 +4,7 @@
  * portal drop-in, displaying (application) help info
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2012 Ingo Goeppert, invis-server.org
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
@@ -14,7 +15,13 @@ require_once('ldap.inc.php');
 
 // 0:guest, 1:user, 2:admin
 $usertype = 0;
-if (isset($USER_DATA)) $usertype = 1;
+if (isset($USER_DATA)){ $usertype = 1; }
+else { $USER_DATA=''; }
+
+
+
+if(! isset($USER_IS_ADMIN))
+    $USER_IS_ADMIN=false;
 if ($USER_IS_ADMIN) $usertype = 2;
 
 $conn = connect();

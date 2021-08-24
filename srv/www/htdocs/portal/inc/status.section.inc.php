@@ -4,6 +4,7 @@
  * portal drop-in, requesting/displaying server status information
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2014,2015 Stefan Schaefer, invis-server.org
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: stefan@invis-server.org
  */
@@ -47,6 +48,9 @@ new Ajax.PeriodicalUpdater(
 <?php 
 if (isset($STATUS_BACKUP_TIMER))
 	echo "new Ajax.PeriodicalUpdater('backup_info', 'script/status.php', { method: 'post', frequency: 60, parameters: {c: 'backup_info'}});";
+
+if(! isset($STATUS_APCUPSD))
+    $STATUS_APCUPSD = false;
 
 if ($STATUS_APCUPSD == true)
 	echo "new Ajax.PeriodicalUpdater('usv_status', 'script/status.php', { method: 'post', frequency: 60, parameters: {c: 'usv_status'}});";

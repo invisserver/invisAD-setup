@@ -4,6 +4,7 @@
  * portal drop-in, manage mailaccounts
  * (C) 2009 Daniel T. Bender, invis-server.org
  * (C) 2018 Stefan Schaefer, invis-server.org
+ * (C) 2021 W.-Marcel Richter, invis-server.org
  * License GPLv3
  * Questions: daniel@invis-server.org
  */
@@ -17,7 +18,11 @@ function unauthorized() {
 
 // 0:guest, 1:user, 2:admin
 $usertype = 0;
-if (isset($USER_DATA)) $usertype = 1;
+if (isset($USER_DATA)){ $usertype = 1; }
+else { $USER_DATA=''; }
+
+if(! isset($USER_IS_ADMIN))
+    $USER_IS_ADMIN=false;
 if ($USER_IS_ADMIN) $usertype = 2;
 
 $conn = connect();
@@ -33,15 +38,17 @@ if ($result) {
 	unauthorized();
 	error_log("Unauthorized access: User \"" . $data['uid'] . "\" has no cookie set (1, ../login.php).");
     } else {
-	// pull JSON object from cookie
-	if ( $CVE20207070 == true ) {
-	    $data = json_decode(urldecode($_COOKIE['invis']), true);
-	} else {
-	    $data = json_decode($_COOKIE['invis'], true);
-	}
+		// pull JSON object from cookie
+		if(! isset($CVE20207070))
+		    $CVE20207070 = false;
+		if ( $CVE20207070 == true ) {
+			$data = json_decode(urldecode($_COOKIE['invis']), true);
+		} else {
+			$data = json_decode($_COOKIE['invis'], true);
+		}
 
-	// get user information
-	$corusername = $data['uid'];
+		// get user information
+		$corusername = $data['uid'];
     }
 
     // Mit LDAP-Server verbinden
@@ -87,4 +94,4 @@ if ($result) {
 	echo ldap_error($conn);
     }
 unbind($conn);
-?>
+
