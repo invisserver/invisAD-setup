@@ -1,0 +1,104 @@
+#!/bin/bash
+# Kategorie: mailaccounts
+# Script zur Auffrischung der fetchmailrc-Datei fuer den Fall, dass sich Konten-
+# Daten geaendert haben. Aktiviert keine neu angelegten Konten, die noch nicht
+# in der aktiven .fetchmailrc Datei vorhanden sind.
+# (C) 2021 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+tmpfile="/tmp/frc"
+sam="/var/lib/samba/private/sam.ldb"
+wdir="/var/lib/cornaz"
+buildfrcfile="$wdir/build/.fetchmailrc"
+actfrcfile="$wdir/inuse/.fetchmailrc"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+usage() {
+    echo "So geht's:"
+    echo "chamgemacstate benutzername [a|d]"
+    echo "Aktionen:"
+    echo "a = E-Mail-Abruf aktivieren"
+    echo "d = E-Mail-Abruf deaktivieren"
+}
+
+if (( $# == 2)); then
+    ## Aufrufargumente pruefen
+    # Benutzer
+    if [[ `getent passwd | grep "^$1:"` ]]; then
+	user="$1"
+    else
+	echo "Der angegebene Benutzer existiert nicht."
+	usage
+    fi
+    # Aktion
+    if [[ $2 == [a,d] ]];then
+	aktion=$2
+    else
+	echo "Es wurde keine gültige Aktion angegeben"
+	usage
+    fi
+else
+    usage
+fi
+
+
+if [[ $aktion == "a" ]]; then
+    # LDAP Basisknoten fuer invis-Server auslesen
+    invisadnode=`getconfdata $conffile invisADNode 2` 
+    # Searchbase generieren
+    ldbbase="CN=AdditionalUserInformation,$invisadnode"
+
+    # Mailkonten finden und .fetchmailrc generieren
+    ldbsearch -H /var/lib/samba/private/sam.ldb -b "CN=$user,$ldbbase" -s one "(objectclass=fspFetchMailAccount)" "fspExtMailAddress" "fspExtMailProto" "fspExtMailUserName" "fspExtMailServer" "fspExtMailUserPw" "fspMailFetchOpts"|grep ":" > $tmpfile
+    if [[ ! `grep "search error" $tmpfile` ]]; then
+	# Variablen generieren
+	server=`grep fspExtMailServer $tmpfile |cut -d " " -f2`
+	proto=`grep fspExtMailProto $tmpfile |cut -d " " -f2`
+	extuser=`grep fspExtMailUserName $tmpfile |cut -d " " -f2`
+	password=`grep fspExtMailUserPW $tmpfile |cut -d " " -f2`
+	opts=`grep fspMailFetchOpts $tmpfile |cut -d " " -f2-`
+
+	# ggf. Passwort dekodieren
+	if [[ "$password" =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
+	    password=`echo "$password" | base64 -d`
+	fi
+
+	# fetchmailrc-Vorlage erzeugen
+	echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
+    fi
+
+else
+    cat $buildfrcfile | grep -v " $user " > $tmpfile
+    mv $tmpfile $buildfrcfile
+fi
+
+# Neue .fetchmailrc aktivieren
+cp $buildfrcfile $actfrcfile
+chown fetchmail.root $actfrcfile
+chmod 0710 $actfrcfile
+
+# Fetchmail neu starten
+systemctl restart fetchmail.service

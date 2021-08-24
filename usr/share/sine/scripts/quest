@@ -62,6 +62,7 @@ country="DE"
 #---# openSSL
 ok=0
 while (( $ok != "6" ));do
+    ok=0
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fragen zur openSSL Umgebung" --form "$DIALOGSHORTHELP\n\n
 Die eingegebenen Daten sollten der Realität entsprechen, da sie beim Bau von SSL-Zertifikaten verwendet werden.
 Vor allem die email-Adresse des für die Zertifikate Verantwortlichen (Feld: Name) muss erreichbar sein.\n\n
@@ -109,6 +110,7 @@ done
 
 ok=0
 while (( $ok != "2" ));do
+    ok=0
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "IT Dienstleister" --form "$DIALOGSHORTHELP\n\n
 Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Administrators an." 15 74 4 \
     "email:" 2 2 "$admail" 2 20 45 0\
@@ -129,6 +131,7 @@ done
 
 ok=0
 while (( $ok != "2" ));do
+    ok=0
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Lokal Verantwortlicher" --form "$DIALOGSHORTHELP\n\n
 Geben Sie bitte Kontaktdaten des für den Server verantwortlichen Mitarbeiter vor Ort an." 15 74 4 \
     "email:" 2 2 "$localadminmail" 2 20 45 0\
@@ -150,6 +153,7 @@ done
 #---# Netzwerk
 ok=1
 while (( $ok != "0" ));do
+    ok=1
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fragen zur Netzwerkumgebung" --form "$DIALOGSHORTHELP\n\n
 Die Vorgabewerte wurden aus der Systemkonfiguration ermittelt und sollten somit richtig sein. \nPrüfen Sie vor allem,
 ob der angezeigte Domänenname aus Domain und Top-Level-Domain besteht; also zweiteilig ist. Domänennamen wie der bei
@@ -216,6 +220,7 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
 # DNS Forwarder
 ok=3
 while (( $ok != "0" ));do
+    ok=3
     dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Forward DNS Server" --form "$DIALOGSHORTHELP\n\n
 Auf Ihrem invis Server wird ein DNS-Dienst eingerichtet. Zur Beschleunigung von DNS Anfragen ist es sinnvoll
 diesem bis zu drei \"Forward Nameserver\" zu nennen. Dies können beispielsweise der DNS eines vorgeschalteten
@@ -296,15 +301,16 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
     2>$SINEWORKINGDIR/sine_temp
     whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
 
-if [[ $whichgroupware == "kopano" ]]; then
-    # Welche Kopano Version
-    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
-    limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
-    opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
-    2>$SINEWORKINGDIR/sine_temp
-    whichkopanorep=`cat $SINEWORKINGDIR/sine_temp`
-fi
+## Stefan - Dank eigener Pakete keine Auswahl mehr erforderlich.
+#if [[ $whichgroupware == "kopano" ]]; then
+#    # Welche Kopano Version
+#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
+#Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
+#    limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
+#    opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
+#    2>$SINEWORKINGDIR/sine_temp
+#    whichkopanorep=`cat $SINEWORKINGDIR/sine_temp`
+#fi
 
 #---# ERP-Software
 # Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
@@ -546,9 +552,10 @@ echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
 echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
 echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
-if [[ $whichgroupware == "kopano" ]]; then
-    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
-fi
+## Stefan - Keine Auswahl der Kopano-Version mehr erforderlich, da eigene Pakete.
+#if [[ $whichgroupware == "kopano" ]]; then
+#    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
+#fi
 echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
 echo "HDType:$whichhd" >> $SINEWORKINGDIR/invis_confdata

@@ -282,7 +282,7 @@ unknown_local_recipient_reject_code = 550
 #
 mynetworks = 192.168.220.0/24, 192.168.166.0/24, 127.0.0.0/8 [::1]/128
 #mynetworks = $config_directory/mynetworks
-#mynetworks = hash:/etc/postfix/network_table
+#mynetworks = texthash:/etc/postfix/network_table
 
 # The relay_domains parameter restricts what destinations this system will
 # relay mail to.  See the smtpd_recipient_restrictions description in
@@ -312,7 +312,7 @@ mynetworks = 192.168.220.0/24, 192.168.166.0/24, 127.0.0.0/8 [::1]/128
 # list this system as their primary or backup MX host. See the
 # permit_mx_backup restriction description in postconf(5).
 #
-#relay_domains = $mydestination, hash:/etc/postfix/relay
+#relay_domains = $mydestination, texthash:/etc/postfix/relay
 
 # INTERNET OR INTRANET
 
@@ -347,7 +347,7 @@ relayhost = [mail.example.org]
 # In the left-hand side, specify an @domain.tld wild-card, or specify
 # a user@domain.tld address.
 # 
-#relay_recipient_maps = hash:/etc/postfix/relay_recipients
+#relay_recipient_maps = texthash:/etc/postfix/relay_recipients
 
 # INPUT RATE CONTROL
 #
@@ -402,8 +402,8 @@ in_flow_delay = 1s
 # "postfix reload" to eliminate the delay.
 #
 #alias_maps = dbm:/etc/aliases
-#alias_maps = hash:/etc/aliases
-#alias_maps = hash:/etc/aliases, nis:mail.aliases
+#alias_maps = texthash:/etc/aliases
+#alias_maps = texthash:/etc/aliases, nis:mail.aliases
 #alias_maps = netinfo:/aliases
 
 # The alias_database parameter specifies the alias database(s) that
@@ -413,8 +413,8 @@ in_flow_delay = 1s
 #
 #alias_database = dbm:/etc/aliases
 #alias_database = dbm:/etc/mail/aliases
-#alias_database = hash:/etc/aliases
-#alias_database = hash:/etc/aliases, hash:/opt/majordomo/aliases
+#alias_database = texthash:/etc/aliases
+#alias_database = texthash:/etc/aliases, texthash:/opt/majordomo/aliases
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 #
@@ -694,7 +694,7 @@ disable_mime_output_conversion = no
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
 smtp_sasl_tls_security_options = noanonymous
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_password_maps = texthash:/etc/postfix/sasl_passwd
 
 # Mailversand verschluesseln
 smtp_tls_security_level = may
@@ -721,8 +721,8 @@ smtpd_tls_key_file = /etc/invis/private/mail-key.pem
 smtpd_tls_cert_file = /etc/invis/certs/mail-cert.pem
 
 # Relay Domains und Transportwege-Regelungs Tabelle bekannt machen 
-#relay_domains = hash:/etc/postfix/relay
-#transport_maps = hash:/etc/postfix/relay
+#relay_domains = texthash:/etc/postfix/relay
+#transport_maps = texthash:/etc/postfix/relay
 
 ## Virtueller Transportweg
 virtual_mailbox_domains = invis-net.loc
@@ -731,7 +731,7 @@ virtual_mailbox_maps = ldap:/etc/postfix/ldap-users2.cf,
 		       ldap:/etc/postfix/ldap-users.cf
 
 virtual_alias_maps = ldap:/etc/postfix/ldap-groups.cf,
-		     hash:/etc/postfix/virtual
+		     texthash:/etc/postfix/virtual
 
 ## jetzt lmtp via socket
 virtual_transport = lmtp:unix:private/dovecot-lmtp
@@ -740,7 +740,7 @@ virtual_transport = lmtp:unix:private/dovecot-lmtp
 sender_canonical_maps=ldap:/etc/postfix/s-canonical.cf
 recipient_canonical_classes = envelope_recipient
 recipient_canonical_maps=ldap:/etc/postfix/r-canonical.cf
-canonical_maps=hash:/etc/postfix/canonical
+canonical_maps=texthash:/etc/postfix/canonical
 
 ## Virenscanner
 content_filter=smtp-amavis:[127.0.0.1]:10024

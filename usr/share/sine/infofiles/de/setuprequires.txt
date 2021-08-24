@@ -1,8 +1,7 @@
-Für die Installation eines invis Servers 14.2 AD müssen folgende Voraussetzungen erfüllt sein:
+Für die Installation eines invis Servers 14.3 AD müssen folgende Voraussetzungen erfüllt sein:
 
-    - Als Basis muss openSUSE Leap 15.1 oder 15.2, möglichst ohne grafische Oberfläche 
-      installiert sein. (Mit Leap 15.2 wird derzeit keine Kopano-Installation mit
-      Support unterstützt. Es stehen lediglich die Community-Pakete zur Verfügung.)
+    - Als Basis muss openSUSE Leap 15.2 oder 15.3, möglichst ohne grafische Oberfläche 
+      installiert sein.
     
     - Der Server muss über zwei Netzwerkkarten (extern & intern) verfügen, die Netzwerk-
       schnittstellen müssen mit Hilfe von Udev-Regeln "extern" und "intern" benannt werden.

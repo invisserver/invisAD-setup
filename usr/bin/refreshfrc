@@ -1,6 +1,8 @@
 #!/bin/bash
-# Kategorie: apps
-# Script zur Erweiterung von Kopano-Shared Stores zu Ressourcen
+# Kategorie: mailaccounts
+# Script zur Auffrischung der fetchmailrc-Datei fuer den Fall, dass sich Konten-
+# Daten geaendert haben. Aktiviert keine neu angelegten Konten, die noch nicht
+# in der aktiven .fetchmailrc Datei vorhanden sind.
 # (C) 2021 Stefan Schäfer invis-server.org
 # Questions: stefan@invis-server.org
 
@@ -69,6 +71,12 @@ if (( `cat $actfrcfile|grep -v " junk "|wc -l` >= 1 )); then
 	    extuser=`grep fspExtMailUserName $tmpfile |cut -d " " -f2`
 	    password=`grep fspExtMailUserPW $tmpfile |cut -d " " -f2`
 	    opts=`grep fspMailFetchOpts $tmpfile |cut -d " " -f2-`
+
+        # ggf. Passwort dekodieren
+        if [[ "$password" =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
+            password=`echo "$password" | base64 -d`
+        fi
+
 	    # fetchmailrc-Vorlage erzeugen
 	    echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
 	fi

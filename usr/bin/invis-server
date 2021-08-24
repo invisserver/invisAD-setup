@@ -30,12 +30,13 @@ Copyright (C) 2017 Stefan Schäfer
 Usage: invis-server [OPTION]
 
 Options:
-    all		all commands
-    server	commands for server control 
-    portal	commands for web portal
-    apps	commands for applications
-    setup	commands for setup script sine
-    help    display this help and exit
+    all			all commands
+    server		commands for server control 
+    portal		commands for web portal
+    apps		commands for applications
+    mailaccounts	commands for mailaccount management
+    setup		commands for setup script sine
+    help		display this help and exit
 
 Report bugs to <dimitri@invis-server.org>."
 }
@@ -81,5 +82,6 @@ all)   printline $1 ;;
 server) printline $1;;
 portal) printline $1;;
 apps) printline $1;;
+mailaccounts) printline $1;;
 setup) printline $1;;
 esac

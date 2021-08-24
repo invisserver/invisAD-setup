@@ -9,7 +9,7 @@ GRUB_DEFAULT=saved
 GRUB_HIDDEN_TIMEOUT=0
 GRUB_HIDDEN_TIMEOUT_QUIET=true
 GRUB_TIMEOUT=8
-GRUB_CMDLINE_LINUX_DEFAULT="resume=/dev/system/swap splash=silent quiet showopts"
+GRUB_CMDLINE_LINUX_DEFAULT="noresume splash=silent quiet showopts"
 GRUB_CMDLINE_LINUX=""
 
 # Uncomment to automatically save last booted menu entry in GRUB2 environment

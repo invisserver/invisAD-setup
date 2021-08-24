@@ -67,7 +67,7 @@ case $whichmonitoring in
 	pgsubtitle="Zabbix Monitoring-Tools werden installiert."
         # Vorbereitung zur Ueberwachung des Servers via Zabbix-Agent mit Zabbix-Proxy
 	zypper ref 2>&1|tee -a $LOGFILE |pgbox
-	zypper -n install -n zabbix-agent zabbix-proxy zabbix-proxy-mysql fping 2>&1 | tee -a $LOGFILE | pgbox
+	zypper -n install -n zabbix-agent zabbix-proxy-mysql fping 2>&1 | tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
         chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $LOGFILE
         zabbixdbpw=`mkdbsilent zabbix zabbix a`

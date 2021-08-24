@@ -66,11 +66,12 @@ if [[ $prepok == "0" ]]; then
 	
     # enable Postfix
     chkservice "postfix"
-	
+
+    ## Stefan - wir versuchen es mal ohne dup aus common.    
     # get upgrade packages from spins:invis:common
-    pgsubtitle="Distributions-Upgrade wird durchgeführt" 
-    zypper -n dup --from spins_invis_15_common 2>&1| tee -a $LOGFILE | pgbox
-    zyppercheck ${PIPESTATUS[0]}
+    #pgsubtitle="Distributions-Upgrade wird durchgeführt" 
+    #zypper -n dup --from spins_invis_15_common 2>&1| tee -a $LOGFILE | pgbox
+    #zyppercheck ${PIPESTATUS[0]}
 
     # Patterns
     pgsubtitle="Software-Gruppen werden installiert" 
