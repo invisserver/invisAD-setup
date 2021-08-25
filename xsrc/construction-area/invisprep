@@ -18,6 +18,8 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
+## veraltet
+
 # Invis-Repo installieren
 while [[ ! $iversion =~ [s,u] ]]; do
 	read -p "Soll eine 'stable' oder 'unstable' Version des invis-Servers installiert werden? (s,u) " iversion
