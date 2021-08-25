@@ -18,7 +18,7 @@
 # Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
 # Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
 
-#Konfigurationsdaten
+# Konfigurationsdaten
 conffile="/etc/invis/invis.conf"
 passfile="/etc/invis/invis-pws.conf"
 workfile="/tmp/account.ldif"
