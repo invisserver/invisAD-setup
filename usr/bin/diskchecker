@@ -90,6 +90,9 @@ for x in /sys/block/*; do
 		if [[ ! $dwt == 0 ]]; then
 		    pwronhrs=`smartctl --all /dev/$x |grep "Power_On_Hours"|tr -d " "|cut -d "-" -f2`
 		fi
+		if [[ -z $pwronhrs ]];then
+		    pwronhrs=0
+		fi
 		#echo $atatest $usbtest
 		if [[ $atatest == "PASSED" ]] || [[ $usbtest == "OK" ]] || (( $pwronhrs <= $dwt )); then
 		    temp=`gettemp $x`
@@ -115,7 +118,8 @@ for x in /sys/block/*; do
 	if [[ `echo $x|cut -c1,2` == "md" ]]; then
 	    status=`mdadm -D /dev/$x|grep "State :"|tr -d " "|cut -d ":" -f 2`
 	    ## sts - new state "active, checking" added as ok.
-	    if [[ $status == "active" || $status == "clean" || 'active, checking' ]]; then
+	    echo $status
+	    if [[ $status == "active" || $status == "clean" || $status == 'active,checking' ]]; then
 		#echo "RAID Verbund \"$x\" ist OK" >> $directory/status
 		echo "$x OK" >> $directory/status
 	    else 
