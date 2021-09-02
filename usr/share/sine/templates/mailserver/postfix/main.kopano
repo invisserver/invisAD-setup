@@ -685,7 +685,12 @@ readme_directory = /usr/share/doc/packages/postfix-doc/README_FILES
 mailbox_size_limit = 0
 message_size_limit = 162400000
 
-## Zarafa, new-style
+## Abweichende Transportwege - Sender-Abhaengig
+smtp_sender_dependent_authentication = yes
+sender_dependent_relayhost_maps = texthash:/etc/postfix/relay-by-sender
+smtp_fallback_relay = [mail.example.org]
+
+## Kopano, new-style
 virtual_mailbox_domains = invis-net.loc
 
 virtual_mailbox_maps = ldap:/etc/postfix/ldap-users2.cf,

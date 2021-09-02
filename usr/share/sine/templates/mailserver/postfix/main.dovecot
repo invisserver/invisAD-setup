@@ -688,6 +688,11 @@ message_size_limit = 162400000
 strict_8bitmime = no
 disable_mime_output_conversion = no
 
+## Abweichende Transportwege - Sender-Abhaengig
+smtp_sender_dependent_authentication = yes
+sender_dependent_relayhost_maps = texthash:/etc/postfix/relay-by-sender
+smtp_fallback_relay = [mail.example.org]
+
 ## FSP
 # SMTP-AUTH & TLS
 # Mailversand: Authentifikation gegenüber Mailrelay

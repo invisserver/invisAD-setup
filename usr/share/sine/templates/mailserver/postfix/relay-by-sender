@@ -1,0 +1,12 @@
+# Postfix Map zur Auswahl des Relayhosts in Abhaengigkeit des Absenders.
+# Spalte links: Absender-Adresse
+# Spalte rechts: zu verwendender Smarthost.
+# Beispiel:
+# heinz.becker@beckertec.de	[smtp.beckertec.de]:587
+# Für jeden Smarthost muessen Zugangsdaten in /etc/postfix/sasl_passwd
+# eingetragen werden.
+# Es muessen lediglich Absender-Adressen aufgefuehrt werden, die
+# zwingend einen vom Standard abweichenden Relayhost benoetigen.
+# Ein Grund kann eine fehlschlagende SPF-Pruefung auf Empfaenger-
+# Seite sein.
+# Fuer alle anderen Faelle greift der Fallback-Relayhost.
