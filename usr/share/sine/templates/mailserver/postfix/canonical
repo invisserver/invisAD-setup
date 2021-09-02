@@ -276,11 +276,11 @@
 #        Yorktown Heights, NY 10598, USA
 # 
 #                                                                   CANONICAL(5)
-## FSP Alle Emails von root werden an domadmin umgeleitet
+## FSP Alle Emails von root werden an das postmaster Konto umgeleitet
 
-root domadmin@localhost
-root@localhost administrator@invis-net.loc
-root@invis-net.loc administrator@invis-net.loc
-root@localhost.invis-net.loc administrator@invis-net.loc
-root@invis.invis-net.loc administrator@invis-net.loc
+root postmaster@invis-net.loc
+root@localhost postmaster@invis-net.loc
+root@invis-net.loc postmaster@invis-net.loc
+root@localhost.invis-net.loc postmaster@invis-net.loc
+root@invis.invis-net.loc postmaster@invis-net.loc
 
