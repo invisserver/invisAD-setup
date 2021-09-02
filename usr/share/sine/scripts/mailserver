@@ -209,7 +209,7 @@ if [[ $mailrelay != "none" ]]; then
     echo "$mailrelay:$smtpport		$smtpun:$smtppw" >> /etc/postfix/sasl_passwd
     /usr/sbin/postmap /etc/postfix/sasl_passwd 2> /dev/null
 fi
-    
+
 # canonical-files anpassen
 file="canonical"
 fqdn=`getconfdata "FQDN" "2"`
@@ -219,9 +219,13 @@ changevalues $path $file "$string"
 domain=`getconfdata "Domain" "2"`
 string="invis-net.loc%$domain"
 changevalues $path $file "$string"
+# Hashfile erzeugen
 postmap $path/$file
-files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-groups.cf)
 
+# Hashfile fuer Sender-abhaengige Relaymap erzeugen
+postmap $path/relay-by-sender
+
+files=(s-canonical.cf r-canonical.cf ldap-users.cf ldap-users2.cf ldap-groups.cf)
 for datei in ${files[*]}; do
     #echo $datei
     basedn=`getconfdata "baseDN" "2"`
