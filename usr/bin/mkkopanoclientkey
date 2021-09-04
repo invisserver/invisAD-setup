@@ -1,0 +1,49 @@
+#!/bin/bash
+# Kategorie: apps
+# Script zum Zusammenbau eines Kopano-SSL-Client-Keys
+# (c) 2021 Stefan Schaefer - stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+domain=`hostname -d`
+keypath="/etc/easy-rsa/$domain/private"
+certpath="/etc/easy-rsa/$domain/issued"
+kopanocertpath="/etc/kopano/sslkeys"
+targetpath="."
+
+if [[ -z $1 ]]; then
+    echo "Sie müssen den Hostnamen des Client-Zertifikates angeben:"
+    echo "invis:~ # mkkopanoclientkey client.invis-server.lan"
+    exit 1
+else
+    keycn="$1"
+fi
+
+# Schluessel und Zertifikat aufbereiten
+if [[ -f "$certpath/$keycn.crt" ]]; then
+    echo "Ist vorhanden"
+    # public key extrahieren
+    openssl x509 -pubkey -noout -in $certpath/$keycn.crt  > "$kopanocertpath/$keycn.pem"
+    # Kombi-Datei bereit stellen
+    # Dadurch steht kein Klartext mehr im Zertifikat
+    openssl x509 -in "$certpath/$keycn.crt" -out "$targetpath/$keycn.pem"
+    openssl rsa -in "$keypath/$keycn.key" >> "$targetpath/$keycn.pem"
+
+    echo -e "Die kombinierte Kopano-Client Schlüsseldatei wurde unter $targetpath/$keycn.pem bereitgestellt,\nsie muss auf den Client-Host kopiert werden."
+else
+    echo -e "Es wurde kein passender Client-Key gefunden.\nDieser muss zuerst generiert werden. Beispiel:"
+    echo "invis:~ # easyrsa --subject-alt-name=\"DNS:client.invis-server.lan\" build-client-full client.invis-server.lan nopass"
+    exit 1
+fi
