@@ -23,7 +23,8 @@
 #Konfigurationsdaten
 conffile="/etc/invis/invis.conf"
 passfile="/etc/invis/invis-pws.conf"
-tmpfile="/tmp/account"
+workdir="/tmp/invis/"
+tmpfile="/$workdir/account"
 sam="/var/lib/samba/private/sam.ldb"
 wdir="/var/lib/cornaz"
 buildfrcfile="$wdir/build/.fetchmailrc"
@@ -37,7 +38,10 @@ if [[ -f $iptmpfile ]]; then
     rm $iptmpfile
 fi
 if [[ -f $tmpfile ]]; then
-    rm $tmpfile
+    rm $workdir/*
+fi
+if [[ ! -d $workdir ]]; then
+    mkdir $workdir
 fi
 
 ok=0
@@ -61,25 +65,33 @@ ldbbase="CN=AdditionalUserInformation,$invisadnode"
 if (( `cat $actfrcfile|grep -v " junk "|wc -l` >= 1 )); then
     rm $buildfrcfile
     # Nur "anwesende" Benutzer
-    for user in `cat $actfrcfile |cut -d " " -f 10`; do
+    usersuncleaned=(`cat $actfrcfile |cut -d " " -f 10`)
+    # Duplikate entfernen
+    usersunique=($(echo "${usersuncleaned[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+    
+    for user in ${usersunique[@]}; do
 	# Benutzerinformationen aus AD lesen
 	ldbsearch -H /var/lib/samba/private/sam.ldb -b "CN=$user,$ldbbase" -s one "(objectclass=fspFetchMailAccount)" "fspExtMailAddress" "fspExtMailProto" "fspExtMailUserName" "fspExtMailServer" "fspExtMailUserPw" "fspMailFetchOpts"|grep ":" > $tmpfile
-	if [[ ! `grep "search error" $tmpfile` ]]; then
-	    # Variablen generieren
-	    server=`grep fspExtMailServer $tmpfile |cut -d " " -f2`
-	    proto=`grep fspExtMailProto $tmpfile |cut -d " " -f2`
-	    extuser=`grep fspExtMailUserName $tmpfile |cut -d " " -f2`
-	    password=`grep fspExtMailUserPW $tmpfile |cut -d " " -f2`
-	    opts=`grep fspMailFetchOpts $tmpfile |cut -d " " -f2-`
+	# Datei aufteilen
+	csplit -f $workdir/splitfile_ -z /$tmpfile /^dn:/ '{*}'
+	for splitfile in `ls $workdir/splitfile_*`; do
+	    if [[ ! `grep "search error" $tmpfile` ]]; then
+		# Variablen generieren
+		server=`grep fspExtMailServer $splitfile |cut -d " " -f2`
+		proto=`grep fspExtMailProto $splitfile |cut -d " " -f2`
+		extuser=`grep fspExtMailUserName $splitfile |cut -d " " -f2`
+		password=`grep fspExtMailUserPW $splitfile |cut -d " " -f2`
+		opts=`grep fspMailFetchOpts $splitfile |cut -d " " -f2-`
 
-        # ggf. Passwort dekodieren
-        if [[ "$password" =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
-            password=`echo "$password" | base64 -d`
-        fi
+		# ggf. Passwort dekodieren
+		if [[ "$password" =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
+		    password=`echo "$password" | base64 -d`
+		fi
 
-	    # fetchmailrc-Vorlage erzeugen
-	    echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
-	fi
+		# fetchmailrc-Vorlage erzeugen
+		echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
+	    fi
+	done
     done
 
     # fetchcopy ausfueren um echte fetchmailrc zu generieren.
