@@ -23,11 +23,19 @@
 #Konfigurationsdaten
 conffile="/etc/invis/invis.conf"
 passfile="/etc/invis/invis-pws.conf"
-tmpfile="/tmp/frc"
+workdir="/tmp/invis/"
+tmpfile="/$workdir/frc"
 sam="/var/lib/samba/private/sam.ldb"
 wdir="/var/lib/cornaz"
 buildfrcfile="$wdir/build/.fetchmailrc"
 actfrcfile="$wdir/inuse/.fetchmailrc"
+
+if [[ -f $tmpfile ]]; then
+    rm $workdir/*
+fi
+if [[ ! -d $workdir ]]; then
+    mkdir $workdir
+fi
 
 # Funktionen
 # Werte aus Konfigurationsdatendatei extrahieren
@@ -73,23 +81,26 @@ if [[ $aktion == "a" ]]; then
 
     # Mailkonten finden und .fetchmailrc generieren
     ldbsearch -H /var/lib/samba/private/sam.ldb -b "CN=$user,$ldbbase" -s one "(objectclass=fspFetchMailAccount)" "fspExtMailAddress" "fspExtMailProto" "fspExtMailUserName" "fspExtMailServer" "fspExtMailUserPw" "fspMailFetchOpts"|grep ":" > $tmpfile
-    if [[ ! `grep "search error" $tmpfile` ]]; then
-	# Variablen generieren
-	server=`grep fspExtMailServer $tmpfile |cut -d " " -f2`
-	proto=`grep fspExtMailProto $tmpfile |cut -d " " -f2`
-	extuser=`grep fspExtMailUserName $tmpfile |cut -d " " -f2`
-	password=`grep fspExtMailUserPW $tmpfile |cut -d " " -f2`
-	opts=`grep fspMailFetchOpts $tmpfile |cut -d " " -f2-`
+    # Datei aufteilen
+    csplit -f $workdir/splitfile_ -z /$tmpfile /^dn:/ '{*}'
+    for splitfile in `ls $workdir/splitfile_*`; do
+	if [[ ! `grep "search error" $tmpfile` ]]; then
+	    # Variablen generieren
+	    server=`grep fspExtMailServer $splitfile |cut -d " " -f2`
+	    proto=`grep fspExtMailProto $splitfile |cut -d " " -f2`
+	    extuser=`grep fspExtMailUserName $splitfile |cut -d " " -f2`
+	    password=`grep fspExtMailUserPW $splitfile |cut -d " " -f2`
+	    opts=`grep fspMailFetchOpts $splitfile |cut -d " " -f2-`
 
-	# ggf. Passwort dekodieren
-	if [[ "$password" =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
-	    password=`echo "$password" | base64 -d`
+	    # ggf. Passwort dekodieren
+	    if [[ "$password" =~ ^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$ ]]; then
+		password=`echo "$password" | base64 -d`
+	    fi
+
+	    # fetchmailrc-Vorlage erzeugen
+	    echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
 	fi
-
-	# fetchmailrc-Vorlage erzeugen
-	echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
-    fi
-
+    done
 else
     cat $buildfrcfile | grep -v " $user " > $tmpfile
     mv $tmpfile $buildfrcfile
