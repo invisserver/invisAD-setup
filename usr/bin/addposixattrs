@@ -98,7 +98,9 @@ else
     # Home-Directory anlegen, wenn nicht vorhanden
     if [[ ! -d $homedir ]] ; then
 	cp -r /etc/skel $homedir
+	sleep 2
+	getent passwd > /dev/null 2>&1
 	chown -R $accountname:$gidnumber $homedir
-	chmod og-rx $homedir
+	chmod -R og-rx $homedir
     fi
 fi
