@@ -58,9 +58,6 @@ invisadnode=`getconfdata $conffile invisADNode 2`
 # Searchbase generieren
 ldbbase="CN=AdditionalUserInformation,$invisadnode"
 
-# alle Mailkontenknoten finden:
-#for user in `ldbsearch -H /var/lib/samba/private/sam.ldb -b $ldbbase -s one "(cn=*)" cn |grep ^cn: |cut -d " " -f2`; do
-
 # Nur ausfuehren, wenn aktive fetchmailrc abzueglich der Zeile "junk" mindestens eine Zeile hat
 if (( `cat $actfrcfile|grep -v " junk "|wc -l` >= 1 )); then
     rm $buildfrcfile
@@ -73,7 +70,7 @@ if (( `cat $actfrcfile|grep -v " junk "|wc -l` >= 1 )); then
 	# Benutzerinformationen aus AD lesen
 	ldbsearch -H /var/lib/samba/private/sam.ldb -b "CN=$user,$ldbbase" -s one "(objectclass=fspFetchMailAccount)" "fspExtMailAddress" "fspExtMailProto" "fspExtMailUserName" "fspExtMailServer" "fspExtMailUserPw" "fspMailFetchOpts"|grep ":" > $tmpfile
 	# Datei aufteilen
-	csplit -f $workdir/splitfile_ -z /$tmpfile /^dn:/ '{*}'
+	csplit -sf $workdir/splitfile_ -z /$tmpfile /^dn:/ '{*}'
 	for splitfile in `ls $workdir/splitfile_*`; do
 	    if [[ ! `grep "search error" $tmpfile` ]]; then
 		# Variablen generieren

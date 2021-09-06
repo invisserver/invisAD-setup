@@ -72,7 +72,6 @@ else
     usage
 fi
 
-
 if [[ $aktion == "a" ]]; then
     # LDAP Basisknoten fuer invis-Server auslesen
     invisadnode=`getconfdata $conffile invisADNode 2` 
@@ -82,7 +81,7 @@ if [[ $aktion == "a" ]]; then
     # Mailkonten finden und .fetchmailrc generieren
     ldbsearch -H /var/lib/samba/private/sam.ldb -b "CN=$user,$ldbbase" -s one "(objectclass=fspFetchMailAccount)" "fspExtMailAddress" "fspExtMailProto" "fspExtMailUserName" "fspExtMailServer" "fspExtMailUserPw" "fspMailFetchOpts"|grep ":" > $tmpfile
     # Datei aufteilen
-    csplit -f $workdir/splitfile_ -z /$tmpfile /^dn:/ '{*}'
+    csplit -sf $workdir/splitfile_ -z /$tmpfile /^dn:/ '{*}'
     for splitfile in `ls $workdir/splitfile_*`; do
 	if [[ ! `grep "search error" $tmpfile` ]]; then
 	    # Variablen generieren
