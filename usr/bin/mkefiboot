@@ -1,0 +1,79 @@
+#!/bin/bash
+# Kategorie: server
+# EFI Boot-Partition vorbereiten
+# (c) 2021 Stefan Schaefer -- invis-server.org
+# Mail: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# Eingehende Pruefungen
+if [[ -n $1 ]]; then
+    targetpart="$1"
+else
+    echo "Keine Partition angegeben"
+    echo "Beispiel:"
+    echo "invis.~ # mkefiboot sdb1"
+    exit 1
+fi
+
+# Device-Pfad ermitteln
+devpath="/dev/$targetpart"
+
+# Existiert der Device-Pfad?
+if [[ ! -b $devpath ]]; then
+    echo "Die angegebene Partition existiert nicht."
+    exit 1
+fi
+
+# Ist die angegeben Partition eine EFI-Partition?
+if [[ `fdisk -l /dev/sdb |grep $targetpart|tr -s " " | cut -d " " -f6` != "EFI-System" ]]; then
+    echo "Die angegebene Partition ist nicht vom Typ \"EFI-System\"."
+    exit 1
+fi
+
+# Aktive EFI-Boot-Partition aushaengen
+umount /boot/efi
+
+# Platten-Pfad ermitteln
+diskpath=`echo $devpath|tr -d [:digit:]`
+
+# Boot-Flag setzen
+parted $diskpath set 1 boot on
+
+# Dateisystem anlegen
+mkfs.vfat $devpath
+
+# Zielpartition temporaer mounten
+mount $devpath /boot/efi
+
+# Grub installieren
+grub2-install --bootloader-id opensuse-$targetpart $diskpath
+
+# Partition wieder aushängen
+umount $devpath
+
+# Urspruengliche EFI-Boot-Partition wieder einhaengen
+mount /boot/efi
