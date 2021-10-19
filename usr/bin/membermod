@@ -21,6 +21,7 @@
 conffile="/etc/invis/invis.conf"
 confdir="/etc/invis"
 passfile="/etc/invis/invis-pws.conf"
+sam="/var/lib/samba/private/sam.ldb"
 
 # Funktionen
 # Werte aus Konfigurationsdatendatei extrahieren
@@ -44,6 +45,9 @@ basedn=`getconfdata $conffile "baseDN" "2"`
 domain=`getconfdata $conffile "intDomain" "2"`
 nisdomain=`echo $domain | cut -d "." -f1`
 
+# DN ermitteln
+dn=`ldbsearch -H $sam samaccountname=$membername dn| grep "dn:"`
+
 # RID der Maschine ermitteln
 rid=`pdbedit -Lv $membername$  2>/dev/null| grep "User SID" | cut -d "-" -f8`
 #echo $rid
@@ -57,7 +61,7 @@ else
     # Arbeitsdatei anlegen
     workfile="/tmp/machineattributes.ldif"
     #echo "Maschinenkonto erweitern"
-    echo "dn: CN=$membername,CN=Computers,$basedn" > $workfile
+    echo "$dn" > $workfile
     echo "changetype: modify" >> $workfile
     echo "add: objectclass" >> $workfile
     echo "objectclass: posixAccount" >> $workfile
@@ -74,8 +78,8 @@ else
     echo "add: description" >> $workfile
     echo "description: Computer" >> $workfile
 
-    #ldbmodify -v -H /var/lib/samba/private/sam.ldb $workfile
-    ldbmodify -H /var/lib/samba/private/sam.ldb $workfile
+    # Maschinenkonto erweitern
+    ldbmodify -H $sam  $workfile
 
     # ServicePrincipalName for NFS with GSSAPI
     samba-tool spn add "nfs/$membername.$domain" "$accountname\$"
