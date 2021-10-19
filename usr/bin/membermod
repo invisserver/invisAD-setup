@@ -46,7 +46,7 @@ domain=`getconfdata $conffile "intDomain" "2"`
 nisdomain=`echo $domain | cut -d "." -f1`
 
 # DN ermitteln
-dn=`ldbsearch -H $sam samaccountname=$membername dn| grep "dn:"`
+dn=`ldbsearch -H $sam samaccountname="$membername\$" dn| grep "dn:"`
 
 # RID der Maschine ermitteln
 rid=`pdbedit -Lv $membername$  2>/dev/null| grep "User SID" | cut -d "-" -f8`
