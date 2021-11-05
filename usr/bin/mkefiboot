@@ -48,17 +48,17 @@ if [[ ! -b $devpath ]]; then
     exit 1
 fi
 
+# Platten-Pfad ermitteln
+diskpath=`echo $devpath|tr -d [:digit:]`
+
 # Ist die angegeben Partition eine EFI-Partition?
-if [[ `fdisk -l /dev/sdb |grep $targetpart|tr -s " " | cut -d " " -f6` != "EFI-System" ]]; then
+if [[ `fdisk -l $diskpath |grep $targetpart|tr -s " " | cut -d " " -f6` != "EFI-System" ]]; then
     echo "Die angegebene Partition ist nicht vom Typ \"EFI-System\"."
     exit 1
 fi
 
 # Aktive EFI-Boot-Partition aushaengen
 umount /boot/efi
-
-# Platten-Pfad ermitteln
-diskpath=`echo $devpath|tr -d [:digit:]`
 
 # Boot-Flag setzen
 parted $diskpath set 1 boot on
