@@ -9,6 +9,7 @@ php7-opcache
 php7-posix
 php7-pcntl
 php7-zlib
+php-pear-Mail
 phpMyAdmin
 phpPgAdmin
 phpldapadmin
