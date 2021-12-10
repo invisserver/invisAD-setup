@@ -247,3 +247,5 @@ pgsubtitle="Mehrere Dienste werden neu gestartet"
 chkservice "shellinaboxd"
 chkservice "apache2"
     
+# Administrator-Konto um Posix-Attribute und ein Homeverzeichnis erweitern
+addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
