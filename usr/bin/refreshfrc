@@ -89,6 +89,8 @@ if (( `cat $actfrcfile|grep -v " junk "|wc -l` >= 1 )); then
 		echo "poll $server proto $proto user $extuser pass "\'$password\'" is $user $opts" >> $buildfrcfile
 	    fi
 	done
+	# Splitfiles loeschen
+        rm $workdir/splitfile_*
     done
 
     # fetchcopy ausfueren um echte fetchmailrc zu generieren.
