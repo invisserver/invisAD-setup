@@ -101,8 +101,8 @@ X11Forwarding yes
 #UsePrivilegeSeparation yes
 #PermitUserEnvironment no
 #Compression delayed
-#ClientAliveInterval 0
-#ClientAliveCountMax 3
+ClientAliveInterval 30
+ClientAliveCountMax 2
 #UseDNS yes
 #PidFile /var/run/sshd.pid
 #MaxStartups 10
