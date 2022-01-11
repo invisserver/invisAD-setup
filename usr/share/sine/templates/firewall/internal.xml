@@ -5,6 +5,7 @@
   <interface name="intern"/>
   <interface name="vpn"/>
   <interface name="wlan0"/>
+  <forward/>
   <!-- Intern: ssh über Standard-Port 22 -->
   <service name="ssh"/>
   <!-- Zusätzlich: ssh über Zufallsport xxxxx -->
