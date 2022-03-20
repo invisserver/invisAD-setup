@@ -748,17 +748,20 @@ canonical_maps=texthash:/etc/postfix/canonical
 ## Virenscanner
 content_filter=smtp-amavis:[127.0.0.1]:10024
 
+# NVT: Check if Mailserver answer to VRFY and EXPN requests
+disable_vrfy_command=yes
+
 # SSL absichern
-smtpd_tls_protocols = !SSLv2, !SSLv3
-smtp_tls_protocols = !SSLv2, !SSLv3
-lmtp_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
+smtp_tls_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
+lmtp_tls_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
 
-smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
-smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
-lmtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
+lmtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
 
-smtpd_tls_ciphers = medium
-smtp_tls_ciphers = medium
+smtpd_tls_ciphers = high
+smtp_tls_ciphers = high
 
 ##Spaeter aktivieren
 smtpd_tls_dh1024_param_file = /etc/postfix/dh.pem
