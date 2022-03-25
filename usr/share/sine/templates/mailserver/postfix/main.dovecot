@@ -754,13 +754,13 @@ content_filter=smtp-amavis:[127.0.0.1]:10024
 disable_vrfy_command=yes
 
 # SSL absichern
-smtpd_tls_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
-smtp_tls_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
-lmtp_tls_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+lmtp_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 
-smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
-smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
-lmtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLS1, !TLS11
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+lmtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 
 smtpd_tls_ciphers = high
 smtp_tls_ciphers = high
