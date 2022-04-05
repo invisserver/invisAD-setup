@@ -4,6 +4,7 @@
   <description>For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.</description>
   <interface name="intern"/>
   <interface name="vpn"/>
+  <interface name="vpn-sub"/>
   <interface name="wlan0"/>
   <forward/>
   <!-- Intern: ssh über Standard-Port 22 -->
