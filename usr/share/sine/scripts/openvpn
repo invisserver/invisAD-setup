@@ -55,9 +55,31 @@ zypper -n install -n openvpn 2>&1 | tee -a $LOGFILE | pgbox
 zyppercheck ${PIPESTATUS[0]}
 
 # create server configuration
-cp $TEMPLATEDIR/$modulename/invis-server.conf /etc/openvpn
+cp $TEMPLATEDIR/$modulename/*.conf /etc/openvpn
 path="/etc/openvpn"
 file="invis-server.conf"
+
+domain=`getconfdata "Domain" "2"`
+string="invis-net.loc%$domain"
+changevalues $path $file "$string"
+
+ip=`getconfdata "IP" "2"`
+string="invis-int-ip%$ip"
+changevalues $path $file "$string"
+
+net=`getconfdata "Networkbase" "2"`
+string="netbase-address%$net"
+changevalues $path $file "$string"
+
+netmask=`getconfdata "NMask-long" "2"`
+string="netmask-long%$netmask"
+changevalues $path $file "$string"
+
+ddns=`getconfdata "DDNS" "2"`
+string="openvpn_server%$ddns"
+changevalues $path $file "$string"
+
+file="invis-sub.conf"
 
 domain=`getconfdata "Domain" "2"`
 string="invis-net.loc%$domain"
@@ -88,6 +110,9 @@ cp $earsadir/crl.pem $keydir
 cp $earsadir/ca.crt $keydir
 cp $earsadir/private/$ddns.key $keydir
 cp $earsadir/issued/$ddns.crt $keydir
+
+# Client Config Directory anlegen
+mkdir "/etc/openvpn/ccd"
 
 msgbox "Beispiel Client-Konfigurationsdateien finden Sie in der Service-Freigabe des Fileservers.
 Um Schlüssel für einen Client zu erzeugen führen Sie inviscerts vpn aus. Weitere Infos unter wiki.invis-server.de." "openVPN Clients einrichten"
