@@ -1,0 +1,27 @@
+kimai:
+    ldap:
+        activate: true
+        connection:
+            host: fqdn
+            username: ldap.admin
+            password: ldapadminpw
+            accountDomainName: localdomain
+            accountDomainNameShort: WORKGROUP
+            accountFilterFormat: (&(objectClass=Person)(sAMAccountName=%s))
+        user:
+            baseDn: basedn
+            filter: (&(objectClass=Person))
+            usernameAttribute: samaccountname
+            attributesFilter: (objectClass=Person)
+            attributes:
+                - { ldap_attr: mail, user_method: setEmail }
+                - { ldap_attr: displayname, user_method: setAlias }
+                - { ldap_attr: samaccountname,  user_method: setUsername }
+        role:
+            baseDn: dc=ad,dc=example,dc=com
+            filter: (&(objectClass=group))
+            groups:
+                - { ldap_value: Leads, role: ROLE_TEAMLEAD }
+                - { ldap_value: verwaltung, role: ROLE_SUPER_ADMIN }
+                - { ldap_value: zeiterfassung, role: ROLE_USER }
+

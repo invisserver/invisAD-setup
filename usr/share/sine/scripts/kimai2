@@ -1,0 +1,134 @@
+#!/bin/bash
+### MODUL-NR. 021 ###
+# (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
+# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
+# (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
+
+# License: GPLv3
+# Questions: info@invis-server.org
+
+# Kimai Installation
+
+# Kimai2 setup
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+modulename=`basename $0`
+
+clear
+windowtitle="Kimai"
+pgsubtitle="Kimai Arbeitszeiterfassung installieren"
+
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/kimai.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Kimai installieren?" 0 0
+cont=${?}
+
+# Weitermachen?
+if [[ $cont == "0" ]]; then
+    pgsubtitle="Software wird installiert"
+    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install kimai2 2>&1 | tee -a $LOGFILE | pgbox
+    zyppercheck ${PIPESTATUS[0]}
+    # Hier Datenbank installation einfügen
+    kimaipass=`mkdbsilent kimai2 kimai2 a`
+    echo "DB-User kimai2:KIMAIDBPW:$kimaipass" >> $SINEWORKINGDIR/invis_pws 
+    path="/srv/www/htdocs/kimai2"
+
+    # composer self update
+    composer self-update --2 2>&1 | tee -a $LOGFILE | pgbox
+    cd $path
+    composer install --no-dev --optimize-autoloader -n
+    composer require laminas/laminas-ldap --optimize-autoloader
+
+    # prepare kimai2 environment
+    cp $TEMPLATEDIR/$modulename/.env $path
+
+    # ...environment file anpassen
+    # mariadb-Version ermitteln
+    mariadbversion=`rpm -qa mariadb|cut -d "-" -f1-2`
+    file=".env"
+    string="password:$kimaipass"
+    changevalues $path $file "$string"
+
+    string="mariadbversion:$mariadbversion"
+    changevalues $path $file "$string"
+
+    domain=`getconfdata "Domain" "2"`
+    string="localdomain:$domain"
+    changevalues $path $file "$string"
+
+    # Zugriffsrechte anpassen
+    chown -R .www $path
+    chmod -R g+r $path/*
+    chmod -R g+rw $path/var/
+    chmod -R g+rw $path/public/avatars/
+
+    # kimai Setup
+    $path/bin/console kimai:install -n
+
+    # activate apache configuration
+    cp $TEMPLATEDIR/$modulename/kimai2.conf /etc/apache2/conf.d/
+
+    fqdn=`getconfdata "FQDN" "2"`
+    basedn=`getconfdata "baseDN" "2"`
+    ldapmasterpw=`getpassword "LDAPAdminPW" "3"`
+    workgroup=`getconfdata "Workgroup" "2"`
+
+    # add and modify activeDirectory configuration
+    path="/srv/www/htdocs/kimai2/config/packages/"
+    file="local.yaml"
+    cp $TEMPLATEDIR/$modulename/$file $path
+
+    string="fqdn%$fqdn"
+    changevalues $path $file "$string"
+
+    string="WORKGROUP%$workgroup"
+    changevalues $path $file "$string"
+
+    string="basedn%$basedn"
+    changevalues $path $file "$string"
+
+    string="ldapadminpw%$ldapmasterpw"
+    changevalues $path $file "$string"
+
+    # Gruppen anlegen
+    samba-tool group add --description="Gruppe zur Beschränkung des Zugriffs auf die Zeiterfassung" zeiterfassung 2>&1| tee -a $LOGFILE | pgbox
+    samba-tool group add --description="Gruppe Teamleiter-Zeiterfassung" teamleiter 2>&1| tee -a $LOGFILE | pgbox
+
+    # set KIMAI flag
+    a2enflag KIMAI
+    chkservice apache2 r
+
+    # ownCloud im Portal aktivieren
+    swpestat Kimai2 TRUE 2>&1 | tee -a $LOGFILE | pgbox
+
+else
+    msgbox "Kimai Installation übersprungen" "$windowtitle"
+fi
