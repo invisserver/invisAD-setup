@@ -1,0 +1,60 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Löschen von Zertifikaten und Schluesseln
+# falls diese vollständig neu erstellt werden muessen.
+# Dieses Script ersetzt das fruehere Script "serverkeys"
+# Version 0.1
+# (C) 2011-2022 by Stefan Schäfer / invis-server.org
+# License: GPLv3
+# Questions: stefan@invis-server.org
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+#Konfigurationsdaten
+confdir="/etc/invis"
+conffile="$confdir/invis.conf"
+
+domain=`hostname -d`
+basedir="/etc/easy-rsa/$domain"
+csrdir="$basedir/reqs"
+keydir="$basedir/private"
+certdir="$basedir/issued"
+
+getbasename() {
+    # Punkte zaehlen
+    num=`echo $1 | tr -dc "." |wc -m`
+    # Endung abschneiden
+    base=`echo $1 | cut -d "." -f-$num`
+    echo $base
+}
+
+# Abbruch
+echo "Abbruch des Scripts mit STRG+C"
+echo "---------------------------------------------------------------------------------"
+# Auswahl und Dateien loeschen
+select csr in `ls $csrdir`; do
+    certbase=`getbasename $csr`
+    echo "Ausgewählt: $certbase"
+    read -p "Soll das Schlüsselpaar für \"$certbase\" vollständig gelöscht werden? [j/n] " answer
+    if [[ ${answer,,} == "j" ]]; then
+	echo "Folgende Dateien werden gelöscht:"
+	ls $csrdir/$csr
+	ls $keydir/$certbase.key
+	ls $certdir/$certbase.crt
+	rm $csrdir/$csr
+	rm $keydir/$certbase.key
+	rm $certdir/$certbase.crt
+    fi
+    break
+done
