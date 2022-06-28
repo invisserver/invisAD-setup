@@ -1,8 +1,8 @@
 #!/bin/bash
 # Kategorie: apps
 # script to manage headless owncloud synchronization
-# Version 1.0
-# (c) Mai 2018 Stefan Schäfer / invis-server.org
+# Version 1.1
+# (c) Mai 2018-2022 Stefan Schäfer / invis-server.org
 
 # License: GPLv3
 # Questions: info@invis-server.org
