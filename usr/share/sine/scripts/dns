@@ -56,9 +56,14 @@ ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 cp $TEMPLATEDIR/dns/named.conf /etc 2>&1| tee -a $LOGFILE | pgbox
 
 # Konfiguration von bind wird angepasst
+bindver=`rpm -qa bind|cut -d "-" -f2 |cut -d "." -f2`
+
 path="/etc"
 file="named.conf"
 strings="FORWARD-DNS-SERVERS%$forwarders"
+changevalues $path $file "$strings"
+
+strings="bindver%$bindver"
 changevalues $path $file "$strings"
 
 # Anpassen der Datei /etc/resolv.conf
@@ -67,10 +72,6 @@ file="resolv.conf"
 
 strings="invis-net.loc%$domain"
 changevalues $path $file "$strings" 
-
-# Bind darf in Kombination mit Samba4 AD nicht chrooted laufen
-sysconf_addword -r /etc/sysconfig/named NAMED_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/named NAMED_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
 
 # DNS Dienst starten und ins Runlevel-Konzept einbinden.
 chkservice "named"
