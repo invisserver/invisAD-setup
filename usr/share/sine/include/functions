@@ -185,7 +185,7 @@ Das vergebene Passwort muss mindestens 7 Zeichen lang sein, Zahlen und Sonderzei
 revzone() {
     localip=$(hostname -i)
     netmask=$(ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f2 |cut -d " " -f1)
-    netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+    netbase=($(ipcalc -n $localip/$netmask |cut -d "=" -f 2| tr "." " "))
     # Neue QnD Loesung zum Bau der Reverse-Zone
     # funktioniert zumindest bei glatten Netzwerkmasken zuverlaessig.
     case $netmask in
