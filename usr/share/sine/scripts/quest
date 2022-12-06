@@ -175,8 +175,8 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
     ipaddr="${netvalues[2]}"
     longnmask="${netvalues[3]}"
     shortnmask=`mask2cdr $longnmask`
-    netaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Network:"|tr -s " "| cut -d " " -f2|cut -d "/" -f1`
-    bcastaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | grep "^Broadcast:"|tr -s " "| cut -d " " -f2`
+    netaddr=`ipcalc -n ${netvalues[2]}/$longnmask | cut -d "=" -f2`
+    bcastaddr=`ipcalc -bn ${netvalues[2]}/$longnmask | cut -d "=" -f2`
     dp1=`echo "$domain" | cut -d "." -f 1`
     dp2=`echo "$domain" | cut -d "." -f 2`
     ldapbase="DC=$dp1,DC=$dp2"
