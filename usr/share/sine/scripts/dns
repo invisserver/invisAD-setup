@@ -54,6 +54,8 @@ ipaddr=`getconfdata "IP" "2"`
 ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 
 cp $TEMPLATEDIR/dns/named.conf /etc 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/dns/named.service /etc/systemd/system 2>&1| tee -a $LOGFILE | pgbox
+systemctl daemon-reload
 
 # Konfiguration von bind wird angepasst
 bindver=`rpm -qa bind|cut -d "-" -f2 |cut -d "." -f2`

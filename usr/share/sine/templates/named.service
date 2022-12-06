@@ -1,0 +1,29 @@
+[Unit]
+Description=Berkeley Internet Name Domain (DNS)
+After=network.target
+After=time-set.target
+Wants=nss-lookup.target
+Wants=time-set.target
+
+[Service]
+Type=forking
+KillMode=process
+EnvironmentFile=/etc/sysconfig/named
+ExecStartPre=+/usr/lib/bind/named.prep
+ExecStart=/usr/sbin/named -u named $NAMED_ARGS
+ExecReload=/usr/bin/kill -HUP $MAINPID
+ProtectSystem=strict
+ReadWritePaths=/var/lib/named /run/named /var/log /var/lib/samba/bind-dns/dns
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectHostname=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+[Install]
+WantedBy=multi-user.target
