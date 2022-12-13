@@ -1,7 +1,7 @@
 [spins_invis_15_kopano]
 name=Kopano Pakete - pre-final/master (openSUSE_Leap_$releasever)
 type=rpm-md
-baseurl=https://download.opensuse.org/repositories/spins:/invis:/15:/unstable:/kopano/openSUSE_Leap_$releasever/
+baseurl=https://download.opensuse.org/repositories/spins:/invis:/15:/unstable:/kopano/$releasever/
 gpgcheck=1
-gpgkey=https://download.opensuse.org/repositories/spins:/invis:/15:/unstable:/kopano/openSUSE_Leap_$releasever/repodata/repomd.xml.key
+gpgkey=https://download.opensuse.org/repositories/spins:/invis:/15:/unstable:/kopano/$releasever/repodata/repomd.xml.key
 enabled=1
