@@ -1,0 +1,30 @@
+name: Update Fork
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Master Branch
+        uses: actions/checkout@v2
+        with:
+          ref: master
+          checkout-submodules: 'recursive'
+
+      - name: Fetch Upstream Changes
+        run: |
+          git remote add upstream https://github.com/invisserver/invisAD-setup.git
+          git fetch --no-tags upstream '+refs/heads/*:refs/remotes/upstream/*'
+          git fetch --tags upstream
+
+      - name: Merge Upstream Changes
+        run: |
+          git merge upstream/master
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@v0.4.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
