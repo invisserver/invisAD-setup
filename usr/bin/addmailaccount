@@ -122,6 +122,14 @@ IFS=$oldifs
 clear
 
 # Protokolle und Fetchmail Optionen anpassen
+if [[ $protocol == "imap" ]];then
+    fmopts="here fetchall"
+fi
+
+if [[ $protocol == "pop3" ]];then
+    fmopts="here fetchall"
+fi
+
 if [[ $protocol == "imaps" ]];then
     protocol="imap"
     fmopts="here ssl fetchall"
@@ -132,13 +140,6 @@ if [[ $protocol == "pop3s" ]];then
     fmopts="here ssl fetchall"
 fi
 
-if [[ $protocol == "imap" ]];then
-    fmopts="here fetchall"
-fi
-
-if [[ $protocol == "pop3" ]];then
-    fmopts="here fetchall"
-fi
 
 # Lokale Adresse generieren
 domain=`hostname -d`
