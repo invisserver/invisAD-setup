@@ -72,14 +72,14 @@ case $whichmonitoring in
         chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $LOGFILE
         zabbixdbpw=`mkdbsilent zabbix zabbix a`
         mysql -u zabbix -p$zabbixdbpw zabbix < $TEMPLATEDIR/monitoring/zabbix/schema.sql
-        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-agentd.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
-        cp $TEMPLATEDIR/monitoring/zabbix/zabbix-proxy.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+        cp $TEMPLATEDIR/monitoring/zabbix/zabbix_agentd.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+        cp $TEMPLATEDIR/monitoring/zabbix/zabbix_proxy.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
         confdir="/etc/zabbix"
-        file="zabbix-proxy.conf"
+        file="zabbix_proxy.conf"
         string="zabbixdbpw%$zabbixdbpw"
         changevalues $confdir $file "$string"
         chkservice "zabbix-proxy"
-        chkservice "zabbix-agentd"
+        chkservice "zabbix-agent"
 	;;
     "keine")
 	;;
