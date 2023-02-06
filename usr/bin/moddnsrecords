@@ -101,7 +101,6 @@ hostpart() {
 	iparray=($(echo $recordip | tr "." " "))
 	netmask=`cdr2mask $netmask`
 	nmarray=($(echo $netmask | tr "." " "))
-	#netbase=($(ipcalc -b $recordip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
 	i=0
 	# Es werden IP-Adresse und Netzwerkmaske in Arrays zerlegt und dann jede Stelle der Netzmaske darauf geprüft, ob er ungleich 255 ist.
 	# Es wird dann jeweils die entsprechende Stelle der IP zur Variable hostpart hinzugefuegt. Ich habs programmiert und begreife es selbst
