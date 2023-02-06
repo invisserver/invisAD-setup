@@ -84,7 +84,9 @@ deploycerts() {
 	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/ldap-key.pem
 	    cp $confdir/certs/ldap-cert.pem /etc/apache2/ssl.crt/invis-sslint.crt
 	    cp $confdir/private/ldap-key.pem /etc/apache2/ssl.key/invis-sslint.key
-	    rm /etc/cups/ssl/*
+	    if (( `ls -A /etc/cups/ssl/|wc -l` != 0 )); then
+		rm /etc/cups/ssl/*
+	    fi
 	    cp $confdir/certs/ldap-cert.pem /etc/cups/ssl/$cn.crt
 	    cp $confdir/private/ldap-key.pem /etc/cups/ssl/$cn.key
 	    chown root.root $confdir/private/ldap-key.pem
