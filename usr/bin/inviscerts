@@ -105,7 +105,9 @@ deploycerts() {
 	    # Mail-Zertifikat und -Schluesel für Kopano in einer Datei kombinieren
 	    cp $confdir/private/mail-key.pem $confdir/certs/kopano.pem
 	    cat $confdir/certs/mail-cert.pem >> $confdir/certs/kopano.pem
-	    chown kopano $confdir/certs/kopano.pem
+	    if [[ `getent passwd|grep ^kopano:` ]]; then
+		chown kopano $confdir/certs/kopano.pem
+	    fi
 	    ;;
 	"vpn")
 	    mv $ersadir/private/$cn.p12 /srv/shares/service/VPN-Clients/Zertifikate/
