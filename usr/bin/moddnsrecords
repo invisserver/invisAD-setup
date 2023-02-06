@@ -58,7 +58,7 @@ cdr2mask() {
 
 localip=$(hostname -i)
 netmask=$(ip address show intern|tr -s " "|grep "inet "|cut -d "/" -f2 |cut -d " " -f1)
-netbase=($(ipcalc -b $localip/$netmask |grep Network|tr -s " "|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
+netbase=($(ipcalc -n $localip/$netmask |grep NETWORK|tr -s " "|cut -d "=" -f2-|cut -d " " -f 2|cut -d '/' -f1| tr "." " "))
 
 revzone() {
 
