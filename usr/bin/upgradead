@@ -22,7 +22,7 @@
 basedir="/var/lib/samba"
 tempdir="/tmp/samba"
 
-echo -e "Dieses Script ist gedacht um ein ActiveDirectory aus einer Samba-Umgebung\nkleiner Version 4.8. nach 4.10. auf Basis einer AD-Sicherung zu aktualisieren.\nFahren Sie nur fort, wenn Sie genau das tun möchten."
+echo -e "Dieses Script ist gedacht um ein älteres ActiveDirectory (kleiner samba Version 4.8) aus einer AD-Sicherung zu wieder herzustellen.\nFahren Sie nur fort, wenn Sie genau das tun möchten."
 read -p "Wollen Sie fortfahren? [j/n] " go
 if [[ $go != "j" ]];then
     echo "Na gut, dann nicht. Tschüss!"
@@ -76,10 +76,15 @@ tar -xzf $dasifile -C $tempdir
 
 tmpbase="$tempdir/var/lib/samba"
 # move dns subdir
-mv $tmpbase/private/dns $basedir/bind_dns
+mv $tmpbase/private/dns $basedir/bind-dns
 mv $tmpbase/private/dns.keytab $basedir/private/
-ln $basedir/private/dns.keytab $basedir/bind_dns/dns.keytab
-mv $tmpbase/private/named.txt $basedir/bind_dns/
+ln $basedir/private/dns.keytab $basedir/bind-dns/dns.keytab
+mv $tmpbase/private/named.txt $basedir/bind-dns/
+
+# Doppelte Dateien loescheun
+rm $basedir/bind-dns/dns/sam.ldb.d/*3DDOMAINDNSZONES*
+rm $basedir/bind-dns/dns/sam.ldb.d/*3DFORESTDNSZONES*
+rm $basedir/bind-dns/dns/sam.ldb.d/metadata.tdb
 
 # move subdirs first layer
 mv $tmpbase/drivers $basedir
@@ -99,6 +104,11 @@ find $tmpbase -maxdepth 1 -type f -exec mv {} $basedir \;
 mv $tmpbase/private/ldap_priv $basedir/private/
 mv $tmpbase/private/sam.ldb.d $basedir/private/
 mv $tmpbase/private/smbd.tmp $basedir/private/
+
+# Hardlinks für Nameserver anlegen
+ln $basedir/private/sam.ldb.d/DC%3DDOMAINDNSZONES* $basedir/bind-dns/dns/sam.ldb.d/
+ln $basedir/private/sam.ldb.d/DC%3DFORESTDNSZONES* $basedir/bind-dns/dns/sam.ldb.d/
+ln $basedir/private/sam.ldb.d/metadata.tdb $basedir/bind-dns/dns/sam.ldb.d/
 
 # move files to private layer
 find $tmpbase/private -maxdepth 1 -type f -exec mv {} $basedir/private/ \;
