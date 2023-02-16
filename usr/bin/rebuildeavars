@@ -1,0 +1,62 @@
+#!/bin/bash
+# Kategorie: server
+# Erzeugt auf Basis der Templates aus einen aktualisierten invisAD-setup-Paket 
+# eine neue vars Datei füer easyrsa
+# (C) 2023 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+sinehelpersdir="/usr/share/sine"
+SINEWORKINGDIR="/var/lib/sine"
+TEMPLATEDIR="$sinehelpersdir/templates"
+SINEINCLUDEDIR="$sinehelpersdir/include"
+
+LOGFILE="/var/log/sine/sine.log"
+
+# include functions
+source $SINEINCLUDEDIR/functions
+
+# vorhandene vars-Datei sichern
+path="/etc/easy-rsa"
+old $path/vars
+
+## easy-rsa einrichten und CA bauen
+cp $TEMPLATEDIR/sysprep/easy-rsa/vars /etc/easy-rsa/vars 2>&1| tee -a $LOGFILE
+file="vars"
+
+domain=`getconfdata "Domain" "2"`
+string="localdomain%$domain"
+changevalues $path $file "$string"
+
+country=`getconfdata "Country" "2"`
+string="DE%$country"
+changevalues $path $file "$string"
+
+region=`getconfdata "Region" "2"`
+string="Hessen%$region"
+changevalues $path $file "$string"
+
+city=`getconfdata "City" "2"`
+string="Schotten%$city"
+changevalues $path $file "$string"
+
+organisation=`getconfdata "Organisation" "2"`
+string="invis-server.org%$organisation"
+changevalues $path $file "$string"
+
+certmail=`getconfdata "certMail" "2"`
+string="me@example.net%$certmail"
+changevalues $path $file "$string"
