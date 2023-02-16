@@ -330,12 +330,17 @@ if [[ -d $path/$domain ]]; then
 fi
 
 # PKI initialisieren
+export EASYRSA=/etc/easy-rsa
+export EASYRSA_PKI=$EASYRSA/$domain
+
 easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
+cp $EASYRSA/vars $EASYRSA_PKI
+old $EASYRSA/vars
 
 clear
 
 # CA aufbauen
-easyrsa build-ca
+easyrsa --vars=$EASYRSA/vars build-ca
 
 # Stop sine, in case of problems with building the CA
 if [[ $? != 0 ]];then
