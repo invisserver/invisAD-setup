@@ -49,10 +49,10 @@ if [[ -f $resultdir/alarm ]]; then
 fi
 
 for cert in ${certs[*]}; do
-	unformeddate=`openssl x509 -noout -text -in $cert |grep "Not After"|cut -d ":" -f2-`
+	unformeddate=`openssl-3 x509 -noout -text -in $cert |grep "Not After"|cut -d ":" -f2-`
 	daysleft=`diffdays "$unformeddate"`
 	datum=`date -d "$unformeddate" "+%d.%m.%Y"`
-	verify=`openssl verify -CAfile $cacert $cert`
+	verify=`openssl-3 verify -CAfile $cacert $cert`
 	certpath=`echo $verify| tr -d " " |cut -d ":" -f 1`
 	certname=`basename $certpath`
 	certstate=`echo $verify| tr -d " " |cut -d ":" -f 2`
@@ -75,7 +75,7 @@ for cert in ${certs[*]}; do
 done
 
 # Check crl
-nextcrldateunformated=`openssl crl -inform PEM -text -noout -in $crl |grep "Next Update"|tr -s " "| cut -d " " -f 4-`
+nextcrldateunformated=`openssl-3 crl -inform PEM -text -noout -in $crl |grep "Next Update"|tr -s " "| cut -d " " -f 4-`
 nextcrldate=`date -d "$nextcrldateunformated" "+%d.%m.%Y"`
 echo "CRL:$nextcrldate" >> $resultdir/certstatus
 daysleft=`diffdays "$nextcrldateunformated"`
