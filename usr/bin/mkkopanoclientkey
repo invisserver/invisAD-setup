@@ -35,11 +35,11 @@ fi
 if [[ -f "$certpath/$keycn.crt" ]]; then
     echo "Ist vorhanden"
     # public key extrahieren
-    openssl x509 -pubkey -noout -in $certpath/$keycn.crt  > "$kopanocertpath/$keycn.pem"
+    openssl-3 x509 -pubkey -noout -in $certpath/$keycn.crt  > "$kopanocertpath/$keycn.pem"
     # Kombi-Datei bereit stellen
     # Dadurch steht kein Klartext mehr im Zertifikat
-    openssl x509 -in "$certpath/$keycn.crt" -out "$targetpath/$keycn.pem"
-    openssl rsa -in "$keypath/$keycn.key" >> "$targetpath/$keycn.pem"
+    openssl-3 x509 -in "$certpath/$keycn.crt" -out "$targetpath/$keycn.pem"
+    openssl-3 rsa -in "$keypath/$keycn.key" >> "$targetpath/$keycn.pem"
 
     echo -e "Die kombinierte Kopano-Client Schlüsseldatei wurde unter $targetpath/$keycn.pem bereitgestellt,\nsie muss auf den Client-Host kopiert werden."
 else
