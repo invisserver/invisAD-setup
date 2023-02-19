@@ -116,6 +116,8 @@ deploycerts() {
 }
 
 updatecrl() {
+    export EASYRSA=/etc/easy-rsa
+    export EASYRSA_PKI=$EASYRSA/$domain
     # renew CRL and CRL Cahin file
     ok=1
     while [[ $ok == 1 ]]; do
