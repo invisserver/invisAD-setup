@@ -109,8 +109,8 @@ else
 fi
 
 # Verbindung prüfen
-ipok=`ping -c3 81.91.164.5|grep "received"|cut -d "," -f 2|cut -d " " -f 2`
-dnsok=`ping -c3 www.denic.de|grep "received"|cut -d "," -f 2|cut -d " " -f 2`
+ipok=`ping -c3 81.91.164.5|grep "received\|empfangen"|cut -d "," -f 2|cut -d " " -f 2`
+dnsok=`ping -c3 www.denic.de|grep "received\|empfangen"|cut -d "," -f 2|cut -d " " -f 2`
 
 # Ergebnis HTML-Datei generieren
 echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
