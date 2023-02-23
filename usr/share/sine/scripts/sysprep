@@ -340,7 +340,7 @@ old $EASYRSA/vars
 clear
 
 # CA aufbauen
-easyrsa --vars=$EASYRSA/vars build-ca
+easyrsa --vars=$EASYRSA_PKI/vars build-ca
 
 # Stop sine, in case of problems with building the CA
 if [[ $? != 0 ]];then
