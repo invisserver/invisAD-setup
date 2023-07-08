@@ -62,7 +62,7 @@ fi
 datum=`date +%Y%m%d`
 
 ## MySQL
-mystatus=`systemctl is-enabled mysql.service`
+mystatus=`systemctl is-enabled mariadb.service`
 if [[ $mystatus == "enabled" ]]; then
     # root PW einlesen
     mysqlrootpw=`getconfdata $passfile "MySQLroot" "2"`
