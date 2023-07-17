@@ -119,7 +119,7 @@ for x in /sys/block/*; do
 	    status=`mdadm -D /dev/$x|grep "State :"|tr -d " "|cut -d ":" -f 2`
 	    ## sts - new state "active, checking" added as ok.
 	    echo $status
-	    if [[ $status == "active" || $status == "clean" || $status == 'active,checking' ]]; then
+	    if [[ $status == "active" || $status == "clean" || $status == 'active,checking' || $status == 'clean,checking' ]]; then
 		#echo "RAID Verbund \"$x\" ist OK" >> $directory/status
 		echo "$x OK" >> $directory/status
 	    else 
