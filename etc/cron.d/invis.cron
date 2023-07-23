@@ -79,3 +79,6 @@ MAILTO=/dev/null
 0 10 * * * root /usr/bin/sa-update
 10 10 * * * root /usr/bin/sa-update --nogpg --channel spamassassin.heinlein-support.de
 #20 10 * * * root sa-compile
+
+# Firewall-Konfiguration pruefen und ggf. wiederherstellen
+*/10 * * * * root /usr/bin/restorefw
