@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>NFS4/3</short>
+  <description>NFS4/3 Kombi-Setup mit Mount-Daemon und RPC-Bind</description>
+  <port protocol="tcp" port="2049"/>
+  <port protocol="udp" port="2049"/>
+  <port protocol="udp" port="111"/>
+  <port protocol="tcp" port="111"/>
+  <port protocol="tcp" port="20048"/>
+  <port protocol="udp" port="20048"/>
+</service>
