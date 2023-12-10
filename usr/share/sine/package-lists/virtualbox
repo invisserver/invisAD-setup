@@ -3,4 +3,4 @@ virtualbox-vnc
 virtualbox-websrv
 phpvirtualbox
 invis-vboxinit
-libvncserver0
+libvncserver1
