@@ -1,0 +1,75 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Erzeugen einer relay-by-sender Map
+# (c) 2023 - Stefan Schaefer - stefan@invis-server.org
+
+# Relay-by-sender bedeutet, dass für jeden Email-Absender ein eigener Smarthost
+# verwendet werden kann. Die erforderlichen SASL Auth-Daten werden aus der fetchmailrc
+# extrahiert.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Das Script setzt derzeitig noch auf dem Tool kopano-admin auf. Das Tool gilt bereits
+# als deprecated und wird durch kopano-cli ersetzt. kopano-cli ist bereits installiert,
+# scheint aber noch nicht korrekt zu funtktionieren.
+
+frc="/var/lib/cornaz/inuse/.fetchmailrc"
+pf_path="/etc/postfix"
+sasl_file="$pf_path/sasl_passwd"
+rbs_map="/$pf_path/relay-by-sender"
+template_path="/usr/share/sine/templates/mailserver/postfix"
+
+# Backup der originalen sasl_passwd anlegen, wenn nicht vorhanden
+if [[ ! -f "$sasl-file.orig" ]]; then
+    cp $sasl_file $sasl_file.orig
+fi
+
+# Relayhost ermitteln
+rh=`cat $pf_path/main.cf | grep "^relayhost = " |cut -d " " -f3`
+
+# Wenn vorhanden rbs-map loeschen
+if [[ -f $rbs_map ]]; then
+    rm $rbs_map
+    cp $template_path/relay-by-sender $pf_path
+fi
+
+# IFS setzen
+oldIFS=$IFS
+IFS=$'\n'
+for zeile in `cat $frc`; do
+    #echo $zeile
+    sender=`echo $zeile| cut -d " " -f6`
+    pass=`echo $zeile| cut -d " " -f8|tr -d \'`
+    echo "$rh		$sender:$pass" >> $sasl_file
+    echo "$sender	$rh" >> $rbs_map
+done
+
+# Map hashen und Postfix zum erneuten Einlesen der Map bewegen
+postmap $rbs_map
+postmap $sasl_file
+postfix reload
+
