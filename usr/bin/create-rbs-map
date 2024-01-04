@@ -64,7 +64,7 @@ for zeile in `cat $frc`; do
     #echo $zeile
     sender=`echo $zeile| cut -d " " -f6`
     pass=`echo $zeile| cut -d " " -f8|tr -d \'`
-    echo "$rh		$sender:$pass" >> $sasl_file
+    echo "$sender		$sender:$pass" >> $sasl_file
     echo "$sender	$rh" >> $rbs_map
 done
 
