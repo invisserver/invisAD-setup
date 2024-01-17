@@ -80,6 +80,8 @@ case $whichterminalserver in
 #   
 	;;
     "kein")
+        msgbox "Keine Terminal-Server Lösung gewünscht" "$windowtitle"
+	exit 0
 	;;
 esac
 

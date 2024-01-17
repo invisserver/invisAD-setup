@@ -557,6 +557,7 @@ echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
 #    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
 #fi
 echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
+echo "TerminalServer:$whichterminalservert" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
 echo "HDType:$whichhd" >> $SINEWORKINGDIR/invis_confdata
 echo "SSHPORT:$sshport" >> $SINEWORKINGDIR/invis_confdata
