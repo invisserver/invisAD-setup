@@ -43,6 +43,8 @@
 #Konfigurationsdaten
 confdir="/etc/invis"
 conffile="$confdir/invis.conf"
+# Should ocsync trust all certificates?
+trust="n"
 
 #functions
 usage() {
@@ -193,7 +195,11 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 		    IFS=':' read -r -a job <<< "$line"
 		    pw=`echo ${job[1]}|base64 -d`
 		    url=`echo ${job[3]}|base64 -d`
-		    owncloudcmd -s -u ${job[0]} -p $pw ${job[2]} $url
+		    if [[ $trust == "n" ]]; then
+			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url
+		    else
+			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url --trust
+		    fi
 		done
 	    else
 		chkaccount $user > /dev/null 2>&1
