@@ -209,7 +209,11 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 		    IFS=':' read -r -a job <<< "$line"
 		    pw=`echo ${job[1]}|base64 -d`
 		    url=`echo ${job[3]}|base64 -d`
-		    owncloudcmd -s -u ${job[0]} -p $pw ${job[2]} $url
+		    if [[ $trust == "n" ]]; then
+			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url
+		    else
+			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url --trust
+		    fi
 		else
 		    msgbox "Das angegebene Konto \"$user\" ist unbekannt."
 		fi
