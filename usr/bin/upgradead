@@ -86,6 +86,7 @@ rm $basedir/bind-dns/dns/sam.ldb.d/*3DDOMAINDNSZONES*
 rm $basedir/bind-dns/dns/sam.ldb.d/*3DFORESTDNSZONES*
 rm $basedir/bind-dns/dns/sam.ldb.d/metadata.tdb
 
+
 # move subdirs first layer
 mv $tmpbase/drivers $basedir
 mv $tmpbase/lock $basedir
@@ -105,10 +106,22 @@ mv $tmpbase/private/ldap_priv $basedir/private/
 mv $tmpbase/private/sam.ldb.d $basedir/private/
 mv $tmpbase/private/smbd.tmp $basedir/private/
 
+# Hardlinks erzeugen
+dnsf1=`ls $basedir/private/sam.ldb.d/|grep 3DDOMAINDNSZONES`
+dnsf2=`ls $basedir/private/sam.ldb.d/|grep 3DFORESTDNSZONES`
+ln $basedir/private/sam.ldb.d/$dnsf1 $basedir/bind-dns/sam.ldb.d/$dnsf1
+ln $basedir/private/sam.ldb.d/$dnsf2 $basedir/bind-dns/sam.ldb.d/$dnsf2
+ln $basedir/private/sam.ldb.d/metadata.tdb $basedir/bind-dns/sam.ldb.d/metadata.tdb
+# Kodierte Dateinamen ohne Komma erzeugen
+dnsf1noc=`echo $dnsf1 | sed s/,DC/%2CDC/g`
+dnsf2noc=`echo $dnsf2 | sed s/,DC/%2CDC/g`
+ln $basedir/private/sam.ldb.d/$dnsf1 $basedir/bind-dns/sam.ldb.d/$dnsf1noc
+ln $basedir/private/sam.ldb.d/$dnsf2 $basedir/bind-dns/sam.ldb.d/$dnsf2noc
+
 # Hardlinks für Nameserver anlegen
-ln $basedir/private/sam.ldb.d/DC%3DDOMAINDNSZONES* $basedir/bind-dns/dns/sam.ldb.d/
-ln $basedir/private/sam.ldb.d/DC%3DFORESTDNSZONES* $basedir/bind-dns/dns/sam.ldb.d/
-ln $basedir/private/sam.ldb.d/metadata.tdb $basedir/bind-dns/dns/sam.ldb.d/
+#ln $basedir/private/sam.ldb.d/DC%3DDOMAINDNSZONES* $basedir/bind-dns/dns/sam.ldb.d/
+#ln $basedir/private/sam.ldb.d/DC%3DFORESTDNSZONES* $basedir/bind-dns/dns/sam.ldb.d/
+#ln $basedir/private/sam.ldb.d/metadata.tdb $basedir/bind-dns/dns/sam.ldb.d/
 
 # move files to private layer
 find $tmpbase/private -maxdepth 1 -type f -exec mv {} $basedir/private/ \;
