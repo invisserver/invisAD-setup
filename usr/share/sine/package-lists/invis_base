@@ -22,6 +22,7 @@ wpa_supplicant
 cups-pdf
 speedtest-cli
 python3-setproctitle
+python3-Markdown
 openssl-3
 openssl-3-doc
 libopenssl3
