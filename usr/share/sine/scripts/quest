@@ -263,7 +263,7 @@ dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MAIL & Groupware
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
     kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
     roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
-    grommunio "Grommunio - Outlook kompatible Groupware (not yet emented)" off\
+    grommunio "Grommunio - Outlook kompatible Groupware (not yet implemented)" off\
     2>$SINEWORKINGDIR/sine_temp
     whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
 
