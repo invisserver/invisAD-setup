@@ -154,7 +154,7 @@ case "$whichgroupware" in
 	postmap /etc/postfix/relay 2> /dev/null
 	;;
     "kopano" )
-	pgsubtitle="Kopano Groupware und Mailserver wird installiert und eingerichtet"
+	pgsubtitle="Kopano Groupware und Mailserver wird installiert und vorbereitet"
 	# Installieren der Kopano Pakete.
 	zypper ar -f $REPODIR/invis-kopano.repo 2>&1| tee -a $LOGFILE | pgbox
 	zypper ref 2>&1| tee -a $LOGFILE | pgbox
@@ -178,6 +178,12 @@ case "$whichgroupware" in
 	chown kopano $INVISCONFDIR/certs/kopano.pem
 	# Workaround, damit kopano-gabsync funktioniert
 	ln -s /srv/www/htdocs/z-push/backend/ /srv/www/htdocs/z-push/tools/gab-sync/lib/
+	;;
+    "grommunio" )
+	pgsubtitle="Grommunio Groupware wird installiert und vorbereitet"
+	zypper ar -f $REPODIR/server-mail.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper -n install --from Email_services -n `cat $PACKAGELISTDIR/grommunio` 2>&1| tee -a $LOGFILE | pgbox
+	
 	;;
 esac
 pgsubtitle="Weitere Konfigurationsanpassungen am Mailserver-Setup werden durchgeführt"

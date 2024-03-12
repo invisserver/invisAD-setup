@@ -1,0 +1,7 @@
+[server_mail]
+name=Email_services
+type=rpm-md
+baseurl=https://download.opensuse.org/repositories/server:/mail/${releasever}/
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/server:/mail/${releasever}/repodata/repomd.xml.key
+enabled=1
