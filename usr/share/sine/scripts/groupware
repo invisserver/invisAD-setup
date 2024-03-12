@@ -51,51 +51,19 @@ whichgroupware=`getconfdata "Groupware" "2"`
 
 case "$whichgroupware" in
 
-    "egroupware" )
-	windowtitle="egroupware Installation"
-	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/tine20.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
+    "grommunio" )
+	windowtitle="grommunio Installation"
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/grommunio.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
 	cont=${?}
 
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
 	    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-	    zypper -n install -n tine20 2>&1 | tee -a $LOGFILE | pgbox
+	    #zypper -n install -n tine20 2>&1 | tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 
-	    pgsubtitle="tine20 wird installiert."
-	    # Datenbank anlegen
-	    tinedbpw=`mkdbsilent tine20 tine20 a`
-	    
-	    # Mini-Konfiguration erstellen und anpassen
-	    path="/var/lib/tine20/webroot"
-	    cp $TEMPLATEDIR/$modulename/tine20/config.inc.php $path
-	    file="config.inc.php"
-	    string="tinedbpw%$tinedbpw"
-	    changevalues $path $file "$string"
-
-	    # Zufallspasswort fuer Tine20 Setup-Zugang erstellen, einsetzen und anzeigen
-	    t20setuppw=`pwgen -sBnc 10 1`
-	    string="t20setuppw%$t20setuppw"
-	    changevalues $path $file "$string"
-	    msgbox "Es wurde ein Passwort für den Benutzer \"tine20setup\" erstellt.\nPasswort: $t20setuppw\n\nNotieren Sie sich bitte diese Daten. Sie werden beim Zugriff auf die Tine 2.0 Setup-Seite benötigen." "$windowtitle"
-
-	    # Zugriffsrechte auf Config-Datei so aendern, dass Apache sie schreiben darf
-	    chown wwwrun $path/$file
-	    
-	    # Tine 2.0 im Portal aktivieren
-	    swpestat Tine-2.0 TRUE 2>&1 | tee -a $LOGFILE | pgbox
-	    a2enflag TINE20
-
-	    # Original Tine20 Apache Konfiguration mit Dummy-Text ueberschreiben
-	    echo "# invis-server.org: Tine20 Dummy Datei. Diese Datei verhindert Update-Probleme." > /etc/apache2/conf.d/tine20.conf
-	    # Apache neu starten
-	    chkservice "apache2"
-
-	    # Gruppe fuer Tine 2.0 anlegen
-	    samba-tool group add --description="Gruppe zur Beschränkung der Tine 2.0 Nutzer" tine20 2>&1| tee -a $LOGFILE | pgbox
-	
 	else
-	    msgbox "Tine 2.0 Installation übersprungenen." "$windowtitle"
+	    msgbox "grommunio Installation übersprungenen." "$windowtitle"
 	fi
 	;; 
 

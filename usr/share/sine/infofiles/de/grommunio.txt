@@ -1,0 +1,11 @@
+Überblick über grommunio Groupware
+
+grommunio ist ein Open Source basiertes Groupware Produkt mit unterstützten
+Features und bietet Unternehmen und Usern verschiedene Pakete als Subskription an.
+Um die Features mit Support nutzen zu können, suchen Sie sich ein passendes Paket 
+aus und fordern ein unverbindliches Angebot an oder lösen die gewünschte Subskription. 
+Diese können auch als Demo freigegeben werden und haben eine definierte Laufzeit. 
+Während dieser Laufzeit haben Sie Zugriff auf alle Features, sowie auf ein 
+definiertes Paket an Supportleistungen. 
+
+Dabei ist grommunio nativ Outlook-kompatibel.
