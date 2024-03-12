@@ -257,60 +257,15 @@ forwarders=`echo ${fdns[@]} | sed s/" "/"; "/g`";"
 #---#System Passwörter
 ok=0
 
-## MySQL root-Passwort 
-#ok=0
-#while (( $ok != "1" ));do
-#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MySQL-Root Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-#Für die Administration des MySQL-Servers muss ein Passwort für den MySQL-Root Zugang gesetzt werden.\n\n
-#Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
-#    "MySQL-Root-Passwort:" 2 2 "" 2 23 10 0\
-#    "Kontrolle:" 2 36 "" 2 47 10 0\
-#    2>$SINEWORKINGDIR/sine_temp
-#    mysqlsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
-#
-#    if [[ ${mysqlsecrets[0]} == ${mysqlsecrets[1]} ]] && (( ${#mysqlsecrets[0]} >= 6 ));then
-#	ok=1
-#    fi
-#done
-#mysqlpw="${mysqlsecrets[0]}"
-
-## Ntop Admin-Passwort 
-#ok=0
-#while (( $ok != "1" ));do
-#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "ntop-Admin Passwort" --insecure --passwordform "$DIALOGSHORTHELP\n\n
-#Für die Administration des ntop-Netzwerkanlysators muss ein Passwort für den ntop-Admin Zugang gesetzt werden.\n\n
-#Das vergebene Passwort muss mindestens 6 Zeichen lang sein." 16 64 2 \
-#    "ntop-Admin Passwort:" 2 2 "" 2 23 10 0\
-#    "Kontrolle:" 2 36 "" 2 47 10 0\
-#    2>$SINEWORKINGDIR/sine_temp
-#    ntopsecrets=(`cat $SINEWORKINGDIR/sine_temp`)
-#
-#    if [[ ${ntopsecrets[0]} == ${ntopsecrets[1]} ]] && (( ${#ntopsecrets[0]} >= 6 ));then
-#	ok=1
-#    fi
-#done
-#ntoppw="${ntopsecrets[0]}"
-
 #---# MAIL & Groupware Server
 ## Dovecot oder Kopano?
 dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MAIL & Groupware Server" --radiolist "$DIALOGSHORTHELP\n\n
 Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
     kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
     roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
-    egroupware "eGroupware in Kombination mit Dovecot IMAP (not yet implemented)" off\
+    grommunio "Grommunio - Outlook kompatible Groupware (not yet emented)" off\
     2>$SINEWORKINGDIR/sine_temp
     whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
-
-## Stefan - Dank eigener Pakete keine Auswahl mehr erforderlich.
-#if [[ $whichgroupware == "kopano" ]]; then
-#    # Welche Kopano Version
-#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Kopano Repository" --radiolist "$DIALOGSHORTHELP\n\n
-#Wählen Sie das zu verwendenden Kopano Repositoriy aus:" 12 100 3 \
-#    limited "Pakete von Kopano selbst, mit limitiertem Support. Erfordern Zugangsdaten." on\
-#    opensuse "Pakete aus dem openSUSE Build-Service, ohne Support und bleeding edge." off\
-#    2>$SINEWORKINGDIR/sine_temp
-#    whichkopanorep=`cat $SINEWORKINGDIR/sine_temp`
-#fi
 
 #---# ERP-Software
 # Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
@@ -552,10 +507,6 @@ echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
 echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
 echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
-## Stefan - Keine Auswahl der Kopano-Version mehr erforderlich, da eigene Pakete.
-#if [[ $whichgroupware == "kopano" ]]; then
-#    echo "KopanoRepo:$whichkopanorep"  >> $SINEWORKINGDIR/invis_confdata
-#fi
 echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
 echo "TerminalServer:$whichterminalservert" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata

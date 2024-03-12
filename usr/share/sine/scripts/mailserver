@@ -88,7 +88,7 @@ cp $TEMPLATEDIR/$modulename/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
 whichgroupware=`getconfdata "Groupware" "2"`
 case "$whichgroupware" in
 
-    "roundcube"|"egroupware" )
+    "roundcube" )
 	# Dovecot einrichten 
 	pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
 	zypper -n install -n dovecot23 2>&1| tee -a $LOGFILE | pgbox
