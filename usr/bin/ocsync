@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: apps
 # script to manage headless owncloud synchronization
-# Version 1.1
+# Version 1.2
 # (c) Mai 2018-2022 Stefan Schäfer / invis-server.org
 
 # License: GPLv3
@@ -45,6 +45,10 @@ confdir="/etc/invis"
 conffile="$confdir/invis.conf"
 # Should ocsync trust all certificates?
 trust="n"
+
+# Logfile
+logfile="/var/log/ocsync.log"
+zeit=`date +"%d.%m.%Y %H:%M"`
 
 #functions
 usage() {
@@ -190,15 +194,26 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 	;;
     "sync")
         if [[ -f $ocaccountdir/$ocaccountfile ]]; then
+	    #ergebnis=`ps aux |grep owncloudcmd|grep -v grep| tr \t " " |tr -s " " | cut -d " " -f3`
+	    if [[ `ps aux |grep owncloudcmd|grep -v grep| tr \t " " |tr -s " " | cut -d " " -f3` == "0.0" ]]; then
+		pid=`pgrep owncloudcmd`
+		kill $pid
+		echo "$zeit: $pid gekillt" >> $logfile
+	    fi
 	    if [[ -z $user ]]; then
 		for line in `cat $ocaccountdir/$ocaccountfile`; do
 		    IFS=':' read -r -a job <<< "$line"
 		    pw=`echo ${job[1]}|base64 -d`
 		    url=`echo ${job[3]}|base64 -d`
-		    if [[ $trust == "n" ]]; then
-			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url
+		    if [[ `pgrep owncloudcmd;echo $?` == 1 ]]; then
+			# -s aus den owncloudcmd-Optionen vorübergehend entfernt.
+			if [[ $trust == "n" ]]; then
+			    owncloudcmd -u ${job[0]} -p "$pw" "${job[2]}" $url >> $logfile
+			else
+			    owncloudcmd -u ${job[0]} -p "$pw" "${job[2]}" $url --trust >> $logfile
+			fi
 		    else
-			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url --trust
+			echo "$zeit: Sync-DB des Benutzers ${job[0]} ist möglicherweise in Benutzung" >> $logfile
 		    fi
 		done
 	    else
@@ -209,10 +224,14 @@ Geben Sie bitte Benutzername, Passwort und Zielverzeichnis der Synchronisation e
 		    IFS=':' read -r -a job <<< "$line"
 		    pw=`echo ${job[1]}|base64 -d`
 		    url=`echo ${job[3]}|base64 -d`
-		    if [[ $trust == "n" ]]; then
-			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url
+		    if [[ `pgrep owncloudcmd;echo $?` == 1 ]]; then
+			if [[ $trust == "n" ]]; then
+			    owncloudcmd -u ${job[0]} -p "$pw" "${job[2]}" $url >> $logfile
+			else
+			    owncloudcmd -u ${job[0]} -p "$pw" "${job[2]}" $url --trust >> $logfile
+			fi
 		    else
-			owncloudcmd -s -u ${job[0]} -p "$pw" "${job[2]}" $url --trust
+			echo "$zeit: Sync-DB des Benutzers ${job[0]} ist möglicherweise in Benutzung" >> $logfile
 		    fi
 		else
 		    msgbox "Das angegebene Konto \"$user\" ist unbekannt."
