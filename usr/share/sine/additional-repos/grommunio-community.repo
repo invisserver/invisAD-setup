@@ -1,0 +1,8 @@
+[Grommunio-Community-openSUSE_Leap]
+name=Grommunio-Community-openSUSE_Leap
+enabled=1
+autorefresh=1
+baseurl=https://download.grommunio.com/community/openSUSE_Leap_$releasever/
+path=/
+type=rpm-md
+keeppackages=0
