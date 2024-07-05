@@ -95,7 +95,7 @@ if [[ $prepok == "0" ]]; then
     # Samba Repo ermitteln
     sambarepo=`zypper repos |grep samba |tr -d " " | cut -d "|" -f1`
     # Alle Pakete aus Samba-Repo per Distribution-Upgrade aktualisieren
-    zypper -n dup --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
+    zypper -n dup --replacefiles --from "$sambarepo" --allow-vendor-change 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     zypper -n install --from "$sambarepo" --force-resolution -n `cat $PACKAGELISTDIR/invis_samba` 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
