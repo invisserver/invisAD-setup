@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: mailaccounts
-# Script zur Auffrischung der fetchmailrc-Datei fuer den Fall, dass sich Konten-
-# Daten geaendert haben. Aktiviert keine neu angelegten Konten, die noch nicht
+# Script zur Auffrischung der fetchmailrc-Datei Änderung von Zugangsdaten.
+# Aktiviert keine neu angelegten Konten, die noch nicht
 # in der aktiven .fetchmailrc Datei vorhanden sind.
 # (C) 2021 Stefan Schäfer invis-server.org
 # Questions: stefan@invis-server.org
