@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: server
-# Script zum Setzen von individuellen Quotas von Kopano-Konten
-# und Objektklassen
+# Script zum Löschen aller DHCP-Reservierungen im AD
+# 
 # (C) 2021 invis-server.org
 # Author: Stefan Schäfer <stefan@invis-server.org>
 

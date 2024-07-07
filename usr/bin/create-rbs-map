@@ -1,5 +1,5 @@
 #!/bin/bash
-# Kategorie: server
+# Kategorie: mailaccounts
 # Script zum Erzeugen einer relay-by-sender Map
 # (c) 2023 - Stefan Schaefer - stefan@invis-server.org
 
