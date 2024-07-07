@@ -53,7 +53,8 @@ rid=`pdbedit -Lv $membername$  2>/dev/null| grep "User SID" | cut -d "-" -f8`
 #echo $rid
 
 # Accountname
-accountname=`echo $membername | tr [:lower:] [:upper:]`
+#accountname=`echo $membername | tr [:lower:] [:upper:]`
+accountname=${membername^^}
 
 if [[ -z $rid ]]; then
     exit 2
