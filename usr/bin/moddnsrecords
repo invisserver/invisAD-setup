@@ -122,21 +122,24 @@ if [[ -z $2 ]]; then
     usage
     exit
 else
-    recordtype=$(echo $2| tr '[:lower:]' '[:upper:]')
+    #recordtype=$(echo $2| tr '[:lower:]' '[:upper:]')
+    recordtype=${2^^}
 fi
 
 if [[ -z $3 ]]; then
     usage
     exit
 else
-    recordname=$(echo $3| tr '[:upper:]' '[:lower:]')
+    #recordname=$(echo $3| tr '[:upper:]' '[:lower:]')
+    recordname=${3,,}
 fi
 
 if [[ -z $4 ]]; then
     usage
     exit
 else
-    recordvalue=$(echo $4| tr '[:upper:]' '[:lower:]')
+    #recordvalue=$(echo $4| tr '[:upper:]' '[:lower:]')
+    recordvalue=${4,,}
 fi
 
 # AD Credentials lesen

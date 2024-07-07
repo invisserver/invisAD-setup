@@ -57,7 +57,8 @@ gid=`pdbedit -Lv $username  2>/dev/null| grep "Primary Group SID" | cut -d "-" -
 (( gidnumber=$gid + $guidbase ))
 
 # Accountname
-accountname=`echo $username | tr [:upper:] [:lower:]`
+#accountname=`echo $username | tr [:upper:] [:lower:]`
+accountname=${username,,}
 homedir="/home/$accountname"
 
 if [[ $accountname == "administrator" ]]; then
