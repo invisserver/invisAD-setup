@@ -1,0 +1,111 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Hinzufügen eines externen Mailkontos für einen bestehenden invis-Benutzer.
+# (C) 2024 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+
+# Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+workfile="/tmp/net.ldif"
+vboxnetfile="/etc/vbox/networks.conf"
+sam="/var/lib/samba/private/sam.ldb"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# LDAP Basisknoten fuer invis-Server auslesen
+invisadnode=`getconfdata $conffile invisADNode 2` 
+# Searchbase generieren
+ldbbase="CN=DHCP Config,CN=DHCP-Server,$invisadnode"
+
+# Netzwerkmaske umrechnen
+# Quelle: StackOverflow
+cidr () { 
+   c=0 x=0$( printf '%o' ${1//./ } )
+   while [ $x -gt 0 ]; do
+       let c+=$((x%2)) 'x>>=1'
+   done
+   echo $c ; }
+
+# Aufruf ueberpruefen
+if (( $# == 2 )); then
+	ipaddr=$1
+	ipnet=$2
+else
+	echo "Usage: addvbsubnet ipaddress netaddres/subnet"
+	exit 1
+fi
+
+mask=`echo $ipnet|cut -d "/" -f2`
+base=`echo $ipnet|cut -d "/" -f1`
+shortmask=`cidr $mask`
+
+if [[ `grep "$base/$hortmask" $vboxnetfile` ]]; then
+	echo "Das Subnetz $ipnet wurde bereits für Virtualbox eingerichtet"
+	exit 1
+else
+	echo "* $base/$shortmask" >> $vboxnetfile
+fi
+
+# DHCP-Range festlegen
+if (( $shortmask == 16 )); then
+	basepart=`echo $base | cut -d "." -f1-2`
+	range="$basepart.200.1 $basepart.200.250"
+elif (( $shortmask == 24 )); then
+	basepart=`echo $base | cut -d "." -f1-3`
+	range="$basepart.200 $basepart.250"
+else
+	echo "Es sind nur Netzerkmasken von 16 oder 24 Bit möglich"
+	exit 1
+fi
+
+# Prüfen, ob es unter CN=DHCP config,CN=DHCP-Server,$ldbbase gibt -> wenn nicht, anlegen.
+if [[ ! `ldbsearch -H $sam -b $ldbbase "(&(cn=$base)(objectclass=iscdhcpsubnet))" dn |grep ^dn:` ]]; then
+    echo "dn: CN=$base,$ldbbase" > $workfile
+    echo "cn: $base" >> $workfile
+    echo "objectClass: top" >> $workfile
+    echo "objectClass: iscDhcpSubnet" >> $workfile
+    echo "iscDhcpRange: 172.19.200.1 172.19.200.254" >> $workfile
+    echo "iscDhcpNetMask: 16" >> $workfile
+    echo "description: DHCP Subnet for VBox VMs" >> $workfile
+    # LDIF ausgeben
+    cat $workfile
+    # Eintrag anlegen
+    ldbadd -v -H $sam $workfile
+else
+    echo "Knoten existiert bereits"
+fi
+
+# Vbox Host-only-Netz anlegen
+devicename=`VBoxManage hostonlyif create|grep "Interface"| cut -d " " -f2|tr -d "'"`
+echo $devicename
+VBoxManage hostonlyif ipconfig $devicename --ip=$ipaddr --netmask=$mask
+
+# Interface zu interner Zone hinzufuegen
+firewall-cmd --permanent --zone=internal --add-interface=$devicename
+firewall-cmd --reload
+
+# Interface in /etc/sysconfig/dhcp eintragen
+sysconf_addword /etc/sysconfig/dhcpd DHCPD_INTERFACE $devicename
+
+echo "Bitte den DHCP-Server neu starten um die Änderungen zu aktivieren"
+

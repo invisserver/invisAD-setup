@@ -1,0 +1,93 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Hinzufügen eines externen Mailkontos für einen bestehenden invis-Benutzer.
+# (C) 2021 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+        
+# Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+dhcphostfile="/tmp/host.ldif"
+sam="/var/lib/samba/private/sam.ldb"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+        
+# LDAP Basisknoten fuer invis-Server auslesen
+invisadnode=`getconfdata $conffile invisADNode 2`
+# Searchbase generieren
+ldbbase="CN=DHCP Config,CN=DHCP-Server,$invisadnode"
+
+echo $ldbbase
+
+# Aufruf ueberpruefen
+if (( $# == 3 )); then
+        macaddr=$1
+        ipaddr=$2
+	hn=$3
+	typ=$4
+elif (( $# == 2 )) && [[ $1 == q ]]; then
+	echo "Ausgabe vergebener IP-Adressen:"
+	ipbase=$2
+	for addr in `ldbsearch -v -H $sam -b "$ldbbase" "(&(iscdhcpstatements=*$ipbase*)(objectclass=iscdhcphost))" | grep ^iscDhcpStatements:|cut -d " " -f3`;do
+		echo "$addr"
+	done
+	echo "Mögliche Subnetze sind:"
+	for addr in `ldbsearch -v -H $sam -b "$ldbbase" "(objectclass=iscdhcpsubnet)" | grep ^cn:|cut -d " " -f2`;do
+		echo "$addr"
+	done
+	exit 0
+else
+        echo "Usage: addvm2subnet macaddress ipaddr hostname"
+	echo "or:"
+	echo "Usage: addvm2subnet q ipbase"
+        exit 1
+fi
+
+addr=`ldbsearch -v -H $sam -b "$ldbbase" "(&(iscdhcpstatements=*$ipaddr)(objectclass=iscdhcphost))" | grep ^iscDhcpStatements:|cut -d " " -f3`
+if [[ $addr == $ipaddr ]]; then
+	echo "Die Adresse $ipaddr ist bereits reserviert."
+else
+	echo "Na dann $ipaddr"
+
+	# DHCP Record hinzufuegen
+	comment="Virtual Machine"
+	# temporaere LDIF Datei erzeugen
+	echo "dn: CN=$hn,$ldbbase" > $dhcphostfile
+	echo "iscDhcpHWAddress: ethernet $macaddr" >> $dhcphostfile
+	echo "objectClass: top" >> $dhcphostfile
+	echo "objectClass: iscDhcpHost" >> $dhcphostfile
+	echo "iscDhcpStatements: fixed-address $ipaddr" >> $dhcphostfile
+	echo "cn: $hn" >> $dhcphostfile
+	echo "iscDhcpComments: $comment" >> $dhcphostfile
+	# LDIF ausgeben
+	cat $dhcphostfile
+	# Eintrag anlegen
+	ldbadd -v -H /var/lib/samba/private/sam.ldb $dhcphostfile
+
+	# DNS Records hinzufügen
+	# Forward
+	moddnsrecords a A $hn $ipaddr
+	# Reverse
+	domain=`getconfdata $conffile intDomain 2`
+	moddnsrecords a PTR $ipaddr $hn.$domain	
+
+fi
+
