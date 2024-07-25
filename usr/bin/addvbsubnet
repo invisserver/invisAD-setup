@@ -84,8 +84,8 @@ if [[ ! `ldbsearch -H $sam -b $ldbbase "(&(cn=$base)(objectclass=iscdhcpsubnet))
     echo "cn: $base" >> $workfile
     echo "objectClass: top" >> $workfile
     echo "objectClass: iscDhcpSubnet" >> $workfile
-    echo "iscDhcpRange: 172.19.200.1 172.19.200.254" >> $workfile
-    echo "iscDhcpNetMask: 16" >> $workfile
+    echo "iscDhcpRange: $range" >> $workfile
+    echo "iscDhcpNetMask: $shortmask" >> $workfile
     echo "description: DHCP Subnet for VBox VMs" >> $workfile
     # LDIF ausgeben
     cat $workfile
