@@ -98,7 +98,7 @@ if [[ $provresult != 0 ]]; then
 fi
 
 # Neue config kopieren
-cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
+cp /var/lib/samba/private/krb5.conf /etc/krb5.conf 2>&1 | tee -a $LOGFILE | pgbox
 
 # activate samba services
 chkservice "samba-ad-dc"
