@@ -107,10 +107,6 @@ if [[ $cont == "0" ]];then
     cp $TEMPLATEDIR/$modulename/acl.auth.php /srv/www/htdocs/dokuwiki/conf/
     chown wwwrun:www /srv/www/htdocs/dokuwiki/conf/acl.auth.php
 
-    # Monobook Konfiguration installieren
-    #cp $TEMPLATEDIR/$modulename/monobook.conf /etc/apache2/conf.d
-    #find /srv/www/htdocs/dokuwiki/lib/tpl/monobook -name ".htaccess" -exec rm {} \;
-
     # insert default sidebar and startpage
     cp $TEMPLATEDIR/$modulename/*.txt /srv/www/htdocs/dokuwiki/data/pages/
 

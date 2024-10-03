@@ -291,18 +291,6 @@ Wählen Sie den von Ihnen eingesetzten Festplattentyp Ihres Servers aus." 16 100
     whichhd=`cat $SINEWORKINGDIR/sine_temp`
     whichhd=`tolower $whichhd`
 
-#---# Virenscanner Radiobutton
-#    dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Virenscanner" --radiolist "$DIALOGSHORTHELP\n\n
-#Wählen Sie den von Ihnen bevorzugten Virenscanner aus. Er wird zum regelmäßen Scannen der Filerserver-Freigaben sowie
-#aller ein- und ausgehenden emails verwendet.\n\n
-#Wenn Sie Antivir von Avira auswählen, wird im weiteren Verlauf der Installation eine kostenfreie Lizenz zur privaten
-#Nutzung von Antivir installiert. Bei gewerblicher Nutzung des Servers muss eine entsprechende Lizenz käuflich erworben
-#werden.\nClamav hingegen ist zu 100% Open-Source-Software, d.h. dessen Nutzung ist auch im gewerblichen Umfeld kostenfrei." 22 80 8 \
-#	clamav "Open-Source Virenscanner" on\
-#	antivir "Kommerzieller Virenscanner von Avira" off\
-#	2>$SINEWORKINGDIR/sine_temp
-#	av=`cat $SINEWORKINGDIR/sine_temp`
-
 # Da derzeit lediglich Clamav zur Verfuegung steht, wird auf die Abfrage verzichtet.
 av=clamav
 

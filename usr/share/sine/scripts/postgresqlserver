@@ -47,23 +47,11 @@ clear
 windowtitle="PostgreSQL Server"
 pgsubtitle="PostgreSQL Server Setup"
 
-## postgresql setup option 1c temporarily removed - Stefan
-#Frage nach Version von PostgreSQL
-#dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/postgresql.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle" --yesno "Soll die openSUSE-Version von PostgreSQL installiert werden?" 0 0
-#cont=${?}
-
 # Weitermachen?
-#if [[ $cont == "0" ]]; then
 pgsubtitle="PostgreSQL wird installiert"
 zypper ref 2>&1|tee -a $LOGFILE |pgbox
 zypper -n install -n `cat $PACKAGELISTDIR/postgresql` 2>&1| tee -a $LOGFILE | pgbox 25 110
 zyppercheck ${PIPESTATUS[0]}
-#else
-#    pgsubtitle="Spezielle Version wird installiert"
-#    zypper ref 2>&1|tee -a $LOGFILE |pgbox
-#    zypper -n install -D -n `cat $PACKAGELISTDIR/postgresql` 2>&1| tee -a $LOGFILE | pgbox 25 110
-#    zyppercheck ${PIPESTATUS[0]}
-#fi
 
 pgsubtitle="PostgreSQL \"vorübergehend\" starten."
 systemctl start postgresql.service 2>&1|tee -a $LOGFILE |pgbox

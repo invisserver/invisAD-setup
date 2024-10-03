@@ -176,7 +176,6 @@ dann sinnvoll, wenn lediglich mit einer Kivitendo Datenbank gearbeitet wird."  1
 	    zyppercheck ${PIPESTATUS[0]}
 	    # Hier Datenbank installation einfügen
 	    ippass=`mkdbsilent invoiceplane ip a`
-	    #msgbox "Datenbank für InvoicePlane wurde angelegt.\n\nDatenbank: invoiceplane\nBenutzer: ip\nPasswort: $ippass\n\nNotieren Sie sich bitte diese Daten. Sie werden beim ersten Zugriff auf waWision benötigt." "$windowtitle"
 	    echo "DB-User ip:IPDBPASS:$ippass" >> $SINEWORKINGDIR/invis_pws 
 
 	    # Konfiguration anpassen
