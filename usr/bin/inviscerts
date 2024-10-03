@@ -91,6 +91,11 @@ deploycerts() {
 	    if (( `ls -A /etc/cups/ssl/|wc -l` != 0 )); then
 		rm /etc/cups/ssl/*
 	    fi
+	    # Serverkey fuer nicht als root laufende Dienste bereit stellen
+	    cp $ersadir/private/$cn.key $confdir/certs/server-key.pem
+	    chown root.pkeys $confdir/private/server-key.pem
+	    chmod 0640 $confdir/private/ldap-key.pem
+	    # Server-Schluesselpaar fuer Samba bereit stellen (Key erfordert 0600)
 	    cp $confdir/certs/ldap-cert.pem /etc/cups/ssl/$cn.crt
 	    cp $confdir/private/ldap-key.pem /etc/cups/ssl/$cn.key
 	    chown root.root $confdir/private/ldap-key.pem

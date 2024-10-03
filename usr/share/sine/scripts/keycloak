@@ -47,3 +47,64 @@ clear
 windowtitle="Java und Keykloak"
 pgsubtitle="Keycloak, OpenID Provider wird installiert"
 
+# Konfigurationsvariablen lesen
+domain=`getconfdata "Domain" "2"`
+fqdn=`getconfdata "FQDN" "2"`
+
+# Paket installieren
+pgsubtitle="Software wird installiert"
+zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+zypper -n install keycloak 2>&1 | tee -a $LOGFILE | pgbox
+zyppercheck ${PIPESTATUS[0]}
+
+# .profile für Benutzer Root erweitern
+cat $TEMPLATEDIR/$modulename/profile >> /root/.profile
+
+# Java Umgebung CA-Cert in keystore packen
+openssl x509 -in /etc/easy-rsa/$domain/ca.crt -inform pem -out /etc/easy-rsa/$domain/ca.der -outform der 2>&1 | tee -a $LOGFILE | pgbox
+keytool -importcert -alias invis-Server-CA -cacerts -storepass changeit -file ca.der 2>&1 | tee -a $LOGFILE | pgbox
+
+# Testen, ob der Import geklappt hat
+keytool -cacerts -storepass changeit -list|grep invis 2>&1
+if [[ $? == 1 ]]; then
+    # Infor Ausgabe
+    msgbox "Import des CA-Zertifikats in den Java-Keystore ist fehlgeschlagen und muss manuell wiederholt werden." "$windowtitle"
+fi
+
+# sysctl UDP Send- und Receive Buffer erhoehen
+cat $TEMPLATEDIR/$modulename/kc-sysctl >> /etc/sysctl.d/98.invis.conf
+
+# Datenbank anlegen
+kcdbpass=`mkdbsilent keycloak kcdbuser a`
+
+# User keycloak in Gruppe pkeys aufnehmen
+usermod -a -G pkeys keycloak 2>&1| tee -a $LOGFILE | pgbox
+
+# Konfigurationen kopieren und anpassen
+cp $TEMPLATEDIR/$modulename/keycloak /etc/sysconfig/keycloak
+cp $TEMPLATEDIR/$modulename/keycloak.service /etc/systemd/system/
+cp $TEMPLATEDIR/$modulename/keycloak.conf /usr/lib64/jboss/keycloak/conf/
+
+# kcadmin Passwort genereieren
+kcpassword=`pwgen -sBn 12 1`
+
+# Environment-File Keycloak anpassen
+path="/etc/sysconfig"
+filename="keycloak"
+string="kcpassword%$kcpassword"
+changevalues $path $file "$string"
+
+# Keycloak Konfigurationsdatei
+path="/usr/lib64/jboss/keycloak/conf/"
+filename="keycloak.conf"
+string="kcdbpass%$kcdbpass"
+changevalues $path $file "$string"
+string="invis.invis-net.loc%$fqdn"
+changevalues $path $file "$string"
+
+# Script kc.sh build ausfuehren
+/usr/lib64/jboss/keycloak/bin/kc.sh build 2>&1| tee -a $LOGFILE | pgbox
+
+# Keycloak als Dienst starten und fuer Autostart vorsehen
+systemctl daemon-reload
+chkservice "keycloak"

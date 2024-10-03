@@ -1,0 +1,5 @@
+# Keycloak Umgebung
+
+export KEYCLOAK_HOME="/usr/lib64/jboss/keycloak"
+export KEYCLOAK_BINPATH="$KEYCLOAK_HOME/bin"
+export PATH="$PATH:$KEYCLOAK_BINPATH"

@@ -333,6 +333,9 @@ fi
 export EASYRSA=/etc/easy-rsa
 export EASYRSA_PKI=$EASYRSA/$domain
 
+# .profile für Benutzer Root erweitern
+cat $TEMPLATEDIR/$modulename/profile >> /root/.profile
+
 easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
 cp $EASYRSA/vars $EASYRSA_PKI
 old $EASYRSA/vars
@@ -446,35 +449,6 @@ chmod 0750 $sockdir
 
 # Restart chronyd
 chkservice "chronyd"
-
-# After testinstallation of ntp there was a file /var/run/ntp instead of a directory.
-# This file blocks the ntp daemons start. Workaround:
-#if [[ -f /var/run/ntp ]]; then
-#    rm -f /var/run/ntp
-#fi
-#cp $TEMPLATEDIR/$modulename/ntp/servers-netconfig /var/run/ntp
-
-# NTP-Dienst fuer AD anpassen
-#ntpconf="/etc/ntp.conf"
-#echo -e "\n" >> $ntpconf
-#echo '# Signed Socket for Samba 4 AD DC' >> $ntpconf
-#echo 'ntpsigndsocket /var/lib/samba/ntp_signd' >> $ntpconf
-#echo 'restrict default mssntp' >> $ntpconf
-
-#sockdir="/var/lib/ntp/var/lib/samba/ntp_signd"
-#mkdir -p $sockdir
-#chown .ntp $sockdir
-#chmod 0750 $sockdir
-
-# ntp must run chrooted
-#sysconf_addword -r /etc/sysconfig/ntp NTPD_RUN_CHROOTED no 2>&1| tee -a $LOGFILE | pgbox
-#sysconf_addword /etc/sysconfig/ntp NTPD_RUN_CHROOTED yes 2>&1| tee -a $LOGFILE | pgbox
-
-# stop chrony (default ntp service since leap 15)
-#chkservice "chronyd"
-
-# start ntp daemon
-#chkservice "ntpd"
 
 # enable ntp and set hardware clock
 hwclock --systohc 2>&1| tee -a $LOGFILE | pgbox 
