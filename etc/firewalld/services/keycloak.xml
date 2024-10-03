@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kycloak</short>
+  <description>Kycloak OpenID Provider</description>
+  <!-- SSL ical -->
+  <port protocol="tcp" port="8444"/>
+</service>
