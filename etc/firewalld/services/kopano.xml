@@ -5,5 +5,5 @@
   <!-- SSL server socket -->
   <port protocol="tcp" port="237"/>
   <!-- SSL ical -->
-  <port protocol="tcp" port="8443"/>
+  <port protocol="tcp" port="8444"/>
 </service>
