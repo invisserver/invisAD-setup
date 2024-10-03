@@ -1,0 +1,27 @@
+[Unit]
+Description=Keycloak
+Documentation=http://www.keycloak.org/documentation.html
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+#Type=idle
+User=keycloak
+Group=keycloak
+WorkingDirectory=/var/lib/keycloak
+EnvironmentFile=-/etc/sysconfig/keycloak
+#ExecStart=/opt/jboss/keycloak/bin/standalone.sh ${EXTRA_OPTS}
+TimeoutStartSec=600
+TimeoutStopSec=600s
+KillSignal=SIGINT
+Type=simple
+KillSignal=SIGTERM
+KillMode=process
+SuccessExitStatus=143
+LimitMEMLOCK=infinity
+SendSIGKILL=no
+LimitNOFILE=102642
+ExecStart=/usr/lib64/jboss/keycloak/bin/kc.sh start
+
+[Install]
+WantedBy=multi-user.target

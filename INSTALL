@@ -1,4 +1,4 @@
-invis Server Setup 				Stand Nov. 2013
+invis Server Setup 				Stand Okt. 2024
 ################################################################
 
 Dieses Repository bildet die Entwicklungsbasis fuer das invisAD-
@@ -10,12 +10,12 @@ Server Installation genutzt werden.
 Zur Installation eines invis-Servers wird eine rein textbasierte
 openSUSE Installation verlangt.
 
-invis Version 10.x setzt openSUSE 13.1 voraus.
+invis Version 15.x setzt openSUSE 15.6 voraus.
 
 Nach dem Download des Repositories sind alle Dateien entsprechend
 der Pfade im Repo ins installierte openSUSE System zu kopieren.
 
-Danach kann das Script "sine" aufgerufen werden, es fuehrt durch
+Danach kann das Script "sine2" aufgerufen werden, es fuehrt durch
 die weitere Installation.
 
 Als Arbeitsverzeichnis nutzt sine /var/lib/sine, hier werden 

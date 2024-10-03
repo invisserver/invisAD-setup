@@ -1,0 +1,6 @@
+
+## Erforderlich fuer Keycloak/JBoss
+# Allow a 25MB UDP receive buffer for JGroups
+net.core.rmem_max = 26214400
+# Allow a 1MB UDP send buffer for JGroups
+net.core.wmem_max = 1048576

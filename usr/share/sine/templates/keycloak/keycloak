@@ -1,0 +1,13 @@
+i# /etc/sysconfig/keycloak
+
+# kann nach dem ersten Start geloescht werden
+KEYCLOAK_ADMIN=kcadmin
+KEYCLOAK_ADMIN_PASSWORD=kcpassword
+
+JBOSS_HOME=/usr/lib64/jboss/keycloak
+#JBOSS_LOG_DIR=/var/log/jboss/
+JAVA_OPTS=-Xms1024m -Xmx20480m -XX:MaxMetaspaceSize=768m
+
+KC_CACHE=ispn
+
+EXTRA_OPTS=-b=0.0.0.0
