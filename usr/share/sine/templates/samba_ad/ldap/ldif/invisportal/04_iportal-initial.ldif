@@ -241,7 +241,7 @@ cn: Shell-in-a-Box
 iPortEntrySSL: TRUE
 iPortEntryURL: [servername]/shell
 iPortEntryDescription: Shell-in-a-Box kann zur direkten Administration der invis-Server genutzt werden.
-iPortEntryActive: TRUE
+iPortEntryActive: FALSE
 iPortEntryPosition: Administration
 iPortEntryButton: Server Administration
 iPortEntryPriv:	admin

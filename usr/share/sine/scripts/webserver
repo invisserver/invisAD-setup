@@ -242,9 +242,8 @@ changevalues $path $file "$string"
 a2enflag FCGID
 a2enflag SSL
     
-# Webserver, shellinabox, fetchmail und Mailman neustarten und in Runlevel integrieren
+# Webserver, fetchmail und Mailman neustarten und in Runlevel integrieren
 pgsubtitle="Mehrere Dienste werden neu gestartet"
-chkservice "shellinaboxd"
 chkservice "apache2"
     
 # Administrator-Konto um Posix-Attribute und ein Homeverzeichnis erweitern
