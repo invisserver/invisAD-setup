@@ -269,12 +269,10 @@ Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware a
 
 #---# ERP-Software
 # Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Enterprise Ressource Planning Software" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie die von Ihnen bevorzugte ERP-Software (Warenwirtschaftssystem) aus." 16 100 8 \
-    Kivitendo "Konzentriert sich auf Handel und Finanzbuchhaltung, wenig modular." off\
-    waWision "Moderne ERP Lösung für Handel und Dienstleistung inkl. Webshop-Schnittstelle." on\
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Faktura-Software" --radiolist "$DIALOGSHORTHELP\n\n
+Wählen Sie aus, ob Das Faktura-Program Invoiceplane installiert werden soll oder nicht." 16 80 6 \
     InvoicePlane "Schlanke Fakturierungssoftware, für Dientsleister und Freelancer." off\
-    Keine "Sie verwenden ein eigenes System" off\
+    Keine "Sie verwenden ein eigenes System" on\
     2>$SINEWORKINGDIR/sine_temp
     whicherp=`cat $SINEWORKINGDIR/sine_temp`
     whicherp=`tolower $whicherp`
