@@ -68,6 +68,7 @@ mkdir /etc/skel/Musik
 mkdir /etc/skel/Videos
 mkdir /etc/skel/ownCloud
 mkdir /etc/skel/ics
+mkdir /etc/skel/CA
 echo "umask 0002" >> /etc/skel/.profile
 
 # configure hd-warranty-lifetime
@@ -351,6 +352,7 @@ fi
 # CA Datei kopieren
 cp $path/$domain/ca.crt /etc/invis/certs
 chmod go+r /etc/invis/certs/ca.crt
+cp /etc/invis/certs/ca.crt /etc/skel/CA
     
 # DH-Parameterdatei erzeugen
 # 2048 und 512 Bit DH-Parameter direkt mit openssl 
