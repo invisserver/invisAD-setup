@@ -75,8 +75,8 @@ deploycerts() {
     # Schluessel anpassen und verschieben
     case $stype in
 	"extern")
-	    openssl-3 x509 -in $ersadir/issued/$cn.crt -out /etc/apache2/ssl.crt/invis-server.crt
-	    openssl-3 rsa -in $ersadir/private/$cn.key -out /etc/apache2/ssl.key/invis-server.key
+	    openssl x509 -in $ersadir/issued/$cn.crt -out /etc/apache2/ssl.crt/invis-server.crt
+	    openssl rsa -in $ersadir/private/$cn.key -out /etc/apache2/ssl.key/invis-server.key
 	    if [[ -d $openvpndir ]]; then
 		cp $ersadir/issued/$cn.crt $openvpndir
 		cp $ersadir/private/$cn.key $openvpndir
@@ -84,8 +84,8 @@ deploycerts() {
 	    ;;
 	"intern")
 	    # Dadurch steht kein Klartext mehr im Zertifikat
-	    openssl-3 x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/ldap-cert.pem
-	    openssl-3 rsa -in $ersadir/private/$cn.key -out $confdir/private/ldap-key.pem
+	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/ldap-cert.pem
+	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/ldap-key.pem
 	    cp $confdir/certs/ldap-cert.pem /etc/apache2/ssl.crt/invis-sslint.crt
 	    cp $confdir/private/ldap-key.pem /etc/apache2/ssl.key/invis-sslint.key
 	    if (( `ls -A /etc/cups/ssl/|wc -l` != 0 )); then
@@ -108,8 +108,8 @@ deploycerts() {
 	    ;;
 	"ms")
 	    # Dadurch steht kein Klartext mehr im Zertifikat
-	    openssl-3 x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/mail-cert.pem
-	    openssl-3 rsa -in $ersadir/private/$cn.key -out $confdir/private/mail-key.pem
+	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/mail-cert.pem
+	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/mail-key.pem
 	    # Kopano
 	    # Mail-Zertifikat und -Schluesel für Kopano in einer Datei kombinieren
 	    cp $confdir/private/mail-key.pem $confdir/certs/kopano.pem
@@ -201,7 +201,7 @@ if [[ ! -f $ersadir/issued/$cn.crt ]]; then
     fi
     out
 else
-    ok=`openssl-3 verify -crl_check -CAfile $ersadir/crl-chain.pem $ersadir/issued/$cn.crt|tr -d " "|cut -d ":" -f2`
+    ok=`openssl verify -crl_check -CAfile $ersadir/crl-chain.pem $ersadir/issued/$cn.crt|tr -d " "|cut -d ":" -f2`
     if [[ $ok == "OK" ]]; then
 	echo -e "Das angeforderte Zertifikat existiert bereits und ist noch gültig.\n"
 	# Widerruf wenn noch gueltig?"
