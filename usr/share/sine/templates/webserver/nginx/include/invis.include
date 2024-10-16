@@ -1,0 +1,63 @@
+## Datei muss in alle VHost-Konfigurationen inkludiert werden
+
+# Disable TRACE method
+if ($request_method = TRACE) {
+    return 405;
+}
+
+# Dehydrated challenge directory
+location /.well-known/acme-challenge {
+  alias /var/lib/acme-challenge;
+}
+
+# PHP FPM
+location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index /index.php;
+        include fastcgi_params;
+}
+
+# oder?
+#upstream php-handler {
+#    server 127.0.0.1:9000;
+#    # Depending on your used PHP version
+    #server unix:/var/run/php5-fpm.sock;
+    #server unix:/var/run/php7-fpm.sock;
+#}
+
+# Vor deeplinks schuetzen
+# Regex muss getestet werden
+location ~ ^/(.*\.(jpe?g|png|gif))$ {
+    valid_referers none blocked "^http://invis.invis-net.loc" "^https://your.ddns-domain.net";
+    if ($invalid_referer) {
+        return 403;
+    }
+}
+
+# Aliasnamen für Elemente ausserhalb des Portalverzeichnisses
+location /cornaz {
+	alias /srv/www/htdocs/cornaz;
+}
+location /phpldapadmin {
+	alias /srv/www/htdocs/phpldapadmin;
+}
+location /phpMyAdmin {
+	alias /usr/share/phpMyAdmin;
+}
+location /phpPgAdmin {
+	alias /usr/share/phpPgAdmin;
+}
+
+## Umgebungsvariablen
+# Wenn Applikation nicht installiert, dann Pfad auf
+# "/srv/www/htdocs/404.html" setzen.
+set $KOPANO "/srv/www/htdocs/404.html";
+set $PHPVB "/srv/www/htdocs/phpvirtualbox";
+set $DOKUWIKI "/srv/www/htdocs/dokuwiki";
+set $OWNCLOUD "/srv/www/htdocs/owncloud/";
+set $KIMAI "/srv/www/htdocs/kimai";
+set $KIMAI2 "/srv/www/htdocs/kimai2/public";
+set $INVOICEPLANE "/srv/www/htdocs/invoiceplane";
+
+

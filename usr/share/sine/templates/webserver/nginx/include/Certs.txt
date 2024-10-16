@@ -1,0 +1,20 @@
+Da ngingx relativ bockig ist, was die Verwendung von Variablen angeht müssen wir gewisse Dinge
+extern lösen.
+
+nginx kann zwar mit Variablen umgehen, allerdings werden Variablen längst nicht in allen Direktiven
+aufgelöst. Beispielsweise funktionieren Variablen nicht in include-Anweisungen.
+
+Server-Flags wie der Apache kennt nginx leider auch nicht. Um jetzt zwischen internen und Let's
+Encrypt-Zertifikaten hin und her schalten zu können müssen wir mit zwei verschiedenen include
+Dateien arbeiten. Die verwendete wird über einen symbolischen Link in nginx integriert. Doof!
+
+Es gibt die Dateien:
+le-certs.include (Let's Encrypt Zertifikate)
+onw-certs.include (Eigene Zertifikate)
+
+Linkname: certfile.include
+
+Der Link muss per Default nach der Installation auf die internen Zertifikate zeigen und wird
+bei Bedarf vom Script "actdehydratet" auf die Let's Encrypt-Zertifikate geändert.
+
+

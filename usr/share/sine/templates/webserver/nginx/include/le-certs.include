@@ -1,0 +1,3 @@
+ssl_certificate     /etc/dehydrated/certs/schotten.fsproductions.de/fullchain.pem;
+ssl_certificate_key /etc/dehydrated/certs/schotten.fsproductions.de/privkey.pem;
+
