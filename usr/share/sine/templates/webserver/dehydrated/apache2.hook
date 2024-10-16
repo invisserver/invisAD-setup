@@ -1,4 +1,0 @@
-#!/bin/bash
-# small hook script to reload apache2 after cert-renewal
-
-systemctl restart apache2.service

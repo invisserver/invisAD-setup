@@ -11,20 +11,20 @@ location /.well-known/acme-challenge {
 }
 
 # PHP FPM
-location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index /index.php;
-        include fastcgi_params;
-}
+#location ~ \.php$ {
+#        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+#        fastcgi_pass unix:/var/run/php5-fpm.sock;
+#        fastcgi_index /index.php;
+#        include fastcgi_params;
+#}
 
 # oder?
-#upstream php-handler {
-#    server 127.0.0.1:9000;
-#    # Depending on your used PHP version
+upstream php-handler {
+    server 127.0.0.1:9000;
+    # Depending on your used PHP version
     #server unix:/var/run/php5-fpm.sock;
-    #server unix:/var/run/php7-fpm.sock;
-#}
+    server unix:/var/run/php7-fpm.sock;
+}
 
 # Vor deeplinks schuetzen
 # Regex muss getestet werden

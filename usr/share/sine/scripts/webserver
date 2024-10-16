@@ -44,8 +44,8 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="Apache Webserver"
-pgsubtitle="Apache Webserver and invis-Portal setup"
+windowtitle="Nginx Webserver"
+pgsubtitle="Nginx Webserver and invis-Portal setup"
 
 waitinfobox "Ihr Webserver sowie das invis-Portal werden eingerichtet.
 Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
@@ -123,44 +123,32 @@ changevalues $path $file "$string"
 
 # Link fuer Portal-Konfiguration anlegen
 ln -s $path/$file /srv/www/htdocs/portal/config.php
-    
-# Erforderliche Apache Module aktivieren
-a2enmod php7 2>&1| tee -a $LOGFILE | pgbox
-a2enmod headers 2>&1| tee -a $LOGFILE | pgbox
-#a2enmod xml2enc 2>&1| tee -a $LOGFILE | pgbox
-a2enmod proxy 2>&1| tee -a $LOGFILE | pgbox
-a2enmod proxy_http 2>&1| tee -a $LOGFILE | pgbox
-a2enmod proxy_html 2>&1| tee -a $LOGFILE | pgbox
-#a2enmod socache_shmcb 2>&1| tee -a $LOGFILE | pgbox
-a2enmod version 2>&1| tee -a $LOGFILE | pgbox
-a2enmod fcgid 2>&1| tee -a $LOGFILE | pgbox
-a2enmod rewrite 2>&1| tee -a $LOGFILE | pgbox
-    
+
 # Stammzertifikat der Server-CA bereitstellen
 cp /etc/invis/certs/ca.crt /srv/www/htdocs/portal/inc/
-    
-cp $TEMPLATEDIR/$modulename/vh-intern.conf /etc/apache2/vhosts.d/
-path="/etc/apache2/vhosts.d"
+
+# Nginx Include Verzeichnis vorbereiten
+newdir="/etc/nginx/include"
+mkdir $newdir
+cp $TEMPLATEDIR/$modulename/nginx/include/* $newdir
+
+# -> Dateien anpassen
+
+# vHost Dateien kopieren und anpassen
+cp $TEMPLATEDIR/$modulename/nginx/vhosts.d/vh-intern.conf /etc/nginx/vhosts.d/
+path="/etc/nginx/vhosts.d"
 file="vh-intern.conf"
 fqdn=`getconfdata "FQDN" "2"`
-string="invisX.invis-net.loc%$fqdn"
+string="invis.invis-net.lan%$fqdn"
 changevalues $path $file "$string"
-    
+
+# Kann vermutlich weg
 domain=`getconfdata "Domain" "2"`
-string="invis-net.loc%$domain"
+string="invis-net.lan%$domain"
 changevalues $path $file "$string"
 
 ip=`getconfdata "IP" "2"`
 string="192.168.220.10%$ip"
-changevalues $path $file "$string"
-
-# HTTPS-Port ändern
-cp $TEMPLATEDIR/$modulename/listen.conf /etc/apache2/
-file="listen.conf"
-path="/etc/apache2"
-    
-httpsport=`getconfdata "HTTPSPORT" "2"`
-string="httpsport%$httpsport"
 changevalues $path $file "$string"
 
 ## Externer Zugriff via HTTPS?
@@ -168,10 +156,6 @@ ddnshn=`getconfdata "DDNS" "2"`
 if [[ $ddnshn != "none" ]]; then
 #    extcerts=`getconfdata "extCerts" "2"`
 #    msgbox "Es werden Schlüssel für den https-Zugriff erzeugt." "Webserver-Konfiguration"
-
-    # Challenge Verzeichnis anlegen und Besitzrecht anpassen
-    mkdir -p "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
-    chown dehydrated "/srv/www/htdocs/dehydrated/.well-known/acme-challenge"
 
     # dehydrated Konfiguration sichern und anpassen
     path="/etc/dehydrated/config.d"
@@ -181,31 +165,28 @@ if [[ $ddnshn != "none" ]]; then
     string="adminmail%$certmail"
     changevalues $path $file "$string"
 
-    cp $TEMPLATEDIR/$modulename/dehydrated/apache2.hook /etc/dehydrated/postrun-hooks.d/
+    cp $TEMPLATEDIR/$modulename/dehydrated/invis.hook /etc/dehydrated/postrun-hooks.d/
 
     ## DDNS Namen in Domain-Datei eintragen
     echo $ddnshn > $path/domains.txt
 
     # Neue vHost Datei kopieren und anpassen
-    path="/etc/apache2/vhosts.d"
+    path="/etc/nginx/vhosts.d"
     cp $TEMPLATEDIR/$modulename/vh-dehydrated.conf $path
     file="vh-dehydrated.conf"
     string="your.ddns-domain.net%$ddnshn"
     changevalues $path $file "$string"
 
-    # setting apache config to use internal keypairs
-    a2enflag OWNCERTS
+    # setting nginx Path-Variable for alias
+    # Liegt im include file
+    # -> Hier erledigen (?)
+    path="/etc/nginx/include"
 
     # Kopieren und anpassend der Konfigurationsdateien
-    cp $TEMPLATEDIR/$modulename/vh-extern.conf /etc/apache2/vhosts.d/
-    path="/etc/apache2/vhosts.d"
+    cp $TEMPLATEDIR/$modulename/nginx/vhosts.d/vh-extern.conf /etc/nginx/vhosts.d/
+    path="/etc/nginx/vhosts.d"
     file="vh-extern.conf"
     string="your.ddns-domain.net%$ddnshn"
-    changevalues $path $file "$string"
-
-    # Lokalen Hostnamen ersetzten
-    fqdn=`getconfdata "FQDN" "2"`
-    string="invis.invis-net.loc%$fqdn"
     changevalues $path $file "$string"
 
     # Https Port setzen
@@ -214,9 +195,9 @@ if [[ $ddnshn != "none" ]]; then
     changevalues $path $file "$string"
 
     # Kopieren und anpassend der Konfigurationsdateien
-    cp $TEMPLATEDIR/$modulename/vh-combined-ext.conf /etc/apache2/vhosts.d/
+    cp $TEMPLATEDIR/$modulename/nginx/vhosts.d/vh-combined-ext.conf /etc/nginx/vhosts.d/
     file="vh-combined-ext.conf"
-    path="/etc/apache2/vhosts.d/"
+    path="/etc/nginx/vhosts.d/"
     ddnsname=`getconfdata "DDNS" "2"`
     string="your.ddns-domain.net%$ddnsname"
     changevalues $path $file "$string"
@@ -233,15 +214,9 @@ changevalues $path $file "$string"
 
 # Wozu ist das gut?
 # Es wird jedenfalls die ldap.conf ins Home-Verzeichnis des users wwwrun verknuepft.
+# Muss das auf nginx geandert werden?
 ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
 
-path="/etc/sysconfig/"
-file="apache2"
-string="APACHE_MPM=\"\"%APACHE_MPM=\"prefork\""
-changevalues $path $file "$string"
-a2enflag FCGID
-a2enflag SSL
-    
 # Webserver, fetchmail und Mailman neustarten und in Runlevel integrieren
 pgsubtitle="Mehrere Dienste werden neu gestartet"
 chkservice "apache2"

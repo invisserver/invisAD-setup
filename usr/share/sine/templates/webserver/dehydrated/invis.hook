@@ -1,0 +1,4 @@
+#!/bin/bash
+# small hook script to reload nginx after cert-renewal
+
+systemctl load nginx.service
