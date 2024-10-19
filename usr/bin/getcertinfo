@@ -81,7 +81,7 @@ echo "CRL:$nextcrldate" >> $resultdir/certstatus
 daysleft=`diffdays "$nextcrldateunformated"`
 # Warnung generieren, wenn Erneuerung der CRL in weniger als 7 Tagen ansteht.
 if (( $daysleft <= 7 )); then
-	echo "Die Erneuerung der CRL steht spätestens am $nextcrldate an. Bitte erneuern!" >> $resultdir/alarm
+	echo "Die Erneuerung der Zertifikatssperrliste (CRL) steht spätestens am $nextcrldate an. Bitte erneuern!" >> $resultdir/alarm
 fi
 
 # Bei Bedarf Alarm per email versenden
