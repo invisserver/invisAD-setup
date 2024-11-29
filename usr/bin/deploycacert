@@ -1,0 +1,50 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Verteilen des lokalen Stammzertifikats in alle Home-Verzeichnisse
+# (C) 2024 Stefan Schäfer invis-server.org
+# Questions: stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+
+# Konfigurationsdaten
+conffile="/etc/invis/invis.conf"
+passfile="/etc/invis/invis-pws.conf"
+
+groupid="20513"
+
+# Funktionen
+# Werte aus Konfigurationsdatendatei extrahieren
+# $1 = Konfigurationsdatei, $2 = Parameter, $3 Wert (Feld)
+getconfdata() {
+    cat $1 |grep "$2" | cut -d ":" -f $3
+}
+
+# LDAP Basisknoten fuer invis-Server auslesen
+domain=`getconfdata $conffile intDomain 2`
+
+userlist=(`getent passwd|grep ":$groupid:"|cut -d ":" -f1`)
+
+for user in ${userlist[@]}; do
+	homecadir="/home/$user/ca"
+	if [[ ! -d "$homecadir" ]]; then
+		mkdir $homecadir
+		chown $user:$groupid $homecadir
+		chmod 0700 $homecadir
+	fi
+	cp "/etc/easy-rsa/$domain/ca.crt" $homecadir
+	chown $user:$groupid $homecadir/ca.crt
+	chmod 0600 $homecadir/ca.crt
+done
+
