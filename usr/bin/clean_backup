@@ -38,14 +38,17 @@ changevalues() {
 }
 
 # Maximales Dateialter in Tagen
-clean=`getconfdata $conffile "cleanDasiOn" "2"`
+clean=`getconfdata $conffile "cleanDasi" "2"`
 alter=`getconfdata $conffile "dasiMaxDays" "2"`
 dasibase=`getconfdata $conffile "DasiDir" "2"`
 
+cleandir="$dasibase/vollsicherungen"
+
 if [[ $clean == "j" ]]; then
     # Alle Dateien aelter als X-Tage loeschen
-    find $dasibase -type f -mtime +$alter -exec rm {} \;
+    find $cleandir -type f -mtime +$alter -exec rm {} \;
 
     # Leere Unterverzeichnisse loeschen
-    find $dasibase -mindepth 1 -depth -type d -empty -exec rmdir {} \; 
+    find $cleandir -mindepth 1 -depth -type d -empty -exec rmdir {} \;
 fi
+
