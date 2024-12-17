@@ -35,7 +35,7 @@ getconfdata() {
 # Pruefen, ob eine Liste genannt wurde
 if (( $#  != 2 )); then
     echo "Bitte einen Benutzernamen und die Benno-Rolle angeben."
-    echo "adbennoaddress user [ADMIN|USER|REVISOR]"
+    echo "adbennorole user [ADMIN|USER|REVISOR]"
     exit 1
 else
     # Rolle korrekt?
