@@ -60,17 +60,19 @@ fi
 # Daten aus Konfiguration holen
 basedn=`getconfdata $conffile "baseDN" "2"`
 
-# Objektklasse ergaenzen
-# Arbeitsdatei anlegen
-workfile="/tmp/addbennooc.ldif"
-echo "$dn" > $workfile
-echo "changetype: modify" >> $workfile
-echo "add: objectclass" >> $workfile
-echo "objectclass: bennoMailArchivUser" >> $workfile
-# LDAP Objekt modifizieren
-ldbmodify -H $sam $workfile
-# Arbeitsdatei loeschen
-rm -rf $workfile
+if [[ ! `ldbsearch -H $sam samaccountname=$user objectclass| grep bennoMailArchivUser` ]]; then
+	# Objektklasse ergaenzen
+	# Arbeitsdatei anlegen
+	workfile="/tmp/addbennooc.ldif"
+	echo "$dn" > $workfile
+	echo "changetype: modify" >> $workfile
+	echo "add: objectclass" >> $workfile
+	echo "objectclass: bennoMailArchivUser" >> $workfile
+	# LDAP Objekt modifizieren
+	ldbmodify -H $sam $workfile
+	# Arbeitsdatei loeschen
+	rm -rf $workfile
+fi
 
 # Benno Rolle ergaenzen
 # Arbeitsdatei anlegen
