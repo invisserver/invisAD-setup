@@ -1,5 +1,4 @@
 nfs-kernel-server
-nfsidmap
 vsftpd
 tftp
 yast2-ftp-server
