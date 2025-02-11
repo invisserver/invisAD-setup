@@ -1,8 +1,0 @@
-[Kopano-openSUSE_limited]
-name=Kopano-openSUSE_limited
-enabled=1
-autorefresh=1
-baseurl=https://download.kopano.io/limited/core:/final/openSUSE_Leap_15.1/
-path=/
-type=rpm-md
-keeppackages=0

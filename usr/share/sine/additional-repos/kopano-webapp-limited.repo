@@ -1,8 +1,0 @@
-[Kopano-Webapp-Limited]
-name=Kopano-Webapp-Limited
-enabled=1
-autorefresh=1
-baseurl=https://download.kopano.io/limited/webapp:/final/SLE_15/
-path=/
-type=rpm-md
-keeppackages=0
