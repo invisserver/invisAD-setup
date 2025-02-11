@@ -1,7 +1,0 @@
-[isv_ownCloud_server_10]
-name=Latest 10.x packages (openSUSE_Leap_$releasever)
-type=rpm-md
-baseurl=https://download.opensuse.org/repositories/isv:/ownCloud:/server:/10/$releasever/
-gpgcheck=1
-gpgkey=https://download.opensuse.org/repositories/isv:/ownCloud:/server:/10/$releasever/repodata/repomd.xml.key
-enabled=1
