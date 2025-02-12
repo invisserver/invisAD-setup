@@ -48,7 +48,7 @@ if [[ $clean == "j" ]]; then
 
     # Warnung erzeugen
     chmod u+w $transfolder/Liesmich.txt
-    echo "Achtung: Leere Verzeichnisse, sowie alle Dateien die älter als 21 Tage sind werden hier automatisch gelöscht!!" > $transfolder/Liesmich.txt
+    echo "Achtung: Leere Verzeichnisse, sowie alle Dateien die älter als $alter Tage sind werden hier automatisch gelöscht!!" > $transfolder/Liesmich.txt
     chmod a-w $transfolder/Liesmich.txt
     
     # Leere Unterverzeichnisse loeschen
