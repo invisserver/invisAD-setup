@@ -23,5 +23,6 @@ speedtest-cli
 python3-setproctitle
 python3-Markdown
 openssl
-openssl-doc
+openssl-3
+openssl-3-doc
 libopenssl3
