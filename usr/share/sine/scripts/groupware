@@ -45,7 +45,7 @@ modulename=`basename $0`
 
 clear
 windowtitle="Groupware Setup"
-pgsubtitle="Kopano - eGroupware - Roundcube"
+pgsubtitle="Kopano - Grommunio - Roundcube"
 
 whichgroupware=`getconfdata "Groupware" "2"`
 
@@ -89,6 +89,7 @@ case "$whichgroupware" in
 	
 	# Konfigurationsdaten einlesen
 	fqdn=`getconfdata "FQDN" "2"`
+	intip=`getconfdata "IP" "2"`
 	domain=`getconfdata "Domain" "2"`
 	basedn=`getconfdata "baseDN" "2"`
 	ldapmasterpw=`getpassword "LDAPAdminPW" "3"`
@@ -97,6 +98,9 @@ case "$whichgroupware" in
 	path="/etc/kopano"
 	file="server.cfg"
 	string="dbuserpass%$kopanodbuserpw"
+	changevalues $path $file "$string"
+	
+	string="internalip%$intip"
 	changevalues $path $file "$string"
 
 	string="postmaster@localhost%postmaster@$domain"
