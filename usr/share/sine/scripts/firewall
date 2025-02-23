@@ -111,6 +111,12 @@ chkservice "firewalld"
 echo "Setze default zone..." | pgbox
 firewall-cmd --set-default-zone=external 2>&1| tee -a $LOGFILE | pgbox
 
+# Routing zwischen den Zonen internal und external aktivieren
+firewall-cmd --new-policy allowZoneForward
+firewall-cmd --policy allowZoneForward --set-target ACCEPT
+firewall-cmd --policy allowZoneForward --add-ingress-zone internal
+firewall-cmd --policy allowZoneForward --add-egress-zone external
+
 # Logdenied aktivieren per cmd
 echo "Aktiviere logging verworfener Pakete..." | pgbox
 firewall-cmd --set-log-denied=all 2>&1| tee -a $LOGFILE | pgbox
