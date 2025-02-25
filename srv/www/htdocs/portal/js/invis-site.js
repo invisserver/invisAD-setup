@@ -301,7 +301,7 @@ function profileRequestPasswordChange(event) {
 						lightbox.setStatus("Passwort wurde geändert!");
 						lightbox.setWaitStatus(true);
 						//invis.setCookie("invis-login", $H({uid: uid, pwd: secret}).toJSON(), 0.1);
-						invis.setCookie("invis-login", JSON.stringify({uid: uid, pwd: secret})), 0.1);
+						invis.setCookie("invis-login", JSON.stringify({uid: uid, pwd: secret}), 0.1);
 						var myAjax = new Ajax.Request(
 							"script/login.php",
 							{
