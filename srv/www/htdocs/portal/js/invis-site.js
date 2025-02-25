@@ -105,7 +105,8 @@ function doLogin() {
 	var uid = $('login_user');
 	var pwd = $('login_pwd');
 	lightbox.setWaitStatus(true);
-	invis.setCookie("invis-login", $H({uid: uid.value, pwd: pwd.value}).toJSON(), 0.1);
+	//invis.setCookie("invis-login", $H({uid: uid.value, pwd: pwd.value}).toJSON(), 0.1);
+	invis.setCookie("invis-login", JSON.stringify({uid: uid.value, pwd: pwd.value}), 0.1);
 	var myAjax = new Ajax.Request(
 		"script/login.php",
 		{
