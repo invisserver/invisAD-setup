@@ -114,8 +114,8 @@ var InvisBase = Class.create({
 		//
 		
 		//this.setCookie("invis", uid.value + "/" + pwd.value, 0.1);
-		this.setCookie("invis", $H({uid: uid.value, pwd: pwd.value}).toJSON(), 0.1);
-		
+		//this.setCookie("invis", $H({uid: uid.value, pwd: pwd.value}).toJSON(), 0.1);
+		this.setCookie("invis", JSON.stringify({uid: uid.value, pwd: pwd.value}), 0.1);
 		var myAjax = new Ajax.Request(
 			"script/login.php", {
 				method: 'post',

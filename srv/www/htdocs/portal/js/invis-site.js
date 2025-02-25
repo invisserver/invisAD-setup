@@ -290,7 +290,8 @@ function profileRequestPasswordChange(event) {
 			
 			lightbox.setWaitStatus(true);
 			// Passwort im Klartext an adLDAP uebergeben.
-			invis.setCookie('invis-request', $H({'adpassword': secret}).toJSON());
+			//invis.setCookie('invis-request', $H({'adpassword': secret}).toJSON());
+			invis.setCookie('invis-request', JSON.stringify({'adpassword': secret}));
 			invis.request('script/adajax.php', 
 				function(request) {
 					lightbox.setWaitStatus(false);
@@ -299,7 +300,8 @@ function profileRequestPasswordChange(event) {
 						$('btn_change_pw').show();
 						lightbox.setStatus("Passwort wurde geändert!");
 						lightbox.setWaitStatus(true);
-						invis.setCookie("invis-login", $H({uid: uid, pwd: secret}).toJSON(), 0.1);
+						//invis.setCookie("invis-login", $H({uid: uid, pwd: secret}).toJSON(), 0.1);
+						invis.setCookie("invis-login", JSON.stringify({uid: uid, pwd: secret})), 0.1);
 						var myAjax = new Ajax.Request(
 							"script/login.php",
 							{
