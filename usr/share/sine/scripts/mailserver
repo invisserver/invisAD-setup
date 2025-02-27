@@ -182,6 +182,7 @@ case "$whichgroupware" in
     "grommunio" )
 	pgsubtitle="Grommunio Groupware wird installiert und vorbereitet"
 	zypper ar -f $REPODIR/server-mail.repo 2>&1| tee -a $LOGFILE | pgbox
+	zypper --gpg-auto-import-keys ref 2>&1| tee -a $LOGFILE | pgbox
 	zypper -n install --from Email_services -n `cat $PACKAGELISTDIR/grommunio` 2>&1| tee -a $LOGFILE | pgbox
 	
 	;;
