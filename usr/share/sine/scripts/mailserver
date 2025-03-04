@@ -265,6 +265,9 @@ file="fetchmail.service"
 string="localdomain%$domain"
 changevalues $path $file "$string"
 
+sysconf_addword -r /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 600 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 120 2>&1| tee -a $LOGFILE | pgbox
+
 # Dummy fetchmailrc anlegen.
 fetchmailrc="/var/lib/cornaz/build/.fetchmailrc"
 echo 'poll pop.example.com protocol pop3 user dummy pass . is junk here' > $fetchmailrc

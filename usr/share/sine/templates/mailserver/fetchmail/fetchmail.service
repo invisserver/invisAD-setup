@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 User=fetchmail
-ExecStart=/usr/bin/fetchmail -d 300 -D localdomain -L /var/log/fetchmail -f /var/lib/cornaz/inuse/.fetchmailrc
+EnvironmentFile=-/etc/sysconfig/fetchmail
+ExecStart=/usr/bin/fetchmail -d $FETCHMAIL_POLLING_INTERVAL -D localdomain -L /var/log/fetchmail -f /var/lib/cornaz/inuse/.fetchmailrc
 RestartSec=1
 
 [Install]
