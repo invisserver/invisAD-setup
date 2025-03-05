@@ -72,8 +72,12 @@ MAILTO=/dev/null
 5 0 * * * root test -f /usr/bin/z-push-gabsync && /usr/bin/z-push-gabsync -a sync
 
 # Spamassassin Signaturen aktualisieren
-0 10 * * * root /usr/bin/sa-update
-10 10 * * * root /usr/bin/sa-update --nogpg --channel spamassassin.heinlein-support.de
+0 */4 * * * root /usr/bin/sa-update
+10 */4 * * * root /usr/bin/sa-update --nogpg --channel spamassassin.heinlein-support.de
+15 */4 * * * root /usr/bin/sa-update --nogpg --channel sa.schaal-it.net
+20 */4 * * * root /usr/bin/sa-update –allowplugins –channel sa.sosdg.org –nogpg
+25 */4 * * * root /usr/bin/sa-update --nogpg --channel sought.rules.yerp.org
+30 */4 * * * root /usr/bin/sa-update --nogpg --channel sa.zmi.at
 #20 10 * * * root sa-compile
 
 # Firewall-Konfiguration pruefen und ggf. wiederherstellen
