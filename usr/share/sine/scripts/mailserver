@@ -61,7 +61,9 @@ fi
 
 # Der Dienst freshclam wird auf jeden Fall gestartet, da Clamav zur Standart Installation gehoert
 # und er von amavis immer als secondary Virenscanner genutzt wird.
-chkservice "freshclam"
+#chkservice "freshclam"
+# freshclam wird seit Leap 15.6 ueber einen Systemd Timer gestartet
+systemctl enable freshclam.timer 2>&1| tee -a $LOGFILE | pgbox
 
 # Rechte am Virusmails-Quarantaene-Verzeichnis anpassen
 chown -R vscan:vscan /var/spool/amavis 2>&1| tee -a $LOGFILE | pgbox
