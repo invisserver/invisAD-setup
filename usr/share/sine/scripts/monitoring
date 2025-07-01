@@ -64,22 +64,25 @@ case $whichmonitoring in
 	
 	;;
     "zabbix" )
-	pgsubtitle="Zabbix Monitoring-Tools werden installiert."
+        pgsubtitle="Zabbix Monitoring-Tools werden installiert."
         # Vorbereitung zur Ueberwachung des Servers via Zabbix-Agent mit Zabbix-Proxy
-	zypper ref 2>&1|tee -a $LOGFILE |pgbox
-	zypper -n install -n zabbix-agent zabbix-proxy-mysql fping 2>&1 | tee -a $LOGFILE | pgbox
-	zyppercheck ${PIPESTATUS[0]}
+        rpm -Uvh --nosignature https://repo.zabbix.com/zabbix/7.0/sles/15/x86_64/zabbix-release-latest-7.0.sles15.noarch.rpm 2>&1|tee -a $LOGFILE |pgbox
+        zypper --gpg-auto-import-keys refresh 'Zabbix Official Repository' 2>&1|tee -a $LOGFILE |pgbox
+        zypper ref 2>&1|tee -a $LOGFILE |pgbox
+        zypper -n install -n zabbix-proxy-mysql zabbix-sql-scripts zabbix-agent2 zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql fping 2>&1 | tee -a $LOGFILE | pgbox
+        zyppercheck ${PIPESTATUS[0]}
         chmod ug+s /usr/sbin/fping* 2>&1 | tee -a $LOGFILE
         zabbixdbpw=`mkdbsilent zabbix zabbix a`
-        mysql -u zabbix -p$zabbixdbpw zabbix < $TEMPLATEDIR/monitoring/zabbix/schema.sql
-        cp $TEMPLATEDIR/monitoring/zabbix/zabbix_agentd.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
-        cp $TEMPLATEDIR/monitoring/zabbix/zabbix_proxy.conf /etc/zabbix 	2>&1| tee -a $LOGFILE
+        mysqlpw=`getpassword "MySQLPW" "3"`
+        mysql -u root -p$mysqlpw zabbix < $TEMPLATEDIR/monitoring/zabbix/proxy.sql
+        cp $TEMPLATEDIR/monitoring/zabbix/zabbix_agent2.conf /etc/zabbix        2>&1| tee -a $LOGFILE
+        cp $TEMPLATEDIR/monitoring/zabbix/zabbix_proxy.conf /etc/zabbix         2>&1| tee -a $LOGFILE
         confdir="/etc/zabbix"
         file="zabbix_proxy.conf"
         string="zabbixdbpw%$zabbixdbpw"
         changevalues $confdir $file "$string"
         chkservice "zabbix-proxy"
-        chkservice "zabbix-agent"
+        chkservice "zabbix-agent2"
 	;;
     "keine")
 	;;
