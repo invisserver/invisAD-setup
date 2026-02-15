@@ -1,0 +1,53 @@
+#!/bin/bash
+# Kategorie: setup
+# Script zur Konfiguration von Netzwerkschnittstellen für systemd-networkd
+# (c) 2026 Stefan Schaefer -- stefan@invis-server.org
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+
+# Variablen
+netconfigpath="/etc/systemd/network/"
+tempfile="/var/tmp/netconffile"
+prionr=20
+
+if (( ${#} == 2 )); then
+	device=$1
+	ip=$2
+else
+	echo "Usage:"
+	echo "----------------------------------------------------------"
+	echo "netdevconf devicename ip/mask"
+	echo "Possible devicenames are: extern intern or (somtimes) dmz"
+	exit 1
+fi
+
+# Konfigurationsdatei erstellen
+echo "# Netdevice config for device $device" > $tempfile
+echo "[Match]" >> $tempfile
+echo "Kind=!*" >> $tempfile
+echo "Type=ether" >> $tempfile
+echo "Name=$device" >> $tempfile
+echo >> $tempfile
+echo "[Network]" >> $tempfile
+echo "Address=$ip" >> $tempfile
+echo "DHCP=0" >> $tempfile
+
+# Konfigurationsdatei installieren und aktivieren
+mv $tempfile $netconfigpath/$prionr-eth-$device.network
+
+setenforce 0
+systemctl reload systemd-networkd.service
+setenforce 1
+
