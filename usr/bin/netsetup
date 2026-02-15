@@ -62,6 +62,7 @@ if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
     if (( $count > 1 )) && [[ $nwm == "enabled" ]]; then
 	systemctl disable NetworkManager.service
 	systemctl enable systemd-networkd.service
+	cp /usr/share/sine/templates/check/network/80-eth-extern-dhcp.network /etc/systemd/network/
     fi
 
     echo -e "Es wurden Regeln zur Benennung der vorhandenen Netzwerkkarten erzeugt.\n\nBitte starten Sie den Server jetzt neu und konfigurieren\nSie Ihre Netzwerkkarten anschließend mit YaST."
