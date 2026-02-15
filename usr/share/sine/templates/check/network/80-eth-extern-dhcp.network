@@ -1,0 +1,13 @@
+# invis-Server Konfiguration fuer externe Netzwerkschnittstelle / DHCP
+# Enable DHCPv4 and DHCPv6 on all physical ethernet links
+[Match]
+Kind=!*
+Type=ether
+Name=extern
+
+[Link]
+RequiredForOnline=routable
+
+[Network]
+DHCP=yes
+
