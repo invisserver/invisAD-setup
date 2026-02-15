@@ -1,7 +1,0 @@
-[isv_ownCloud_server_10.15.0]
-name=10.15.0 (15.x)
-type=rpm-md
-baseurl=https://download.opensuse.org/repositories/isv:/ownCloud:/server:/10.15.0/${releasever}/
-gpgcheck=1
-gpgkey=https://download.opensuse.org/repositories/isv:/ownCloud:/server:/10.15.0/${releasever}/repodata/repomd.xml.key
-enabled=1

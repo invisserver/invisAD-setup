@@ -1,0 +1,7 @@
+[isv_OpenCloud]
+name=isv:OpenCloud (16.0)
+type=rpm-md
+baseurl=https://download.opensuse.org/repositories/isv:/OpenCloud//${releasever}
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/isv:/OpenCloud//${releasever}repodata/repomd.xml.key
+enabled=1
