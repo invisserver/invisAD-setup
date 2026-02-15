@@ -57,12 +57,12 @@ if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
     # Von Networkmanager zu wicked wechseln
 	# Networkmanager ist jetzt Standard, wicked wird nicht ueberleben
 	# Unsre Netzwerkkonfiguration kann auch nicht mehr per YaST erledigt werden
-	# Statt dessen wird ein systemd tool verwendet
-#    nwm=`systemctl is-enabled NetworkManager.service`
-#    if (( $count > 1 )) && [[ $nwm == "enabled" ]]; then
-#	systemctl disable NetworkManager.service
-#	systemctl enable wicked.service
-#    fi
+	# Statt desse werden wir systemd-networkd verwenden
+    nwm=`systemctl is-enabled NetworkManager.service`
+    if (( $count > 1 )) && [[ $nwm == "enabled" ]]; then
+	systemctl disable NetworkManager.service
+	systemctl enable systemd-networkd.service
+    fi
 
     echo -e "Es wurden Regeln zur Benennung der vorhandenen Netzwerkkarten erzeugt.\n\nBitte starten Sie den Server jetzt neu und konfigurieren\nSie Ihre Netzwerkkarten anschließend mit YaST."
     
