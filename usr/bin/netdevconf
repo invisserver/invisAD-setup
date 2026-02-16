@@ -47,7 +47,8 @@ echo "DHCP=0" >> $tempfile
 # Konfigurationsdatei installieren und aktivieren
 mv $tempfile $netconfigpath/$prionr-eth-$device.network
 
-setenforce 0
+semanage fcontext -a -t systemd_networkd_unit_file_t "/etc/systemd/network/.network"
+restorecon -Rv "/etc/systemd/network/.network"
 systemctl reload systemd-networkd.service
-setenforce 1
+
 
