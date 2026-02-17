@@ -1,0 +1,7 @@
+[spins_invis_15_virtualbox]
+name=spins:invis:15:virtualbox (16.0)
+type=rpm-md
+baseurl=https://download.opensuse.org/repositories/spins:/invis:/15:/virtualbox/16.0/
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/spins:/invis:/15:/virtualbox/16.0/repodata/repomd.xml.key
+enabled=1
