@@ -15,7 +15,6 @@ dos2unix
 psmisc
 iw
 wpa_supplicant
-cups-pdf
 speedtest-cli
 python313-setproctitle
 python313-Markdown
