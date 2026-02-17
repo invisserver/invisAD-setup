@@ -1,19 +1,23 @@
-Für die Installation eines invis Servers 15.0 AD müssen folgende Voraussetzungen erfüllt sein:
+Für die Installation eines invis Servers 16.0 AD müssen folgende Voraussetzungen erfüllt sein:
 
-    - Als Basis muss openSUSE Leap 15.6, möglichst ohne grafische Oberfläche 
+    - Als Basis muss openSUSE Leap 16.0, möglichst ohne grafische Oberfläche 
       installiert sein.
     
     - Der Server muss über zwei Netzwerkkarten (extern & intern) verfügen, die Netzwerk-
       schnittstellen müssen mit Hilfe von Udev-Regeln "extern" und "intern" benannt werden.
       Zur Erzeugung der Udev-Regeln zur korrekten Bennenung der Netzwerkschnittstellen ist das
       Script "netsetup" anzuwenden. Nach Anwendung des Scripts muss der Server neu gestartet
-      werden. Die anschließende Einrichtung der Netzwerkkarten muss per YaST vorgenommen werden.
+      werden. Die anschließende Einrichtung der Netzwerkkarten muss per Script "netdevconf"
+      vorgenommen werden.
       Schnittstelle 1 muss als externe Schnittstelle zur Verbindung einem vorgeschalteten Router
       eingerichtet sein. Bei Verbindung mit dem Router empfielt es sich auf diesem einen 
-      DHCP-Server zu starten und "extern" als DHCP-Client einzurichten. Wenn möglich ist auf
-      dem Router eine feste IP-Adress-Reservierung für den invis-Server einzurichten.
+      DHCP-Server zu starten und "extern" als DHCP-Client einzurichten, was automatisch geschieht.
+      Wenn möglich ist auf dem Router eine feste IP-Adress-Reservierung für den invis-Server 
+      einzurichten.
+      Sollte die Schnittstelle statisch eingerichtet werden müssen kann dies ebenfalls per Script
+      erledigt werden.
       Schnittstelle 2 (intern) muss mit einer festen IP-Adresse versehen werden.
-      Die Einrichtung der Netzwerkkarten muss vor der Ausführung des invis-Setup-Scripts "sine"
+      Die Einrichtung der Netzwerkkarten muss vor der Ausführung des invis-Setup-Scripts "sine2
       erfolgt sein.
       
     - Der Server muss vor Ausführung des Setup-Scripts über einen vollständigen Hostnamen verfügen.
@@ -28,5 +32,5 @@ Für die Installation eines invis Servers 15.0 AD müssen folgende Voraussetzung
       Server nicht auf Anfragen, beeinträchtig dies sowohl die Installation Ihres invis-Servers
       als auch den späteren Betrieb.
       
-    - Für den Fall, dass Sie ownCloud nutzen möchten, benötigen Sie zwingend einen funktionierenden 
+    - Für den Fall, dass Sie openCloud nutzen möchten, benötigen Sie zwingend einen funktionierenden 
       DDNS Namen oder eine feste IP Adresse über den bzw. die Sie Ihren Server erreichen können.
