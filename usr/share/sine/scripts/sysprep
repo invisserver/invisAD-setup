@@ -258,16 +258,17 @@ sysconf_addword /etc/sysconfig/postfix POSTFIX_REGISTER_SLP no 2>&1| tee -a $LOG
 sysconf_addword -r /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL no 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/postfix POSTFIX_UPDATE_CHROOT_JAIL yes 2>&1| tee -a $LOGFILE | pgbox
 
+## Version 16, erst mal ohne ntop - haben wir eh nie benutzt.
 # ntop
-echo "NTOP Interface wird auf \"intern\" gesetzt." 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern 2>&1| tee -a $LOGFILE | pgbox
+#echo "NTOP Interface wird auf \"intern\" gesetzt." 2>&1| tee -a $LOGFILE | pgbox
+#sysconf_addword -r /etc/sysconfig/ntop NTOPD_IFACE eth0 2>&1| tee -a $LOGFILE | pgbox
+#sysconf_addword /etc/sysconfig/ntop NTOPD_IFACE intern 2>&1| tee -a $LOGFILE | pgbox
 
-echo "NTOP Ports werden auf 3000 und 3001 (SSL) gesetzt." 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000 2>&1| tee -a $LOGFILE | pgbox
+#echo "NTOP Ports werden auf 3000 und 3001 (SSL) gesetzt." 2>&1| tee -a $LOGFILE | pgbox
+#sysconf_addword -r /etc/sysconfig/ntop NTOPD_PORT 127.0.0.1:3000 2>&1| tee -a $LOGFILE | pgbox
+#sysconf_addword /etc/sysconfig/ntop NTOPD_PORT $ipaddr:3000 2>&1| tee -a $LOGFILE | pgbox
 
-sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001 2>&1| tee -a $LOGFILE | pgbox
+#sysconf_addword /etc/sysconfig/ntop NTOPD_SSL_PORT 3001 2>&1| tee -a $LOGFILE | pgbox
 
 # remove auto behavior from NETCONFIG DNS and NTP policy
 echo "System wird so konfiguriert, dass weder die Datei resolv.conf noch der NTP-Dienst automatisch konfiguriert werden." 2>&1| tee -a $LOGFILE | pgbox
@@ -280,11 +281,12 @@ path="/etc"
 string="127.0.0.2%$ipaddr"
 changevalues $path $file "$string"
     
+## Version 16, erst mal ohne ntop - haben wir eh nie benutzt.
 # Admin PW fuer ntop-user wwwrun setzen
 # Achtung Bug im ntop Paket: Das Verzeichnis in dem ntop versucht die user-db anzulegen existiert nicht. Workaround:
-mkdir /var/lib/ntop
-ntoppw=`getpassword "NtopPW" "3"`
-ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $LOGFILE | pgbox
+#mkdir /var/lib/ntop
+#ntoppw=`getpassword "NtopPW" "3"`
+#ntop --set-admin-password=$ntoppw -u wwwrun 2>&1| tee -a $LOGFILE | pgbox
 
 pgsubtitle="Es wird eine Zertifizierungsstelle erzeugt"
 msgbox "Um auf Ihrem invis Server SSL-Schlüssel und Zertifikate für Web- und Mailserver zu erstellen wird eine Zertifizierungsstelle (CA) benötigt.\n\nDies wird im Folgenden vorgenommen. 

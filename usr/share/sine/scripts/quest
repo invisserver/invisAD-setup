@@ -534,13 +534,13 @@ fi
 ldappw=`pwgen -sBnc 10 1`
 junkpw=`pwgen -sBnc 10 1`
 mysqlpw=`pwgen -sBnc 10 1`
-ntoppw=`pwgen -sBnc 10 1`
+#ntoppw=`pwgen -sBnc 10 1`
 postmasterpw=`pwgen -sBnc 10 1`
 
 echo "LDAP Administrator:LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_pws
 echo "Spam owner:JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_pws
 echo "MySQL root:MySQLPW:$mysqlpw" >> $SINEWORKINGDIR/invis_pws
-echo "NTOP Administrator:NtopPW:$ntoppw" >> $SINEWORKINGDIR/invis_pws
+#echo "NTOP Administrator:NtopPW:$ntoppw" >> $SINEWORKINGDIR/invis_pws
 echo "Postmaster:PostmasterPW:$postmasterpw" >> $SINEWORKINGDIR/invis_pws
 
 chmod 0600 $SINEWORKINGDIR/invis_pws
