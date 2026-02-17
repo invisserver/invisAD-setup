@@ -67,10 +67,10 @@ if [[ $prepok == "0" ]]; then
     # enable Postfix
     chkservice "postfix"
 
-    # Patterns
-    pgsubtitle="Software-Gruppen werden installiert" 
-    zypper -n install -t pattern `cat $PACKAGELISTDIR/invis_schemes` 2>&1 | tee -a $LOGFILE | pgbox
-    zyppercheck ${PIPESTATUS[0]}
+    # Vesion 16.0: Patterns wird derzeit nicht benoetigt
+    #pgsubtitle="Software-Gruppen werden installiert" 
+    #zypper -n install -t pattern `cat $PACKAGELISTDIR/invis_schemes` 2>&1 | tee -a $LOGFILE | pgbox
+    #zyppercheck ${PIPESTATUS[0]}
     # Basis Software
     pgsubtitle="Basis Software wird installiert" 
     zypper -n install -n `cat $PACKAGELISTDIR/invis_base` 2>&1| tee -a $LOGFILE | pgbox 
