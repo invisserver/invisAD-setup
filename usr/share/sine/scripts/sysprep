@@ -329,9 +329,9 @@ clear
 ## Stefan
 ## Gruppe pkeys voruebergehend manuell anlegen
 groupadd -r -g 998 pkeys 2>&1| tee -a $LOGFILE | pgbox
-chmod :pkeys /etc/invis/certs
-chmod :pkeys /etc/invis/private
-chmod :pkeys /etc/invis/ddns
+chown :pkeys /etc/invis/certs 2>&1| tee -a $LOGFILE | pgbox
+chown :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE | pgbox
+chown :pkeys /etc/invis/ddns 2>&1| tee -a $LOGFILE | pgbox
 
 inviscerts intern 2>&1| tee -a $LOGFILE
 chown -R :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE
