@@ -16,9 +16,7 @@
 16:d:monitoring
 17:o:apcupsd
 18:o:groupware
-19:o:erp
-20:o:dokuwiki
-21:o:owncloud
-22:o:kimai
-23:o:virtualbox
-24:o:terminalserver
+19:o:dokuwiki
+20:o:owncloud
+21:o:virtualbox
+
