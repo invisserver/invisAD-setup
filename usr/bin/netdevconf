@@ -40,6 +40,9 @@ echo "Kind=!*" >> $tempfile
 echo "Type=ether" >> $tempfile
 echo "Name=$device" >> $tempfile
 echo >> $tempfile
+echo "[Link] >> $tempfile
+echo "ActivationPolicy=always-up"
+echo >> $tempfile
 echo "[Network]" >> $tempfile
 echo "Address=$ip" >> $tempfile
 echo "DHCP=0" >> $tempfile
