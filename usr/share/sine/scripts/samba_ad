@@ -194,7 +194,9 @@ ipnetmask=`getconfdata "NMask-short" "2"`
 pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
 # AD sichern
 adbackup 2>&1| tee -a $LOGFILE | pgbox
-zarafa_schema_add.sh $basedn $SINEWORKINGDIR/schema/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $LOGFILE
+## Stefan
+# Zarafa/Kopano Schemaerweiterungen werden erst mal nicht mehr installiert.
+# zarafa_schema_add.sh $basedn $SINEWORKINGDIR/schema/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $LOGFILE
 
 ## LDIF-Dateien vorbereiten
 pgsubtitle="Ergänzende LDAP Daten werden vorbereitet"
@@ -304,6 +306,10 @@ string="ldapserver%$ldaphost"
 changevalues $path $file "$string"
 
 ## sssd einrichten
+## Stefan
+## Es gibt aktuell kein sssd Konfigurationsverzeichnis unter /etc. Kopieren von /usr/etc
+cp -r /usr/etc/sssd /etc
+
 # hostname ermitteln
 hn=`hostname`
 # keytab erzeugen
