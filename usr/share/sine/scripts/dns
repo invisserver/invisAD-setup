@@ -58,7 +58,13 @@ cp $TEMPLATEDIR/dns/named.service /etc/systemd/system 2>&1| tee -a $LOGFILE | pg
 systemctl daemon-reload
 
 # Konfiguration von bind wird angepasst
+## Stefan
+## Woraround wegen Bug in Samba-Quellen DLZ Paket fuer
+## bind Version 9.20 wird nicht gebaut, Version 18 ist aber kompatibel
 bindver=`rpm -qa bind|cut -d "-" -f2 |cut -d "." -f2`
+if (( $bindver == 20 )); then
+	bindver=18
+fi
 
 path="/etc"
 file="named.conf"
