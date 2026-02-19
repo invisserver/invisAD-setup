@@ -103,8 +103,8 @@ if [[ $av == "clamav" ]]; then
     zypper -n install -n clamav 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     cp $TEMPLATEDIR/$modulename/clamav/clamd.conf /etc 	2>&1| tee -a $LOGFILE
-    touch /var/log/clamd.log 				2>&1| tee -a $LOGFILE
-    chown vscan:vscan /var/log/clamd.log 			2>&1| tee -a $LOGFILE
+    touch "/var/log/clamd.log" 				2>&1| tee -a $LOGFILE
+    chown vscan:vscan /var/log/clamd.log 		2>&1| tee -a $LOGFILE
     chkservice "clamd"
 else  
     # Info einblenden
@@ -266,7 +266,7 @@ changevalues $path $file "$string"
 
 # Safe CA-Dir if exist
 if [[ -d $path/$domain ]]; then
-    old $path/$domain
+    old $path/$domain 2>&1| tee -a $LOGFILE | pgbox
 fi
 
 # PKI initialisieren
@@ -278,7 +278,7 @@ cat $TEMPLATEDIR/$modulename/profile >> /root/.profile
 
 easyrsa init-pki 2>&1| tee -a $LOGFILE | pgbox
 cp $EASYRSA/vars $EASYRSA_PKI
-old $EASYRSA/vars
+old $EASYRSA/vars 2>&1| tee -a $LOGFILE | pgbox
 
 clear
 
