@@ -1,7 +1,7 @@
 #!/bin/bash
 ### MODUL-NR. 002 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2020 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2026 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -216,6 +216,8 @@ Achtung: Fehlerhafte Eingaben sind nach der vollständigen Installation nur sehr
 	
 	ok=${?}
     done
+    # Hostnamen setzen
+    sethostname $hn.$domain
 
 # DNS Forwarder
 ok=3
@@ -254,89 +256,14 @@ done
 # Forward-String erzeugen
 forwarders=`echo ${fdns[@]} | sed s/" "/"; "/g`";"
 
-#---#System Passwörter
-ok=0
-
-#---# MAIL & Groupware Server
-## Dovecot oder Kopano?
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MAIL & Groupware Server" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
-    kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
-    roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
-    grommunio "Grommunio - Outlook kompatible Groupware (not yet implemented)" off\
-    2>$SINEWORKINGDIR/sine_temp
-    whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
-
-#---# ERP-Software
-# Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Faktura-Software" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie aus, ob Das Faktura-Program Invoiceplane installiert werden soll oder nicht." 16 80 6 \
-    InvoicePlane "Schlanke Fakturierungssoftware, für Dientsleister und Freelancer." off\
-    Keine "Sie verwenden ein eigenes System" on\
-    2>$SINEWORKINGDIR/sine_temp
-    whicherp=`cat $SINEWORKINGDIR/sine_temp`
-    whicherp=`tolower $whicherp`
-
-#---# Typ der eingesetzten Festplatten
-# Es kann zwischen 24/7, Consumer und Consumer low budget gewählt werden
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fepstplatten" --radiolist "$DIALOGSHORTHELP\n\n
-Wählen Sie den von Ihnen eingesetzten Festplattentyp Ihres Servers aus." 16 100 8 \
-    Server "Server Festplatten für 24/7 Dauerbetrieb mit 5 Jahren Garantie" on\
-    Consumer "PC/Server Festplatten mit 3 Jahren Garantie" off\
-    LowBudget "PC-Festplatten mit 1 Jahr Garantie" off\
-    Keine "Der Server ist eine virtuelle Maschine" off\
-    2>$SINEWORKINGDIR/sine_temp
-    whichhd=`cat $SINEWORKINGDIR/sine_temp`
-    whichhd=`tolower $whichhd`
-
-# Da derzeit lediglich Clamav zur Verfuegung steht, wird auf die Abfrage verzichtet.
-av=clamav
-
-#---# Monitoring
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Server Monitoring" --radiolist "$DIALOGSHORTHELP\n\n
-Planen Sie Ihren Server durch eine Monitoring Lösung zu überwachen?
-Für die Lösungen Icinga, Nagios oder Zabbix können im Verlauf des Setups Vorbereitungen getroffen werden.
-\n\n
-Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
-    nagios "Nagios-Plugins (Icinga & Nagios)" on\
-    zabbix "Zabbix-Agent" off\
-    keine  "Keine Überwachung" off\
-    2>$SINEWORKINGDIR/sine_temp
-    whichmonitoring=`cat $SINEWORKINGDIR/sine_temp`
-
-#---# Terminalserver
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Terminalsever" --radiolist "$DIALOGSHORTHELP\n\n
-Planen Sie auf eine grafische Oberfläche des invis-Servers zuzugreifen? \n
-Es werden einen Terminalserver und eine grafische Oberfläche auf dem invis-Server installiert.
-\n\n
-Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
-    xrdp "Xrdp - Terminalserver mit RDP-Protokoll von Microsoft" off\
-    x2go "X2Go - Terminalserver mit ssh-Protokoll" off\
-    kein "Terminalserver nicht installieren" on\
-    2>$SINEWORKINGDIR/sine_temp
-    whichterminalserver=`cat $SINEWORKINGDIR/sine_temp`
-
-#---# Desktop
-if [[ $whichterminalserver != "kein" ]]; then
-dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Terminalsever" --radiolist "$DIALOGSHORTHELP\n\n
-Zur Wahl stehen mehrere grafische Oberflächen. \n\n
-Welche bevorzugen Sie?\n\n" 17 80 7 \
-    enlightenment "erleuchtend" off\
-    lxde "leicht und schön" off\
-    mate "traditionell" on\
-    xfce "rattenschnell" off\
-    2>$SINEWORKINGDIR/sine_temp
-    whichdesktop=`cat $SINEWORKINGDIR/sine_temp`
-fi
-
-#---# HTTPS    
-yesno "Soll Ihr invis Server via Internet (HTTPS) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
+#---# DDNS    
+yesno "Soll Ihr invis Server via Internet (HTTPS,VPN,SSH) erreichbar sein?\n\nVoraussetzung dafür ist ein etwa bei DynDNS.org registrierter Hostname, Zugriff auf einen eigenen DNS Server im Internet oder eine feste IP-Adresse." "HTTPs Zugang"
 exthttps=${?}
     
 if [[ $exthttps == "0" ]]; then
     ok=0
     while [[ $ok != "1" ]]; do
-	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "HTTPs Zugang" --inputbox "Geben Sie bitten den vollständigen Namen (FQDN) oder die IP-Adresse ein unter dem/der ihr invis Server erreichbar sein soll." 0 0 \
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Externer Zugang" --inputbox "Geben Sie bitten den vollständigen Namen (FQDN) oder die IP-Adresse ein unter dem/der ihr invis Server erreichbar sein soll." 0 0 \
 	2>$SINEWORKINGDIR/sine_temp
 	exitcode=${?}
 	ddnshn=`cat $SINEWORKINGDIR/sine_temp`
@@ -354,6 +281,20 @@ if [[ $exthttps == "0" ]]; then
 else
     ddnshn="none"
 fi
+
+#   Ports fuer SSH, HTTPS-Portal ermitteln.
+sshport=`freeports`
+httpsport=`freeports`
+# Doppelte Portbelegung verhindern
+while [[ $sshport == $httpsport ]]; do
+    httpsport=`freeports`
+done
+
+msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
+Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
+SSH Port (Administration): $sshport\n\n
+HTTPS Port (invis-Portal): $httpsport\n\n
+Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
 #---#SMTP Daten
 yesno "Um Emails zuverlässig versenden zu können werden die Zugangsdaten zum SMTP-Server (Server für ausgehende Mails) Ihres Providers benötigt.\n\nSind Ihnen diese Daten bekannt?\n(Wenn nicht, müssen Sie dies zu einem späteren Zeitpunkt von Hand in den Dateien /etc/postfix/main.cf & sasl_passwd eintragen.)" "SMTP Zugangsdaten"
@@ -415,6 +356,58 @@ else
     mailrelay="none"
 fi
 
+#---# Typ der eingesetzten Festplatten
+# Es kann zwischen 24/7, Consumer und Consumer low budget gewählt werden
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Fepstplatten" --radiolist "$DIALOGSHORTHELP\n\n
+Wählen Sie den von Ihnen eingesetzten Festplattentyp Ihres Servers aus." 16 100 8 \
+    Server "Server Festplatten für 24/7 Dauerbetrieb mit 5 Jahren Garantie" on\
+    Consumer "PC/Server Festplatten mit 3 Jahren Garantie" off\
+    LowBudget "PC-Festplatten mit 1 Jahr Garantie" off\
+    Keine "Der Server ist eine virtuelle Maschine" off\
+    2>$SINEWORKINGDIR/sine_temp
+    whichhd=`cat $SINEWORKINGDIR/sine_temp`
+    whichhd=`tolower $whichhd`
+
+#---#System Passwörter
+ok=0
+
+# Da derzeit lediglich Clamav zur Verfuegung steht, wird auf die Abfrage verzichtet.
+av=clamav
+
+#---# MAIL & Groupware Server
+## Wird vorerst auf Roundcube festgelegt
+#dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "MAIL & Groupware Server" --radiolist "$DIALOGSHORTHELP\n\n
+#Wählen Sie die von Ihnen bevorzugte Kombination aus IMAP-Server und Groupware aus." 16 80 7 \
+#    kopano "Mailserver/Groupware Kombination ähnlich MS Exchange" on\
+#    roundcube "Webmailer Roundcube in Kombination mit Dovecot." off\
+#    grommunio "Grommunio - Outlook kompatible Groupware (not yet implemented)" off\
+#    2>$SINEWORKINGDIR/sine_temp
+#    whichgroupware=`cat $SINEWORKINGDIR/sine_temp`
+whichgroupware="roundcube"
+     
+#---# ERP-Software
+## Entfällt (vorerst)
+# Es kann zwischen Kivitendo, Wawision, Invoiceplane oder keiner ERP-Software entschieden werden
+#dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Faktura-Software" --radiolist "$DIALOGSHORTHELP\n\n
+#Wählen Sie aus, ob Das Faktura-Program Invoiceplane installiert werden soll oder nicht." 16 80 6 \
+#    InvoicePlane "Schlanke Fakturierungssoftware, für Dientsleister und Freelancer." off\
+#    Keine "Sie verwenden ein eigenes System" on\
+#    2>$SINEWORKINGDIR/sine_temp
+#    whicherp=`cat $SINEWORKINGDIR/sine_temp`
+#    whicherp=`tolower $whicherp`
+
+#---# Monitoring
+dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "Vorbereitung für Server Monitoring" --radiolist "$DIALOGSHORTHELP\n\n
+Planen Sie Ihren Server durch eine Monitoring Lösung zu überwachen?
+Für die Lösungen Icinga, Nagios oder Zabbix können im Verlauf des Setups Vorbereitungen getroffen werden.
+\n\n
+Welche Lösung möchten Sie einsetzen?\n\n" 17 80 7 \
+    nagios "Nagios-Plugins (Icinga & Nagios)" on\
+    zabbix "Zabbix-Agent" off\
+    keine  "Keine Überwachung" off\
+    2>$SINEWORKINGDIR/sine_temp
+    whichmonitoring=`cat $SINEWORKINGDIR/sine_temp`
+
 #---# CleanTransfer
 yesno "Auf Ihrem Fileserver wird eine Verzeichnisfreigabe (Transfer) für den allgemeinen Dateiaustausch angelegt.\n\n
 Bekanntermaßen häufen sich dort die Datenmengen schnell an und sind größtenteils unstrukturiert. In der Regel fühlt sich niemand 
@@ -447,23 +440,6 @@ if [[ $cleandasi == "0" ]]; then
     dasidays=`cat $SINEWORKINGDIR/sine_temp|cut -d " " -f1`
 fi
 
-#   regelmässige Virenscans
-yesnono "Sollen Cronjobs für regelmäßige Virenscanns der Fileserver-Verzeichnisse eingerichtet werden?" "Regelmäßige Virenscans der Serverfreigaben"
-avcron=${?}
-
-#   Ports fuer SSH, HTTPS-Portal ermitteln.
-sshport=`freeports`
-httpsport=`freeports`
-# Doppelte Portbelegung verhindern
-while [[ $sshport == $httpsport ]]; do
-    httpsport=`freeports`
-done
-
-msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
-Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
-SSH Port (Administration): $sshport\n\n
-HTTPS Port (invis-Portal): $httpsport\n\n
-Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
 # Alle Daten in Kontrolldatei Schreiben
 echo "Country:$country" > $SINEWORKINGDIR/invis_confdata
@@ -493,20 +469,14 @@ echo "ReverseDom:$revnet" >> $SINEWORKINGDIR/invis_confdata
 echo "Forwarders:$forwarders"  >> $SINEWORKINGDIR/invis_confdata
 
 echo "Groupware:$whichgroupware"  >> $SINEWORKINGDIR/invis_confdata
-echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
-echo "TerminalServer:$whichterminalservert" >> $SINEWORKINGDIR/invis_confdata
+#echo "ERPSoftware:$whicherp" >> $SINEWORKINGDIR/invis_confdata
 echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
 echo "HDType:$whichhd" >> $SINEWORKINGDIR/invis_confdata
 echo "SSHPORT:$sshport" >> $SINEWORKINGDIR/invis_confdata
 echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
+echo "DDNS:$ddnshn" >> $SINEWORKINGDIR/invis_confdata
 
 echo "AV:$av" >> $SINEWORKINGDIR/invis_confdata
-if [[ $avcron == "0" ]]; then
-    echo "AVCRON:all" >> $SINEWORKINGDIR/invis_confdata
-else
-    echo "AVCRON:none" >> $SINEWORKINGDIR/invis_confdata
-fi
-echo "DDNS:$ddnshn" >> $SINEWORKINGDIR/invis_confdata
     
 if [[ $mailrelay == "none" ]]; then
     echo "SMTPRELAY:$mailrelay" >> $SINEWORKINGDIR/invis_confdata 
@@ -534,13 +504,11 @@ fi
 ldappw=`pwgen -sBnc 10 1`
 junkpw=`pwgen -sBnc 10 1`
 mysqlpw=`pwgen -sBnc 10 1`
-#ntoppw=`pwgen -sBnc 10 1`
 postmasterpw=`pwgen -sBnc 10 1`
 
 echo "LDAP Administrator:LDAPAdminPW:$ldappw" >> $SINEWORKINGDIR/invis_pws
 echo "Spam owner:JunkPW:$junkpw" >> $SINEWORKINGDIR/invis_pws
 echo "MySQL root:MySQLPW:$mysqlpw" >> $SINEWORKINGDIR/invis_pws
-#echo "NTOP Administrator:NtopPW:$ntoppw" >> $SINEWORKINGDIR/invis_pws
 echo "Postmaster:PostmasterPW:$postmasterpw" >> $SINEWORKINGDIR/invis_pws
 
 chmod 0600 $SINEWORKINGDIR/invis_pws
