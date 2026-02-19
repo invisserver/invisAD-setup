@@ -1,9 +1,9 @@
 #!/bin/bash
 # Kategorie: setup
-# modularised invis AD 14 server setup script sine2
-# Version 14.3
+# modularised invis AD 16 server setup script sine2
+# Version 16.0
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2019 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2026 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -46,7 +46,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Global variables
-INVISVERSION="15.0"
+INVISVERSION="16.0"
 SINEWORKINGDIR="/var/lib/sine"
 export INVISVERSION
 export SINEWORKINGDIR
