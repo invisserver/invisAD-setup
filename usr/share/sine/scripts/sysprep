@@ -105,6 +105,10 @@ if [[ $av == "clamav" ]]; then
     cp $TEMPLATEDIR/$modulename/clamav/clamd.conf /etc 	2>&1| tee -a $LOGFILE
     touch "/var/log/clamd.log" 				2>&1| tee -a $LOGFILE
     chown vscan:vscan /var/log/clamd.log 		2>&1| tee -a $LOGFILE
+    ## Stefan
+    ## selinux hat jetzt die Finger auf den Logfiles. Da wir die Logdatei selbst anlegen muss der Kontext angepasst werden
+    semanage fcontext -a -t antivirus_log_t "/var/log/clamd.log"
+    restorecon -v /var/log/clamd.log
     chkservice "clamd"
 else  
     # Info einblenden
