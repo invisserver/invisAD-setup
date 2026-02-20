@@ -80,18 +80,15 @@ chkservice "amavis"
 # Kopieren der Postfix-Konfigurationsdateien
 cp $TEMPLATEDIR/$modulename/postfix/* /etc/postfix 2>&1| tee -a $LOGFILE
     
-## SOGo, Group-e, Kopano oder Roundcube
+## (Derzeit nur) Roundcube, Grommunio Option bleibt vorerst drin
 whichgroupware=`getconfdata "Groupware" "2"`
 case "$whichgroupware" in
 
     "roundcube" )
 	# Dovecot einrichten 
 	pgsubtitle="Dovecot IMAP wird installiert und eingerichtet"
-	zypper -n install -n dovecot23 2>&1| tee -a $LOGFILE | pgbox
+	zypper -n install -n dovecot 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
-	# copy own apparmo profiles
-	cp -r $TEMPLATEDIR/$modulename/dovecot/apparmor/* /etc/apparmor.d/ 2>&1| tee -a $LOGFILE
-	systemctl restart apparmor.service 2>&1| tee -a $LOGFILE
 	# Konfiguration anpassen
 	cp -r $TEMPLATEDIR/$modulename/dovecot/ad/* /etc/dovecot/ 2>&1| tee -a $LOGFILE
 	path="/etc/dovecot/conf.d"
@@ -118,7 +115,7 @@ case "$whichgroupware" in
 	changevalues $path $file "$string"
 
 	# copy dh-parameters file from postfix to dovecot
-	cp /etc/postfix/dh.pem /etc/dovecot
+	cp /etc/easy-rsa/$domain//dh.pem /etc/dovecot
 
 	# Benutzerkonto fuer das Mailhandling anlegen
 	groupadd -r -g 399 vmail| tee -a $LOGFILE | pgbox
@@ -148,32 +145,6 @@ case "$whichgroupware" in
 	# Transportweg fuer lokale emails festlegen
 	echo "$domain	dovecot:" >> /etc/postfix/relay 2>&1| tee -a $LOGFILE | pgbox
 	postmap /etc/postfix/relay 2> /dev/null
-	;;
-    "kopano" )
-	pgsubtitle="Kopano Groupware und Mailserver wird installiert und vorbereitet"
-	# Installieren der Kopano Pakete.
-	zypper ar -f $REPODIR/invis-kopano.repo 2>&1| tee -a $LOGFILE | pgbox
-	zypper ref 2>&1| tee -a $LOGFILE | pgbox
-	zypper -n install --oldpackage --from spins_invis_15_kopano -n kopano-dagent-pytils 2>&1| tee -a $LOGFILE | pgbox
-	zypper -n install --oldpackage --from spins_invis_15_kopano -n `cat $PACKAGELISTDIR/kopanocorelimited` 2>&1| tee -a $LOGFILE | pgbox
-	zyppercheck ${PIPESTATUS[0]}
-	zypper -n install --oldpackage --from spins_invis_15_kopano -n `cat $PACKAGELISTDIR/kopanowebapplimited` 2>&1| tee -a $LOGFILE | pgbox
-	zyppercheck ${PIPESTATUS[0]}
-	
-	# install common packages
-	zypper -n install -n `cat $PACKAGELISTDIR/kopanocommon` 2>&1| tee -a $LOGFILE | pgbox
-	zyppercheck ${PIPESTATUS[0]}
-
-	# Kopano nur installieren, Konfigurieren und Starten der Dienste erfolgt im Groupware Abschnitt
-	# Symbolischen Link auf das z-push2 Verzeichnis anlegen
-	ln -s /srv/www/htdocs/z-push2 /srv/www/htdocs/z-push
-	
-	rm -f `ls /etc/postfix/ |grep "main.[dovecot|cyrus]"` 2>&1| tee -a $LOGFILE | pgbox
-	mv /etc/postfix/main.kopano /etc/postfix/main.cf 2>&1| tee -a $LOGFILE | pgbox
-	usermod -a -G pkeys kopano 2>&1| tee -a $LOGFILE | pgbox
-	chown kopano $INVISCONFDIR/certs/kopano.pem
-	# Workaround, damit kopano-gabsync funktioniert
-	ln -s /srv/www/htdocs/z-push/backend/ /srv/www/htdocs/z-push/tools/gab-sync/lib/
 	;;
     "grommunio" )
 	pgsubtitle="Grommunio Groupware wird installiert und vorbereitet"
@@ -248,9 +219,9 @@ done
 # Postfix und saslauthd neustarten und in Runlevel aufnehmen
 chkservice "postfix"
 # saslauthd only if kopano is installed
-if [[ $whichgroupware == "kopano" ]]; then
-    chkservice "saslauthd"
-fi
+#if [[ $whichgroupware == "kopano" ]]; then
+#    chkservice "saslauthd"
+#fi
 
 # Fetchmail einrichten
 # Sysconfig Datei bearbeiten
@@ -262,7 +233,7 @@ string="localdomain%$domain"
 changevalues $path $file "$string"
 
 sysconf_addword -r /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 600 2>&1| tee -a $LOGFILE | pgbox
-sysconf_addword /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 120 2>&1| tee -a $LOGFILE | pgbox
+sysconf_addword /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 60 2>&1| tee -a $LOGFILE | pgbox
 
 # Dummy fetchmailrc anlegen.
 fetchmailrc="/var/lib/cornaz/build/.fetchmailrc"
