@@ -31,11 +31,11 @@ else
         exit 1
 fi
 
-# Hostnamen setzen /etc/hostname
-hostnamectl hostname $fqdn
-
 # Eintrag in /etc/hosts generieren
 shortname=`echo $fqdn |cut -d "." -f1`
+
+# Hostnamen setzen /etc/hostname
+hostnamectl hostname $shortname
 
 if [[ `cat /etc/hosts|grep $fqdn` ]]; then
 	echo "Es existiert bereits ein entsprechender Eintrag in /etc/hosts, bitte manuell anpassen."
