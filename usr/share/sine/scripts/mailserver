@@ -128,7 +128,7 @@ case "$whichgroupware" in
 
 	# Dictionary Verzeichnis fuer IMAP ACLs anlegen.
 	mkdir /var/lib/dovecot/db
-	chown vmail.vmail /var/lib/dovecot/db
+	chown vmail:vmail /var/lib/dovecot/db
 	
 	# Dovecots Modulpfad an Systemarchitektur anpassen
 	if [[ $SYSLIBDIR == "/usr/lib64" ]]; then 
@@ -238,7 +238,7 @@ sysconf_addword /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 60 2>&1| tee
 # Dummy fetchmailrc anlegen.
 fetchmailrc="/var/lib/cornaz/build/.fetchmailrc"
 echo 'poll pop.example.com protocol pop3 user dummy pass . is junk here' > $fetchmailrc
-chown wwwrun.www $fetchmailrc
+chown wwwrun:www $fetchmailrc
 chmod 0660 $fetchmailrc
     
 # fetchcopy ausfuehren
@@ -246,6 +246,9 @@ chmod 0660 $fetchmailrc
 chmod 0700 /var/lib/cornaz/inuse/.fetchmailrc		2>&1|tee -a $LOGFILE |pgbox
 chown fetchmail /var/lib/cornaz/inuse/.fetchmailrc	2>&1|tee -a $LOGFILE |pgbox
 
+## Stefan
+## selinux Kontext anpassen
+semanage fcontext -a -t fetchmail_home_t "/var/lib/cornaz/inuse/.fetchmailrc"
 # fetchmail starten und in Autostart aufnehmen
 chkservice "fetchmail"
 
