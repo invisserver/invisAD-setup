@@ -97,11 +97,12 @@ changevalues $INVISCONFDIR "invis.conf" "$string"
 string="invisversion%$INVISVERSION"
 changevalues $INVISCONFDIR "invis.conf" "$string"
 ## Stefan
-## freshclam gibt es nicht mehr, ist noch unklar wie das jetzt funktioniert.
 pgsubtitle="Der Virenscanner ClamAV wird installiert, aktualisiert und aktiviert.\nAls globales Quarantäneverzeichnis wurde /var/spool/infected angelegt."
 if [[ $av == "clamav" ]]; then 
     zypper -n install -n clamav 2>&1| tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
+    # freshclam Timer aktivieren
+    systemctl enable freshclam.timer 2>&1| tee -a $LOGFILE | pgbox
     cp $TEMPLATEDIR/$modulename/clamav/clamd.conf /etc 	2>&1| tee -a $LOGFILE
     touch "/var/log/clamd.log" 				2>&1| tee -a $LOGFILE
     chown vscan:vscan /var/log/clamd.log 		2>&1| tee -a $LOGFILE
