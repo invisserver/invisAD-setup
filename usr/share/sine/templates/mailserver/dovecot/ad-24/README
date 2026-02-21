@@ -1,0 +1,9 @@
+Example configuration files for Dovecot. 
+These files were ported *once* from v2.3 -> v2.4.0.
+
+Please check latest information in https://doc.dovecot.org/latest/
+
+This bundle is unmaintained.
+
+See Willem's blog post on:
+
