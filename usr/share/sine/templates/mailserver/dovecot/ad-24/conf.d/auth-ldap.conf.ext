@@ -3,14 +3,17 @@
 # <https://doc.dovecot.org/latest/core/config/auth/databases/ldap.html>
 
 ## See <https://doc.dovecot.org/latest/core/config/dict.html#ldap>
- 
-#ldap_uris = ldap://localhost
-#ldap_auth_dn = cn=admin 
-#ldap_auth_dn_password = supersecret
+## invis-server.org
+ldap_uris = ldap://ldaphostname
+ldap_auth_dn = CN=Admin LDAP,CN=users,DC=invis-net,DC=loc 
+ldap_auth_dn_password = admin-secret
+ldap_starttls = yes
 
-#passdb ldap {
-#  ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
-#  ldap_bind = no
+passdb ldap {
+  ## invis-server.org
+  #ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
+  (&(objectClass=Person)(sAMAccountName=%{user}))
+  ldap_bind = no
 
 #  fields {
     # user=%{ldap:uid}
@@ -19,7 +22,7 @@
     # userdb_uid=%{ldap:uidNumber}
     # userdb_gid=%{ldap:gidNumber}
 #  }
-#}
+}
 
 # "prefetch" user database means that the passdb already provided the
 # needed information and there's no need to do a separate userdb lookup.
@@ -27,22 +30,24 @@
 #userdb prefetch {
 #}
 
-#userdb ldap {
-#  ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
-
+userdb ldap {
+  ## invis-server.org
+  # ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
+  ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
 # Default fields can be used to specify defaults that LDAP may override
 #  fields {
 #    home=/home/virtual/%{user}
 #  }
-#}
+}
 
 # If you don't have any user-specific settings, you can avoid the userdb LDAP
 # lookup by using userdb static instead of userdb ldap, for example:
 # <https://doc.dovecot.org/latest/core/config/auth/databases/static.html>
-#userdb static {
-  #fields {
-  #  uid = vmail
-  #  gid = vmail
-  #  home = /var/vmail/%{user}
-  #}
-#}
+## invis-server.org
+userdb static {
+  fields {
+    uid = vmail
+    gid = vmail
+    home = /var/spool/mail/%{user}
+  }
+}
