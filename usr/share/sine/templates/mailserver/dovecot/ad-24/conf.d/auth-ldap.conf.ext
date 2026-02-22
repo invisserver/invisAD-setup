@@ -12,7 +12,7 @@ ldap_starttls = yes
 passdb ldap {
   ## invis-server.org
   #ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
-  (&(objectClass=Person)(sAMAccountName=%{user}))
+  ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
   ldap_bind = no
 
 #  fields {
