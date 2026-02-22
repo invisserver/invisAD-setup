@@ -127,8 +127,8 @@ case "$whichgroupware" in
 	chown -R :vmail /var/spool/mail 2>&1| tee -a $LOGFILE | pgbox
 
 	# Dictionary Verzeichnis fuer IMAP ACLs anlegen.
-	mkdir /var/lib/dovecot/db
-	chown vmail:vmail /var/lib/dovecot/db
+	mkdir /var/lib/dovecot/db | tee -a $LOGFILE | pgbox
+	chown vmail:vmail /var/lib/dovecot/db | tee -a $LOGFILE | pgbox
 	
 	# Dovecots Modulpfad an Systemarchitektur anpassen
 	if [[ $SYSLIBDIR == "/usr/lib64" ]]; then 
@@ -232,6 +232,7 @@ file="fetchmail.service"
 string="localdomain%$domain"
 changevalues $path $file "$string"
 
+# Email Abrufintervall auf 60 Sekunden setzen
 sysconf_addword -r /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 600 2>&1| tee -a $LOGFILE | pgbox
 sysconf_addword /etc/sysconfig/fetchmail FETCHMAIL_POLLING_INTERVAL 60 2>&1| tee -a $LOGFILE | pgbox
 
