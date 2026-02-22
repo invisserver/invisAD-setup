@@ -90,7 +90,7 @@ case "$whichgroupware" in
 	zypper -n install -n dovecot 2>&1| tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	# Konfiguration anpassen
-	cp -r $TEMPLATEDIR/$modulename/dovecot/ad/* /etc/dovecot/ 2>&1| tee -a $LOGFILE
+	cp -r $TEMPLATEDIR/$modulename/dovecot/ad-24/* /etc/dovecot/ 2>&1| tee -a $LOGFILE
 	path="/etc/dovecot/conf.d"
 	file="15-lda.conf"
 	domain=`getconfdata "Domain" "2"`
