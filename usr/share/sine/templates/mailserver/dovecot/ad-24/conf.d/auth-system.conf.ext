@@ -48,7 +48,7 @@
   #  home = /var/vmail/%{user}
   #}
   #skip = found
-}
+#}
 
 # Static settings generated from template <https://doc.dovecot.org/latest/core/config/auth/databases/static.html>
 #userdb static {
