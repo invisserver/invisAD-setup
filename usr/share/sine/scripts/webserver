@@ -1,7 +1,7 @@
 #!/bin/bash
 ### MODUL-NR. 010 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2026 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -44,8 +44,8 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="Nginx Webserver"
-pgsubtitle="Nginx Webserver and invis-Portal setup"
+windowtitle="Apache2 Webserver"
+pgsubtitle="Apache2 Webserver and invis-Portal setup"
 
 waitinfobox "Ihr Webserver sowie das invis-Portal werden eingerichtet.
 Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php vorgenommen werden." "Webserver-Konfiguration"
@@ -127,24 +127,41 @@ ln -s $path/$file /srv/www/htdocs/portal/config.php
 # Stammzertifikat der Server-CA bereitstellen
 cp /etc/invis/certs/ca.crt /srv/www/htdocs/portal/inc/
 
-# Nginx Include Verzeichnis vorbereiten
-newdir="/etc/nginx/include"
-mkdir $newdir
-cp $TEMPLATEDIR/$modulename/nginx/include/* $newdir
+# Erforderliche Apache Module aktivieren
+#a2enmod php8 2>&1| tee -a $LOGFILE | pgbox
+a2enmod headers 2>&1| tee -a $LOGFILE | pgbox
+a2enmod proxy 2>&1| tee -a $LOGFILE | pgbox
+a2enmod proxy_http 2>&1| tee -a $LOGFILE | pgbox
+a2enmod proxy_html 2>&1| tee -a $LOGFILE | pgbox
+a2enmod version 2>&1| tee -a $LOGFILE | pgbox
+a2enmod fcgid 2>&1| tee -a $LOGFILE | pgbox
+a2enmod rewrite 2>&1| tee -a $LOGFILE | pgbox
 
-# -> Dateien anpassen
-
-# vHost Dateien kopieren und anpassen
-cp $TEMPLATEDIR/$modulename/nginx/vhosts.d/vh-intern.conf /etc/nginx/vhosts.d/
-path="/etc/nginx/vhosts.d"
+## interner vHost
+cp $TEMPLATEDIR/$modulename/vh-intern.conf /etc/apache2/vhosts.d/
+path="/etc/apache2/vhosts.d"
 file="vh-intern.conf"
 fqdn=`getconfdata "FQDN" "2"`
-string="invis.invis-net.lan%$fqdn"
+string="invisX.invis-net.loc%$fqdn"
+changevalues $path $file "$string"
+    
+domain=`getconfdata "Domain" "2"`
+string="invis-net.loc%$domain"
 changevalues $path $file "$string"
 
-# Kann vermutlich weg
+ip=`getconfdata "IP" "2"`
+string="192.168.220.10%$ip"
+changevalues $path $file "$string"
+
+cp $TEMPLATEDIR/$modulename/vh-intern.conf /etc/apache2/vhosts.d/
+path="/etc/apache2/vhosts.d"
+file="vh-intern.conf"
+fqdn=`getconfdata "FQDN" "2"`
+string="invisX.invis-net.loc%$fqdn"
+changevalues $path $file "$string"
+    
 domain=`getconfdata "Domain" "2"`
-string="invis-net.lan%$domain"
+string="invis-net.loc%$domain"
 changevalues $path $file "$string"
 
 ip=`getconfdata "IP" "2"`
@@ -171,33 +188,36 @@ if [[ $ddnshn != "none" ]]; then
     echo $ddnshn > $path/domains.txt
 
     # Neue vHost Datei kopieren und anpassen
-    path="/etc/nginx/vhosts.d"
-    cp $TEMPLATEDIR/$modulename/vh-dehydrated.conf $path
+    path="/etc/apache2/vhosts.d"
+    cp $TEMPLATEDIR/$modulename/apache2/vh-dehydrated.conf $path
     file="vh-dehydrated.conf"
     string="your.ddns-domain.net%$ddnshn"
     changevalues $path $file "$string"
 
-    # setting nginx Path-Variable for alias
-    # Liegt im include file
-    # -> Hier erledigen (?)
-    path="/etc/nginx/include"
+    # setting apache config to use internal keypairs
+    a2enflag OWNCERTS
 
     # Kopieren und anpassend der Konfigurationsdateien
-    cp $TEMPLATEDIR/$modulename/nginx/vhosts.d/vh-extern.conf /etc/nginx/vhosts.d/
-    path="/etc/nginx/vhosts.d"
+    cp $TEMPLATEDIR/$modulename/apache2/vh-extern.conf /etc/apache2/vhosts.d/
+    path="/etc/apache2/vhosts.d"
     file="vh-extern.conf"
     string="your.ddns-domain.net%$ddnshn"
+    changevalues $path $file "$string"
+
+    # Lokalen Hostnamen ersetzten
+    fqdn=`getconfdata "FQDN" "2"`
+    string="invis.invis-net.loc%$fqdn"
     changevalues $path $file "$string"
 
     # Https Port setzen
     httpsport=`getconfdata "HTTPSPORT" "2"`
     string="httpsport%$httpsport"
     changevalues $path $file "$string"
-
+    
     # Kopieren und anpassend der Konfigurationsdateien
-    cp $TEMPLATEDIR/$modulename/nginx/vhosts.d/vh-combined-ext.conf /etc/nginx/vhosts.d/
+    cp $TEMPLATEDIR/$modulename/apache2/vh-combined-ext.conf /etc/apache2/vhosts.d/
     file="vh-combined-ext.conf"
-    path="/etc/nginx/vhosts.d/"
+    path="/etc/apache2/vhosts.d/"
     ddnsname=`getconfdata "DDNS" "2"`
     string="your.ddns-domain.net%$ddnsname"
     changevalues $path $file "$string"
@@ -214,12 +234,12 @@ changevalues $path $file "$string"
 
 # Wozu ist das gut?
 # Es wird jedenfalls die ldap.conf ins Home-Verzeichnis des users wwwrun verknuepft.
-# Muss das auf nginx geandert werden?
 ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
 
 # Webserver, fetchmail und Mailman neustarten und in Runlevel integrieren
 pgsubtitle="Mehrere Dienste werden neu gestartet"
+chkservice "php-fpm"
 chkservice "apache2"
-    
+
 # Administrator-Konto um Posix-Attribute und ein Homeverzeichnis erweitern
 addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
