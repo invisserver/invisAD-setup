@@ -137,23 +137,7 @@ a2enmod version 2>&1| tee -a $LOGFILE | pgbox
 a2enmod fcgid 2>&1| tee -a $LOGFILE | pgbox
 a2enmod rewrite 2>&1| tee -a $LOGFILE | pgbox
 
-## interner vHost
-cp $TEMPLATEDIR/$modulename/vh-intern.conf /etc/apache2/vhosts.d/
-path="/etc/apache2/vhosts.d"
-file="vh-intern.conf"
-fqdn=`getconfdata "FQDN" "2"`
-string="invisX.invis-net.loc%$fqdn"
-changevalues $path $file "$string"
-    
-domain=`getconfdata "Domain" "2"`
-string="invis-net.loc%$domain"
-changevalues $path $file "$string"
-
-ip=`getconfdata "IP" "2"`
-string="192.168.220.10%$ip"
-changevalues $path $file "$string"
-
-cp $TEMPLATEDIR/$modulename/vh-intern.conf /etc/apache2/vhosts.d/
+cp $TEMPLATEDIR/$modulename/apache2/vh-intern.conf /etc/apache2/vhosts.d/
 path="/etc/apache2/vhosts.d"
 file="vh-intern.conf"
 fqdn=`getconfdata "FQDN" "2"`
