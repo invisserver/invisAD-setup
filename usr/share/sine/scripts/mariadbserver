@@ -67,7 +67,7 @@ changevalues $path $file "$string"
 string="innodblfs%${memsizes[1]}M"
 changevalues $path $file "$string"
 
-chkservice "mysql"
+chkservice "mariadb"
 
 # Der besch. systemd wartet einfach nicht lange genug auf den MySQL Socket
 until [[ -S /var/run/mysql/mysql.sock ]]; do
@@ -76,7 +76,7 @@ until [[ -S /var/run/mysql/mysql.sock ]]; do
 done
 
 # Restart, weil systemd ggf. glaubt, dass mysql nicht laeuft.
-systemctl restart mysql.service 2>&1|tee -a $LOGFILE |pgbox
+systemctl restart mariadb.service 2>&1|tee -a $LOGFILE |pgbox
 
 #MySQL Root-Passwort setzen
 mysqlpw=`getpassword "MySQLPW" "3"`
@@ -84,4 +84,7 @@ mysqladmin password $mysqlpw
 
 # Neuaufbau der Postfix chroot Umgebung zur Unsterstützung von mysql.sock 
 chkservice "postfix"
+
+waitinfobox "Es wird empfohlen nach der invis-Server Installation das Syript \"mysql_secure_installation\" auszuführen.
+Sie benötigen dafür das MyriaDB-root-Passwort ($mysqlpw)." "Empfehlung zu MariaDB"
 
