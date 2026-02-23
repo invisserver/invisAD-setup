@@ -8,7 +8,7 @@
 # License: GPLv3
 # Questions: info@invis-server.org
 
-# Hier Kurzbeschreibung des Moduls einfügen
+# Installation der OpenID Provider Software Keycloak
 
 # Insert short description of this module here
 
@@ -50,6 +50,10 @@ pgsubtitle="Keycloak, OpenID Provider wird installiert"
 # Konfigurationsvariablen lesen
 domain=`getconfdata "Domain" "2"`
 fqdn=`getconfdata "FQDN" "2"`
+
+# temporaer Benutzer und Gruppe keycloak anlegen, bis rpm gefixt ist.
+groupadd -r $modulename
+useradd -r -g $modulename -d "/var/lib/$modulename" -s "/sbin/nologin" -c "$modulename user" $modulename 
 
 # Paket installieren
 pgsubtitle="Software wird installiert"
