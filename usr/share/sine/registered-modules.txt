@@ -8,7 +8,7 @@
 8:d:cups
 9:d:fileserver
 10:d:webserver
-11:d:mysqlserver
+11:d:mariadbserver
 12:d:keycloak
 13:d:postgresqlserver
 14:d:firewall

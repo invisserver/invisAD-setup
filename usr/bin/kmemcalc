@@ -4,7 +4,7 @@
 # MariaDB und Zarfa Konfiguration
 # Beruecksichtigt wird der gesamte zur Verfuegung stehende
 # Speicher.
-# (C) 2015 Stefan Schaefer -- stefan@invis-server.org
+# (C) 2015,2026 Stefan Schaefer -- stefan@invis-server.org
 # License: GPLv3
 
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -25,20 +25,20 @@ memtotal=$(cat /proc/meminfo|grep MemTotal|tr -s " "|cut -d " " -f2)
 memtotalmb=$(echo "scale=0;$memtotal/1024"|bc)
 
 if (( $memtotalmb <= 2048 )); then
+	# 20% fuer MariaDB innodb_buffer_pool_size
+	innodbbps=$(echo "scale=0;$memtotalmb/5"|bc)
+	# 10 % fuer Zarafa cache_cell_size
+	zarafaccs=$(echo "scale=0;$memtotalmb/10"|bc)
+elif (( $memtotal > 2048 && $memtotal <= 4096 ));then
 	# 25% fuer MariaDB innodb_buffer_pool_size
 	innodbbps=$(echo "scale=0;$memtotalmb/4"|bc)
 	# 12,5 % fuer Zarafa cache_cell_size
 	zarafaccs=$(echo "scale=0;$memtotalmb/8"|bc)
-elif (( $memtotal > 2048 && $memtotal <= 4096 ));then
+else
 	# 33% fuer MariaDB innodb_buffer_pool_size
 	innodbbps=$(echo "scale=0;$memtotalmb/3"|bc)
 	# 17,5 % fuer Zarafa cache_cell_size
 	zarafaccs=$(echo "scale=0;$memtotalmb/6"|bc)
-else
-	# 50% fuer MariaDB innodb_buffer_pool_size
-	innodbbps=$(echo "scale=0;$memtotalmb/2"|bc)
-	# 10 % fuer Zarafa cache_cell_size
-	zarafaccs=$(echo "scale=0;$memtotalmb/4"|bc)
 fi
 
 # innodb_log_file_size = 25% des innodb_buffer_pool_size
