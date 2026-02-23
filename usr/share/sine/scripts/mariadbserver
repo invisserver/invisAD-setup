@@ -53,8 +53,6 @@ Bei weniger als 2GB RAM werden ca. 20%, bei 2-4GB
 RAM ca. 25% und bei mehr als 4GB RAM ca 33% des RAMs reserviert.
 Beachten Sie dies beispielsweise bei der Einrichtung virtueller Maschinen." "Speicherreservierung für MariaDB"
 
-cp $TEMPLATEDIR/$modulename/config.inc.php /srv/www/htdocs/phpMyAdmin/config.inc.php
-chown wwwrun:www /srv/www/htdocs/phpMyAdmin/config.inc.php
 # MySQL Config schreiben, Speichereinstellungen anpassen
 # und in Runlevel integrieren und starten.
 cp $TEMPLATEDIR/$modulename/my.cnf /etc/
@@ -80,7 +78,7 @@ systemctl restart mariadb.service 2>&1|tee -a $LOGFILE |pgbox
 
 #MySQL Root-Passwort setzen
 mysqlpw=`getpassword "MySQLPW" "3"`
-mysqladmin password $mysqlpw
+mariadb-admin password $mysqlpw
 
 # Neuaufbau der Postfix chroot Umgebung zur Unsterstützung von mysql.sock 
 chkservice "postfix"
