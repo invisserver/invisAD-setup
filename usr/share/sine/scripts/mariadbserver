@@ -86,5 +86,5 @@ mysqladmin password $mysqlpw
 chkservice "postfix"
 
 waitinfobox "Es wird empfohlen nach der invis-Server Installation das Syript \"mysql_secure_installation\" auszuführen.
-Sie benötigen dafür das MyriaDB-root-Passwort ($mysqlpw)." "Empfehlung zu MariaDB"
+Sie benötigen dafür das MyriaDB-root-Passwort, zu finden in \"/etc/invis/invis-pws.txt\"." "Empfehlung zu MariaDB"
 
