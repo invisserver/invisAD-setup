@@ -189,7 +189,7 @@ ipnetmask=`getconfdata "NMask-short" "2"`
 # Zarafa/Kopano AD Schema-Erweiterungen einpflegen
 pgsubtitle="Kopano AD Schema-Erweiterungen werden installiert - das dauert..."
 # AD sichern
-adbackup 2>&1| tee -a $LOGFILE | pgbox
+#adbackup 2>&1| tee -a $LOGFILE | pgbox
 ## Stefan
 # Zarafa/Kopano Schemaerweiterungen werden erst mal nicht mehr installiert.
 # zarafa_schema_add.sh $basedn $SINEWORKINGDIR/schema/ -v -H /var/lib/samba/private/sam.ldb -writechanges 2>&1| tee -a $LOGFILE
@@ -286,6 +286,9 @@ ldbmodify -v -H $sam $workfile 2>&1| tee -a $LOGFILE | pgbox
 # run dbcheck for ad
 pgsubtitle="LDAP Verzeichnis wird geprueft und etwaige Fehler behoben."
 samba-tool dbcheck --fix --yes 2>&1| tee -a $LOGFILE | pgbox
+
+# AD sichern
+adbackup 2>&1| tee -a $LOGFILE | pgbox
 
 # restart samba services
 systemctl start samba-ad-dc.service 2>&1| tee -a $LOGFILE | pgbox
