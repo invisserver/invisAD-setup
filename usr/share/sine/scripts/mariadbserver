@@ -85,6 +85,6 @@ mysqladmin password $mysqlpw
 # Neuaufbau der Postfix chroot Umgebung zur Unsterstützung von mysql.sock 
 chkservice "postfix"
 
-waitinfobox "Es wird empfohlen nach der invis-Server Installation das Syript \"mysql_secure_installation\" auszuführen.
-Sie benötigen dafür das MyriaDB-root-Passwort, zu finden in \"/etc/invis/invis-pws.txt\"." "Empfehlung zu MariaDB"
+waitinfobox "Es wird empfohlen nach der invis-Server Installation das Syript \"mariadb-secure-installation\" auszuführen.
+Sie benötigen dafür das MyriaDB-root-Passwort, zu finden mit \"sine2 showpws\"." "Empfehlung zu MariaDB"
 
