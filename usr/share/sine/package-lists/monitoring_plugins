@@ -27,5 +27,4 @@ monitoring-plugins-tcp
 monitoring-plugins-ssh
 monitoring-plugins-swap
 monitoring-plugins-ups
-monitoring-plugins-clamav
 
