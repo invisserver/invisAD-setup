@@ -1,7 +1,7 @@
 #!/bin/bash
 ### MODUL-NR. 017 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2018 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2026 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -45,7 +45,7 @@ modulename=`basename $0`
 
 clear
 windowtitle="Groupware Setup"
-pgsubtitle="Kopano - eGroupware - Roundcube"
+pgsubtitle="Roundcube - Grommunio"
 
 whichgroupware=`getconfdata "Groupware" "2"`
 
@@ -53,142 +53,30 @@ case "$whichgroupware" in
 
     "grommunio" )
 	windowtitle="grommunio Installation"
-	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/grommunio.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie tine20 installieren?" 0 0
+	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/grommunio.txt" 38 90 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie Grommunio installieren?" 0 0
 	cont=${?}
 
 	if [[ $cont == "0" ]]; then
 	    pgsubtitle="Zusätzliche Software wird installiert"
 	    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-	    #zypper -n install -n tine20 2>&1 | tee -a $LOGFILE | pgbox
 	    zyppercheck ${PIPESTATUS[0]}
 
 	else
 	    msgbox "grommunio Installation übersprungenen." "$windowtitle"
 	fi
 	;; 
-
-    "kopano" )
-	## Kopano
-	windowtitle="Kopano Konfiguration"
-	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle"  --exit-label "Weiter" --textbox "$INFODIR/kopano.txt" 38 90
-
-	## Leere Kopano-Datenbank anlegen
-	kopanodbuserpw=`mkdbsilent kopano kopano a`
-	echo "DB-User kopano:KOPANODBPW:$kopanodbuserpw" >> $SINEWORKINGDIR/invis_pws 
-
-	## hier gehts weiter....
-        # Locales-Vorlage kopieren
-	cp $TEMPLATEDIR/$modulename/kopano/kopano /etc/sysconfig/
-
-	# Konfigurationsvorlagen kopieren
-	# Create Clientkey directory
-	mkdir /etc/kopano/sslkeys
-	cp $TEMPLATEDIR/$modulename/kopano/*.cfg /etc/kopano/
-	chown -R .kopano /etc/kopano/
-	chmod g+r /etc/kopano/*.cfg
-	
-	# Konfigurationsdaten einlesen
-	fqdn=`getconfdata "FQDN" "2"`
-	domain=`getconfdata "Domain" "2"`
-	basedn=`getconfdata "baseDN" "2"`
-	ldapmasterpw=`getpassword "LDAPAdminPW" "3"`
-
-	# Datenbank Zugang in Kopano Konfiguration einfuegen usw.
-	path="/etc/kopano"
-	file="server.cfg"
-	string="dbuserpass%$kopanodbuserpw"
-	changevalues $path $file "$string"
-
-	string="postmaster@localhost%postmaster@$domain"
-	changevalues $path $file "$string"
-
-	# cache_cell_size anpassen, wenn zmemcalc mehr als 512M berechnet
-	kopanomem=($(kmemcalc))
-	if (( ${kopanomem[2]} > 512 ));then
-	    string="512M%${kopanomem[2]}M"
-	    changevalues $path $file "$string"
-	fi
-	
-	# LDAP Konfiguration anpassen
-	file="ldap.cfg"
-
-	string="ldapuri%ldaps://$fqdn"
-	changevalues $path $file "$string"
-
-	string="admin-secret%$ldapmasterpw"
-	changevalues $path $file "$string"
-
-	string="dc=kopano,dc=com%$basedn"
-	changevalues $path $file "$string"
-    
-	string="dc=invis-net,dc=loc%$basedn"
-	changevalues $path $file "$string"
-	
-	string="invis-net.loc%$domain"
-	changevalues $path $file "$string"
-
-	# Presence Daemon anpassen
-	secret=`pwgen -sBn 32 1`
-	file="presence.cfg"
-	string="GEHEIM%$secret"
-	changevalues $path $file "$string"
-
-	# Webapp
-	path="/etc/kopano/webapp"
-	file="config.php"
-
-	string="London%Berlin"
-	changevalues $path $file "$string"
-
-	string="en_GB%de_DE.UTF-8"
-	changevalues $path $file "$string"
-    
-	# Kopano-Schluessel erzeugen
-	# ...ist jetzt in inviscerts integriert
-	# mkkopanokey
-    
-	# Rechte am Zarafa Attachement-Verzeichnis anpassen
-	mkdir /srv/kopano
-	chown -R kopano.kopano /srv/kopano
-
-	# Dienste ins Runlevel-Konzept eintragen
-	for kopinit in /usr/lib/systemd/system/kopano-* ; do
-	    kopinit=`basename $kopinit|cut -d "." -f1`
-	    chkservice $kopinit
-	done
-
-	# Konfigurationsvorlagen kopieren
-	cp $TEMPLATEDIR/$modulename/kopano/apache2/kopano-webapp.conf /etc/apache2/conf.d
-
-	# Konfigurationsvorlagen kopieren
-	cp $TEMPLATEDIR/$modulename/kopano/z-push/*.conf.php /etc/z-push/
-
-	a2enflag KOPANO
-	chkservice apache2
-    
-	# Oeffentlichen Speicher anlegen
-	kopano-storeadm -P
-
-	# extend accounts junk and postmaster with zarafa attributes
-	extzu junk 1
-	extzu postmaster 1
-	
-	## Stefan - LDIF anpassen
-	# Webapp im Portal aktivieren
-	swpestat KopanoApp TRUE 2>&1 | tee -a $LOGFILE | pgbox
-    
-	;;
     "roundcube" )
 	windowtitle="Roundcube Installation"
 	dialog --backtitle "$DIALOGTITLE - Modul: $modulename" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/roundcube.txt" 38 90
 	zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-	zypper -n install -n roundcubemail 2>&1 | tee -a $LOGFILE | pgbox
+	commonrepo=`zypper repos |grep common|tr -d " "|cut -d '|' -f1`
+	zypper -n install --from $commonrepo -n roundcubemail 2>&1 | tee -a $LOGFILE | pgbox
 	zyppercheck ${PIPESTATUS[0]}
 	
 	# Datenbank anlegen
 	rcmdbpass=`mkdbsilent roundcubemail roundcube a`
 	echo "DB-User roundcube:RCDBPW:$rcmdpass" >> $SINEWORKINGDIR/invis_pws 
-	mysql -u roundcube --password=$rcmdbpass roundcubemail < /usr/share/doc/packages/roundcubemail/SQL/mysql.initial.sql
+	mariadb -u roundcube --password=$rcmdbpass roundcubemail < /usr/share/doc/packages/roundcubemail/SQL/mysql.initial.sql
 
 	# Konfigurationsdateien kopieren und anpassen
 	path="/etc/roundcubemail/"
