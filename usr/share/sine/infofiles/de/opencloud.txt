@@ -1,0 +1,26 @@
+
+File Sync & Share – immer up to date
+Änderungen an Dokumenten werden in Echtzeit synchronisiert, sodass alle Teammitglieder
+jederzeit Zugriff auf die aktuellste Version haben – auch unterwegs.
+
+Workspaces – einfach zusammenarbeiten
+Erstellen Sie Datenräume, die den Zugriff für alle Teammitglieder ermöglichen und 
+eine effiziente Zusammenarbeit fördern. In diesen zentralen Bereichen können Dateien
+und Ordner organisiert, verwaltet und sicher geteilt werden.
+
+Smart Search – finden statt suchen
+Die leistungsstarke Volltext- und Metadaten-Suche ermöglicht es Ihnen, durch alle 
+Dokumente und Dateien zu stöbern und schnell relevante Informationen zu entdecken. 
+Egal, ob Sie nach bestimmten Begriffen im Text, nach spezifischen Metadaten wie 
+Änderungsdatum oder Dokumententyp suchen.
+
+Web Office – produktiv im Team
+Mit den integrierten Office-Anwendungen von OpenCloud arbeiten Teams in Echtzeit an 
+Dokumenten – ob Text, Tabellen oder Präsentationen. Dank nahtloser Zusammenarbeit, 
+Versionskontrolle und sicherem Dateizugriff behalten Sie stets die Übersicht.
+
+Desktop & Mobile-Apps - Dateien nahtlos verwalten
+Dateien lassen sich direkt im Dateimanager bearbeiten, offline nutzen und automatisch 
+synchronisieren. Auch mobil ist der Zugriff jederzeit möglich – inklusive Dokumentenscan, 
+Fotosicherung und sicherem Zugriff per Face ID oder Touch ID. 
+
