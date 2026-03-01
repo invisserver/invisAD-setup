@@ -17,6 +17,6 @@
 17:o:apcupsd
 18:o:groupware
 19:o:dokuwiki
-20:o:owncloud
+20:o:opencloud
 21:o:virtualbox
 

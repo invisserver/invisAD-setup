@@ -1,16 +1,16 @@
 #!/bin/bash
 ### MODUL-NR. 020 ###
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2017 Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2026 Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
 # License: GPLv3
 # Questions: info@invis-server.org
 
-# ownCloud Installation
+# openCloud Installation
 
-# ownCloud setup
+# openCloud setup
 
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
 # GNU General Public License, wie von der Free Software Foundation veröffentlicht,
@@ -44,40 +44,42 @@ source $SINEINCLUDEDIR/functions
 modulename=`basename $0`
 
 clear
-windowtitle="ownCloud"
-pgsubtitle="ownCloud Setup"
+windowtitle="openCloud"
+pgsubtitle="openCloud Setup"
 
-dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/owncloud.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie ownCloud installieren?" 0 0
+dialog --backtitle "$DIALOGTITLE" --title "$windowtitle" --exit-label "Weiter" --textbox "$INFODIR/opencloud.txt" 0 0 --and-widget --backtitle "$DIALOGTITLE" --title "$windowtitle"  --defaultno --yesno "Möchten Sie openCloud installieren?" 0 0
 cont=${?}
 
 # Weitermachen?
 if [[ $cont == "0" ]]; then
     pgsubtitle="Software wird installiert"
     zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-    zypper -n install owncloud-complete-files php7-intl 2>&1 | tee -a $LOGFILE | pgbox
+    #zypper -n install 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # Hier Datenbank installation einfügen
-    ocpass=`mkdbsilent owncloud owncloud a`
-    echo "DB-User owncloud:OCDBPW:$ocpass" >> $SINEWORKINGDIR/invis_pws 
+    #ocpass=`mkdbsilent owncloud owncloud a`
+    #echo "DB-User owncloud:OCDBPW:$ocpass" >> $SINEWORKINGDIR/invis_pws 
 
     # Gruppe "owncloud" anlegen
-    samba-tool group add --description="Gruppe zur Beschränkung der ownCloud Nutzer" owncloud 2>&1| tee -a $LOGFILE | pgbox
+    samba-tool group add --description="Gruppe zur Beschränkung der openCloud Nutzer" opencloud 2>&1| tee -a $LOGFILE | pgbox
 
     # ownCloud im Portal aktivieren
     # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
     usedgroupware=`getconfdata "Groupware" "2"`
     if [[ $usedgroupware == "roundcube" ]]; then
-	swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	#swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
     else
 	## Apache vorbereiten
 	# activate apache configuration
-	cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
-	swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	#cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
+	#swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
+	echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
     fi
-    # Flag OWNCLOUD setzen
-    a2enflag OWNCLOUD
+    # Flag OPENCLOUD setzen
+    a2enflag OPENCLOUD
     chkservice apache2 r
 
 else
-    msgbox "ownCloud Installation übersprungen" "$windowtitle"
+    msgbox "openCloud Installation übersprungen" "$windowtitle"
 fi
