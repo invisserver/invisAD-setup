@@ -331,13 +331,6 @@ Das verlangte Passwort ist dass Passwort Ihrer SSL-Zertifizierungsstelle (CA)." 
 
 clear
 
-## Stefan
-## Gruppe pkeys voruebergehend manuell anlegen
-groupadd -r -g 998 pkeys 2>&1| tee -a $LOGFILE | pgbox
-chown :pkeys /etc/invis/certs 2>&1| tee -a $LOGFILE | pgbox
-chown :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE | pgbox
-chown :pkeys /etc/invis/ddns 2>&1| tee -a $LOGFILE | pgbox
-
 inviscerts intern 2>&1| tee -a $LOGFILE
 chown -R :pkeys /etc/invis/private 2>&1| tee -a $LOGFILE
 chmod g+rx,o-rx /etc/invis/private 2>&1| tee -a $LOGFILE
@@ -397,7 +390,7 @@ changevalues $path $file "$string"
 
 sockdir="/var/lib/samba/ntp_signd"
 mkdir -p $sockdir
-chown .chrony $sockdir
+chown :chrony $sockdir
 chmod 0750 $sockdir
 
 # Restart chronyd
