@@ -49,3 +49,6 @@ pgsubtitle="Installation und Einrichtung der Systemverwaltung Cockpit"
 
 zypper -n install -n `cat $PACKAGELISTDIR/cockpit` 2>&1| tee -a $LOGFILE | pgbox
 zyppercheck ${PIPESTATUS[0]}
+
+chkservice "cockpit"
+

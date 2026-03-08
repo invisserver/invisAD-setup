@@ -50,7 +50,7 @@ tar -czf $SINEWORKINGDIR/etc-backup-$timestamp.tar.gz /etc 2>&1| tee -a $LOGFILE
 
 # /etc/issue anpassen
 mv /etc/issue /etc/issue.old
-mv /etc/issue.net /etc/issue.net.old
+#mv /etc/issue.net /etc/issue.net.old
 
 echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $OPENSUSEVERSION. \r (\l)." > /etc/issue
 echo "Willkommen an invis-Server Active Directory $INVISVERSION auf openSUSE $OPENSUSEVERSION. %r (%t)." > /etc/issue.net
