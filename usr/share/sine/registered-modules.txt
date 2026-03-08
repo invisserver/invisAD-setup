@@ -9,8 +9,8 @@
 9:d:cups
 10:d:fileserver
 11:d:webserver
-12:d:mariadbserver
 13:d:keycloak
+12:d:mariadbserver
 14:d:postgresqlserver
 15:d:firewall
 16:d:openvpn

@@ -66,7 +66,7 @@ cat $TEMPLATEDIR/$modulename/profile >> /root/.profile
 
 # Java Umgebung CA-Cert in keystore packen
 openssl x509 -in /etc/easy-rsa/$domain/ca.crt -inform pem -out /etc/easy-rsa/$domain/ca.der -outform der 2>&1 | tee -a $LOGFILE | pgbox
-keytool -importcert -alias invis-Server-CA -cacerts -storepass changeit -file ca.der 2>&1 | tee -a $LOGFILE | pgbox
+keytool -importcert -alias invis-Server-CA -cacerts -storepass changeit -noprompt -file /etc/easy-rsa/$domain/ca.der 2>&1 | tee -a $LOGFILE | pgbox
 
 # Testen, ob der Import geklappt hat
 keytool -cacerts -storepass changeit -list|grep invis 2>&1
