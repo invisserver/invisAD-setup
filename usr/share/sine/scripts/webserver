@@ -137,6 +137,9 @@ a2enmod version 2>&1| tee -a $LOGFILE | pgbox
 a2enmod fcgid 2>&1| tee -a $LOGFILE | pgbox
 a2enmod rewrite 2>&1| tee -a $LOGFILE | pgbox
 
+# SSL Umgebung aktivieren
+a2enflag SSL 2>&1 | tee -a $LOGFILE | pgbox
+
 cp $TEMPLATEDIR/$modulename/apache2/vh-intern.conf /etc/apache2/vhosts.d/
 path="/etc/apache2/vhosts.d"
 file="vh-intern.conf"
