@@ -1,10 +1,10 @@
 1:d:check
 2:d:quest
 3:d:sysprep
-4:d:cockpit
-5:d:samba_ad
-6:d:dns
-7:d:dhcp
+4:d:samba_ad
+5:d:dns
+6:d:dhcp
+7:d:cockpit
 8:d:mailserver
 9:d:cups
 10:d:fileserver
