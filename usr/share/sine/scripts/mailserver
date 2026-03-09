@@ -96,9 +96,8 @@ case "$whichgroupware" in
 	domain=`getconfdata "Domain" "2"`
 	string="invis-net.loc%$domain"
 	changevalues $path $file "$string"
-	#Dovecot-LDAP Anbindung konfigurieren
-	path="/etc/dovecot/"
-	file="dovecot-ldap.conf.ext"
+	# Dovecot-LDAP Anbindung konfigurieren
+	file="auth-ldap.conf.ext"
 	basedn=`getconfdata "baseDN" "2"`
 	string="dc=invis-net,dc=loc%$basedn"
 	changevalues $path $file "$string"
@@ -115,7 +114,7 @@ case "$whichgroupware" in
 	changevalues $path $file "$string"
 
 	# copy dh-parameters file from postfix to dovecot
-	cp /etc/easy-rsa/$domain//dh.pem /etc/dovecot
+	cp /etc/easy-rsa/$domain/dh.pem /etc/dovecot
 
 	# Benutzerkonto fuer das Mailhandling anlegen
 	groupadd -r -g 399 vmail| tee -a $LOGFILE | pgbox
