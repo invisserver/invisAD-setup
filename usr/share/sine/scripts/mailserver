@@ -105,6 +105,9 @@ case "$whichgroupware" in
 	string="DC=invis-net,DC=loc%$basedn"
 	changevalues $path $file "$string"
 
+	string="localdomain%$domain"
+	changevalues $path $file "$string"
+	
 	ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 	string="admin-secret%$ldapadminpw"
 	changevalues $path $file "$string"

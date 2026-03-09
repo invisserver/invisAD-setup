@@ -11,17 +11,14 @@ ldap_starttls = yes
 
 passdb ldap {
   ## invis-server.org
-  #ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
+  bind_userdn = %{user}@localdomain
   ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
-  ldap_bind = no
+  ldap_bind = yes
+  use_worker = yes
 
-#  fields {
-    # user=%{ldap:uid}
-    # password=%{ldap:userPassword}
-    # userdb_home=%{ldap:homeDirectory}
-    # userdb_uid=%{ldap:uidNumber}
-    # userdb_gid=%{ldap:gidNumber}
-#  }
+  fields {
+     password = %{ldap:unicodePwd}
+  }
 }
 
 # "prefetch" user database means that the passdb already provided the
@@ -32,12 +29,13 @@ passdb ldap {
 
 userdb ldap {
   ## invis-server.org
-  # ldap_filter = (&(objectClass=posixAccount)(uid=%{user}))
   ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
-# Default fields can be used to specify defaults that LDAP may override
-#  fields {
-#    home=/home/virtual/%{user}
-#  }
+  # Default fields can be used to specify defaults that LDAP may override
+  fields {
+    home=/var/spool/mail/%{user}
+    uid = vmail
+    gid = vmail
+  }
 }
 
 # If you don't have any user-specific settings, you can avoid the userdb LDAP
