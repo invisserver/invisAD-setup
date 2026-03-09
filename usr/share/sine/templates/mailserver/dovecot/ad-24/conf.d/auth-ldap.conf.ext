@@ -4,7 +4,9 @@
 
 ## See <https://doc.dovecot.org/latest/core/config/dict.html#ldap>
 ## invis-server.org
-ldap_uris = ldap://ldaphostname
+## Merkwuerdigerweise funktioniert die AD-Anbindung nur noch
+## ueber den GlobalCatalog Port 3268, Ursache unbekannt.
+ldap_uris = ldap://ldaphostname:3268
 ldap_auth_dn = CN=Admin LDAP,CN=users,DC=invis-net,DC=loc 
 ldap_auth_dn_password = admin-secret
 ldap_starttls = yes
@@ -27,16 +29,16 @@ passdb ldap {
 #userdb prefetch {
 #}
 
-userdb ldap {
-  ## invis-server.org
-  ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
-  # Default fields can be used to specify defaults that LDAP may override
-  fields {
-    home=/var/spool/mail/%{user}
-    uid = vmail
-    gid = vmail
-  }
-}
+#userdb ldap {
+#  ## invis-server.org
+#  ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
+#  # Default fields can be used to specify defaults that LDAP may override
+#  fields {
+#    home=/var/spool/mail/%{user}
+#    uid = vmail
+#    gid = vmail
+#  }
+#}
 
 # If you don't have any user-specific settings, you can avoid the userdb LDAP
 # lookup by using userdb static instead of userdb ldap, for example:
