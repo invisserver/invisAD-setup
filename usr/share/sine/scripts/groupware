@@ -80,13 +80,16 @@ case "$whichgroupware" in
 
 	# Konfigurationsdateien kopieren und anpassen
 	path="/etc/roundcubemail/"
-	cp $TEMPLATEDIR/$modulename/roundcube/*.php $path
+	cp $TEMPLATEDIR/$modulename/roundcube/config.inc.php $path
 	file="config.inc.php"
 	string="roundcube:pass%roundcube:$rcmdbpass"
 	changevalues $path $file "$string"
 
 	domain=`getconfdata "Domain" "2"`
-	file="defaults.inc.php"
+	string="mailhost%mail.$domain"
+	changevalues $path $file "$string"
+
+	domain=`getconfdata "Domain" "2"`
 	string="invis-net.loc%$domain"
 	changevalues $path $file "$string"
 

@@ -29,25 +29,26 @@ passdb ldap {
 #userdb prefetch {
 #}
 
-#userdb ldap {
+userdb ldap {
 #  ## invis-server.org
-#  ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
+  ldap_filter = (&(objectClass=Person)(sAMAccountName=%{user}))
 #  # Default fields can be used to specify defaults that LDAP may override
-#  fields {
-#    home=/var/spool/mail/%{user}
-#    uid = vmail
-#    gid = vmail
-#  }
-#}
+  fields {
+    home=/var/spool/mail/%{user}
+    displayname = %{ldap:displayName}
+    uid = vmail
+    gid = vmail
+  }
+}
 
 # If you don't have any user-specific settings, you can avoid the userdb LDAP
 # lookup by using userdb static instead of userdb ldap, for example:
 # <https://doc.dovecot.org/latest/core/config/auth/databases/static.html>
 ## invis-server.org
-userdb static {
-  fields {
-    uid = vmail
-    gid = vmail
-    home = /var/spool/mail/%{user}
-  }
-}
+#userdb static {
+#  fields {
+#    uid = vmail
+#    gid = vmail
+#    home = /var/spool/mail/%{user}
+#  }
+#}
