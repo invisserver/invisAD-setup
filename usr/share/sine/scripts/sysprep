@@ -355,21 +355,14 @@ clear
 inviscerts extern 2>&1| tee -a $LOGFILE
 
 # Zeitzoneneinstellung des Servers ermitteln
-# php versteht CEST nicht mehr
 timezone=`cat /etc/sysconfig/clock|grep ^DEFAULT_TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
 # set timezon in php.ini to local timezone
-file="php.ini"
-path="/etc/php8/fpm"
-string="UTC%$timezone"
-changevalues $path $file "$string"
+file="99-invis-server.ini"
+path="/etc/php8/conf.d/"
+cp $TEMPLATEDIR/$modulename/php/$file $path
 
-path="/etc/php8/cli"
-string="UTC%$timezone"
-changevalues $path $file "$string"
-
-path="/etc/php8/fastcgi"
-string="UTC%$timezone"
+string="localtimezone%$timezone"
 changevalues $path $file "$string"
 
 # Chronyd Dienst wird konfiguriert
