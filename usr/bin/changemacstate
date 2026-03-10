@@ -105,7 +105,7 @@ fi
 
 # Neue .fetchmailrc aktivieren
 cp $buildfrcfile $actfrcfile
-chown fetchmail.root $actfrcfile
+chown fetchmail:root $actfrcfile
 chmod 0710 $actfrcfile
 
 # Fetchmail neu starten
