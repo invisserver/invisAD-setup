@@ -230,3 +230,23 @@ chkservice "apache2"
 
 # Administrator-Konto um Posix-Attribute und ein Homeverzeichnis erweitern
 addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
+
+
+## phpLDAPadmin Setup
+cd /srv/www/htdocs/phpldapadmin
+npm -i 2>&1| tee -a $LOGFILE | pgbox
+npm run prod 2>&1| tee -a $LOGFILE | pgbox
+composer i --no-dev
+cp $TEMPLATEDIR/$modulename/phpldapadmin/.env /srv/www/htdocs/phpldapadmin/
+
+path="/srv/www/htdocs/phpldapadmin/"
+file=".env"
+string="DC=invis-net,DC=loc%$basedn"
+changevalues $path $file "$string"
+string="ldapserver%$ldaphost"
+changevalues $path $file "$string"
+string="admin-secret%$ldapadminpw"
+changevalues $path $file "$string"
+string="ldapadmin%LDAP Admin,CN=Users,$basedn"
+changevalues $path $file "$string"
+
