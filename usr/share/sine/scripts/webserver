@@ -247,7 +247,7 @@ string="ldapserver%$ldaphost"
 changevalues $path $file "$string"
 string="admin-secret%$ldapadminpw"
 changevalues $path $file "$string"
-string="ldapadmin%LDAP Admin,CN=Users,$basedn"
+string="ldapadmin%Admin LDAP,CN=Users,$basedn"
 changevalues $path $file "$string"
 
 sudo -u wwwrun ./artisan key:generate
