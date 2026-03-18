@@ -54,7 +54,7 @@ cont=${?}
 if [[ $cont == "0" ]]; then
     pgsubtitle="Software wird installiert"
     zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-    #zypper -n install 2>&1 | tee -a $LOGFILE | pgbox
+    zypper -n install opencloud-server 2>&1 | tee -a $LOGFILE | pgbox
     zyppercheck ${PIPESTATUS[0]}
     # Hier Datenbank installation einfügen
     #ocpass=`mkdbsilent owncloud owncloud a`
@@ -71,7 +71,8 @@ if [[ $cont == "0" ]]; then
     moddnsrecords a A weboffice $ip
     moddnsrecords a A wopi $ip
 
-
+	# openCloud initialisieren
+	sudo -u opencloud-server opencloud-server init --config-path /etc/opencloud-server/
 
     # ownCloud im Portal aktivieren
     # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
