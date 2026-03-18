@@ -89,7 +89,7 @@ deploycerts() {
 	    cp $confdir/certs/ldap-cert.pem /etc/apache2/ssl.crt/invis-sslint.crt
 	    cp $confdir/private/ldap-key.pem /etc/apache2/ssl.key/invis-sslint.key
 	    if (( `ls -A /etc/cups/ssl/|wc -l` != 0 )); then
-		rm /etc/cups/ssl/*
+			rm /etc/cups/ssl/*
 	    fi
 	    # Serverkey fuer nicht als root laufende Dienste bereit stellen
 	    cp $ersadir/private/$cn.key $confdir/certs/server-key.pem
@@ -124,6 +124,13 @@ deploycerts() {
 	"vpn")
 	    mv $ersadir/private/$cn.p12 /srv/shares/service/VPN-Clients/Zertifikate/
 	    ;;
+
+	"opencloud")
+	    openssl x509 -in $ersadir/issued/$cn.crt -out $confdir/certs/oc-cert.pem
+	    openssl rsa -in $ersadir/private/$cn.key -out $confdir/private/oc-key.pem
+	    cp $confdir/certs/oc-cert.pem /etc/apache2/ssl.crt/oc-sslint.crt
+	    cp $confdir/private/oc-key.pem /etc/apache2/ssl.key/oc-sslint.key
+		;;
     esac
 }
 
@@ -152,24 +159,29 @@ stype="$1"
 
 case $stype in
     "ms")
-	server="Mail"
-	cn="mail.$domain"
+		server="Mail"
+		cn="mail.$domain"
 	;;
     "intern")
-	server="ldap"
-	cn="$(hostname -f)"
+		server="ldap"
+		cn="$(hostname -f)"
 	;;
     "extern")
-	server="Extern"
-	# DDNS Name
-	cn=`getconfdata $conffile "fqdn" "2"`
+		server="Extern"
+		# DDNS Name
+		cn=`getconfdata $conffile "fqdn" "2"`
 	;;
     "vpn")
-	read -p "Geben Sie bitte den vollen Hostnamen des VPN-Clients ein: " cn
+		read -p "Geben Sie bitte den vollen Hostnamen des VPN-Clients ein: " cn
+	;;
+	"opencloud")
+		domain="$(hostname -d)"
+		cn=opencloud.$domain
+		subaltname="DNS:$cn DNS:weboffice.$domain DNS:wopi.$domain"
 	;;
     "crl")
-	updatecrl
-	exit 0
+		updatecrl
+		exit 0
 	;;
     *)
 	usage
@@ -181,14 +193,18 @@ echo -e "\033[1;33mEs werden Schlüssel und Zertifikat für \"$cn\" erzeugt.\033
 
 if [[ ! -f $ersadir/issued/$cn.crt ]]; then
     if [[ $stype != "vpn" ]]; then
-	ok=1
-	while [[ $ok == 1 ]]; do
-	    easyrsa --subject-alt-name="DNS:$cn" build-server-full $cn nopass
-	    ok=$?
-	    if [[ $ok == 1 ]]; then
-		cleanfail $cn
-	    fi
-	done
+		ok=1
+		while [[ $ok == 1 ]]; do
+	    	if [[ $type == "opencloud" ]]; then
+				easyrsa --subject-alt-name="$subaltname" build-server-full $cn nopass
+			else
+				easyrsa --subject-alt-name="DNS:$cn" build-server-full $cn nopass
+	    	fi
+			ok=$?
+	    	if [[ $ok == 1 ]]; then
+			cleanfail $cn
+	    	fi
+		done
 	deploycerts
     else
 	ok=1
