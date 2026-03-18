@@ -236,7 +236,7 @@ addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
 cd /srv/www/htdocs/phpldapadmin
 npm -i 2>&1| tee -a $LOGFILE | pgbox
 npm run prod 2>&1| tee -a $LOGFILE | pgbox
-composer i --no-dev
+sudo -u wwwrun composer i --no-dev
 cp $TEMPLATEDIR/$modulename/phpldapadmin/.env /srv/www/htdocs/phpldapadmin/
 
 path="/srv/www/htdocs/phpldapadmin/"
@@ -249,4 +249,7 @@ string="admin-secret%$ldapadminpw"
 changevalues $path $file "$string"
 string="ldapadmin%LDAP Admin,CN=Users,$basedn"
 changevalues $path $file "$string"
+
+sudo -u wwwrun ./artisan key:generate
+
 
