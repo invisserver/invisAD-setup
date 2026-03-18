@@ -63,6 +63,16 @@ if [[ $cont == "0" ]]; then
     # Gruppe "owncloud" anlegen
     samba-tool group add --description="Gruppe zur Beschränkung der openCloud Nutzer" opencloud 2>&1| tee -a $LOGFILE | pgbox
 
+    # lokale IP ermitteln
+    hn=`hostname -f`
+    ip=`dig @localhost $hn +short`
+    # Erforderliche DNS Eintraege erstellen
+    moddnsrecords a A opencloud $ip
+    moddnsrecords a A weboffice $ip
+    moddnsrecords a A wopi $ip
+
+
+
     # ownCloud im Portal aktivieren
     # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
     usedgroupware=`getconfdata "Groupware" "2"`
@@ -76,6 +86,7 @@ if [[ $cont == "0" ]]; then
 	#swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
 	echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
     fi
+
     # Flag OPENCLOUD setzen
     a2enflag OPENCLOUD
     chkservice apache2 r

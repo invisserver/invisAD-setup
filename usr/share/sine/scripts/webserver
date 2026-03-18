@@ -223,6 +223,9 @@ changevalues $path $file "$string"
 # Es wird jedenfalls die ldap.conf ins Home-Verzeichnis des users wwwrun verknuepft.
 ln -s /etc/openldap/ldap.conf /var/lib/wwwrun/
 
+# SELinux:Webserver muss als Proxy arbeiten koennen
+setsebool -P httpd_can_network_connect on
+
 # Webserver, fetchmail und Mailman neustarten und in Runlevel integrieren
 pgsubtitle="Mehrere Dienste werden neu gestartet"
 chkservice "php-fpm"
@@ -230,7 +233,6 @@ chkservice "apache2"
 
 # Administrator-Konto um Posix-Attribute und ein Homeverzeichnis erweitern
 addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
-
 
 ## phpLDAPadmin Setup
 cd /srv/www/htdocs/phpldapadmin
@@ -251,5 +253,4 @@ string="ldapadmin%Admin LDAP,CN=Users,$basedn"
 changevalues $path $file "$string"
 
 sudo -u wwwrun ./artisan key:generate
-
 
