@@ -195,7 +195,7 @@ if [[ ! -f $ersadir/issued/$cn.crt ]]; then
     if [[ $stype != "vpn" ]]; then
 		ok=1
 		while [[ $ok == 1 ]]; do
-	    	if [[ $type == "opencloud" ]]; then
+	    	if [[ $stype == "opencloud" ]]; then
 				easyrsa --subject-alt-name="$subaltname" build-server-full $cn nopass
 			else
 				easyrsa --subject-alt-name="DNS:$cn" build-server-full $cn nopass
