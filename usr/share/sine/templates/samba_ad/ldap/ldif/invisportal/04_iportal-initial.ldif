@@ -182,7 +182,7 @@ objectClass: iPortEntry
 iPortEntryName: phpLDAPadmin
 cn: phpLDAPadmin
 iPortEntrySSL: FALSE
-iPortEntryURL: [servername]/phpldapadmin
+iPortEntryURL: [servername]/phpldapadmin/public
 iPortEntryDescription: Das LDAP-Verzeichnis Ihres invis-Server ist der zentrale Speicherort einer vielzahl von Konfigurationsdaten des Servers. Sie finden hier Daten zu DHCP, DNS, Benutzerverwaltung usw. Achtung der Umgang mit einem LDAP-Verzeichnis setzt entsprechende Grundkentnisse voraus.
 iPortEntryActive: TRUE
 iPortEntryPosition: Administration
