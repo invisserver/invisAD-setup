@@ -4,8 +4,8 @@
 # fuer Web-, Mail- und LDAP-Dienst bzw. VPN-Clients auf
 # invis-Servern 
 # Dieses Script ersetzt das fruehere Script "serverkeys"
-# Version 0.6
-# (C) 2011-2018 by Stefan Schäfer / invis-server.org
+# Version 0.8
+# (C) 2011-2026 by Stefan Schäfer / invis-server.org
 # License: GPLv3
 # Questions: stefan@invis-server.org
 
@@ -50,7 +50,7 @@ changevalues() {
 }
 
 usage() {
-    echo -e "Bitte geben Sie an, ob Sie Zertifikate für interne Zwecke (z.B. LDAP-Server), Mail-Server,\nden Externzugriff, einen VPN-Client erzeugen oder die CRL aktualisieren möchten:\n\tlinux:~ # inviscerts intern\n\tlinux:~ # inviscerts ms\n\tlinux:~ # inviscerts extern\n\tlinux:~ # inviscerts vpn\noder\n\tlinux:~ # inviscerts crl"
+    echo -e "Bitte geben Sie an, ob Sie Zertifikate für interne Zwecke (z.B. LDAP-Server), Mail-Server,\nden Externzugriff, einen VPN-Client erzeugen oder die CRL aktualisieren möchten:\n\tlinux:~ # inviscerts intern\n\tlinux:~ # inviscerts ms\n\tlinux:~ # inviscerts extern\n\tlinux:~ # inviscerts opencloud\n\tlinux:~ # inviscerts vpn\noder\n\tlinux:~ # inviscerts crl"
     echo -e "Dabei fasst \"extern\" die Zertifikate von Web- und VPN-Server zusammen." 
     echo -e "Sie benötigen in jedem Fall das Passwort Ihrer Zertifizierungsstelle (CA)."
     exit
@@ -177,7 +177,7 @@ case $stype in
 	"opencloud")
 		domain="$(hostname -d)"
 		cn=opencloud.$domain
-		subaltname="DNS:$cn DNS:weboffice.$domain DNS:wopi.$domain"
+		subaltname="DNS:$cn,DNS:weboffice.$domain,DNS:wopi.$domain"
 	;;
     "crl")
 		updatecrl
