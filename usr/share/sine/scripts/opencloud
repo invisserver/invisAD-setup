@@ -73,18 +73,35 @@ if [[ $cont == "0" ]]; then
     ## Nur benoetigt für opencloud-server Installation via RPM
 	# sudo -u opencloud-server opencloud-server init --config-path /etc/opencloud-server/
 
+	## Installation via git und docker
+	path="/var/lib/opencloud/"
+	mkdir /etc/opencloud 2>&1 | tee -a $LOGFILE | pgbox
+	mkdir -p /srv/opencloud/data 2>&1 | tee -a $LOGFILE | pgbox
+	mkdir $path 2>&1 | tee -a $LOGFILE | pgbox
+	cd $path
+	git clone https://github.com/opencloud-eu/opencloud-compose.git
+	path=$path/opencloud-compose
+	cd $path
+
+	# setting up opencloud-compose
+	cp $TEMPLATEDIR/$modulename/env.invis $path/env 
+	file="env"
+	domain=`getconfdata "DOMAIN" "2"`
+	string="invis-net.loc%$domain"
+	changevalues $path $file "$string"
+	
     # openCloud im Portal aktivieren
     # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
     usedgroupware=`getconfdata "Groupware" "2"`
     if [[ $usedgroupware == "roundcube" ]]; then
-	#swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
-	echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
+		#swpestat ownCloud TRUE 2>&1 | tee -a $LOGFILE | pgbox
+		echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
     else
-	## Apache vorbereiten
-	# activate apache configuration
-	#cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
-	#swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
-	echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
+		## Apache vorbereiten
+		# activate apache configuration
+		#cp $TEMPLATEDIR/$modulename/owncloud.conf /etc/apache2/conf.d
+		#swpestat ownCloudZP TRUE 2>&1 | tee -a $LOGFILE | pgbox
+		echo "OpenCloud Implementation noch in Arbeit" 2>&1 |tee -a $LOGFILE | pgbox
     fi
 
     # Flag OPENCLOUD setzen
