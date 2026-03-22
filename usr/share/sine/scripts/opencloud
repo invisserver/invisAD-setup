@@ -53,14 +53,12 @@ cont=${?}
 # Weitermachen?
 if [[ $cont == "0" ]]; then
     pgsubtitle="Software wird installiert"
-    zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
-    zypper -n install opencloud-server 2>&1 | tee -a $LOGFILE | pgbox
-    zyppercheck ${PIPESTATUS[0]}
-    # Hier Datenbank installation einfügen
-    #ocpass=`mkdbsilent owncloud owncloud a`
-    #echo "DB-User owncloud:OCDBPW:$ocpass" >> $SINEWORKINGDIR/invis_pws 
+    ## Nur benoetigt für opencloud-server Installation via RPM
+	#zypper refresh 2>&1 | tee -a $LOGFILE | pgbox
+    #zypper -n install opencloud-server 2>&1 | tee -a $LOGFILE | pgbox
+    #zyppercheck ${PIPESTATUS[0]}
 
-    # Gruppe "owncloud" anlegen
+    # Gruppe "opencloud" anlegen
     samba-tool group add --description="Gruppe zur Beschränkung der openCloud Nutzer" opencloud 2>&1| tee -a $LOGFILE | pgbox
 
     # lokale IP ermitteln
@@ -72,9 +70,10 @@ if [[ $cont == "0" ]]; then
     moddnsrecords a A wopi $ip
 
 	# openCloud initialisieren
-	sudo -u opencloud-server opencloud-server init --config-path /etc/opencloud-server/
+    ## Nur benoetigt für opencloud-server Installation via RPM
+	# sudo -u opencloud-server opencloud-server init --config-path /etc/opencloud-server/
 
-    # ownCloud im Portal aktivieren
+    # openCloud im Portal aktivieren
     # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
     usedgroupware=`getconfdata "Groupware" "2"`
     if [[ $usedgroupware == "roundcube" ]]; then

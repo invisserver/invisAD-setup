@@ -406,6 +406,9 @@ changevalues $INVISCONFDIR $file "$string"
 chkservice "cron"
 chkservice "atd"
 
+# Docker wird jetzt vorgehalten
+chkservice "docker"
+
 ## Setup dehydrated
 # install and prepare config
 path="/etc/dehydrated/"
