@@ -77,6 +77,7 @@ if [[ $cont == "0" ]]; then
 	path="/var/lib/opencloud/"
 	mkdir /etc/opencloud 2>&1 | tee -a $LOGFILE | pgbox
 	mkdir -p /srv/opencloud/data 2>&1 | tee -a $LOGFILE | pgbox
+	chown -R 1000:1000 /srv/opencloud/data 2>&1 | tee -a $LOGFILE | pgbox
 	mkdir $path 2>&1 | tee -a $LOGFILE | pgbox
 	cd $path
 	git clone https://github.com/opencloud-eu/opencloud-compose.git
@@ -89,6 +90,8 @@ if [[ $cont == "0" ]]; then
 	domain=`getconfdata "Domain" "2"`
 	string="invis-net.loc%$domain"
 	changevalues $path $file "$string"
+
+	docker compose up -d
 	
     # openCloud im Portal aktivieren
     # Wenn eine Active-Sync unterstuetzende Groupware installiert ist, wird ownCloud ueber den z-push vHost angeboten
