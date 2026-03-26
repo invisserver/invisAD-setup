@@ -354,6 +354,10 @@ clear
 
 inviscerts extern 2>&1| tee -a $LOGFILE
 
+## Eigenes CA-Cert in die lokale Zertifikatsveraltung des Systems integrieren
+cp /etc/invis/certs/ca.crt /etc/pki/trust/anchors/ 2>&1| tee -a $LOGFILE
+update-ca-certificates -v 2>&1| tee -a $LOGFILE
+
 # Zeitzoneneinstellung des Servers ermitteln
 timezone=`cat /etc/sysconfig/clock|grep ^DEFAULT_TIMEZONE=|tr -d "\""|cut -d "=" -f 2`
 
