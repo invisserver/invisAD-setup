@@ -1,0 +1,67 @@
+#!/bin/bash
+# Kategorie: server
+# Das Script aktualisiert .pki Verzeichnisse in den Homeverzeichnissen der User
+# (c) 2026 - Stefan Schaefer - stefan@invis-server.org
+
+# Dieses Skript basiert auf einem Vorschlag von Mistral AI (Le Chat, 2026).
+# Es ist Teil des invis-Server-Projekts und unterliegt der GNU GPL-3.0.
+
+# SPDX-License-Identifier: GPL-3.0
+
+# Script zum Loeschen verwaister Kopano- und ownCloud-Benutzerdaten nach deren Ausscheiden
+# Script to remove old Kopano- and ownCloud-userdata after user removal.
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite 
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. 
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem 
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>. 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+## Durch alle Homeverzeichnisse laufen
+for dir in /home/*; do
+    if [[ -d $dir  && `basename $dir` != "lost+found" ]]; then
+
+		DB_DIR=$dir/.pki/nssdb
+
+		# Datenbank initialisieren (falls nicht vorhanden)
+		if [ ! -d "$DB_DIR" ]; then
+  			mkdir -p "$DB_DIR"
+  			certutil -N -d "$DB_DIR" --empty-password
+		fi
+
+		# Alte Zertifikate löschen (optional)
+		certutil -D -d "$DB_DIR" -n "imported-system-cert" 2>/dev/null
+
+		# Neue Zertifikate importieren
+		for cert in /etc/ssl/certs/*.pem; do
+  			certutil -A -d "$DB_DIR" -n "$(basename "$cert" .pem)" -t "C,," -i "$cert"
+		done
+
+		echo "NSS-Datenbank in $DB_DIR wurde mit den systemweiten Zertifikaten aktualisiert."
+              
+    fi
+done
+
+
+
+
