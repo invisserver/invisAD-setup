@@ -229,7 +229,7 @@ else
 	    echo -e "Das angeforderte Zertifikat wird widerrufen.\n"
 	    ok=1
 	    while [[ $ok == 1 ]]; do
-		easyrsa revoke $cn
+		easyrsa revoke-issued $cn
 		ok=$?
 		if [[ $ok == 1 ]]; then
 		    cleanfail

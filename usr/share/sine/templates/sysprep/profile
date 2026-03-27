@@ -1,3 +1,4 @@
 # EASYRSA Umgebung etablieren
+$domain=`hostname -d`
 export EASYRSA=/etc/easy-rsa
 export EASYRSA_PKI=$EASYRSA/$domain
