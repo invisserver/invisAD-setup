@@ -64,7 +64,7 @@ fi
 
 # email senden, wenn Alarm vorliegt und noch keine Mail gesendet wurde
 if [[ -f $directory/alarm && $sent == 1 ]]; then
-    cat $directory/alarm|mailx -s "$datum - Alarm auf Server: $server" -c $sender -r $localadminmail $adminmail
+    cat $directory/alarm|mailx -s "$datum - Alarm auf Server: $server" -r $sender -c $localadminmail $adminmail
     echo $datum > $directory/sent
 fi
 
