@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kategorie: setup
 # Script zur Erstellung von UDEV Regeln zur Benennung der Netzwerkschnittstellen
-# (c) 2013 Stefan Schaefer -- stefan@invis-server.org
+# (c) 2013,2026 Stefan Schaefer -- stefan@invis-server.org
 
 # License: GPLv3
 # Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
@@ -65,7 +65,7 @@ if [[ ! $( ifconfig extern 2> /dev/null) ]]; then
 	cp /usr/share/sine/templates/check/network/80-eth-extern-dhcp.network /etc/systemd/network/
     fi
 
-    echo -e "Es wurden Regeln zur Benennung der vorhandenen Netzwerkkarten erzeugt.\n\nBitte starten Sie den Server jetzt neu und konfigurieren\nSie Ihre Netzwerkkarten anschließend mit YaST."
+    echo -e "Es wurden Regeln zur Benennung der vorhandenen Netzwerkkarten erzeugt.\n\nBitte starten Sie den Server jetzt neu und konfigurieren\nSie Ihre Netzwerkkarten anschließend mit dem Script netdevconf."
     
 else
     echo "Die Umbenennung der Netzwerkschnittstellen wurden bereits vorgenommen, keine Änderungen notwendig."
