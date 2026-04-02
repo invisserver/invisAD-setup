@@ -40,7 +40,7 @@ echo "Kind=!*" >> $tempfile
 echo "Type=ether" >> $tempfile
 echo "Name=$device" >> $tempfile
 echo >> $tempfile
-echo "[Link] >> $tempfile
+echo "[Link]" >> $tempfile
 echo "ActivationPolicy=always-up"
 echo >> $tempfile
 echo "[Network]" >> $tempfile
@@ -50,8 +50,8 @@ echo "DHCP=0" >> $tempfile
 # Konfigurationsdatei installieren und aktivieren
 mv $tempfile $netconfigpath/$prionr-eth-$device.network
 
-semanage fcontext -a -t systemd_networkd_unit_file_t "/etc/systemd/network/.network"
-restorecon -Rv "/etc/systemd/network/.network"
+semanage fcontext -a -t systemd_networkd_unit_file_t "/etc/systemd/network/*.network"
+restorecon -Rv "/etc/systemd/network/*.network"
 systemctl reload systemd-networkd.service
 
 
