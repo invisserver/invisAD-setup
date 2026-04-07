@@ -285,15 +285,20 @@ fi
 #   Ports fuer SSH, HTTPS-Portal ermitteln.
 sshport=`freeports`
 httpsport=`freeports`
+ovpnport1=`freeports`
 # Doppelte Portbelegung verhindern
 while [[ $sshport == $httpsport ]]; do
     httpsport=`freeports`
 done
-
+while [[ $ovpnport == $sshport || $ovpnport == $httpsport ]]; do
+	ovpnport1=`freeports`
+done
+(( ovpnport2 = $ovpnport1 + 1 ))
 msgbox "Für den externen Zugriff auf Server per SSH oder HTTPS wurden per Zufallsgenerator vom Standard abweichende Ports ermittelt. Dies erhöht die Sicherheit des Servers.\n\n
 Notieren Sie sich bitte die folgenden Ports in Ihrem Protokoll:\n\n
 SSH Port (Administration): $sshport\n\n
 HTTPS Port (invis-Portal): $httpsport\n\n
+openVPN Ports: $ovpnport1 und $ovpnport2\n\n 
 Aus Ihrem lokalen Netz heraus kann für SSH weiter Port 22 verwendet werden." "SSH und HTTPS Port"
 
 #---#SMTP Daten
@@ -474,6 +479,8 @@ echo "MonitoringSoftware:$whichmonitoring" >> $SINEWORKINGDIR/invis_confdata
 echo "HDType:$whichhd" >> $SINEWORKINGDIR/invis_confdata
 echo "SSHPORT:$sshport" >> $SINEWORKINGDIR/invis_confdata
 echo "HTTPSPORT:$httpsport" >> $SINEWORKINGDIR/invis_confdata
+echo "OVPNPORT1:$ovpnport1" >> $SINEWORKINGDIR/invis_confdata
+echo "OVPNPORT2:$ovpnport2" >> $SINEWORKINGDIR/invis_confdata
 echo "DDNS:$ddnshn" >> $SINEWORKINGDIR/invis_confdata
 
 echo "AV:$av" >> $SINEWORKINGDIR/invis_confdata
