@@ -18,8 +18,8 @@
   <!-- https (443/anderer Port): Für ownCloud --> 
   <service name="owncloud"/>
 
-  <!-- openvpn (1194/UDP) -->
-  <service name="openvpn"/>
+  <!-- openvpn (random Ports/UDP) -->
+  <service name="invis-openvpn"/>
 
   <!-- Blocken aller icmp-Protokolle -->
   <icmp-block-inversion/>
