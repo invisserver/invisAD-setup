@@ -402,7 +402,7 @@ ldappw=`getpassword "LDAPAdminPW" "3"`
 string="ldap-secret%$ldappw"
 changevalues $INVISCONFDIR $file "$string"
 
-mysqlpw=`getpassword "MySQLPW" "3"`
+mysqlpw=`getpassword "MariaDBPW" "3"`
 string="mysql-rootpw%$mysqlpw"
 changevalues $INVISCONFDIR $file "$string"
 

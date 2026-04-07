@@ -2,8 +2,8 @@
 # Kategorie: server
 # Script zum Anlegen von MySQL-Datenbanken
 # Das Script gibt lediglich das fuer den Datenbank-Benutzer erzeugte Passwort zurueck
-# Version: 0.1
-# (C) 2010 invis-server.org
+# Version: 0.2
+# (C) 2010,2026 invis-server.org
 # Author: Stefan Schaefer <stefan@invis-server.org>
 
 # License: GPLv3
@@ -60,31 +60,31 @@ fi
 
 ## MySQL
 # root PW einlesen
-mysqlrootpw=$(getpass "MySQLroot")
-loginstring="-u root --password=$mysqlrootpw"
+mariadbrootpw=$(getpass "MariaDBroot")
+loginstring="-u root --password=$mariadbrootpw"
 
 # Testen, ob die Datenbank bereits existiert, wenn nicht -> dann anlegen.
-if [[ -n $(mysqlshow  $loginstring | grep $database) ]]; then
+if [[ -n $(mariadb-show  $loginstring | grep $database) ]]; then
     #echo -e "Die Datenbank \"$database\" existiert bereits"
     exit 5
 else
     # Testen, ob der Benutzer bereits existiert
-    dboexist=$(echo "SELECT User, Host, Password FROM mysql.user"|mysql $loginstring|tr "\t" " "|tr -s " "|cut -d " " -f 1| grep ^$dbowner\$)
+    dboexist=$(echo "SELECT User, Host, Password FROM mysql.user"|mariadb $loginstring|tr "\t" " "|tr -s " "|cut -d " " -f 1| grep ^$dbowner\$)
 
     # Datenbank anlegen
-    echo "create database $database" | mysql --batch $loginstring
+    echo "create database $database" | mariadb --batch $loginstring
     
     # Benutzerrechte vergeben
     if [[ $privs == "a" ]];then
-	echo "grant all privileges on $database.* to $dbowner@localhost"| mysql --batch $loginstring
+		echo "grant all privileges on $database.* to $dbowner@localhost"| mariadb --batch $loginstring
     else
-	echo "grant select, insert, update, delete, create, drop, index, alter on $database.* to $dbowner@localhost"| mysql --batch $loginstring
+		echo "grant select, insert, update, delete, create, drop, index, alter on $database.* to $dbowner@localhost"| mariadb --batch $loginstring
     fi
     
     # Passwort vergeben
     if [[ -z $dboexist ]]; then
         dbpass=$(pwgen -cn 8 1)
-        echo "set password for $dbowner@localhost = password('$dbpass')"|mysql --batch $loginstring
+        echo "set password for $dbowner@localhost = password('$dbpass')"|mariadb --batch $loginstring
 	#echo -e "Da der Benutzer \"$dbowner\" noch nicht existierte, wurde für ihn das Passwort \"$dbpass\" vergeben.\nNotieren Sie sich Benutzernamen, Datenbanknamen und Passwort, sie werden diese Daten\nfür die Einrichtung von Datenbankapplikationen dieses Kunden benötigen.\nBenutzername und Passwort gelten für alle Datenbanken dieses Benutzers."
 	echo $dbpass
     fi

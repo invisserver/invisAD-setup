@@ -1,7 +1,7 @@
 #!/bin/bash
 ### MODUL-NR. 001 ### <- Hier Nummer einfügen!
 # (c) August 2008 Stefan Schäfer / FSP Computer & Netzwerke
-# (c) 2009-2024  Stefan Schäfer / invis-server.org / stefan@invis-server.org
+# (c) 2009-2026  Stefan Schäfer / invis-server.org / stefan@invis-server.org
 # (c) 2013,2014 Dimitri Asarowski / invis-server.org / dimitri@invis-server.org
 # (c) 2013-2017 Ingo Göppert / invis-server.org / ingo@invis-server.org
 
@@ -102,9 +102,9 @@ changevalues $path $file "$string"
 path="/usr/lib64/jboss/keycloak/conf/"
 filename="keycloak.conf"
 string="kcdbpass%$kcdbpass"
-changevalues $path $file "$string"
+changevalues $path $filename "$string"
 string="invis.invis-net.loc%$fqdn"
-changevalues $path $file "$string"
+changevalues $path $filename "$string"
 
 # Script kc.sh build ausfuehren
 /usr/lib64/jboss/keycloak/bin/kc.sh build 2>&1| tee -a $LOGFILE | pgbox

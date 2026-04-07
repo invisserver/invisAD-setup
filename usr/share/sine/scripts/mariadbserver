@@ -77,8 +77,8 @@ done
 systemctl restart mariadb.service 2>&1|tee -a $LOGFILE |pgbox
 
 #MySQL Root-Passwort setzen
-mysqlpw=`getpassword "MySQLPW" "3"`
-mariadb-admin password $mysqlpw
+mariadbpw=`getpassword "MariaDBPW" "3"`
+mariadb-admin password $mariadbpw
 
 # Neuaufbau der Postfix chroot Umgebung zur Unsterstützung von mysql.sock 
 chkservice "postfix"
