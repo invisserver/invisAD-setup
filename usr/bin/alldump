@@ -61,19 +61,19 @@ fi
 
 datum=`date +%Y%m%d`
 
-## MySQL
+## MariaDB
 mystatus=`systemctl is-enabled mariadb.service`
 if [[ $mystatus == "enabled" ]]; then
     # root PW einlesen
-    mysqlrootpw=`getconfdata $passfile "MySQLroot" "2"`
-    loginstring="-u root --password=$mysqlrootpw"
+    mariadbrootpw=`getconfdata $passfile "MariaDBroot" "2"`
+    loginstring="-u root --password=$mariadbrootpw"
 
     # Alle Datenbanken ermitteln und sichern
-    alldbs=(`mysqlshow  $loginstring |tr -s " "| cut -d " " -f2| grep -v "+"|grep -v "Databases"`)
+    alldbs=(`mariadb-show  $loginstring |tr -s " "| cut -d " " -f2| grep -v "+"|grep -v "Databases"`)
     for db in ${alldbs[*]}; do
 	# Zarafa-DB ausschließen
 	if [[ $db != "$zarafadb" ]]; then
-	    mysqldump $loginstring --add-drop-table --single-transaction $db > $dumpdir/mysql-$db-sicherung.sql
+	    mariadb-dump $loginstring --add-drop-table --single-transaction $db > $dumpdir/mysql-$db-sicherung.sql
 	fi
     done
 fi
