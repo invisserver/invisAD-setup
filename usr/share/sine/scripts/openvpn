@@ -59,6 +59,10 @@ cp $TEMPLATEDIR/$modulename/*.conf /etc/openvpn
 path="/etc/openvpn"
 file="invis-server.conf"
 
+ovpnport1=`getconfdata "OVPNPORT1" "2"`
+string="ovpnport1%$ovpnport1"
+changevalues $path $file "$string"
+
 domain=`getconfdata "Domain" "2"`
 string="invis-net.loc%$domain"
 changevalues $path $file "$string"
@@ -80,6 +84,10 @@ string="openvpn_server%$ddns"
 changevalues $path $file "$string"
 
 file="invis-sub.conf"
+
+ovpnport2=`getconfdata "OVPNPORT2" "2"`
+string="ovpnport2%$ovpnport2"
+changevalues $path $file "$string"
 
 domain=`getconfdata "Domain" "2"`
 string="invis-net.loc%$domain"
