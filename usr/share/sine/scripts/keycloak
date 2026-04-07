@@ -87,7 +87,10 @@ usermod -a -G pkeys keycloak 2>&1| tee -a $LOGFILE | pgbox
 # Konfigurationen kopieren und anpassen
 cp $TEMPLATEDIR/$modulename/keycloak /etc/sysconfig/keycloak
 cp $TEMPLATEDIR/$modulename/keycloak.service /etc/systemd/system/
-cp $TEMPLATEDIR/$modulename/keycloak.conf /usr/lib64/jboss/keycloak/conf/
+
+mkdir /etc/keycloak 2>&1| tee -a $LOGFILE | pgbox
+cp $TEMPLATEDIR/$modulename/keycloak.conf /etc/keycloak/ 2>&1| tee -a $LOGFILE | pgbox
+ln -s /etc/keycloak/keycloak.conf /usr/lib64/jboss/keycloak/conf/keycloak.conf 2>&1| tee -a $LOGFILE | pgbox
 
 # kcadmin Passwort genereieren
 kcpassword=`pwgen -sBn 12 1`
