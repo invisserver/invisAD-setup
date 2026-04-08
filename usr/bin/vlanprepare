@@ -1,0 +1,44 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Vorbereiten des Servers für VLANs
+# Version: 0.1
+# (C) 2026 invis-server.org
+# Author: Stefan Schaefer <stefan@invis-server.org>
+
+# Es ist Teil des invis-Server-Projekts und unterliegt der GNU GPL-3.0.
+
+# SPDX-License-Identifier: GPL-3.0
+
+# License: GPLv3
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+#
+
+workingdir="/var/lib/sine"
+
+
+# Pruefen, ob das Kernel-Modul 8021q geladen ist
+if [[ `lsmod |grep ^8021q` ]] then
+	echo 8021q > /etc/modules-load.d/10-invisvlan.conf
+	modprobe 8021q
+fi
+
+# Sourcefile generieren
+cp /usr/share/sine/templates/sysprep/vlan/vlan-source $workingdir
+# Vorlage-Datei im Editor oeffnen
+vi $workingdir/vlan-source
+
+if [[ $? == 0 ]]; then
+	vlansetup
+fi
+

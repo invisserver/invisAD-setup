@@ -46,6 +46,8 @@ echo >> $tempfile
 echo "[Network]" >> $tempfile
 echo "Address=$ip" >> $tempfile
 echo "DHCP=0" >> $tempfile
+echo >> $tempfile
+echo "ConfigureWithoutCarrier=true" >> $tempfile
 
 # Konfigurationsdatei installieren und aktivieren
 mv $tempfile $netconfigpath/$prionr-eth-$device.network

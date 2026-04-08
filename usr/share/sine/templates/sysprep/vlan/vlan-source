@@ -1,0 +1,8 @@
+# Variablen für Anpassung
+PHYS_INTERFACE="intern"      	# Physische Schnittstelle
+VLAN_ID="10"                  	# VLAN-ID
+VLAN_NAME="vlan${VLAN_ID}"    	# Name der VLAN-Schnittstelle
+VLAN_IP="0/0"      		# IP-Adresse des VLANs
+VLAN_GATEWAY=""   		# Gateway des VLANs
+VLAN_DNS="127.0.0.1"           	# DNS-Server für das VLAN - Vorgabe: lokaler DNS
+

@@ -1,0 +1,105 @@
+#!/bin/bash
+# Kategorie: server
+# Script zum Einrichten und aktivieren eines VLANs
+# Version: 0.1
+# (C) 2026 invis-server.org
+# Author: Stefan Schaefer <stefan@invis-server.org>
+
+# In dieses Skript sind Vorschläge von Mistral AI (Le Chat, 2026) eingewandert.
+# Es ist Teil des invis-Server-Projekts und unterliegt der GNU GPL-3.0.
+
+# SPDX-License-Identifier: GPL-3.0
+
+# Dieses Programm ist freie Software. Sie können es unter den Bedingungen der
+# GNU General Public License, wie von der Free Software Foundation veröffentlicht,
+# weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder
+# (nach Ihrer Option) jeder späteren Version.
+
+# Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen
+# von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite
+# Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.
+# Details finden Sie in der GNU General Public License.
+
+# Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+#
+# Variablen laden
+netconfdir="/etc/systemd/network"
+sourcefile="/var/lib/sine/vlan-source"
+fwzonepath="/etc/firewalld/zones/"
+if [[ -f $sourcefile ]]; then
+	source $sourcefile
+	physdevfile="$netconfdir/20-eth-$PHYS_INTERFACE.network"
+	netdevfile="$netconfdir/30-vlan-$VLAN_NAME.netdev"
+	netconffile="$netconfdir/40-vlan-$VLAN_NAME.network"
+	# Pruefen, ob die VLAN-ID bereits existiert
+	if grep $VLAN_NAME $physdevfile; then
+		echo "Ein VLAN mit der ID \"$VLAN_ID\" ist bereits vorhanden."
+		exit 5
+	fi
+	if echo $VLAN_NAME|grep "intern"; then
+		fwzone="internal"
+		searchstring="forward"
+	else
+		fwzone="external"
+		searchstring="masquerade"
+	fi
+	# Schnittstellenkonfiguration sichern
+	cp $physdevfile $physdevfile.bak
+	# Falls die VLAN-Zeile existiert, hänge das neue VLAN an
+	if grep -q "^VLAN=" "$physdevfile"; then
+    		# Prüfe, ob das VLAN bereits in der Zeile steht
+    		if ! grep -q "$VLAN_NAME" "$physdevfile"; then
+			sed -i "/^VLAN=/ s/$/ $VLAN_NAME/" "$physdevfile"
+        		echo "VLAN $VLAN_NAME zur bestehenden VLAN-Zeile hinzugefügt."
+    		else
+        		echo "VLAN $VLAN_NAME ist bereits in der Konfiguration enthalten."
+    		fi
+	else
+    		# Falls die VLAN-Zeile nicht existiert, füge sie unter [Network] ein
+    		sed -i "/\[Network\]/a VLAN=$VLAN_NAME" "$physdevfile"
+    		echo "Neue VLAN-Zeile mit $VLAN_NAME erstellt."
+	fi
+
+	# Netzwerk-Definitionsdatei erzeugen
+	# 1. .netdev-Datei für das VLAN erstellen
+	echo "[NetDev]" > "$netdevfile"
+	echo "Name=$VLAN_NAME" >> "$netdevfile"
+	echo "Kind=vlan" >> "$netdevfile"
+	echo "Description=VLAN $VLAN_ID auf $PHYS_INTERFACE" >> "$netdevfile"
+	echo "" >> "$netdevfile"
+	echo "[VLAN]" >> "$netdevfile"
+	echo "Id=$VLAN_ID" >> "$netdevfile"
+
+	echo "Netzwerkdefinitionsdatei für $VLAN_NAME erstellt."
+
+	# VLAN Schnittstellen-Konfigurationsdatei erstellen
+	# 2. .network-Datei für das VLAN erstellen
+	echo "[Match]" > "$netconffile"
+	echo "Name=$VLAN_NAME" >> "$netconffile"
+	echo "" >> "$netconffile"
+	echo "[Network]" >> "$netconffile"
+	echo "Address=$VLAN_IP" >> "$netconffile"
+	if [[ -n $VLAN_GATEWAY ]]; then
+		echo "Gateway=$VLAN_GATEWAY" >> "$netconffile"
+	fi
+	echo "DNS=$VLAN_DNS" >> "$netconffile"
+	echo "ConfigureWithoutCarrier=true" >> "$netconffile"
+
+	echo "Netzwerkkonfigurationstionsdatei für $VLAN_NAME erstellt."
+	
+	# systemd-networkd neu starten
+	systemctl restart systemd-networkd.service
+	
+	echo "VLAN $VLAN_NAME aktiviert."
+
+	# Schnittstelle in Firewall-Setup einfügen
+	sed -i "/<$searchstring\/>/i\  <interface name=\"$VLAN_NAME\"/>" "$fwzonepath/$fwzone.xml"
+	systemctl restart firewalld.service
+
+	echo "Firewall-Setup aktualisiert und aktiviert."
+
+else
+	echo "Keine Vorlagedatei vorhanden, bitte das Script \"vlanprepare\" ausführen."
+	echo "Das Script \"vlansetup\" wird dann automatisch ausgeführt."
+fi
