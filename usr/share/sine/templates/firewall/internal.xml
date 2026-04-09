@@ -20,8 +20,6 @@
   <service name="https"/>
   <!-- https (anderer Port): Für das invis-Server-Portal -->
   <service name="invis-portal"/>
-  <!-- https (443/anderer Port): Für ownCloud --> 
-  <service name="owncloud"/>
 
   <!-- Mail, Groupware -->
   <!-- smtp (25): Für STARTTLS -->
@@ -30,8 +28,6 @@
   <!-- imap (25): Für STARTTLS -->
   <service name="imap"/>
   <service name="imaps"/>
-  <!-- Kopano spezifische Ports 237, 8443 -->
-  <service name="kopano"/>
 
   <!-- CUPS -->
   <service name="ipp"/>
