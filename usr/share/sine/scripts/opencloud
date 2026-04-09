@@ -86,7 +86,7 @@ if [[ $cont == "0" ]]; then
 
 	# setting up opencloud-compose
 	cp $TEMPLATEDIR/$modulename/env.invis $path/.env 
-	file="env"
+	file=".env"
 	domain=`getconfdata "Domain" "2"`
 	string="invis-net.loc%$domain"
 	changevalues $path $file "$string"
