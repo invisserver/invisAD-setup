@@ -209,6 +209,13 @@ if [[ $ddnshn != "none" ]]; then
     string="your.ddns-domain.net%$ddnsname"
     changevalues $path $file "$string"
 
+    # Kopieren und anpassend der Konfigurationsdateien
+    cp $TEMPLATEDIR/$modulename/apache2/listen.conf /etc/apache2/
+    path="/etc/apache2"
+    file="listen.conf"
+    string="httpsport%$httpsport"
+    changevalues $path $file "$string"
+
 fi
 
 # adLDAP-Konfiguration anpassen
