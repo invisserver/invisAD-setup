@@ -90,6 +90,7 @@ cp $TEMPLATEDIR/$modulename/keycloak.service /etc/systemd/system/
 
 mkdir /etc/keycloak 2>&1| tee -a $LOGFILE | pgbox
 cp $TEMPLATEDIR/$modulename/keycloak.conf /etc/keycloak/ 2>&1| tee -a $LOGFILE | pgbox
+old /usr/lib64/jboss/keycloak/conf/keycloak.conf 2>&1 |tee -a $LOGFILE | pgbox
 ln -s /etc/keycloak/keycloak.conf /usr/lib64/jboss/keycloak/conf/keycloak.conf 2>&1| tee -a $LOGFILE | pgbox
 
 # kcadmin Passwort genereieren
@@ -102,7 +103,7 @@ string="kcpassword%$kcpassword"
 changevalues $path $file "$string"
 
 # Keycloak Konfigurationsdatei
-path="/usr/lib64/jboss/keycloak/conf/"
+path="/etc/keycloak/"
 filename="keycloak.conf"
 string="kcdbpass%$kcdbpass"
 changevalues $path $filename "$string"
