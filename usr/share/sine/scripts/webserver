@@ -52,6 +52,8 @@ Individuelle Konfigurationen des Portals können in /etc/invis/portal/config.php
 fqdn=`getconfdata "FQDN" "2"`
 ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 company=`getconfdata "Organisation" "2"`
+basedn=`getconfdata "baseDN" "2"`
+ldaphost=`getconfdata "ldapHost" "2"`
 path="/etc/invis/portal"
 cp $path/config.php.dist $path/config.php
 file="config.php"

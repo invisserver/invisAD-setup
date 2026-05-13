@@ -153,6 +153,10 @@ basedn=`getconfdata "baseDN" "2"`
 string="dc=invis-net,dc=loc%$basedn"
 changevalues $INVISCONFDIR $file "$string"
 
+ldaphost=`getconfdata "FQDN" "2"`
+string=":localhost%:$ldaphost"
+changevalues $INVISCONFDIR $file "$string"
+
 cleantr=`getconfdata "cleanTR" "2"`
 if [[ $cleantr == "j" ]]; then
     string="cleanTrOn:n%cleanTrOn:$cleantr"
