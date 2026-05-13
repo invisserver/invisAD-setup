@@ -261,5 +261,7 @@ changevalues $path $file "$string"
 string="ldapadmin%Admin LDAP,CN=Users,$basedn"
 changevalues $path $file "$string"
 
+chown -R wwwrun:www /srv/www/htdocs/phpldapadmin/
+
 sudo -u wwwrun ./artisan key:generate
 
