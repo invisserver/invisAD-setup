@@ -54,6 +54,7 @@ ldapadminpw=`getpassword "LDAPAdminPW" "3"`
 company=`getconfdata "Organisation" "2"`
 basedn=`getconfdata "baseDN" "2"`
 ldaphost=`getconfdata "ldapHost" "2"`
+domain=`hostname -d`
 path="/etc/invis/portal"
 cp $path/config.php.dist $path/config.php
 file="config.php"
@@ -245,8 +246,8 @@ addposixattrs administrator 2>&1| tee -a $LOGFILE | pgbox
 
 ## phpLDAPadmin Setup
 cd /srv/www/htdocs/phpldapadmin
-npm -i 2>&1| tee -a $LOGFILE | pgbox
-npm run prod 2>&1| tee -a $LOGFILE | pgbox
+sudo -u wwwrun pm -i 2>&1| tee -a $LOGFILE | pgbox
+sudo -u wwwrun npm run prod 2>&1| tee -a $LOGFILE | pgbox
 sudo -u wwwrun composer i --no-dev
 cp $TEMPLATEDIR/$modulename/phpldapadmin/.env /srv/www/htdocs/phpldapadmin/
 
@@ -260,7 +261,8 @@ string="admin-secret%$ldapadminpw"
 changevalues $path $file "$string"
 string="ldapadmin%Admin LDAP,CN=Users,$basedn"
 changevalues $path $file "$string"
-
+string="localdomain%$domain"
+changevalues $path $file "$string"
 chown -R wwwrun:www /srv/www/htdocs/phpldapadmin/
 
 sudo -u wwwrun ./artisan key:generate
