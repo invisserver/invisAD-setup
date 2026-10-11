@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<direct>
+  <!-- 1. Markiere eingehende TCP-Pakete auf extern -->
+  <rule priority="0" table="mangle" chain="PREROUTING" ipv="ipv4">
+    -i extern -p tcp -j CONNMARK --set-mark 1
+  </rule>
+
+  <!-- 2. Markiere eingehende UDP-Pakete auf extern (OpenVPN) mit meta mark -->
+  <rule priority="0" table="mangle" chain="PREROUTING" ipv="ipv4">
+    -i extern -p udp --dport 1194 -j MARK --set-mark 1
+  </rule>
+
+  <!-- 3. Übertrage Connection Mark auf Paketmark für TCP-Antworten -->
+  <rule priority="0" table="mangle" chain="OUTPUT" ipv="ipv4">
+    -p tcp -j CONNMARK --restore-mark
+  </rule>
+
+  <!-- 4. Markiere UDP-Antworten auf Port 1194 (OpenVPN) direkt -->
+  <rule priority="0" table="mangle" chain="OUTPUT" ipv="ipv4">
+    -p udp --sport 1194 -j MARK --set-mark 1
+  </rule>
+</direct>

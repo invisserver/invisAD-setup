@@ -1,0 +1,78 @@
+<#
+.SYNOPSIS
+    Kopiert Benutzerdaten aus einem alten Roaming-Profil in ein neues Profil.
+.DESCRIPTION
+    Dieses Skript kopiert sichere Benutzerdaten (Desktop, Dokumente, AppData\Roaming, etc.)
+    aus einem alten Profilordner in ein neues Profil. Es vermeidet Systemdateien,
+    die zu Konflikten mit Windows 11 führen könnten.
+.NOTES
+    - Führe das Skript als Administrator aus.
+    - Ersetze die Variablen $sourceProfilePath und $targetProfilePath mit den tatsächlichen Pfaden.
+    - Das Skript überspringt Systemdateien wie NTUSER.DAT, AppData\Local\Microsoft\Windows, etc.
+#>
+
+# --- Konfiguration ---
+$sourceProfilePath = "\\Server\Profile\Benutzername.V6_backup"  # Pfad zum alten Profil (Backup)
+$targetProfilePath = "C:\Users\Benutzername"                  # Pfad zum neuen lokalen Profil (Ziel)
+$excludedFolders = @(
+    "AppData\Local\Microsoft\Windows",  # Windows-spezifische Einstellungen
+    "AppData\Local\Temp",               # Temporäre Dateien
+    "AppData\Local\Microsoft\Windows\INetCache", # Cache
+    "NTUSER.DAT",                      # Registry-Hive (wird neu erstellt)
+    "NTUSER.DAT.LOG",                   # Registry-Log
+    "ntuser.ini"                        # Registry-Initialisierungsdatei
+)
+
+# --- Skript ---
+function Copy-UserData {
+    param (
+        [string]$Source,
+        [string]$Target
+    )
+
+    # Prüfe, ob die Pfade existieren
+    if (-not (Test-Path $Source)) {
+        Write-Error "Quellpfad existiert nicht: $Source"
+        return
+    }
+
+    if (-not (Test-Path $Target)) {
+        Write-Error "Zielpfad existiert nicht: $Target"
+        return
+    }
+
+    # Kopiere die wichtigsten Ordner
+    $foldersToCopy = @(
+        "Desktop",
+        "Documents",
+        "Downloads",
+        "Pictures",
+        "Music",
+        "Videos",
+        "Favorites",
+        "AppData\Roaming"  # Enthält viele Anwendungsdaten (z. B. Browser, Office)
+    )
+
+    foreach ($folder in $foldersToCopy) {
+        $sourceFolder = Join-Path $Source $folder
+        $targetFolder = Join-Path $Target $folder
+
+        if (Test-Path $sourceFolder) {
+            # Erstelle den Zielordner, falls er nicht existiert
+            if (-not (Test-Path $targetFolder)) {
+                New-Item -ItemType Directory -Path $targetFolder -Force | Out-Null
+            }
+
+            # Kopiere alle Dateien und Unterordner, außer die ausgeschlossenen
+            Copy-Item -Path "$sourceFolder\*" -Destination $targetFolder -Recurse -Force -Exclude $excludedFolders
+            Write-Host "Kopiert: $folder" -ForegroundColor Green
+        } else {
+            Write-Host "Ordner nicht gefunden: $folder" -ForegroundColor Yellow
+        }
+    }
+
+    Write-Host "Benutzerdaten wurden erfolgreich kopiert!" -ForegroundColor Green
+}
+
+# Skript ausführen
+Copy-UserData -Source $sourceProfilePath -Target $targetProfilePath

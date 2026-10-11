@@ -1,0 +1,11 @@
+[Unit]
+Description=Dynamic Failover for Internet Gateways
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/gw-failover
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
